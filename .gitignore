@@ -1,0 +1,41 @@
+# Dependencies
+node_modules/
+
+# ffmpeg/ffprobe binaries đóng gói sẵn (khôi phục: cd scripts && npm i ffmpeg-static ffprobe-static, copy vào ffbin/)
+scripts/ffbin/
+
+# Bí mật — KHÔNG commit API key
+.env
+**/.env
+
+# Video render (rất nặng, tái tạo được bằng hyperframes render)
+*.mp4
+
+# Artifact thumbnail nguồn + log (giữ output/<slug>/thumbnail.jpg + YOUTUBE.md)
+output/_assets/
+*.log
+
+# Tạm / OS
+*.tmp
+Thumbs.db
+.DS_Store
+
+# hyperframes render cache
+.thumbnails/
+
+# backup composition rải rác (tái tạo được từ projects/<slug>/index.html)
+*.html.bak
+*.html.moved
+
+# Giọng đọc TTS (264 file/tập, MP3 không nén delta được → repo phình vĩnh viễn).
+# Sinh lại bằng: subagent voice-generator. timing.json/cues.json VẪN được commit
+# vì đó mới là thứ pipeline cần (đồng hồ chủ của dự án).
+projects/*/voice/
+
+# Giao hàng — tái tạo được bằng hyperframes render + agent render.
+output/
+
+# ⚠ NGOẠI LỆ: archive/ là bản DUY NHẤT của Tập 01–04, không tái tạo được.
+# Phải nằm SAU quy tắc *.html.bak ở trên mới có hiệu lực.
+!archive/
+!archive/**

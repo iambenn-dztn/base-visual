@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dự Mục — Thư viện tập</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:radial-gradient(ellipse at 50% -10%, #101a34 0%, #070d20 40%, #03050f 75%, #010208 100%);
+    color:#e8eeff;font-family:"Segoe UI",Roboto,Arial,sans-serif;min-height:100vh;padding:48px 32px 80px;}
+  .head{text-align:center;margin-bottom:44px;}
+  .head h1{font-size:42px;font-weight:900;letter-spacing:-1px;
+    background:linear-gradient(90deg,#8fd0ff,#ffd23f);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .head p{margin-top:8px;color:#9fb0d0;font-size:17px;}
+  .sec{max-width:1400px;margin:8px auto 20px;font-size:24px;font-weight:800;color:#dbe4ff;
+    border-left:4px solid #ffd23f;padding-left:14px;}
+  .sec small{display:block;font-size:14px;font-weight:500;color:#8fa0c0;margin-top:3px;border:0;}
+  .sec.roadmap{border-left-color:#5a6a90;margin-top:56px;}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(440px,1fr));gap:28px;max-width:1400px;margin:0 auto;}
+  .card{background:rgba(20,28,50,.55);border:1px solid rgba(120,150,220,.18);border-radius:14px;overflow:hidden;
+    box-shadow:0 10px 40px rgba(0,0,0,.45);transition:transform .18s, border-color .18s;}
+  .card:hover{transform:translateY(-4px);border-color:rgba(140,200,255,.5);}
+  .card video{width:100%;display:block;background:#000;aspect-ratio:16/9;object-fit:cover;}
+  .meta{padding:16px 20px 20px;}
+  .num{font-size:13px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:#ffd23f;}
+  .title{font-size:22px;font-weight:800;margin:4px 0 6px;color:#fff;}
+  .desc{font-size:14px;color:#a8b8d8;line-height:1.5;}
+  .row{display:flex;gap:16px;margin-top:12px;font-size:13px;color:#8fa0c0;align-items:center;flex-wrap:wrap;}
+  .pill{background:rgba(120,160,255,.14);padding:3px 10px;border-radius:20px;}
+  .yt{margin-left:auto;color:#7fd0ff;text-decoration:none;font-weight:700;}
+  .yt:hover{text-decoration:underline;}
+  .pending{opacity:.6;}
+  .pending .num{color:#8fa0c0;}
+  .pending .ph{width:100%;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;
+    background:repeating-linear-gradient(45deg,#0a1024,#0a1024 12px,#0c132a 12px,#0c132a 24px);color:#6f80a0;font-size:15px;}
+  .foot{text-align:center;margin-top:48px;color:#6f80a0;font-size:13px;}
+</style></head>
+<body>
+  <div class="head">
+    <h1>🌌 Dự Mục — Thư viện tập</h1>
+    <p>Series khoa học vũ trụ · bấm ▶ để xem (phát MP4 kèm tiếng)</p>
+  </div>
+
+  <div class="sec">🎬 Đã phát hành
+    <small>7 tập đã dựng hoàn chỉnh — đánh số theo thứ tự sản xuất. Danh mục nội dung: projects/EPISODES-PRODUCED.md</small>
+  </div>
+  <div class="grid">
+
+    <div class="card">
+      <video controls preload="none" poster="output/vat-chat-toi/thumbnail.jpg">
+        <source src="output/vat-chat-toi/vat-chat-toi.mp4" type="video/mp4"></video>
+      <div class="meta"><div class="num">Tập 01</div><div class="title">Vật Chất Tối</div>
+        <div class="desc">85% vũ trụ vô hình — đường cong quay thiên hà, thấu kính hấp dẫn, thứ giữ các thiên hà không tan rã.</div>
+        <div class="row"><span class="pill">⏱ 11.9 phút</span><span class="pill">1080p</span>
+          <a class="yt" href="output/vat-chat-toi/YOUTUBE.md">📄 Info YouTube</a></div></div>
+    </div>
+
+    <div class="card">
+      <video controls preload="none" poster="output/nguyen-to-cacbon/thumbnail.jpg">
+        <source src="output/nguyen-to-cacbon/nguyen-to-cacbon.mp4" type="video/mp4"></video>
+      <div class="meta"><div class="num">Tập 02</div><div class="title">Cacbon — Bạn Là Tàn Tro Sao</div>
+        <div class="desc">Phản ứng ba-alpha, cộng hưởng Hoyle, sao khổng lồ đỏ — nguyên tố của sự sống, bạn là tàn tro của những vì sao đã chết.</div>
+        <div class="row"><span class="pill">⏱ 9.7 phút</span><span class="pill">1080p</span>
+          <a class="yt" href="output/nguyen-to-cacbon/YOUTUBE.md">📄 Info YouTube</a></div></div>
+    </div>
+
+    <div class="card">
+      <video controls preload="none" poster="output/nguyen-to-vang/thumbnail.jpg">
+        <source src="output/nguyen-to-vang/nguyen-to-vang.mp4" type="video/mp4"></video>
+      <div class="meta"><div class="num">Tập 03</div><div class="title">Vàng — Kim Loại Không Thuộc Về Trái Đất</div>
+        <div class="desc">Vàng sinh ra từ va chạm hai sao neutron (kilonova): r-process, sự kiện GW170817, vàng lắng vào lõi & mưa thiên thạch muộn.</div>
+        <div class="row"><span class="pill">⏱ 11.9 phút</span><span class="pill">1080p</span>
+          <a class="yt" href="output/nguyen-to-vang/YOUTUBE.md">📄 Info YouTube</a></div></div>
+    </div>
+
+    <div class="card">
+      <video controls preload="none" poster="output/hat-neutrino/thumbnail.jpg">
+        <source src="output/hat-neutrino/hat-neutrino.mp4" type="video/mp4"></video>
+      <div class="meta"><div class="num">Tập 04</div><div class="title">Neutrino — Hạt Ma Xuyên Qua Bạn</div>
+        <div class="desc">100 nghìn tỉ hạt xuyên qua bạn mỗi giây: 3 hương, dao động neutrino, Super-Kamiokande, SN 1987A, nền neutrino vũ trụ.</div>
+        <div class="row"><span class="pill">⏱ 13.4 phút</span><span class="pill">1080p</span>
+          <a class="yt" href="output/hat-neutrino/YOUTUBE.md">📄 Info YouTube</a></div></div>
+    </div>
+
+    <div class="card">
+      <video controls preload="none" poster="output/nguyen-to-sat/thumbnail.jpg">
+        <source src="output/nguyen-to-sat/nguyen-to-sat.mp4" type="video/mp4"></video>
+      <div class="meta"><div class="num">Tập 05</div><div class="title">Sắt — Kẻ Giết Những Ngôi Sao</div>
+        <div class="desc">Đỉnh năng lượng liên kết Fe-56, lõi sắt sụp đổ dưới một giây → siêu tân tinh; cùng nguyên tố mang oxy trong máu & dựng từ quyển.</div>
+        <div class="row"><span class="pill">⏱ 13.2 phút</span><span class="pill">1080p</span>
+          <a class="yt" href="output/nguyen-to-sat/YOUTUBE.md">📄 Info YouTube</a></div></div>
+    </div>
+
+    <div class="card">
+      <video controls preload="none" poster="output/mui-ten-thoi-gian/thumbnail.jpg">
+        <source src="output/mui-ten-thoi-gian/mui-ten-thoi-gian.mp4" type="video/mp4"></video>
+      <div class="meta"><div class="num">Tập 06</div><div class="title">Vì Sao Thời Gian Chỉ Trôi Một Chiều?</div>
+        <div class="desc">Mũi tên thời gian: entropy & định luật 2 nhiệt động, Big Bang trật tự thấp, giả thuyết quá khứ, hố đen entropy cực đại, cái chết nhiệt.</div>
+        <div class="row"><span class="pill">⏱ 13.6 phút</span><span class="pill">1080p</span>
+          <a class="yt" href="output/mui-ten-thoi-gian/YOUTUBE.md">📄 Info YouTube</a></div></div>
+    </div>
+
+    <div class="card">
+      <video controls preload="none" poster="output/nguyen-tu-rong/thumbnail.jpg">
+        <source src="output/nguyen-tu-rong/nguyen-tu-rong.mp4" type="video/mp4"></video>
+      <div class="meta"><div class="num">Tập 07</div><div class="title">Bạn Gần Như Là Hư Không</div>
+        <div class="desc">Nguyên tử rỗng 99,9999%: hạt nhân bé xíu, đám mây electron xác suất, lá vàng Rutherford, nguyên lý Pauli, trường lượng tử.</div>
+        <div class="row"><span class="pill">⏱ 12.4 phút</span><span class="pill">1080p</span>
+          <a class="yt" href="output/nguyen-tu-rong/YOUTUBE.md">📄 Info YouTube</a></div></div>
+    </div>
+
+  </div>
+
+  <div class="sec roadmap">🗓 Roadmap — dự kiến
+    <small>15 tiêu đề đã lên ý tưởng, CHƯA dựng video (không phát được). Tham khảo để chọn tập tiếp theo.</small>
+  </div>
+  <div class="grid">
+
+    <div class="card pending"><div class="ph">🗓 Chưa dựng</div>
+      <div class="meta"><div class="num">Dự kiến</div><div class="title">Trái Đất Hoàn Hảo</div>
+        <div class="desc">Chuỗi trùng hợp "ngẫu nhiên mà hoàn hảo" đã tạo nên một hành tinh có thể sống. (có kịch bản rời: kichban-traidat.md)</div></div>
+    </div>
+
+    <div class="card pending"><div class="ph">🗓 Chưa dựng</div>
+      <div class="meta"><div class="num">Dự kiến</div><div class="title">Còn Ai Ngoài Kia Không?</div>
+        <div class="desc">Nghịch lý Fermi & Sự Im Lặng Lớn — vũ trụ nghìn tỷ hành tinh mà trời vẫn lặng im.</div></div>
+    </div>
+
+    <div class="card pending"><div class="ph">🗓 Chưa dựng</div>
+      <div class="meta"><div class="num">Dự kiến</div><div class="title">Sao Neutron</div>
+        <div class="desc">Vật thể điên rồ nhất vũ trụ — một thìa nặng cả tỷ tấn, quay 700 vòng mỗi giây.</div></div>
+    </div>
+
+    <div class="card pending"><div class="ph">🗓 Chưa dựng</div>
+      <div class="meta"><div class="num">Dự kiến</div><div class="title">Rơi Vào Hố Đen</div>
+        <div class="desc">Chân trời sự kiện, giãn thời gian, mì hoá, điểm kỳ dị — hố đen photorealistic.</div></div>
+    </div>
+
+    <div class="card pending"><div class="ph">🗓 Chưa dựng</div>
+      <div class="meta"><div class="num">Dự kiến</div><div class="title">Sự Sống Bắt Đầu Từ Đâu?</div>
+        <div class="desc">Từ vật chất chết → súp nguyên thuỷ, miệng phun thuỷ nhiệt, ARN, tế bào đầu tiên (LUCA), panspermia.</div></div>
+    </div>
+
+    <div class="card pending"><div class="ph">🗓 Chưa dựng</div>
+      <div class="meta"><div class="num">Dự kiến</div><div class="title">Những Thế Giới Không Thể Tin Nổi</div>
+        <div class="desc">Ngoại hành tinh kỳ dị: mưa thuỷ tinh, hành tinh kim cương, đại dương dung nham, hai mặt trời, TRAPPIST-1.</div></div>
+    </div>
+
+    <div class="card pending"><div class="ph">🗓 Chưa dựng</div>
+      <div class="meta"><div class="num">Dự kiến</div><div class="title">Trước Big Bang Có Gì?</div>
+        <div class="desc">Câu hỏi tận cùng: thời gian có khởi đầu? Big Bang, CMB, lạm phát, đa vũ trụ, Big Bounce, vũ trụ từ hư vô.</div></div>
+    </div>
+
+    <div class="card pending"><div class="ph">🗓 Chưa dựng</div>
+      <div class="meta"><div class="num">Dự kiến</div><div class="title">Siêu Tân Tinh</div>
+        <div class="desc">Cái chết rực rỡ nhất vũ trụ: vụ nổ sáng hơn cả thiên hà, lò rèn vàng, tinh vân, ngọn nến chuẩn Ia.</div></div>
+    </div>
+
+    <div class="card pending"><div class="ph">🗓 Chưa dựng</div>
+      <div class="meta"><div class="num">Dự kiến</div><div class="title">Quasar</div>
+        <div class="desc">Vật thể sáng nhất vũ trụ: hố đen siêu khối lượng nuốt sao, đĩa bồi tụ rực, tia plasma, cửa sổ vũ trụ trẻ.</div></div>
+    </div>
+
+    <div class="card pending"><div class="ph">🗓 Chưa dựng</div>
+      <div class="meta"><div class="num">Dự kiến</div><div class="title">Khi Hai Thiên Hà Va Nhau</div>
+        <div class="desc">Ngân Hà & Andromeda trong 4 tỷ năm: sao không va, bão sinh sao, đuôi thuỷ triều, hố đen hợp nhất, Milkomeda.</div></div>
+    </div>
+
+    <div class="card pending"><div class="ph">🗓 Chưa dựng</div>
+      <div class="meta"><div class="num">Dự kiến</div><div class="title">Du Hành Thời Gian</div>
+        <div class="desc">Vật lý cho phép tới đâu: tới tương lai là có thật, giãn thời gian, GPS, nghịch lý cặp song sinh & ông nội, lỗ giun.</div></div>
+    </div>
+
+    <div class="card pending"><div class="ph">🗓 Chưa dựng</div>
+      <div class="meta"><div class="num">Dự kiến</div><div class="title">Đa Vũ Trụ</div>
+        <div class="desc">Vũ trụ ta có phải tất cả? Chân trời vũ trụ, vũ trụ bỏ túi, bong bóng lạm phát, đa thế giới lượng tử, vô số bản sao của bạn.</div></div>
+    </div>
+
+    <div class="card pending"><div class="ph">🗓 Chưa dựng</div>
+      <div class="meta"><div class="num">Dự kiến</div><div class="title">Lỗ Giun</div>
+        <div class="desc">Cửa tắt xuyên không-thời gian: cầu Einstein-Rosen, vì sao tự sập, vật chất lạ năng lượng âm, cỗ máy thời gian, bọt lượng tử.</div></div>
+    </div>
+
+    <div class="card pending"><div class="ph">🗓 Chưa dựng</div>
+      <div class="meta"><div class="num">Dự kiến</div><div class="title">Mạng Vũ Trụ</div>
+        <div class="desc">Cấu trúc lớn nhất vũ trụ: mạng lưới sợi tơ, khung vật chất tối, dòng sông thiên hà, nút siêu cụm, khoảng trống, ta ở đâu.</div></div>
+    </div>
+
+    <div class="card pending"><div class="ph">🗓 Chưa dựng</div>
+      <div class="meta"><div class="num">Dự kiến</div><div class="title">Sống Trên Sao Hoả</div>
+        <div class="desc">Loài đa hành tinh: vì sao chọn Sao Hoả, 4 mối nguy, dựng habitat & tạo oxy, tài nguyên tại chỗ, cơ thể ở 0.38g, terraforming.</div></div>
+    </div>
+
+  </div>
+  <div class="foot">Mở file này bằng trình duyệt • Video phát trực tiếp từ ổ đĩa • Danh mục nội dung chuẩn: projects/EPISODES-PRODUCED.md</div>
+</body></html>

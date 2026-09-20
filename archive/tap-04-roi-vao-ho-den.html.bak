@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, height=1080">
+<title>Tập 4 — Rơi Vào Hố Đen — HyperFrames</title>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{width:1920px;height:1080px;overflow:hidden;background:#010207;font-family:"Segoe UI",-apple-system,Roboto,sans-serif;}
+  #root{position:relative;width:1920px;height:1080px;}
+  #c{position:absolute;inset:0;display:block;z-index:0;}
+  #fx{position:absolute;inset:0;display:block;z-index:4;}
+  #vig{position:absolute;inset:0;pointer-events:none;z-index:6;background:radial-gradient(ellipse at center,rgba(0,0,0,0) 52%,rgba(1,1,6,.62) 100%);}
+  #chap{position:absolute;left:50%;top:6.2%;transform:translateX(-50%);z-index:18;color:#ffd7a8;font-size:26px;font-weight:600;letter-spacing:5px;text-transform:uppercase;opacity:0;text-shadow:0 2px 16px rgba(0,0,0,.95);white-space:nowrap;}
+  #sub{position:absolute;left:50%;bottom:8.5%;transform:translateX(-50%);z-index:20;width:min(1400px,86%);text-align:center;color:#f4f1ff;font-size:40px;font-weight:600;line-height:1.4;text-shadow:0 2px 18px rgba(0,0,0,.95),0 0 3px rgba(0,0,0,.95);}
+  #err{position:absolute;left:12px;top:12px;z-index:99;color:#ff9090;background:rgba(0,0,0,.8);padding:8px 10px;font:12px/1.5 monospace;max-width:90%;white-space:pre-wrap;border-radius:8px;display:none;}
+</style>
+</head>
+<body>
+<div data-hf-id="hf-root" id="root" data-composition-id="tap-04-roi-vao-ho-den" data-start="0" data-duration="1295.93" data-width="1920" data-height="1080">
+  <canvas data-hf-id="hf-c" id="c" class="clip" data-start="0" data-duration="1295.93" data-track-index="0"></canvas>
+  <canvas data-hf-id="hf-fx" id="fx" class="clip" data-start="0" data-duration="1295.93" data-track-index="1"></canvas>
+  <div data-hf-id="hf-vig" id="vig"></div>
+  <div data-hf-id="hf-chap" id="chap" data-layout-allow-occlusion></div>
+  <div data-hf-id="hf-sub" id="sub" data-layout-allow-occlusion></div>
+  <div data-hf-id="hf-err" id="err"></div>
+</div>
+
+<script>
+window.addEventListener('error',function(e){var d=document.getElementById('err');if(!d)return;d.style.display='block';
+  d.textContent='LỖI: '+(e.message||e.type)+(e.filename?('\n@ '+e.filename.split('/').pop()+':'+e.lineno):'');});
+
+/* ============================================================
+   "RƠI VÀO HỐ ĐEN" — Tập 4
+   Composition TẤT ĐỊNH theo t. 9 chương = 9 CẢNH khác biệt,
+   cắt dứt khoát, hình bám sát lời thoại. Dựng thẳng trên
+   timeline 0..1295.93 (KHÔNG remap, KHÔNG audio).
+   Hố đen = billboard shader (đĩa bồi tụ + chân trời đen tuyệt đối
+   + vòng photon + lensing), starfield bị bẻ cong (screen lensing).
+   ============================================================ */
+const TOTAL=1295.93, W=1920, H=1080;
+/* mốc CẮT CẢNH = start của các cue có chapter (timing.json) + TOTAL cuối */
+const SB=[0, 81.26, 248.14, 347.41, 553.33, 700.59, 829.92, 1006.05, 1171.84, 1295.93];
+const CHAP=["","ĐIỂM KHÔNG THỂ QUAY ĐẦU","HỐ ĐEN LÀ GÌ","VƯỢT QUA CHÂN TRỜI",
+  "THỜI GIAN VỠ VỤN","MÌ HÓA","ĐIỂM KỲ DỊ","HỐ ĐEN BỐC HƠI",
+  "NHỮNG GÃ KHỔNG LỒ","CÁNH CỬA GIỚI HẠN HIỂU BIẾT"];
+
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return ((t^t>>>14)>>>0)/4294967296;};}
+const rnd=mulberry32(20260706), rndc=mulberry32(4177), L=mulberry32(909);
+
+function clamp(x,a,b){return Math.max(a,Math.min(b,x));}
+function lerp(a,b,x){return a+(b-a)*x;}
+function smooth(a){a=clamp(a,0,1);return a*a*a*(a*(a*6-15)+10);}
+function ss(e0,e1,x){let t=clamp((x-e0)/((e1-e0)||1e-6),0,1);return t*t*(3-2*t);}
+function win(t,a,b,fi,fo){return Math.max(0,Math.min(ss(a,a+fi,t),1-ss(b-fo,b,t)));}
+
+/* ---------------- Three.js: renderer / scene ---------------- */
+const renderer=new THREE.WebGLRenderer({canvas:document.getElementById('c'),antialias:true});
+renderer.setPixelRatio(1); renderer.setSize(W,H);
+renderer.outputEncoding=THREE.sRGBEncoding; renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.0;
+renderer.setClearColor(0x010207,1);
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(50,W/H,0.1,60000);
+
+/* ---------------- textures canvas (không phụ thuộc mạng) ---------------- */
+function softDot(size,r,g,b){const cv=document.createElement('canvas');cv.width=cv.height=size;const x=cv.getContext('2d');const c=size/2;
+  const gr=x.createRadialGradient(c,c,0,c,c,c);gr.addColorStop(0,'rgba('+r+','+g+','+b+',1)');gr.addColorStop(.28,'rgba('+r+','+g+','+b+',.45)');gr.addColorStop(.6,'rgba('+r+','+g+','+b+',.09)');gr.addColorStop(1,'rgba('+r+','+g+','+b+',0)');
+  x.fillStyle=gr;x.fillRect(0,0,size,size);const t=new THREE.Texture(cv);t.needsUpdate=true;return t;}
+const BLUEGLOW=softDot(128,190,220,255);
+
+/* ---------------- starfield THẬT (r=30000 > khoảng cách camera xa nhất ~1400) ----------------
+   màu theo nhiệt độ sao (lam→trắng→vàng→cam→đỏ) */
+function starColor(rng){const u=rng();
+  if(u<0.06)      return [0.62,0.74,1.00];
+  else if(u<0.20) return [0.80,0.87,1.00];
+  else if(u<0.46) return [1.00,0.98,0.94];
+  else if(u<0.72) return [1.00,0.93,0.72];
+  else if(u<0.90) return [1.00,0.78,0.50];
+  else            return [1.00,0.60,0.42];}
+const SR=30000;
+const starVS=`attribute float aS;varying vec3 vC;void main(){vC=color;vec4 mv=modelViewMatrix*vec4(position,1.0);gl_PointSize=aS*(30000.0/-mv.z);gl_Position=projectionMatrix*mv;}`;
+const starFS=`varying vec3 vC;void main(){vec2 c=gl_PointCoord-0.5;float d=length(c);float a=smoothstep(0.5,0.0,d);float core=smoothstep(0.16,0.0,d);gl_FragColor=vec4(vC*(a+core*0.8),a);}`;
+const stars=(function(){const N=4600,P=new Float32Array(N*3),S=new Float32Array(N),C=new Float32Array(N*3);
+  for(let i=0;i<N;i++){const u=rnd(),v=rnd(),th=2*Math.PI*u,ph=Math.acos(2*v-1),sp=Math.sin(ph),r=SR;
+    P[i*3]=sp*Math.cos(th)*r;P[i*3+1]=Math.cos(ph)*r;P[i*3+2]=sp*Math.sin(th)*r;
+    const bright=rnd()<0.04?(18+rnd()*18):(Math.pow(rnd(),2.8)*11+2.2);
+    S[i]=bright; const col=starColor(rnd),lum=0.6+0.4*Math.min(1,bright/14);
+    C[i*3]=col[0]*lum;C[i*3+1]=col[1]*lum;C[i*3+2]=col[2]*lum;}
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(P,3));g.setAttribute('aS',new THREE.BufferAttribute(S,1));g.setAttribute('color',new THREE.BufferAttribute(C,3));
+  const pts=new THREE.Points(g,new THREE.ShaderMaterial({vertexColors:true,vertexShader:starVS,fragmentShader:starFS,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));
+  scene.add(pts);return pts;})();
+/* dải Ngân Hà mờ vắt ngang nền */
+const milkyBand=(function(){const N=3800,P=new Float32Array(N*3),S=new Float32Array(N),C=new Float32Array(N*3);
+  const tilt=0.55,ct=Math.cos(tilt),stt=Math.sin(tilt);
+  for(let i=0;i<N;i++){const th=rnd()*Math.PI*2;const lat=(rnd()-0.5)*(rnd()-0.5)*1.7;const cl=Math.cos(lat),sl=Math.sin(lat),r=28000;
+    let x=cl*Math.cos(th)*r, y=sl*r, z=cl*Math.sin(th)*r;const y2=y*ct-z*stt, z2=y*stt+z*ct;
+    P[i*3]=x;P[i*3+1]=y2;P[i*3+2]=z2;S[i]=Math.pow(rnd(),3.0)*5.0+1.2;
+    const w=(0.5+rnd()*0.4)*(0.5+0.5*Math.exp(-Math.abs(lat)*3.0));
+    C[i*3]=w*0.84;C[i*3+1]=w*0.88;C[i*3+2]=w;}
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(P,3));g.setAttribute('aS',new THREE.BufferAttribute(S,1));g.setAttribute('color',new THREE.BufferAttribute(C,3));
+  const pts=new THREE.Points(g,new THREE.ShaderMaterial({vertexColors:true,vertexShader:starVS,fragmentShader:starFS,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,opacity:0.5}));
+  scene.add(pts);return pts;})();
+
+/* ---------------- noise GLSL ---------------- */
+const SN=`
+vec3 mod289(vec3 x){return x-floor(x*(1.0/289.0))*289.0;}
+vec4 mod289(vec4 x){return x-floor(x*(1.0/289.0))*289.0;}
+vec4 permute(vec4 x){return mod289(((x*34.0)+1.0)*x);}
+vec4 taylorInvSqrt(vec4 r){return 1.79284291400159-0.85373472095314*r;}
+float snoise(vec3 v){const vec2 C=vec2(1.0/6.0,1.0/3.0);const vec4 D=vec4(0.0,0.5,1.0,2.0);
+ vec3 i=floor(v+dot(v,C.yyy));vec3 x0=v-i+dot(i,C.xxx);
+ vec3 g=step(x0.yzx,x0.xyz);vec3 l=1.0-g;vec3 i1=min(g.xyz,l.zxy);vec3 i2=max(g.xyz,l.zxy);
+ vec3 x1=x0-i1+C.xxx;vec3 x2=x0-i2+C.yyy;vec3 x3=x0-D.yyy;i=mod289(i);
+ vec4 p=permute(permute(permute(i.z+vec4(0.0,i1.z,i2.z,1.0))+i.y+vec4(0.0,i1.y,i2.y,1.0))+i.x+vec4(0.0,i1.x,i2.x,1.0));
+ float n_=0.142857142857;vec3 ns=n_*D.wyz-D.xzx;vec4 j=p-49.0*floor(p*ns.z*ns.z);
+ vec4 x_=floor(j*ns.z);vec4 y_=floor(j-7.0*x_);vec4 x=x_*ns.x+ns.yyyy;vec4 y=y_*ns.x+ns.yyyy;vec4 h=1.0-abs(x)-abs(y);
+ vec4 b0=vec4(x.xy,y.xy);vec4 b1=vec4(x.zw,y.zw);vec4 s0=floor(b0)*2.0+1.0;vec4 s1=floor(b1)*2.0+1.0;vec4 sh=-step(h,vec4(0.0));
+ vec4 a0=b0.xzyw+s0.xzyw*sh.xxyy;vec4 a1=b1.xzyw+s1.xzyw*sh.zzww;
+ vec3 p0=vec3(a0.xy,h.x);vec3 p1=vec3(a0.zw,h.y);vec3 p2=vec3(a1.xy,h.z);vec3 p3=vec3(a1.zw,h.w);
+ vec4 norm=taylorInvSqrt(vec4(dot(p0,p0),dot(p1,p1),dot(p2,p2),dot(p3,p3)));p0*=norm.x;p1*=norm.y;p2*=norm.z;p3*=norm.w;
+ vec4 m=max(0.6-vec4(dot(x0,x0),dot(x1,x1),dot(x2,x2),dot(x3,x3)),0.0);m=m*m;
+ return 42.0*dot(m*m,vec4(dot(p0,x0),dot(p1,x1),dot(p2,x2),dot(p3,x3)));}
+float fbm(vec3 p){float f=0.0,a=0.5;for(int i=0;i<5;i++){f+=a*snoise(p);p=p*2.05+3.3;a*=0.5;}return f;}
+`;
+
+/* ============================================================
+   HỐ ĐEN — SHADER LENSING THẬT (ray-march trắc địa Schwarzschild)
+   Quad TOÀN KHUNG: mỗi pixel dựng 1 tia từ camera (uCamPos + cơ
+   sở uCamRight/Up/Fwd) rồi RAY-MARCH photon quanh hố đen ở gốc.
+   Đơn vị trong shader = bán kính Schwarzschild Rs (=1). Chân trời
+   r<1 → đen; bóng (shadow) tự nổi ~2.6Rs do lensing; vòng photon
+   = tia sượt r≈1.5 rồi thoát; đĩa bồi tụ = annulus phẳng y=0
+   (trong→ngoài: gradient nhiệt + Doppler beaming tương đối + dịch
+   đỏ hấp dẫn), bị bẻ vòng lên/xuống bóng đen (đa lần cắt đĩa);
+   nền sao procedural lấy theo HƯỚNG TIA ĐÃ BẺ CONG (sao bẻ quanh rìa).
+   Tất định: hàm thuần của uniforms, động qua uT; nhiễu = noise GLSL.
+   ============================================================ */
+const bhMat=new THREE.ShaderMaterial({transparent:true,depthWrite:false,depthTest:false,
+  uniforms:{uT:{value:0},uOp:{value:1},uRs:{value:20},uBright:{value:1},uAsym:{value:0.9},
+    uRing:{value:1},uEHT:{value:0},uDiskIn:{value:2.6},uDiskOut:{value:10.0},
+    uAspect:{value:W/H},uTanHalf:{value:Math.tan(25*Math.PI/180)},
+    uCamPos:{value:new THREE.Vector3(0,0,600)},uCamRight:{value:new THREE.Vector3(1,0,0)},
+    uCamUp:{value:new THREE.Vector3(0,1,0)},uCamFwd:{value:new THREE.Vector3(0,0,-1)}},
+  vertexShader:`varying vec2 vUv;void main(){vUv=uv;gl_Position=vec4(position.xy,0.0,1.0);}`,
+  fragmentShader:`precision highp float;varying vec2 vUv;
+   uniform float uT,uOp,uRs,uBright,uAsym,uRing,uEHT,uDiskIn,uDiskOut,uAspect,uTanHalf;
+   uniform vec3 uCamPos,uCamRight,uCamUp,uCamFwd;`+SN+`
+   float h21(vec2 p){p=fract(p*vec2(123.34,345.45));p+=dot(p,p+34.345);return fract(p.x*p.y);}
+   /* nền sao procedural theo hướng tia (đã bẻ cong) + dải Ngân Hà */
+   vec3 starField(vec3 dir){
+    vec3 col=vec3(0.0);
+    float lon=atan(dir.z,dir.x), lat=asin(clamp(dir.y,-1.0,1.0));
+    vec2 uv=vec2(lon,lat);
+    for(int k=0;k<3;k++){
+      float sc=90.0+float(k)*95.0;
+      vec2 g=uv*sc; vec2 id=floor(g); vec2 f=fract(g)-0.5;
+      float hh=h21(id+float(k)*57.3);
+      float star=step(0.985-float(k)*0.003,hh);
+      float d=length(f); float pt=star*smoothstep(0.11,0.0,d);
+      float ch=h21(id+7.1); vec3 sc2=mix(vec3(0.66,0.78,1.0),vec3(1.0,0.86,0.6),ch);
+      sc2=mix(sc2,vec3(1.0),0.28);
+      col+=pt*sc2*(0.55+0.9*h21(id+3.3));
+    }
+    float band=exp(-pow(dir.y*2.3,2.0));
+    float bn=fbm(dir*3.0+2.0);
+    col+=band*(0.028+0.05*max(0.0,bn))*vec3(0.55,0.62,0.86);
+    col+=vec3(0.006,0.008,0.017);
+    return col;
+   }
+   /* mẫu đĩa bồi tụ tại điểm cắt mặt phẳng (blackbody + Doppler + redshift) */
+   vec4 diskSample(vec3 hit, vec3 rd){
+    float rho=length(hit.xz);
+    float tt=clamp((rho-uDiskIn)/(uDiskOut-uDiskIn),0.0,1.0);
+    vec3 col=mix(vec3(0.75,0.86,1.0),vec3(1.0,0.98,0.92),smoothstep(0.0,0.12,tt));
+    col=mix(col,vec3(1.0,0.55,0.16),smoothstep(0.10,0.5,tt));
+    col=mix(col,vec3(0.72,0.16,0.05),smoothstep(0.55,1.0,tt));
+    float bright=mix(2.0,0.10,pow(tt,0.65));
+    float ang=atan(hit.z,hit.x);
+    float spin=uT*(0.35+1.1/rho);
+    float n=fbm(vec3(cos(ang-spin)*rho*1.15, hit.y*0.5, sin(ang-spin)*rho*1.15));
+    float turb=0.5+0.75*smoothstep(-0.55,0.85,n);
+    float dens=clamp(turb*mix(1.0,0.2,tt),0.0,1.0);
+    bright*=turb;
+    /* Doppler beaming tương đối: vận tốc quỹ đạo tiếp tuyến (prograde) */
+    vec3 vdir=normalize(cross(vec3(0.0,1.0,0.0),hit));
+    float beta=clamp(0.62*sqrt(uDiskIn/max(rho,uDiskIn)),0.0,0.72)*clamp(uAsym,0.0,1.0);
+    float vlos=dot(vdir,rd);
+    float dopp=1.0/(1.0-beta*vlos);
+    bright*=pow(dopp,3.2);
+    col=mix(col,col*vec3(0.72,0.86,1.35),clamp((dopp-1.0)*0.9,0.0,1.0));
+    col=mix(col,col*vec3(1.35,0.72,0.42),clamp((1.0-dopp)*0.9,0.0,1.0));
+    /* dịch đỏ hấp dẫn gần chân trời */
+    float gg=sqrt(clamp(1.0-1.0/rho,0.02,1.0));
+    bright*=mix(0.42,1.0,gg);
+    col=mix(col*vec3(1.25,0.68,0.38),col,gg);
+    if(uEHT>0.5){col=mix(col,vec3(1.0,0.6,0.22),0.55);bright*=0.85;}
+    return vec4(col*bright,dens);
+   }
+   void main(){
+    vec2 ndc=vUv*2.0-1.0; ndc.x*=uAspect;
+    vec3 rd=normalize(uCamFwd + ndc.x*uTanHalf*uCamRight + ndc.y*uTanHalf*uCamUp);
+    vec3 ro=uCamPos/uRs;
+    vec3 pos=ro, vel=rd;
+    vec3 cc=cross(pos,vel); float h2=dot(cc,cc);
+    float ESC=length(ro)+8.0;
+    vec3 accum=vec3(0.0); float transp=1.0; float minP=1e9;
+    bool captured=false;
+    for(int i=0;i<200;i++){
+      float r=length(pos);
+      if(r<1.0){captured=true;break;}
+      if(r>ESC && dot(pos,vel)>0.0)break;
+      minP=min(minP,abs(r-1.5));
+      float dt=clamp((r-1.0)*0.16+0.02,0.02,0.5);
+      vec3 acc=-1.5*h2*pos/pow(dot(pos,pos),2.5);
+      vel+=acc*dt;
+      vec3 npos=pos+vel*dt;
+      if(pos.y*npos.y<0.0){
+        float f=pos.y/(pos.y-npos.y);
+        vec3 hit=mix(pos,npos,f);
+        float rho=length(hit.xz);
+        if(rho>uDiskIn && rho<uDiskOut){
+          vec4 ds=diskSample(hit,normalize(vel));
+          accum+=ds.rgb*ds.a*transp;
+          transp*=(1.0-ds.a*0.9);
+        }
+      }
+      pos=npos;
+      if(transp<0.02)break;
+    }
+    vec3 bg=captured?vec3(0.0):starField(normalize(vel));
+    vec3 col=accum+bg*transp;
+    /* vòng photon: tia sượt r≈1.5 rồi thoát → vành sáng MẢNH ngay rìa bóng */
+    if(!captured){
+      float pr=exp(-minP*minP*(uEHT>0.5?14.0:42.0));
+      col+=vec3(1.0,0.98,1.06)*pr*uRing*(uEHT>0.5?0.9:1.35);
+    }
+    col*=uBright;
+    col=min(col,vec3(60.0));
+    gl_FragColor=vec4(max(col,vec3(0.0))*uOp,1.0);
+   }`});
+const BHSHADOWR=52.0;
+const bh=new THREE.Mesh(new THREE.PlaneGeometry(2,2),bhMat);
+bh.renderOrder=-10; scene.add(bh);
+
+/* ---------------- bức xạ Hawking (hạt lấp lánh rỉ ra ở rìa) — cảnh 7 ---------------- */
+const hawkMat=new THREE.ShaderMaterial({transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,
+  uniforms:{uT:{value:0},uOp:{value:1},uR0:{value:BHSHADOWR*1.05},uRange:{value:70},uSpeed:{value:0.05}},
+  vertexShader:`attribute float aSeed;uniform float uT,uR0,uRange,uSpeed;varying float vA;varying float vS;
+   void main(){float ph=fract(aSeed*7.13+uT*uSpeed);vec3 dir=normalize(position);float rad=uR0+ph*uRange;
+    vec3 pos=dir*rad;vS=aSeed;vA=ph*(1.0-ph)*4.0;
+    vec4 mv=modelViewMatrix*vec4(pos,1.0);
+    gl_PointSize=(1.8+3.2*fract(aSeed*91.0))*(300.0/-mv.z)*(0.5+0.5*sin(uT*6.0+aSeed*30.0));
+    gl_Position=projectionMatrix*mv;}`,
+  fragmentShader:`varying float vA;varying float vS;uniform float uOp;
+   void main(){vec2 c=gl_PointCoord-0.5;float a=smoothstep(0.5,0.0,length(c));
+    vec3 col=mix(vec3(0.7,0.85,1.0),vec3(1.0,0.95,0.8),fract(vS*17.0));
+    gl_FragColor=vec4(col*a*vA,a*vA)*uOp;}`});
+const hawkPts=(function(){const N=680,P=new Float32Array(N*3),Sd=new Float32Array(N);
+  for(let i=0;i<N;i++){const u=rnd(),v=rnd(),th=2*Math.PI*u,ph=Math.acos(2*v-1),sp=Math.sin(ph);
+    P[i*3]=sp*Math.cos(th);P[i*3+1]=Math.cos(ph);P[i*3+2]=sp*Math.sin(th);Sd[i]=rnd();}
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(P,3));g.setAttribute('aSeed',new THREE.BufferAttribute(Sd,1));
+  const pts=new THREE.Points(g,hawkMat);pts.renderOrder=4;scene.add(pts);pts.visible=false;return pts;})();
+
+/* ---------------- LƯỚI KHÔNG-THỜI GIAN (giếng vô tận) — cảnh 6 ---------------- */
+const GN=48, GS=1700;
+const gridBase=[];
+const gridGeo=new THREE.BufferGeometry();
+(function(){const verts=[];
+  for(let i=0;i<=GN;i++)for(let j=0;j<=GN;j++){const x=(i/GN-0.5)*GS,z=(j/GN-0.5)*GS;gridBase.push([x,z]);}
+  const idxLine=(i,j)=>i*(GN+1)+j;
+  for(let i=0;i<=GN;i++)for(let j=0;j<=GN;j++){
+    if(i<GN){verts.push(idxLine(i,j),idxLine(i+1,j));}
+    if(j<GN){verts.push(idxLine(i,j),idxLine(i,j+1));}}
+  const pos=new Float32Array(gridBase.length*3);
+  for(let k=0;k<gridBase.length;k++){pos[k*3]=gridBase[k][0];pos[k*3+1]=0;pos[k*3+2]=gridBase[k][1];}
+  gridGeo.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  gridGeo.setIndex(verts);})();
+const gridMesh=new THREE.LineSegments(gridGeo,new THREE.LineBasicMaterial({color:0x4a70c8,transparent:true,opacity:0.42,blending:THREE.AdditiveBlending,depthWrite:false}));
+gridMesh.renderOrder=2; scene.add(gridMesh);
+function updateGrid(t,depth,well){const pos=gridGeo.attributes.position.array;
+  for(let k=0;k<gridBase.length;k++){const x=gridBase[k][0],z=gridBase[k][1];const r=Math.sqrt(x*x+z*z);
+    let y=-depth/(1+(r/(140*well))*(r/(140*well)));
+    pos[k*3+1]=y;}
+  gridGeo.attributes.position.needsUpdate=true;}
+
+/* ---------------- hậu kỳ: bloom + lens (+ screen lensing) ---------------- */
+const composer=new THREE.EffectComposer(renderer);composer.addPass(new THREE.RenderPass(scene,camera));
+const bloom=new THREE.UnrealBloomPass(new THREE.Vector2(W,H),0.72,0.55,0.72);composer.addPass(bloom);
+const lensPass=new THREE.ShaderPass({uniforms:{tDiffuse:{value:null},uRes:{value:new THREE.Vector2(W,H)},uT:{value:0},uBH:{value:new THREE.Vector2(0.5,0.5)},uBHr:{value:0.1},uLens:{value:0}},
+  vertexShader:`varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
+  fragmentShader:`uniform sampler2D tDiffuse;uniform vec2 uRes;uniform float uT;uniform vec2 uBH;uniform float uBHr;uniform float uLens;varying vec2 vUv;
+    float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+    void main(){vec2 uv=vUv;vec2 asp=vec2(uRes.x/uRes.y,1.0);
+      if(uLens>0.001){vec2 d=(uv-uBH)*asp;float rr=length(d);
+        if(rr>1e-4){float defl=uLens*uBHr*uBHr/(rr*rr+0.0004);defl=min(defl,rr*0.96);
+          uv=uv-normalize(d)*defl/asp;}}
+      vec2 c=uv-0.5;float r2=dot(c,c);float ca=0.0006+r2*0.0022;vec3 col;
+      col.r=texture2D(tDiffuse,uv+c*ca).r;col.g=texture2D(tDiffuse,uv).g;col.b=texture2D(tDiffuse,uv-c*ca).b;
+      float vig=1.0-smoothstep(0.32,0.98,r2*1.85);col*=mix(0.6,1.0,vig);
+      col+=(h(uv*uRes+floor(uT*30.0))-0.5)*0.022;gl_FragColor=vec4(col,1.0);}`});
+lensPass.renderToScreen=true;composer.addPass(lensPass);
+
+/* screen-space vị trí + bán kính hố đen (origin) để bẻ cong sao nền */
+const _v0=new THREE.Vector3(), _vr=new THREE.Vector3(), _right=new THREE.Vector3();
+function updateBHscreen(){
+  _v0.set(0,0,0).project(camera);
+  const ux=_v0.x*0.5+0.5, uy=_v0.y*0.5+0.5;
+  _right.setFromMatrixColumn(camera.matrixWorld,0);
+  _vr.copy(_right).multiplyScalar(BHSHADOWR).project(camera);
+  const ex=_vr.x*0.5+0.5, ey=_vr.y*0.5+0.5;
+  const rr=Math.hypot((ex-ux)*(W/H),(ey-uy));
+  lensPass.uniforms.uBH.value.set(ux,uy);
+  lensPass.uniforms.uBHr.value=Math.max(0.01,rr);
+}
+
+/* ============================================================
+   #fx — canvas 2D overlay (kinetic type / sơ đồ / ẩn dụ)
+   ============================================================ */
+const fx=document.getElementById('fx'); fx.width=W; fx.height=H; const X=fx.getContext('2d');
+function clearFx(){X.setTransform(1,0,0,1,0,0);X.clearRect(0,0,W,H);X.textAlign='center';X.textBaseline='middle';X.globalAlpha=1;X.shadowBlur=0;}
+function backdrop(a){if(a<=0)return;X.fillStyle="rgba(1,1,6,"+Math.min(1,a)+")";X.fillRect(0,0,W,H);}
+function F(w,s){return w+' '+s+'px "Segoe UI",Roboto,Arial,sans-serif';}
+function txt(s,x,y,size,weight,col,a,glow,align){if(a<=0.004)return;X.save();X.globalAlpha=Math.min(1,a);X.font=F(weight,size);X.fillStyle=col;X.textAlign=align||'center';X.textBaseline='middle';if(glow){X.shadowColor=glow;X.shadowBlur=size*0.45;}X.fillText(s,x,y);X.restore();}
+function glow2d(x,y,r,cr,cg,cb,a){if(a<=0.004||r<=0)return;X.save();X.globalAlpha=Math.min(1,a);const g=X.createRadialGradient(x,y,0,x,y,r);g.addColorStop(0,`rgba(${cr},${cg},${cb},1)`);g.addColorStop(.35,`rgba(${cr},${cg},${cb},.5)`);g.addColorStop(1,`rgba(${cr},${cg},${cb},0)`);X.fillStyle=g;X.beginPath();X.arc(x,y,r,0,7);X.fill();X.restore();}
+function dot2d(x,y,r,col,a){if(a<=0.004)return;X.save();X.globalAlpha=Math.min(1,a);X.fillStyle=col;X.beginPath();X.arc(x,y,r,0,7);X.fill();X.restore();}
+function ring2d(x,y,r,col,lw,a){if(a<=0.004||r<=0)return;X.save();X.globalAlpha=Math.min(1,a);X.strokeStyle=col;X.lineWidth=lw;X.beginPath();X.arc(x,y,r,0,7);X.stroke();X.restore();}
+function line2d(x0,y0,x1,y1,col,lw,a){if(a<=0.004)return;X.save();X.globalAlpha=Math.min(1,a);X.strokeStyle=col;X.lineWidth=lw;X.beginPath();X.moveTo(x0,y0);X.lineTo(x1,y1);X.stroke();X.restore();}
+function arc2d(x,y,r,a0,a1,col,lw,a){if(a<=0.004||r<=0)return;X.save();X.globalAlpha=Math.min(1,a);X.strokeStyle=col;X.lineWidth=lw;X.beginPath();X.arc(x,y,r,a0,a1);X.stroke();X.restore();}
+function holeDisc(x,y,r,ringCol,a){if(a<=0.004)return;X.save();X.globalAlpha=Math.min(1,a);X.fillStyle="rgba(2,2,8,1)";X.beginPath();X.arc(x,y,r,0,7);X.fill();X.strokeStyle=ringCol;X.lineWidth=Math.max(2,r*0.14);X.shadowColor=ringCol;X.shadowBlur=r*0.6;X.beginPath();X.arc(x,y,r*1.06,0,7);X.stroke();X.restore();}
+function sceneOp(i,t){return win(t,SB[i-1],SB[i],0.5,0.5);}
+const CY='rgba(150,216,255,1)', WH='rgba(238,241,255,1)', AM='rgba(255,182,96,1)', RD='rgba(255,120,96,1)', DIM='rgba(168,186,220,1)', VI='rgba(200,182,255,1)';
+
+/* precompute tất định (seed L) */
+const PARTS=[];for(let i=0;i<90;i++)PARTS.push({a:L()*6.28,r:L(),s:L(),k:L()});
+const CONV=[];for(let i=0;i<64;i++)CONV.push({a:(i/64)*6.28+ (L()-0.5)*0.2});
+const QFOAM=[];for(let i=0;i<70;i++)QFOAM.push({x:L(),y:L(),ph:L()*6.28,s:L()});
+
+/* ============================================================
+   CẢNH 1 — ĐIỂM KHÔNG THỂ QUAY ĐẦU (tiến về hố đen, sao bị bẻ cong)
+   ============================================================ */
+function fxScene1(t,op){
+  /* C01 0-12.4 bạn đang rơi */
+  const a1=win(t,1.4,12.4,2.2,1.6)*op;
+  if(a1>0.01){txt("BẠN ĐANG RƠI",W/2,H*0.4,78,"800",WH,a1,"rgba(120,150,230,0.4)");
+    txt("về phía một nơi mà không gì có thể quay lại",W/2,H*0.52,34,"400",DIM,win(t,4,12.4,1.6,1.6)*op);
+    txt("— kể cả ánh sáng · kể cả thời gian —",W/2,H*0.72,30,"500",CY,win(t,8,12.4,1.4,1.6)*op);}
+  /* C02 12.4-32.33 vùng tối tuyệt đối, sao bị kéo giãn */
+  const a2=win(t,13.4,32.33,1.6,1.6)*op;
+  if(a2>0.01){txt("MỘT VÙNG TỐI TUYỆT ĐỐI",W/2,H*0.16,50,"700",WH,a2,"rgba(120,150,230,0.4)");
+    txt("quanh rìa: những ngôi sao bị KÉO GIÃN · UỐN CONG",W/2,H*0.86,32,"500",AM,win(t,22,32.33,1.6,1.6)*op);}
+  /* C03 32.33-46.46 câu hỏi */
+  const a3=win(t,33.3,46.46,1.6,1.6)*op;
+  if(a3>0.01){txt("CHUYỆN GÌ XẢY RA",W/2,H*0.34,58,"800",WH,a3,"rgba(120,150,230,0.4)");
+    txt("nếu bạn rơi vào một HỐ ĐEN?",W/2,H*0.46,44,"700",AM,a3,"rgba(255,150,80,0.4)");
+    txt("Bạn sẽ thấy gì? Cảm thấy gì? Và ở tận cùng — có gì chờ bạn?",W/2,H*0.72,30,"400",DIM,win(t,39,46.46,1.4,1.6)*op);}
+  /* C04 46.46-64.53 vật lý dự đoán */
+  const a4=win(t,47.5,64.53,1.6,1.6)*op;
+  if(a4>0.01){txt("ĐÂY LÀ ĐIỀU VẬT LÝ THỰC SỰ DỰ ĐOÁN",W/2,H*0.2,42,"700",WH,a4,"rgba(120,150,230,0.35)");
+    const items=["đẹp đến kinh ngạc","khủng khiếp","và có phần — chính ta cũng chưa biết"];
+    const cols=[CY,RD,VI];
+    for(let k=0;k<3;k++)txt(items[k],W/2,H*0.42+k*74,40,"600",cols[k],win(t,50+k*4,64.53,1.2,1.6)*op,"rgba(0,0,0,0.5)");}
+  /* C05 64.53-81.26 không phải cái hố */
+  const a5=win(t,65.5,81.26,1.6,1.5)*op;
+  if(a5>0.01){txt("HỐ ĐEN KHÔNG PHẢI MỘT CÁI HỐ",W/2,H*0.34,50,"700",WH,a5,"rgba(120,150,230,0.4)");
+    txt("không phải một cái phễu hút — mà kỳ lạ hơn thế rất nhiều",W/2,H*0.68,32,"500",DIM,win(t,71,81.26,1.4,1.5)*op);}
+}
+
+/* ============================================================
+   CẢNH 2 — HỐ ĐEN LÀ GÌ (đĩa bồi tụ iconic + kinetic)
+   ============================================================ */
+function fxScene2(t,op){
+  /* C06 81.26 trọng lực */
+  const a6=win(t,82.2,93.93,1.4,1.2)*op;
+  if(a6>0.01){txt("TRỌNG LỰC",W/2,H*0.16,56,"800",WH,a6,"rgba(120,170,255,0.4)");
+    txt("càng MẠNH khi vật càng NẶNG — và khi bạn càng ở GẦN",W/2,H*0.86,32,"500",DIM,win(t,86,93.93,1.4,1.2)*op);}
+  /* C07 93.93 vận tốc thoát */
+  const a7=win(t,94.9,111.4,1.2,1.2)*op;
+  if(a7>0.01){const v=Math.round(lerp(0,40000,ss(96,105,t))/100)*100;
+    txt("VẬN TỐC THOÁT",W/2,H*0.18,42,"700",CY,a7,"rgba(90,160,230,0.4)");
+    txt(v.toLocaleString('vi-VN')+" km/h",W/2,H*0.36,84,"800",WH,a7,"rgba(120,180,255,0.5)");
+    txt("để rời khỏi Trái Đất — hành tinh nhỏ hơn cần ít hơn, sao khổng lồ cần nhiều hơn",W/2,H*0.85,30,"500",DIM,win(t,104,111.4,1.2,1.2)*op);}
+  /* C08 111.4 nén → tốc độ ánh sáng */
+  const a8=win(t,112.4,129.73,1.2,1.2)*op;
+  if(a8>0.01){txt("NÉN KHỐI LƯỢNG VÀO KHÔNG GIAN NHỎ DẦN",W/2,H*0.2,40,"700",WH,a8,"rgba(120,170,255,0.4)");
+    txt("→ vận tốc thoát tăng mãi, tới một ngưỡng điên rồ:",W/2,H*0.72,32,"500",DIM,win(t,118,129.73,1.2,1.2)*op);
+    txt("= TỐC ĐỘ ÁNH SÁNG",W/2,H*0.82,48,"800",AM,win(t,122,129.73,1.2,1.2)*op,"rgba(255,150,80,0.4)");}
+  /* C09 129.73 không gì thoát */
+  const a9=win(t,130.7,150.6,1.2,1.4)*op;
+  if(a9>0.01){txt("KHÔNG GÌ CÓ THỂ THOÁT RA",W/2,H*0.34,54,"800",WH,a9,"rgba(120,170,255,0.45)");
+    txt("kể cả chính ÁNH SÁNG",W/2,H*0.46,40,"700",CY,win(t,136,150.6,1.2,1.4)*op);
+    txt("ĐÓ CHÍNH LÀ MỘT HỐ ĐEN",W/2,H*0.72,44,"800",AM,win(t,143,150.6,1.2,1.4)*op,"rgba(255,150,80,0.45)");}
+  /* C10 150.6 đen vì ánh sáng biến mất */
+  const a10=win(t,151.6,165.6,1.3,1.2)*op;
+  if(a10>0.01){txt("nó KHÔNG đen theo kiểu sơn màu đen",W/2,H*0.2,38,"600",DIM,a10);
+    txt("nó đen vì là nơi ÁNH SÁNG ĐI VÀO VÀ BIẾN MẤT",W/2,H*0.85,36,"700",WH,win(t,156,165.6,1.3,1.2)*op,"rgba(120,170,255,0.4)");}
+  /* C11 165.6 chân trời sự kiện */
+  const a11=win(t,166.6,179.87,1.2,1.2)*op;
+  if(a11>0.01){txt("CHÂN TRỜI SỰ KIỆN",W/2,H*0.42,64,"800",AM,a11,"rgba(255,160,80,0.5)");
+    txt("khái niệm quan trọng nhất của cả hành trình này",W/2,H*0.56,32,"500",WH,win(t,172,179.87,1.2,1.2)*op);}
+  /* C12 179.87 ranh giới */
+  const a12=win(t,180.9,200.74,1.2,1.2)*op;
+  if(a12>0.01){txt("không chỉ là ranh giới của cái TA THẤY",W/2,H*0.2,38,"600",WH,a12,"rgba(120,170,255,0.35)");
+    txt("mà là ranh giới của cái CÓ THỂ XẢY RA và được biết tới",W/2,H*0.85,34,"600",CY,win(t,190,200.74,1.2,1.2)*op);}
+  /* C13 200.74 cánh cửa một chiều */
+  const a13=win(t,201.7,222.87,1.2,1.2)*op;
+  if(a13>0.01){txt("MỘT CÁNH CỬA CHỈ MỞ MỘT CHIỀU",W/2,H*0.2,46,"800",WH,a13,"rgba(120,170,255,0.4)");
+    txt("VÀO được  →  không một tín hiệu, không một tiếng kêu cứu ĐI RA",W/2,H*0.85,32,"600",RD,win(t,209,222.87,1.2,1.2)*op);}
+  /* C14 222.87 ranh giới vô hình */
+  const a14=win(t,223.9,248.14,1.2,1.4)*op;
+  if(a14>0.01){txt("KHÔNG TƯỜNG · KHÔNG BỀ MẶT · KHÔNG MÀNG",W/2,H*0.2,40,"700",WH,a14,"rgba(120,170,255,0.4)");
+    txt("chỉ là một đường ranh giới VÔ HÌNH — ngoài: còn quay đầu · trong: đã quá muộn, mãi mãi",W/2,H*0.85,30,"500",DIM,win(t,232,248.14,1.2,1.4)*op);}
+}
+
+/* ============================================================
+   CẢNH 3 — VƯỢT QUA CHÂN TRỜI (lao qua vòng sáng vào trong)
+   ============================================================ */
+function fxScene3(t,op){
+  /* C15 248.14 vùng tối lớn dần */
+  const a15=win(t,249.1,266.74,1.4,1.2)*op;
+  if(a15>0.01){txt("VÙNG TỐI LỚN DẦN — NUỐT TRỌN TẦM NHÌN",W/2,H*0.16,42,"700",WH,a15,"rgba(120,150,230,0.4)");
+    txt("chân trời sự kiện đang chờ, ngay trước mặt",W/2,H*0.86,32,"500",DIM,win(t,258,266.74,1.4,1.2)*op);}
+  /* C16 266.74 không cảm thấy gì */
+  const a16=win(t,267.7,283.81,1.2,1.2)*op;
+  if(a16>0.01){txt("BẠN SẼ KHÔNG CẢM THẤY GÌ CẢ",W/2,H*0.4,56,"800",WH,a16,"rgba(120,150,230,0.4)");
+    txt("không tiếng động · không cú giật · không một lằn sáng báo hiệu",W/2,H*0.56,32,"500",DIM,win(t,273,283.81,1.2,1.2)*op);}
+  /* C17 283.81 ngoài / trong */
+  const a17=win(t,284.8,305.34,1.2,1.2)*op;
+  if(a17>0.01){txt("MỘT GIÂY TRƯỚC",W*0.28,H*0.44,44,"800",CY,a17,"rgba(90,160,230,0.4)");
+    txt("còn ở NGOÀI — vẫn có thể được kéo về",W*0.28,H*0.55,26,"500",DIM,a17);
+    txt("MỘT GIÂY SAU",W*0.72,H*0.44,44,"800",RD,win(t,292,305.34,1.2,1.2)*op,"rgba(255,120,80,0.4)");
+    txt("đã ở TRONG — mọi con đường dẫn sâu hơn",W*0.72,H*0.55,26,"500",DIM,win(t,292,305.34,1.2,1.2)*op);
+    txt("→",W/2,H*0.44,60,"300",WH,win(t,290,305.34,1.2,1.2)*op*0.7);}
+  /* C18 305.34 lặng lẽ tuyệt đối */
+  const a18=win(t,306.3,329.34,1.2,1.2)*op;
+  if(a18>0.01){txt("KHOẢNH KHẮC ĐỊNH ĐOẠT SỐ PHẬN BẠN",W/2,H*0.4,44,"700",WH,a18,"rgba(120,150,230,0.4)");
+    txt("trôi qua trong LẶNG LẼ TUYỆT ĐỐI — không nghi thức, không dấu hiệu",W/2,H*0.55,32,"500",DIM,win(t,313,329.34,1.2,1.2)*op);}
+  /* C19 329.34 với vũ trụ ở xa */
+  const a19=win(t,330.3,347.41,1.2,1.5)*op;
+  if(a19>0.01){txt("VỚI CHÍNH BẠN, MỌI THỨ VẪN BÌNH THƯỜNG",W/2,H*0.34,40,"600",WH,a19,"rgba(120,150,230,0.35)");
+    txt("nhưng với vũ trụ nhìn từ xa — một điều hoàn toàn khác đang diễn ra",W/2,H*0.68,32,"500",CY,win(t,338,347.41,1.2,1.5)*op);}
+}
+
+/* ============================================================
+   CẢNH 4 — THỜI GIAN VỠ VỤN (hai góc nhìn cạnh nhau)
+   ============================================================ */
+function fxScene4(t,op){
+  backdrop(clamp(op*1.5,0,0.66));
+  const midx=W/2, lx=W*0.27, rx=W*0.73, cy=H*0.5;
+  line2d(midx,H*0.2,midx,H*0.88,"rgba(120,150,210,0.3)",2,op*0.6);
+  txt("THỜI GIAN VỠ VỤN — CÙNG MỘT SỰ KIỆN, HAI SỰ THẬT",W/2,H*0.1,36,"700",WH,win(t,347.41,368,1.5,2)*op,"rgba(120,170,255,0.4)");
+  const panels=win(t,349,553.33,1.6,3)*op;
+  txt("KẺ RƠI (BẠN)",lx,H*0.19,30,"700",CY,panels,"rgba(90,160,230,0.4)");
+  txt("NGƯỜI Ở XA",rx,H*0.19,30,"700",AM,panels,"rgba(255,160,80,0.4)");
+  /* C21 366.61 Einstein — đồng hồ đỉnh/chân núi */
+  const a21=win(t,367.6,391.34,1.3,1.4)*op;
+  if(a21>0.01){txt("EINSTEIN: TRỌNG LỰC CÀNG MẠNH → THỜI GIAN CÀNG CHẬM",W/2,H*0.3,32,"600",WH,a21,"rgba(120,170,255,0.35)");
+    const cx1=W*0.4,cx2=W*0.6,ccy=H*0.5;
+    ring2d(cx1,ccy,58,"rgba(150,210,255,0.8)",4,a21);line2d(cx1,ccy,cx1+Math.cos(t*2.4-1.57)*44,ccy+Math.sin(t*2.4-1.57)*44,CY,4,a21);
+    txt("đỉnh núi — nhanh hơn",cx1,ccy+92,24,"500",DIM,a21);
+    ring2d(cx2,ccy,58,"rgba(255,200,140,0.8)",4,a21);line2d(cx2,ccy,cx2+Math.cos(t*1.2-1.57)*44,ccy+Math.sin(t*1.2-1.57)*44,AM,4,a21);
+    txt("chân núi — chậm hơn",cx2,ccy+92,24,"500",DIM,a21);}
+  /* C22 391.34 gần chân trời gần như dừng */
+  const a22=win(t,392.3,408.67,1.2,1.2)*op;
+  if(a22>0.01)txt("GẦN CHÂN TRỜI, THỜI GIAN GẦN NHƯ DỪNG LẠI",W/2,H*0.5,42,"800",WH,a22,"rgba(120,170,255,0.4)");
+  /* C23-C25 408.67-478.54 người ở xa: chậm, đóng băng, dịch đỏ (bên phải) */
+  const rside=win(t,409.6,478.54,1.3,1.4)*op;
+  if(rside>0.01){
+    arc2d(rx,H*0.86,150,Math.PI,2*Math.PI,"rgba(255,150,80,0.7)",4,rside);
+    const frz=ss(410,470,t); const py=lerp(H*0.34,H*0.72,frz);
+    const rr=Math.round(lerp(150,255,frz)), gg=Math.round(lerp(210,60,frz)), bb=Math.round(lerp(255,50,frz));
+    const fade=1-ss(455,478,t)*0.85;
+    glow2d(rx,py,22,rr,gg,bb,rside*fade);dot2d(rx,py,10,`rgba(${rr},${gg},${bb},1)`,rside*fade);
+    txt("bạn CHẬM LẠI... rồi ĐÓNG BĂNG ở rìa",rx,H*0.28,26,"600",AM,win(t,409.6,448,1.3,1.2)*op);
+    txt("ánh sáng DỊCH ĐỎ → mờ dần → biến mất",rx,H*0.28,26,"600",RD,win(t,449,478.54,1.3,1.4)*op);
+    txt("mãi mãi lơ lửng ngay bên bờ vực",rx,H*0.94,24,"500",DIM,win(t,430,478.54,1.3,1.4)*op);}
+  /* C26 478.54 với bạn: bình thường (bên trái) */
+  const lside=win(t,479.5,528.2,1.3,1.4)*op;
+  if(lside>0.01){
+    arc2d(lx,H*0.86,150,Math.PI,2*Math.PI,"rgba(150,210,255,0.6)",3,lside*0.7);
+    const py=((t-479.5)*0.09)%1; const yy=lerp(H*0.3,H*0.86,py);
+    glow2d(lx,yy,20,180,220,255,lside);dot2d(lx,yy,10,"rgba(210,235,255,1)",lside);
+    ring2d(lx,H*0.28,30,"rgba(150,210,255,0.8)",3,lside);line2d(lx,H*0.28,lx+Math.cos(t*3-1.57)*22,H*0.28+Math.sin(t*3-1.57)*22,CY,3,lside);
+    txt("đồng hồ vẫn chạy · tim vẫn đập",lx,H*0.4,26,"600",CY,win(t,479.5,503.67,1.3,1.2)*op);
+    txt("bạn rơi tiếp — mượt mà, không ngừng một khắc",lx,H*0.94,24,"500",DIM,lside);}
+  /* C27 503.67 cả hai đều đúng */
+  const a27=win(t,504.6,528.2,1.3,1.2)*op;
+  if(a27>0.01)txt("CẢ HAI ĐỀU ĐÚNG — THỜI GIAN VỠ THÀNH NHỮNG MẢNH RIÊNG",W/2,H*0.66,34,"700",AM,a27,"rgba(255,160,80,0.4)");
+  /* C28 528.2 tua nhanh */
+  const a28=win(t,529.2,553.33,1.3,1.5)*op;
+  if(a28>0.01){txt("NHÌN NGƯỢC RA TỪ BÊN TRONG",W/2,H*0.34,40,"700",WH,a28,"rgba(120,170,255,0.4)");
+    txt("cả vũ trụ như đang được TUA NHANH — lịch sử của những vì sao lướt qua trong chớp mắt",W/2,H*0.66,32,"500",CY,win(t,536,553.33,1.3,1.5)*op);}
+}
+
+/* ============================================================
+   CẢNH 5 — MÌ HÓA (lực thủy triều kéo dãn dọc, ép ngang)
+   ============================================================ */
+function drawStretch(cx,cy,stretch,squeeze,a){
+  /* thân người → sợi dài mảnh, chuỗi hạt kéo về tâm bên dưới */
+  X.save();X.globalAlpha=a;
+  const topY=cy-lerp(60,300,stretch), botY=cy+lerp(60,340,stretch);
+  const wid=lerp(46,7,squeeze);
+  const grd=X.createLinearGradient(0,topY,0,botY);
+  grd.addColorStop(0,"rgba(150,200,255,0.9)");grd.addColorStop(0.5,"rgba(200,180,255,0.85)");grd.addColorStop(1,"rgba(255,150,120,0.9)");
+  X.strokeStyle=grd;X.lineWidth=wid;X.lineCap="round";X.shadowColor="rgba(150,180,255,0.6)";X.shadowBlur=18;
+  X.beginPath();X.moveTo(cx,topY);
+  for(let s=0;s<=1.001;s+=0.05){const y=lerp(topY,botY,s);const bend=Math.sin(s*3+ a*0)*lerp(0,10,stretch)*Math.sin(s*6);X.lineTo(cx+bend,y);}
+  X.stroke();
+  /* đầu */
+  X.fillStyle="rgba(180,210,255,0.95)";X.beginPath();X.ellipse(cx,topY,wid*0.7,wid*0.7*(1+stretch*0.6),0,0,7);X.fill();
+  X.restore();
+}
+function fxScene5(t,op){
+  backdrop(clamp(op*1.2,0,0.5));
+  /* C29 553.33 một thứ chờ bạn */
+  const a29=win(t,554.3,570.26,1.4,1.2)*op;
+  if(a29>0.01){txt("MỘT THỨ ĐANG CHỜ BẠN",W/2,H*0.2,50,"700",WH,a29,"rgba(120,150,230,0.4)");
+    txt("không liên quan tới ranh giới hay thời gian — mà tới chính CƠ THỂ bạn",W/2,H*0.85,32,"500",DIM,win(t,560,570.26,1.4,1.2)*op);}
+  /* C30 570.26 kéo không đều */
+  const a30=win(t,571.2,585.86,1.2,1.2)*op;
+  if(a30>0.01){txt("TRỌNG LỰC KÉO KHÔNG ĐỀU",W/2,H*0.2,44,"700",WH,a30,"rgba(120,170,255,0.4)");
+    txt("phần ở GẦN hố đen bị kéo MẠNH hơn phần ở xa",W/2,H*0.85,32,"500",CY,a30);}
+  /* C31-C33 585.86-644.39 hình người bị kéo dãn */
+  const fig=win(t,586.8,660.86,1.4,2.0)*op;
+  if(fig>0.01){const stretch=ss(590,640,t), squeeze=ss(605,644,t);
+    drawStretch(W*0.5,H*0.5,stretch,squeeze,fig);
+    txt("bàn chân bị kéo mạnh hơn cái đầu",W/2,H*0.16,34,"600",WH,win(t,586.8,604,1.2,1.2)*op,"rgba(120,170,255,0.3)");
+    txt("KÉO DÃN theo chiều DỌC · ÉP MỎNG theo chiều NGANG",W/2,H*0.16,36,"700",AM,win(t,605,623,1.2,1.2)*op,"rgba(255,160,80,0.3)");}
+  /* C33 623.26 sự mì hóa */
+  const a33=win(t,624.2,644.39,1.2,1.2)*op;
+  if(a33>0.01){txt("SỰ MÌ HÓA",W/2,H*0.86,56,"800",AM,a33,"rgba(255,160,80,0.45)");
+    txt("bạn bị kéo thành một sợi dài — như một sợi mì spaghetti",W/2,H*0.93,28,"500",DIM,win(t,631,644.39,1.2,1.2)*op);}
+  /* C34 644.39 xé thành hạt */
+  const a34=win(t,645.3,660.86,1.2,1.2)*op;
+  if(a34>0.01){txt("cơ quan → tế bào → phân tử → nguyên tử",W/2,H*0.5,40,"700",WH,a34,"rgba(150,180,255,0.4)");
+    txt("cái từng là bạn — chỉ còn một dòng hạt mảnh như chỉ, rơi về tâm",W/2,H*0.86,30,"500",DIM,win(t,652,660.86,1.2,1.2)*op);}
+  /* C35 660.86 phụ thuộc kích thước */
+  const a35=win(t,661.8,700.59,1.4,2)*op;
+  if(a35>0.01){txt("HỐ ĐEN NHỎ",W*0.28,H*0.3,36,"700",RD,a35,"rgba(255,120,80,0.4)");
+    txt("xé bạn thành sợi TRƯỚC cả chân trời",W*0.28,H*0.4,24,"500",DIM,a35);
+    txt("HỐ ĐEN KHỔNG LỒ",W*0.72,H*0.3,36,"700",CY,win(t,674,700.59,1.4,2)*op,"rgba(90,160,230,0.4)");
+    txt("bạn vào trong — còn sống, còn nguyên vẹn, còn suy nghĩ",W*0.72,H*0.4,24,"500",DIM,win(t,674,700.59,1.4,2)*op);
+    txt("một quãng ngắn ngủi làm nhân chứng cho nơi không ai trở về để kể lại",W/2,H*0.82,30,"500",WH,win(t,688,700.59,1.4,2)*op);}
+}
+
+/* ============================================================
+   CẢNH 6 — ĐIỂM KỲ DỊ (mọi đường hội tụ về một điểm, ? và ∞)
+   ============================================================ */
+function fxScene6(t,op){
+  backdrop(clamp(op*1.3,0,0.55));
+  const cx=W/2, cy=H*0.52;
+  /* các đường hội tụ về tâm */
+  const conv=win(t,701.5,829.92,1.6,2.5)*op;
+  if(conv>0.01){for(const c of CONV){const a0=c.a;const x0=cx+Math.cos(a0)*720,y0=cy+Math.sin(a0)*720*0.7;
+    const pull=0.5+0.5*Math.sin(t*0.6+a0*3);line2d(x0,y0,cx+Math.cos(a0)*30,cy+Math.sin(a0)*30,"rgba(150,180,255,0.35)",1.5,conv*0.5*pull);}}
+  glow2d(cx,cy,70+10*Math.sin(t*2),150,120,255,conv*0.7);
+  dot2d(cx,cy,10,"rgba(220,210,255,1)",conv);
+  /* C36 700.59 điểm kỳ dị */
+  const a36=win(t,701.5,715.59,1.3,1.2)*op;
+  if(a36>0.01){txt("ĐIỂM KỲ DỊ",W/2,H*0.16,58,"800",VI,a36,"rgba(160,120,255,0.5)");
+    txt("trái tim hố đen — nơi mọi con đường dồn về một điểm",W/2,H*0.86,32,"500",DIM,win(t,707,715.59,1.3,1.2)*op);}
+  /* C37 715.59 vật lý sụp đổ */
+  const a37=win(t,716.6,730.19,1.2,1.2)*op;
+  if(a37>0.01)txt("CHÍNH VẬT LÝ CỦA CHÚNG TA BẮT ĐẦU SỤP ĐỔ",W/2,H*0.8,40,"700",RD,a37,"rgba(255,120,80,0.4)");
+  /* C38 730.19 vô hạn */
+  const a38=win(t,731.2,754.46,1.2,1.2)*op;
+  if(a38>0.01){txt("MẬT ĐỘ → ∞     ĐỘ CONG → ∞",W/2,H*0.18,46,"800",WH,a38,"rgba(160,120,255,0.4)");
+    txt('"∞" không phải một câu trả lời — mà là dấu hiệu lý thuyết đã hết hiệu lực',W/2,H*0.86,32,"500",VI,win(t,742,754.46,1.2,1.2)*op);}
+  /* C39 754.46 hai lý thuyết thất bại */
+  const a39=win(t,755.5,778.79,1.2,1.2)*op;
+  if(a39>0.01){txt("THUYẾT TƯƠNG ĐỐI",W*0.3,H*0.26,34,"700",CY,a39);txt("thất bại ở đây",W*0.3,H*0.33,26,"500",RD,a39);
+    txt("CƠ HỌC LƯỢNG TỬ",W*0.7,H*0.26,34,"700",AM,a39);txt("một mình không đủ",W*0.7,H*0.33,26,"500",RD,a39);}
+  /* C40 778.79 chúng tôi không biết */
+  const a40=win(t,779.8,800.12,1.2,1.2)*op;
+  if(a40>0.01){txt("CẦN MỘT LÝ THUYẾT TRỌNG LỰC LƯỢNG TỬ",W/2,H*0.22,38,"700",WH,a40,"rgba(160,120,255,0.35)");
+    txt('KHOA HỌC PHẢI DỪNG LẠI: "CHÚNG TÔI KHÔNG BIẾT"',W/2,H*0.82,40,"800",VI,win(t,787,800.12,1.2,1.2)*op,"rgba(160,120,255,0.4)");}
+  /* C41 800.12 cánh cửa? */
+  const a41=win(t,801.1,829.92,1.2,1.5)*op;
+  if(a41>0.01){txt("? ? ?",cx,cy,120,"300",VI,a41*(0.55+0.4*Math.sin(t*3)),"rgba(160,120,255,0.6)");
+    txt("một trạng thái vật chất kỳ lạ? một cánh cửa dẫn tới đâu đó?",W/2,H*0.2,34,"500",WH,a41);
+    txt("nếu bạn thấy nó — bạn cũng không bao giờ kể lại được cho chúng tôi",W/2,H*0.88,30,"500",DIM,win(t,814,829.92,1.2,1.5)*op);}
+}
+
+/* ============================================================
+   CẢNH 7 — HỐ ĐEN BỐC HƠI (bức xạ Hawking + nghịch lý thông tin)
+   ============================================================ */
+function fxScene7(t,op){
+  /* C42 829.92 tưởng vĩnh cửu */
+  const a42=win(t,830.9,849.72,1.4,1.2)*op;
+  if(a42>0.01){txt("HÀNG THẾ KỶ, NGƯỜI TA TƯỞNG HỐ ĐEN LÀ VĨNH CỬU",W/2,H*0.18,38,"700",WH,a42,"rgba(120,170,255,0.35)");
+    txt("chỉ vào, không ra · chỉ lớn thêm, không bao giờ nhỏ đi",W/2,H*0.86,32,"500",DIM,win(t,839,849.72,1.4,1.2)*op);}
+  /* C43 849.72 Hawking */
+  const a43=win(t,850.7,865.12,1.2,1.2)*op;
+  if(a43>0.01){txt("STEPHEN HAWKING",W/2,H*0.2,48,"800",WH,a43,"rgba(120,170,255,0.4)");
+    txt("hố đen KHÔNG hoàn toàn đen — chúng đang rò rỉ, đang BỐC HƠI",W/2,H*0.85,34,"600",CY,win(t,856,865.12,1.2,1.2)*op);}
+  /* C44 865.12 không gian sôi sục */
+  const a44=win(t,866.1,891.65,1.2,1.2)*op;
+  if(a44>0.01){txt("KHÔNG GIAN TRỐNG — KHÔNG HỀ TRỐNG",W/2,H*0.16,42,"700",WH,a44,"rgba(120,170,255,0.35)");
+    /* bọt lượng tử: cặp hạt +/- lấp lánh */
+    const cs=win(t,868,891.65,1.2,1.2)*op;
+    for(const q of QFOAM){const ph=(t*0.6+q.ph);const bl=0.5+0.5*Math.sin(ph*3.14);
+      const px=lerp(W*0.2,W*0.8,q.x),py=lerp(H*0.34,H*0.72,q.y);
+      dot2d(px-5,py,2.5+bl*2,"rgba(150,210,255,1)",cs*bl*0.8);dot2d(px+5,py,2.5+bl*2,"rgba(255,170,140,1)",cs*bl*0.8);}
+    txt("những cặp hạt liên tục sinh ra thành đôi rồi lập tức triệt tiêu nhau",W/2,H*0.86,30,"500",DIM,cs);}
+  /* C45 891.65 một hạt rơi, một hạt thoát */
+  const a45=win(t,892.6,914.58,1.2,1.2)*op;
+  if(a45>0.01){txt("NGAY TẠI RÌA CHÂN TRỜI",W/2,H*0.2,40,"700",WH,a45,"rgba(120,170,255,0.4)");
+    txt("một hạt RƠI VÀO trong · một hạt THOÁT RA ngoài — thành một tia bức xạ thật",W/2,H*0.85,32,"600",CY,win(t,900,914.58,1.2,1.2)*op);}
+  /* C46 914.58 bức xạ Hawking, co lại */
+  const a46=win(t,915.6,934.71,1.2,1.2)*op;
+  if(a46>0.01){txt("BỨC XẠ HAWKING",W/2,H*0.16,50,"800",WH,a46,"rgba(150,200,255,0.45)");
+    txt("mỗi hạt thoát ra lấy đi một mẩu năng lượng → hố đen CO LẠI, nhỏ dần",W/2,H*0.86,32,"500",CY,win(t,922,934.71,1.2,1.2)*op);}
+  /* C47 934.71 thời gian khổng lồ */
+  const a47=win(t,935.7,956.18,1.2,1.2)*op;
+  if(a47>0.01){txt("để bốc hơi hết:",W/2,H*0.34,36,"500",DIM,a47);
+    txt("LÂU HƠN TUỔI VŨ TRỤ HÀNG TỶ TỶ TỶ LẦN",W/2,H*0.46,44,"800",WH,a47,"rgba(120,170,255,0.4)");
+    txt("thứ sống thọ nhất, kiên nhẫn nhất vũ trụ — nhưng cuối cùng cũng chết",W/2,H*0.82,30,"500",DIM,win(t,946,956.18,1.2,1.2)*op);}
+  /* C48 956.18 thông tin đi đâu */
+  const a48=win(t,957.2,974.98,1.2,1.2)*op;
+  if(a48>0.01){txt("MỌI THỨ RƠI VÀO MANG THEO THÔNG TIN VỀ CHÍNH NÓ",W/2,H*0.3,36,"700",WH,a48,"rgba(120,170,255,0.35)");
+    txt("nếu hố đen bốc hơi thành bức xạ vô danh — toàn bộ thông tin ấy ĐI ĐÂU?",W/2,H*0.68,34,"600",AM,win(t,965,974.98,1.2,1.2)*op);}
+  /* C49 974.98 nghịch lý thông tin */
+  const a49=win(t,975.98,1006.05,1.2,1.6)*op;
+  if(a49>0.01){txt("NGHỊCH LÝ THÔNG TIN",W/2,H*0.4,54,"800",VI,a49,"rgba(160,120,255,0.45)");
+    txt("các định luật sâu xa nhất nói: thông tin không bao giờ bị hủy diệt hoàn toàn",W/2,H*0.56,32,"500",WH,win(t,984,1006.05,1.2,1.6)*op);
+    txt("nó trốn ở đâu? vẫn khiến những bộ óc thông minh nhất tranh cãi tới hôm nay",W/2,H*0.82,30,"500",DIM,win(t,993,1006.05,1.2,1.6)*op);}
+}
+
+/* ============================================================
+   CẢNH 8 — NHỮNG GÃ KHỔNG LỒ (sao ↔ siêu khối lượng + ảnh EHT)
+   ============================================================ */
+function fxScene8(t,op){
+  /* C50 1006.05 có thật */
+  const a50=win(t,1007,1019.25,1.4,1.2)*op;
+  if(a50>0.01){txt("HỐ ĐEN LÀ CÓ THẬT",W/2,H*0.18,52,"800",WH,a50,"rgba(120,170,255,0.4)");
+    txt("ở ngoài kia, ngay lúc này — rải rác khắp vũ trụ, đủ mọi cỡ đến kinh ngạc",W/2,H*0.86,32,"500",DIM,win(t,1013,1019.25,1.4,1.2)*op);}
+  /* C51-C52 1019.25-1066.98 so sánh sao ↔ siêu khối lượng */
+  const cmp=win(t,1020.2,1088.91,1.4,1.6)*op;
+  if(cmp>0.01){
+    const y=H*0.5;
+    holeDisc(W*0.26,y,lerp(6,26,ss(1021,1035,t)),"rgba(255,170,90,0.9)",win(t,1020.2,1088.91,1.4,1.6)*op);
+    txt("HỐ ĐEN SAO",W*0.26,H*0.26,34,"700",AM,win(t,1020.2,1049,1.4,1.6)*op,"rgba(255,160,80,0.4)");
+    txt("vài → vài chục lần Mặt Trời · rộng vài km",W*0.26,H*0.72,24,"500",DIM,win(t,1026,1049,1.4,1.6)*op);
+    txt("có lẽ hàng trăm triệu cái trong Ngân Hà",W*0.26,H*0.77,22,"400",DIM,win(t,1030,1049,1.4,1.6)*op);
+    const big=win(t,1050.2,1088.91,1.3,1.6)*op;
+    holeDisc(W*0.72,y,lerp(20,140,ss(1051,1066,t)),"rgba(255,150,70,0.9)",big);
+    txt("HỐ ĐEN SIÊU KHỐI LƯỢNG",W*0.72,H*0.2,34,"700",CY,big,"rgba(90,160,230,0.4)");
+    txt("hàng TRIỆU đến hàng TỶ lần Mặt Trời",W*0.72,H*0.82,26,"500",WH,win(t,1056,1088.91,1.3,1.6)*op);}
+  /* C53 1066.98 Sgr A* 4 triệu */
+  const a53=win(t,1067.98,1088.91,1.2,1.2)*op;
+  if(a53>0.01){const v=Math.round(lerp(0,4000000,ss(1069,1080,t))/1000)*1000;
+    txt("SAGITTARIUS A*",W/2,H*0.14,44,"800",WH,a53,"rgba(120,170,255,0.4)");
+    txt(v.toLocaleString('vi-VN')+" lần khối lượng Mặt Trời",W/2,H*0.9,34,"700",AM,win(t,1074,1088.91,1.2,1.2)*op,"rgba(255,160,80,0.4)");}
+  /* C54 1088.91 ta xoay quanh nó */
+  const a54=win(t,1089.9,1108.31,1.3,1.2)*op;
+  if(a54>0.01){txt("NGAY LÚC NÀY — TRÁI ĐẤT, MẶT TRỜI, CẢ HỆ HÀNH TINH",W/2,H*0.3,36,"700",WH,a54,"rgba(120,170,255,0.35)");
+    txt("đang lặng lẽ xoay quanh gã khổng lồ ấy ở tâm thiên hà — từ trước khi có loài người",W/2,H*0.7,32,"500",CY,win(t,1097,1108.31,1.3,1.2)*op);}
+  /* C55 1108.31 năm 2019 */
+  const a55=win(t,1109.3,1125.58,1.2,1.2)*op;
+  if(a55>0.01){txt("NĂM 2019",W/2,H*0.34,58,"800",WH,a55,"rgba(120,170,255,0.4)");
+    txt("con người lần đầu tiên công bố một TẤM ẢNH THỰC SỰ của một hố đen",W/2,H*0.62,34,"600",AM,win(t,1115,1125.58,1.2,1.2)*op);}
+  /* C56 1125.58 nối kính thiên văn / M87 */
+  const a56=win(t,1126.6,1144.91,1.2,1.2)*op;
+  if(a56>0.01){txt("NỐI NHỮNG KÍNH THIÊN VĂN KHẮP TRÁI ĐẤT THÀNH MỘT ỐNG KÍNH KHỔNG LỒ",W/2,H*0.16,32,"600",WH,a56,"rgba(120,170,255,0.35)");
+    txt("hướng về thiên hà M87 — cách chúng ta 55 triệu năm ánh sáng",W/2,H*0.86,32,"500",DIM,win(t,1135,1144.91,1.2,1.2)*op);}
+  /* C57 1144.91 ảnh EHT hiện ra (billboard uEHT) */
+  const a57=win(t,1145.9,1171.84,1.3,1.5)*op;
+  if(a57>0.01){txt("ĐÚNG NHƯ LÝ THUYẾT ĐÃ TIÊN ĐOÁN SUỐT MỘT TRĂM NĂM",W/2,H*0.14,32,"600",WH,a57,"rgba(255,160,80,0.35)");
+    txt("một vòng ánh sáng cam rực, méo mó — và chính giữa, cái bóng của một hố đen",W/2,H*0.9,32,"500",AM,win(t,1158,1171.84,1.3,1.5)*op);}
+}
+
+/* ============================================================
+   CẢNH 9 — KẾT · CÁNH CỬA GIỚI HẠN HIỂU BIẾT
+   ============================================================ */
+function fxScene9(t,op){
+  /* C58 1171.84 bạn đang rơi, đã biết */
+  const a58=win(t,1172.8,1192.97,1.5,1.3)*op;
+  if(a58>0.01){txt("BẠN — ĐANG RƠI",W/2,H*0.2,50,"800",WH,a58,"rgba(120,150,230,0.4)");
+    const items=["ranh giới vô hình vượt qua trong lặng lẽ","thời gian vỡ thành hai dòng","cơ thể kéo thành sợi","và ở tận cùng — nơi khoa học phải cúi đầu im lặng"];
+    for(let k=0;k<4;k++)txt(items[k],W/2,H*0.72+k*0,30,"500",[CY,AM,RD,VI][k],win(t,1176+k*3.5,1192.97,1.2,1.3)*op*(k===((Math.floor((t-1176)/3.5))|0)?1:0.0));
+    /* hiển thị 1 dòng tóm tắt luân phiên */
+  }
+  /* C59 1192.97 đường ranh giới hiểu biết */
+  const a59=win(t,1193.97,1217.04,1.3,1.3)*op;
+  if(a59>0.01){txt("HỐ ĐEN ĐỨNG NGAY TẠI ĐƯỜNG RANH GIỚI",W/2,H*0.3,42,"700",WH,a59,"rgba(120,170,255,0.4)");
+    txt("của mọi điều con người có thể biết — nơi những định luật đẹp nhất bị đẩy tới cực hạn, rồi gãy",W/2,H*0.68,32,"500",CY,win(t,1201,1217.04,1.3,1.3)*op);}
+  /* C60 1217.04 nuốt ánh sáng, soi rọi giới hạn */
+  const a60=win(t,1218,1237.77,1.3,1.3)*op;
+  if(a60>0.01){txt("CHÚNG NUỐT ÁNH SÁNG — NHƯNG SOI RỌI CHO TA THẤY GIỚI HẠN CỦA CHÍNH MÌNH",W/2,H*0.34,34,"600",WH,a60,"rgba(120,170,255,0.35)");
+    txt("vực thẳm của sự hủy diệt — cũng là phòng thí nghiệm vĩ đại nhất tự nhiên ban tặng",W/2,H*0.66,32,"500",DIM,win(t,1226,1237.77,1.3,1.3)*op);}
+  /* C61 1237.77 cánh cửa */
+  const a61=win(t,1238.77,1261.2,1.3,1.3)*op;
+  if(a61>0.01){txt("MỘT HỐ ĐEN KHÔNG CHỈ LÀ MỘT CÁI KẾT",W/2,H*0.3,44,"700",WH,a61,"rgba(120,170,255,0.4)");
+    txt("nó là một CÁNH CỬA — mở vào đúng nơi hiểu biết dừng lại, và điều chưa biết bắt đầu",W/2,H*0.68,34,"600",AM,win(t,1247,1261.2,1.3,1.3)*op,"rgba(255,160,80,0.35)");}
+  /* C62 1261.2 kết */
+  const a62=win(t,1262.2,1295.93,1.5,3.5)*op;
+  if(a62>0.01){txt("chúng vẫn lặng lẽ xoay tròn trong bóng tối — kiên nhẫn, bất động",W/2,H*0.28,32,"500",DIM,a62);
+    txt("CHÍNH TRONG CÂU HỎI, CHỨ KHÔNG PHẢI CÂU TRẢ LỜI",W/2,H*0.66,36,"700",WH,win(t,1272,1295.93,1.5,3.5)*op,"rgba(120,170,255,0.4)");
+    txt("ta mới thật sự chạm được vào bờ của những điều vĩ đại",W/2,H*0.74,32,"500",CY,win(t,1278,1295.93,1.5,3.5)*op);}
+}
+
+const FX=[null,fxScene1,fxScene2,fxScene3,fxScene4,fxScene5,fxScene6,fxScene7,fxScene8,fxScene9];
+
+/* ---------------- phụ đề (492 CUES) ---------------- */
+const subEl=document.getElementById('sub'), chapEl=document.getElementById('chap');
+const CUES=/*CUES*/[{t:0,s:"Tôi muốn bạn tưởng tượng một điều. Ngay"},{t:2.48,s:"lúc này, bạn đang rơi. Không phải rơi"},{t:4.96,s:"xuống đất. Bạn đang rơi về phía một thứ mà"},{t:7.44,s:"từ đó, không gì có thể quay lại. Kể cả ánh"},{t:9.92,s:"sáng. Kể cả thời gian."},{t:12.4,s:"Phía trước bạn là một vùng tối tuyệt đối."},{t:14.89,s:"Không phải bóng tối của một căn phòng"},{t:17.38,s:"không đèn, mà là một khoảng đen tròn trịa,"},{t:19.87,s:"sắc nét, như thể ai đó đã khoét một cái lỗ"},{t:22.37,s:"trên chính tấm vải của vũ trụ. Quanh rìa"},{t:24.86,s:"nó, những ngôi sao bị kéo giãn, uốn cong,"},{t:27.35,s:"trượt đi một cách kỳ lạ. Bạn đang lao"},{t:29.84,s:"thẳng về nó."},{t:32.33,s:"Và câu hỏi tôi muốn cùng bạn đi tìm suốt"},{t:34.68,s:"cuộc hành trình này rất đơn giản. Chuyện"},{t:37.04,s:"gì thực sự xảy ra, nếu bạn rơi vào một hố"},{t:39.39,s:"đen? Bạn sẽ thấy gì? Cảm thấy gì? Và ở tận"},{t:41.75,s:"cùng, nơi mọi thứ dồn về, có gì đang chờ"},{t:44.1,s:"bạn?"},{t:46.46,s:"Đây không phải một câu chuyện tôi bịa ra"},{t:49.04,s:"để dọa bạn. Đây là thứ mà những định luật"},{t:51.62,s:"vật lý tốt nhất của chúng ta thực sự dự"},{t:54.2,s:"đoán. Một số phần trong đó đẹp đến kinh"},{t:56.79,s:"ngạc. Một số phần khủng khiếp. Và một số"},{t:59.37,s:"phần, thành thật mà nói, chính chúng ta"},{t:61.95,s:"cũng chưa biết câu trả lời."},{t:64.53,s:"Nhưng trước khi ta lao qua ranh giới ấy,"},{t:67.28,s:"tôi cần bạn hiểu chính xác bạn đang rơi về"},{t:70.02,s:"phía cái gì. Bởi hố đen không phải một cái"},{t:72.77,s:"hố. Nó không phải một cái phễu hút. Nó là"},{t:75.51,s:"một điều còn kỳ lạ hơn thế rất nhiều."},{t:81.26,s:"Hãy bắt đầu từ một điều bạn đã quen. Trọng"},{t:83.79,s:"lực. Thứ giữ bạn dính xuống mặt đất, thứ"},{t:86.33,s:"kéo quả táo rơi khỏi cành. Trọng lực của"},{t:88.86,s:"một vật càng mạnh khi vật ấy càng nặng, và"},{t:91.4,s:"khi bạn càng ở gần nó."},{t:93.93,s:"Nếu bạn muốn rời khỏi Trái Đất, bạn phải"},{t:96.43,s:"phóng đi thật nhanh để thắng được lực kéo"},{t:98.92,s:"ấy. Nhanh khoảng bốn mươi nghìn kilômét"},{t:101.42,s:"mỗi giờ. Người ta gọi đó là vận tốc thoát."},{t:103.91,s:"Trên một hành tinh nhỏ hơn, vận tốc thoát"},{t:106.41,s:"nhỏ hơn. Trên một ngôi sao khổng lồ, nó"},{t:108.9,s:"lớn hơn nhiều."},{t:111.4,s:"Bây giờ hãy tưởng tượng ta nén một khối"},{t:114.02,s:"lượng lại, ép nó vào một không gian ngày"},{t:116.64,s:"càng nhỏ. Càng nén, bề mặt của nó càng gần"},{t:119.26,s:"cái tâm nặng trịch bên trong, và vận tốc"},{t:121.87,s:"thoát càng tăng lên. Nén đủ mạnh, và bạn"},{t:124.49,s:"chạm tới một ngưỡng điên rồ: vận tốc thoát"},{t:127.11,s:"bằng đúng tốc độ ánh sáng."},{t:129.73,s:"Mà không gì trong vũ trụ đi nhanh hơn ánh"},{t:132.34,s:"sáng. Nên khi vận tốc thoát vượt qua tốc"},{t:134.95,s:"độ ánh sáng, điều đó có nghĩa là: không gì"},{t:137.56,s:"có thể thoát ra. Kể cả chính ánh sáng. Một"},{t:140.16,s:"khối vật chất bị nén tới mức ấy sẽ trở"},{t:142.77,s:"thành một vùng mà mọi con đường đều dẫn"},{t:145.38,s:"vào trong, và không con đường nào dẫn ra."},{t:147.99,s:"Đó chính là một hố đen."},{t:150.6,s:"Và vì ánh sáng không thoát ra được, mắt"},{t:153.1,s:"bạn không nhận được gì từ nó cả. Nó không"},{t:155.6,s:"đen theo kiểu sơn màu đen. Nó đen vì nó là"},{t:158.1,s:"nơi ánh sáng đi vào và biến mất. Một"},{t:160.6,s:"khoảng trống hoàn hảo, được vẽ nên bởi sự"},{t:163.1,s:"vắng mặt của mọi thứ."},{t:165.6,s:"Cái ngưỡng ấy, cái ranh giới nơi vận tốc"},{t:167.98,s:"thoát vừa đúng bằng tốc độ ánh sáng, có"},{t:170.36,s:"một cái tên. Người ta gọi nó là chân trời"},{t:172.73,s:"sự kiện. Và đó là khái niệm quan trọng"},{t:175.11,s:"nhất tôi muốn bạn ghi nhớ trong suốt hành"},{t:177.49,s:"trình này."},{t:179.87,s:"Hãy nghĩ về cái tên ấy. Chân trời. Giống"},{t:182.48,s:"như đường chân trời trên mặt biển, nó là"},{t:185.09,s:"một ranh giới của tầm nhìn, một nơi mà bên"},{t:187.7,s:"kia nó, bạn không thể thấy gì nữa. Nhưng"},{t:190.31,s:"chân trời sự kiện còn khắc nghiệt hơn thế"},{t:192.91,s:"nhiều. Nó không chỉ là ranh giới của cái"},{t:195.52,s:"ta thấy. Nó là ranh giới của cái có thể"},{t:198.13,s:"xảy ra và được biết tới."},{t:200.74,s:"Bởi chân trời sự kiện là một cánh cửa chỉ"},{t:203.2,s:"mở một chiều. Bất cứ thứ gì vượt qua nó"},{t:205.66,s:"đều có thể đi vào. Nhưng không một thứ gì,"},{t:208.12,s:"không một hạt ánh sáng, không một tín"},{t:210.58,s:"hiệu, không một tiếng kêu cứu nào, có thể"},{t:213.03,s:"đi ngược trở ra. Một khi bạn qua ranh giới"},{t:215.49,s:"đó, phần còn lại của vũ trụ vĩnh viễn"},{t:217.95,s:"không bao giờ nghe được tin tức gì về bạn"},{t:220.41,s:"nữa."},{t:222.87,s:"Và điều kỳ lạ nhất là, chân trời sự kiện"},{t:225.34,s:"không phải một vật. Ở đó không có bức"},{t:227.82,s:"tường, không có bề mặt, không có tấm màng"},{t:230.29,s:"nào cả. Nó chỉ là một đường ranh giới vô"},{t:232.77,s:"hình lơ lửng trong không gian trống rỗng."},{t:235.24,s:"Một nơi trong không gian mà nếu bạn ở phía"},{t:237.72,s:"ngoài, bạn vẫn còn cơ hội quay đầu. Còn"},{t:240.19,s:"nếu bạn ở phía trong, thì đã quá muộn. Mãi"},{t:242.67,s:"mãi."},{t:248.14,s:"Vậy nên bây giờ, hãy quay lại với bạn. Bạn"},{t:250.8,s:"vẫn đang rơi. Cái vùng tối tròn trịa phía"},{t:253.45,s:"trước mỗi lúc một lớn dần, nuốt trọn tầm"},{t:256.11,s:"nhìn của bạn. Và đâu đó, ngay trước mặt,"},{t:258.77,s:"là chân trời sự kiện đang chờ. Nhưng có"},{t:261.43,s:"một điều về khoảnh khắc bạn vượt qua nó"},{t:264.08,s:"khiến tôi thấy rùng mình hơn cả."},{t:266.74,s:"Bạn sẽ không cảm thấy gì cả. Không có"},{t:269.18,s:"tiếng động báo hiệu. Không có cú giật."},{t:271.62,s:"Không có một lằn ranh sáng lóe lên để nói"},{t:274.06,s:"với bạn rằng đây rồi, đây là điểm không"},{t:276.49,s:"thể quay đầu. Nếu hố đen đủ lớn, bạn sẽ"},{t:278.93,s:"vượt qua chân trời sự kiện mà thậm chí"},{t:281.37,s:"không hề hay biết."},{t:283.81,s:"Một giây trước, bạn còn ở ngoài, và về mặt"},{t:286.5,s:"lý thuyết, một con tàu đủ mạnh vẫn có thể"},{t:289.19,s:"kéo bạn về nhà. Một giây sau, bạn đã ở"},{t:291.88,s:"trong, và mọi con đường trong vũ trụ của"},{t:294.57,s:"bạn, mọi hướng bạn có thể chọn, tất cả giờ"},{t:297.27,s:"đều chỉ dẫn về một nơi duy nhất, sâu hơn"},{t:299.96,s:"nữa vào trong. Vậy mà bạn không cảm nhận"},{t:302.65,s:"được đường ranh giới ấy chút nào."},{t:305.34,s:"Hãy nghĩ mà xem, điều đó có nghĩa gì. Cái"},{t:308.01,s:"khoảnh khắc quan trọng nhất trong toàn bộ"},{t:310.67,s:"số phận của bạn, cái khoảnh khắc định đoạt"},{t:313.34,s:"rằng bạn sẽ không bao giờ trở về, lại trôi"},{t:316.01,s:"qua trong lặng lẽ tuyệt đối. Không nghi"},{t:318.67,s:"thức, không dấu hiệu. Bạn có thể đã ở bên"},{t:321.34,s:"trong một hố đen từ vài giây trước mà vẫn"},{t:324.01,s:"đang bình thản nhìn quanh, tự hỏi khi nào"},{t:326.67,s:"thì mình sẽ chạm tới nó."},{t:329.34,s:"Và trong khi với chính bạn, mọi thứ vẫn có"},{t:331.85,s:"vẻ bình thường, thì với phần còn lại của"},{t:334.36,s:"vũ trụ đang nhìn bạn từ xa, một điều hoàn"},{t:336.88,s:"toàn khác đang diễn ra. Một điều kỳ lạ đến"},{t:339.39,s:"mức nó buộc ta phải xem lại chính bản chất"},{t:341.9,s:"của thời gian."},{t:347.41,s:"Đây là chỗ mà câu chuyện tách làm hai. Bởi"},{t:350.15,s:"từ đây trở đi, có hai phiên bản của những"},{t:352.9,s:"gì đang xảy ra. Phiên bản của bạn, người"},{t:355.64,s:"đang rơi. Và phiên bản của một người bạn"},{t:358.38,s:"đang đứng an toàn ở xa, dõi theo bạn qua"},{t:361.12,s:"kính thiên văn. Và hai phiên bản ấy khác"},{t:363.87,s:"nhau đến mức gần như không thể tin nổi."},{t:366.61,s:"Điều này bắt nguồn từ một khám phá của"},{t:369.08,s:"Einstein. Ông nhận ra rằng thời gian không"},{t:371.56,s:"phải là một dòng chảy đều đặn như nhau ở"},{t:374.03,s:"khắp mọi nơi. Trọng lực càng mạnh, thời"},{t:376.5,s:"gian trôi càng chậm. Điều này nghe có vẻ"},{t:378.98,s:"như trò phù thủy, nhưng nó là sự thật đã"},{t:381.45,s:"được đo đạc. Đồng hồ trên đỉnh núi chạy"},{t:383.92,s:"nhanh hơn một chút so với đồng hồ dưới"},{t:386.39,s:"chân núi, chỉ vì nó ở xa Trái Đất hơn một"},{t:388.87,s:"chút."},{t:391.34,s:"Trên Trái Đất, hiệu ứng ấy nhỏ tới mức bạn"},{t:393.82,s:"cần những đồng hồ tinh vi nhất mới đo nổi."},{t:396.29,s:"Nhưng ở gần chân trời sự kiện của một hố"},{t:398.77,s:"đen, nơi trọng lực mạnh đến mức không"},{t:401.24,s:"tưởng, hiệu ứng ấy trở nên khổng lồ. Thời"},{t:403.72,s:"gian không chỉ chậm đi một chút. Nó gần"},{t:406.19,s:"như dừng lại."},{t:408.67,s:"Nên hãy nhìn từ mắt người bạn ở xa của bạn"},{t:411.11,s:"trước. Người ấy thấy bạn lao về phía hố"},{t:413.55,s:"đen, mỗi lúc một nhanh. Nhưng rồi, khi bạn"},{t:415.99,s:"tiến gần chân trời sự kiện, một điều lạ"},{t:418.44,s:"lùng xảy ra. Bạn bắt đầu chậm lại. Không"},{t:420.88,s:"phải vì bạn phanh, mà vì thời gian của"},{t:423.32,s:"chính bạn, dưới con mắt người ấy, đang"},{t:425.76,s:"giãn ra."},{t:428.2,s:"Bạn chậm dần, chậm dần, cho tới khi bạn"},{t:430.71,s:"gần như đóng băng ngay tại rìa của chân"},{t:433.22,s:"trời sự kiện. Người bạn ấy sẽ thấy bạn"},{t:435.73,s:"treo lơ lửng ở đó, bất động, như một bức"},{t:438.24,s:"ảnh bị dừng lại. Và bạn sẽ không bao giờ"},{t:440.74,s:"vượt qua. Với người quan sát, bạn cứ mãi"},{t:443.25,s:"mãi lơ lửng ngay bên bờ vực, không bao giờ"},{t:445.76,s:"thực sự rơi vào."},{t:448.27,s:"Không chỉ có thế. Ánh sáng phản chiếu từ"},{t:451.02,s:"bạn, khi leo ngược ra khỏi cái giếng trọng"},{t:453.77,s:"lực khủng khiếp ấy, bị kéo giãn ra, mất"},{t:456.53,s:"dần năng lượng. Màu sắc của bạn chuyển dần"},{t:459.28,s:"sang đỏ, rồi đỏ thẫm hơn, rồi trượt khỏi"},{t:462.03,s:"vùng mắt người có thể thấy. Bạn mờ đi, tối"},{t:464.78,s:"đi, đỏ đi, cho tới khi biến mất hoàn toàn"},{t:467.53,s:"khỏi tầm nhìn. Nhưng bạn không bao giờ"},{t:470.28,s:"được nhìn thấy vượt qua ranh giới. Với cả"},{t:473.04,s:"vũ trụ bên ngoài, bạn chỉ đơn giản là nhạt"},{t:475.79,s:"nhòa rồi tan biến ngay tại chân trời."},{t:478.54,s:"Nhưng đó chỉ là những gì người khác thấy."},{t:481.05,s:"Còn với chính bạn, người đang rơi, không"},{t:483.57,s:"có gì trong số đó xảy ra cả. Đồng hồ của"},{t:486.08,s:"bạn vẫn chạy bình thường. Tim bạn vẫn đập"},{t:488.59,s:"đều. Bạn không hề đóng băng, không hề treo"},{t:491.11,s:"lơ lửng. Bạn rơi tiếp, mượt mà, không"},{t:493.62,s:"ngừng lại một khắc nào. Và bạn vượt qua"},{t:496.13,s:"chân trời sự kiện đúng lúc, đúng giờ, như"},{t:498.64,s:"thể đó là một điểm bình thường trong không"},{t:501.16,s:"gian."},{t:503.67,s:"Hãy dừng lại và cảm nhận sự kỳ lạ ấy. Với"},{t:506.4,s:"người ở xa, bạn mắc kẹt mãi mãi ở ngưỡng"},{t:509.12,s:"cửa, không bao giờ rơi vào. Với chính bạn,"},{t:511.85,s:"bạn đã ở bên trong từ lâu. Cả hai đều"},{t:514.57,s:"đúng. Không có phiên bản nào là ảo giác."},{t:517.3,s:"Đơn giản là thời gian, thứ mà ta luôn"},{t:520.02,s:"tưởng là một dòng chảy chung cho tất cả,"},{t:522.75,s:"hóa ra lại vỡ vụn thành những mảnh riêng,"},{t:525.47,s:"mỗi người một dòng, khi trọng lực đủ mạnh."},{t:528.2,s:"Và điều đó cũng có nghĩa là, khi bạn nhìn"},{t:530.66,s:"ngược ra ngoài từ bên trong, phần còn lại"},{t:533.12,s:"của vũ trụ trông như đang được tua nhanh."},{t:535.58,s:"Cả lịch sử của những vì sao, những thiên"},{t:538.04,s:"hà, có thể lướt qua trước mắt bạn trong"},{t:540.49,s:"chớp nhoáng. Bạn đang rơi về phía kết cục"},{t:542.95,s:"của mình, trong khi cả một tương lai vô"},{t:545.41,s:"tận của vũ trụ diễn ra chóng vánh sau"},{t:547.87,s:"lưng."},{t:553.33,s:"Nhưng bạn không thể rơi mãi mà không hề"},{t:555.75,s:"hấn gì. Bởi có một thứ đang chờ bạn, một"},{t:558.17,s:"thứ không liên quan tới ranh giới hay thời"},{t:560.59,s:"gian, mà liên quan tới chính cơ thể bạn."},{t:563,s:"Và nó có một cái tên nghe gần như buồn"},{t:565.42,s:"cười, cho tới khi bạn hiểu nó thực sự"},{t:567.84,s:"nghĩa là gì."},{t:570.26,s:"Để hiểu, hãy nghĩ về trọng lực theo cách"},{t:572.86,s:"này. Trọng lực kéo bạn về phía tâm của hố"},{t:575.46,s:"đen. Nhưng lực kéo ấy không đều nhau trên"},{t:578.06,s:"khắp cơ thể bạn. Phần nào của bạn ở gần hố"},{t:580.66,s:"đen hơn thì bị kéo mạnh hơn. Phần nào ở xa"},{t:583.26,s:"hơn thì bị kéo yếu hơn."},{t:585.86,s:"Giả sử bạn rơi chân xuống trước. Bàn chân"},{t:588.51,s:"bạn, ở gần hố đen hơn, bị kéo mạnh hơn cái"},{t:591.15,s:"đầu của bạn. Trên Trái Đất, sự chênh lệch"},{t:593.8,s:"này nhỏ tới mức bạn chẳng bao giờ để ý."},{t:596.45,s:"Nhưng gần một hố đen, sự chênh lệch ấy lớn"},{t:599.1,s:"đến mức khủng khiếp. Chân bạn bị lôi đi"},{t:601.74,s:"nhanh hơn đầu bạn rất nhiều."},{t:604.39,s:"Và thế là bạn bắt đầu bị kéo dãn ra. Cơ"},{t:607.09,s:"thể bạn bị giằng theo chiều dọc, chân một"},{t:609.78,s:"đằng, đầu một nẻo, như một sợi kẹo dẻo bị"},{t:612.48,s:"hai bàn tay khổng lồ kéo về hai phía. Đồng"},{t:615.17,s:"thời, vì mọi thứ đang bị ép dồn về cùng"},{t:617.87,s:"một điểm ở tâm, cơ thể bạn cũng bị bóp lại"},{t:620.56,s:"theo chiều ngang, ép cho hẹp dần."},{t:623.26,s:"Kéo dài theo chiều dọc. Ép mỏng theo chiều"},{t:625.9,s:"ngang. Bạn bị biến thành một sợi dài,"},{t:628.54,s:"mảnh, một sợi vật chất người mỏng manh"},{t:631.18,s:"đang bị căng ra vô tận. Các nhà khoa học"},{t:633.83,s:"nhìn vào điều này và gọi nó bằng một cái"},{t:636.47,s:"tên vừa hài hước vừa rợn người. Họ gọi nó"},{t:639.11,s:"là sự mì hóa. Bởi bạn thực sự bị kéo thành"},{t:641.75,s:"sợi, như một sợi mì spaghetti."},{t:644.39,s:"Và nó không dừng ở cơ thể bạn. Lực kéo ấy"},{t:646.74,s:"mạnh dần khi bạn rơi sâu hơn. Nó xé rời"},{t:649.1,s:"từng cơ quan, rồi từng tế bào, rồi từng"},{t:651.45,s:"phân tử, rồi từng nguyên tử. Cho tới khi"},{t:653.8,s:"cái từng là bạn chỉ còn là một dòng hạt"},{t:656.15,s:"mảnh như chỉ, rơi nối đuôi nhau về phía"},{t:658.51,s:"tâm."},{t:660.86,s:"Nhưng đây là chỗ có một điều kỳ lạ. Bạn bị"},{t:663.48,s:"mì hóa khi nào, điều đó phụ thuộc vào kích"},{t:666.11,s:"thước của hố đen. Với một hố đen nhỏ, lực"},{t:668.73,s:"thủy triều mạnh tới mức bạn bị xé thành"},{t:671.35,s:"sợi từ trước cả khi chạm tới chân trời sự"},{t:673.98,s:"kiện. Nhưng với một hố đen thật lớn, một"},{t:676.6,s:"gã khổng lồ, lực kéo ở chân trời lại nhẹ"},{t:679.23,s:"nhàng đến bất ngờ. Bạn có thể vượt qua"},{t:681.85,s:"ranh giới, đi vào bên trong, còn sống, còn"},{t:684.47,s:"nguyên vẹn, còn suy nghĩ, trước khi số"},{t:687.1,s:"phận thực sự khép lại. Bạn sẽ có một quãng"},{t:689.72,s:"thời gian ngắn ngủi bên trong, để làm nhân"},{t:692.34,s:"chứng cho một nơi mà không ai từng trở về"},{t:694.97,s:"để kể lại."},{t:700.59,s:"Vậy nên hãy đi tới tận cùng. Bạn đang rơi,"},{t:703.09,s:"và mọi con đường đều dẫn về một nơi. Cái"},{t:705.59,s:"tâm. Trái tim của hố đen. Nơi mà toàn bộ"},{t:708.09,s:"khối lượng, toàn bộ vật chất đã từng là"},{t:710.59,s:"một ngôi sao, dồn hết về. Nơi ấy có một"},{t:713.09,s:"cái tên: điểm kỳ dị."},{t:715.59,s:"Và đây là chỗ mà tôi phải thành thật với"},{t:718.02,s:"bạn theo một cách khác. Bởi cho tới giờ,"},{t:720.46,s:"tôi đã kể cho bạn những điều mà vật lý dự"},{t:722.89,s:"đoán khá chắc chắn. Nhưng khi ta chạm tới"},{t:725.32,s:"điểm kỳ dị, chính vật lý của chúng ta bắt"},{t:727.76,s:"đầu sụp đổ."},{t:730.19,s:"Những phương trình tốt nhất của chúng ta"},{t:732.89,s:"nói rằng ở điểm kỳ dị, toàn bộ khối lượng"},{t:735.58,s:"ấy bị nén vào một điểm nhỏ vô hạn. Một nơi"},{t:738.28,s:"mà mật độ trở nên vô hạn, và độ cong của"},{t:740.98,s:"không gian trở nên vô hạn. Nhưng trong vật"},{t:743.67,s:"lý, khi các phương trình bắt đầu cho ra"},{t:746.37,s:"kết quả vô hạn, đó không phải một câu trả"},{t:749.07,s:"lời. Đó là một dấu hiệu cho thấy chính lý"},{t:751.76,s:"thuyết của ta đã hết hiệu lực."},{t:754.46,s:"Vô hạn không phải là một con số ta có thể"},{t:757.16,s:"chạm tới. Nó là cách vũ trụ nói với ta"},{t:759.87,s:"rằng: ở đây, những công cụ của các người"},{t:762.57,s:"không còn dùng được nữa. Thuyết tương đối"},{t:765.27,s:"của Einstein, thứ mô tả tuyệt vời trọng"},{t:767.98,s:"lực và không gian rộng lớn, lại thất bại ở"},{t:770.68,s:"đây. Còn cơ học lượng tử, thứ mô tả tuyệt"},{t:773.38,s:"vời thế giới của những hạt nhỏ nhất, cũng"},{t:776.09,s:"không thể một mình giải thích nổi."},{t:778.79,s:"Để hiểu thực sự cái gì nằm ở tâm một hố"},{t:781.46,s:"đen, ta cần một lý thuyết kết hợp được cả"},{t:784.12,s:"hai. Một lý thuyết về trọng lực lượng tử."},{t:786.79,s:"Và cho tới ngày hôm nay, ta vẫn chưa có"},{t:789.45,s:"nó. Chưa ai có. Điểm kỳ dị là một trong"},{t:792.12,s:"những nơi hiếm hoi trong toàn vũ trụ mà"},{t:794.79,s:"khoa học của chúng ta buộc phải dừng lại"},{t:797.45,s:"và thừa nhận: chúng tôi không biết."},{t:800.12,s:"Có thể ở đó không thực sự là một điểm vô"},{t:802.8,s:"hạn. Có thể là một thứ gì đó khác, một"},{t:805.48,s:"trạng thái vật chất kỳ lạ mà ta chưa có"},{t:808.16,s:"ngôn từ để gọi tên. Có thể là một cánh cửa"},{t:810.84,s:"dẫn tới nơi nào đó. Ta không biết. Và điều"},{t:813.52,s:"làm tôi day dứt là: nếu bạn thực sự rơi"},{t:816.2,s:"vào và nhìn thấy nó, bạn cũng sẽ không bao"},{t:818.88,s:"giờ có cách nào kể lại cho chúng tôi biết."},{t:821.56,s:"Câu trả lời nằm ở nơi duy nhất mà không"},{t:824.24,s:"một tin tức nào thoát ra được."},{t:829.92,s:"Giờ hãy tạm rời khỏi cuộc rơi của bạn, và"},{t:832.39,s:"lùi lại nhìn hố đen từ bên ngoài, qua thời"},{t:834.87,s:"gian rất dài. Bởi trong hàng thế kỷ, người"},{t:837.34,s:"ta tưởng hố đen là vĩnh cửu. Chỉ vào,"},{t:839.82,s:"không ra. Chỉ lớn thêm, không bao giờ nhỏ"},{t:842.29,s:"đi. Một cái bẫy hoàn hảo, tồn tại mãi mãi."},{t:844.77,s:"Cho tới khi một nhà vật lý làm đảo lộn tất"},{t:847.25,s:"cả."},{t:849.72,s:"Tên ông là Stephen Hawking. Và điều ông"},{t:852.29,s:"nhận ra, vào những năm bảy mươi của thế kỷ"},{t:854.85,s:"trước, đẹp đến mức đáng kinh ngạc. Ông"},{t:857.42,s:"chứng minh rằng hố đen không hoàn toàn"},{t:859.99,s:"đen. Rằng chúng, rất chậm rãi, đang rò rỉ"},{t:862.55,s:"đi. Rằng chúng đang bốc hơi."},{t:865.12,s:"Điều này bắt nguồn từ một sự thật kỳ lạ"},{t:867.77,s:"của thế giới lượng tử. Cái mà ta gọi là"},{t:870.43,s:"không gian trống rỗng, thật ra không hề"},{t:873.08,s:"trống. Ở quy mô nhỏ nhất, nó luôn sôi sục."},{t:875.73,s:"Những cặp hạt li ti liên tục xuất hiện rồi"},{t:878.38,s:"biến mất, sinh ra thành đôi rồi lập tức"},{t:881.04,s:"triệt tiêu lẫn nhau, nhanh đến mức ta"},{t:883.69,s:"không kịp thấy. Cả không gian trống, ở"},{t:886.34,s:"tầng sâu nhất, đang lấp lánh với sự sống"},{t:889,s:"và cái chết của những hạt như thế."},{t:891.65,s:"Bây giờ hãy tưởng tượng một cặp hạt như"},{t:894.2,s:"thế xuất hiện ngay tại rìa của chân trời"},{t:896.75,s:"sự kiện. Bình thường, hai hạt sẽ gặp lại"},{t:899.29,s:"nhau và biến mất. Nhưng ngay tại ranh giới"},{t:901.84,s:"ấy, đôi khi một hạt rơi vào trong hố đen,"},{t:904.39,s:"còn hạt kia thoát được ra ngoài. Chúng"},{t:906.94,s:"không bao giờ tìm lại được nhau nữa. Hạt"},{t:909.48,s:"thoát ra bay đi vào vũ trụ, thành một tia"},{t:912.03,s:"bức xạ thật sự."},{t:914.58,s:"Người ta gọi dòng hạt thoát ra ấy là bức"},{t:917.1,s:"xạ Hawking. Và điều tuyệt vời là: mỗi hạt"},{t:919.61,s:"thoát ra như thế lại lấy đi một mẩu nhỏ"},{t:922.13,s:"năng lượng của hố đen. Chút một, chút một,"},{t:924.65,s:"hố đen mất dần khối lượng của mình. Nó co"},{t:927.16,s:"lại. Nó nhỏ đi. Sau một thời gian dài"},{t:929.68,s:"không thể tưởng tượng nổi, nó có thể biến"},{t:932.19,s:"mất hoàn toàn."},{t:934.71,s:"Nhưng thời gian ấy dài đến mức nào? Với"},{t:937.39,s:"một hố đen cỡ những cái ta biết, thời gian"},{t:940.08,s:"để nó bốc hơi hết lâu hơn tuổi hiện tại"},{t:942.76,s:"của vũ trụ hàng tỷ tỷ tỷ lần. Lâu đến mức"},{t:945.45,s:"những con số bình thường trở nên vô nghĩa."},{t:948.13,s:"Hố đen là những thứ sống thọ nhất, kiên"},{t:950.81,s:"nhẫn nhất trong toàn vũ trụ. Nhưng ngay cả"},{t:953.5,s:"chúng, cuối cùng, cũng sẽ chết."},{t:956.18,s:"Và cái chết ấy mở ra một trong những bí ẩn"},{t:958.87,s:"sâu sắc nhất của vật lý hiện đại. Bởi mọi"},{t:961.55,s:"thứ rơi vào hố đen đều mang theo thông tin"},{t:964.24,s:"về chính nó, mọi chi tiết về những gì nó"},{t:966.92,s:"từng là. Nhưng nếu hố đen cứ thế bốc hơi"},{t:969.61,s:"thành một dòng bức xạ mờ nhạt, vô danh,"},{t:972.29,s:"thì toàn bộ thông tin ấy đi đâu?"},{t:974.98,s:"Nó có bị xóa sạch khỏi vũ trụ vĩnh viễn"},{t:977.53,s:"không? Nhưng các định luật vật lý sâu xa"},{t:980.08,s:"nhất của ta lại nói rằng thông tin không"},{t:982.64,s:"bao giờ có thể bị hủy diệt hoàn toàn. Vậy"},{t:985.19,s:"nó phải trốn ở đâu đó. Có phải nó được mã"},{t:987.74,s:"hóa một cách bí ẩn trong chính dòng bức xạ"},{t:990.29,s:"thoát ra? Ta chưa biết chắc. Người ta gọi"},{t:992.84,s:"câu hỏi này là nghịch lý thông tin, và nó"},{t:995.39,s:"vẫn đang khiến những bộ óc thông minh nhất"},{t:997.95,s:"hành tinh phải tranh cãi cho tới tận hôm"},{t:1000.5,s:"nay."},{t:1006.05,s:"Cho tới giờ, ta đã nói về hố đen như một"},{t:1008.69,s:"khái niệm. Nhưng tôi muốn bạn biết rằng"},{t:1011.33,s:"chúng là có thật. Chúng ở ngoài kia, ngay"},{t:1013.97,s:"lúc này, rải rác khắp vũ trụ. Và chúng có"},{t:1016.61,s:"nhiều cỡ khác nhau đến kinh ngạc."},{t:1019.25,s:"Loại quen thuộc nhất ra đời từ cái chết"},{t:1021.97,s:"của những ngôi sao khổng lồ. Khi một ngôi"},{t:1024.69,s:"sao đủ nặng đốt cạn nhiên liệu, nó không"},{t:1027.41,s:"còn gì để chống lại trọng lực của chính"},{t:1030.13,s:"mình, và nó sụp đổ. Nếu nó đủ nặng, không"},{t:1032.85,s:"gì có thể ngăn được sự sụp ấy, và nó co"},{t:1035.58,s:"lại thành một hố đen. Những hố đen như thế"},{t:1038.3,s:"nặng gấp vài lần, tới vài chục lần Mặt"},{t:1041.02,s:"Trời, nhưng bị nén vào một vùng chỉ rộng"},{t:1043.74,s:"vài kilômét. Chúng rải rác khắp thiên hà"},{t:1046.46,s:"của chúng ta, có lẽ hàng trăm triệu cái."},{t:1049.18,s:"Nhưng còn có một loại khác, một loại khiến"},{t:1051.72,s:"những cái kia trở nên bé nhỏ. Người ta gọi"},{t:1054.27,s:"chúng là hố đen siêu khối lượng. Và chúng"},{t:1056.81,s:"nặng không phải gấp vài chục lần Mặt Trời,"},{t:1059.35,s:"mà gấp hàng triệu, thậm chí hàng tỷ lần."},{t:1061.89,s:"Một vật thể duy nhất, nặng bằng cả tỷ ngôi"},{t:1064.44,s:"sao gộp lại."},{t:1066.98,s:"Và đây là điều làm tôi sững sờ nhất. Ở tâm"},{t:1069.72,s:"của gần như mọi thiên hà lớn, kể cả thiên"},{t:1072.46,s:"hà của chúng ta, đều có một trong những gã"},{t:1075.2,s:"khổng lồ ấy đang ngự trị. Ngay giữa dải"},{t:1077.94,s:"Ngân Hà, giữa hàng trăm tỷ ngôi sao đang"},{t:1080.69,s:"xoay tròn, là một hố đen siêu khối lượng"},{t:1083.43,s:"nặng gấp bốn triệu lần Mặt Trời. Người ta"},{t:1086.17,s:"đặt cho nó cái tên Sagittarius A sao."},{t:1088.91,s:"Nghĩa là ngay lúc này, khi bạn đang nghe"},{t:1091.34,s:"những lời này, cả Trái Đất, cả Mặt Trời,"},{t:1093.76,s:"cả hệ hành tinh của chúng ta, đều đang"},{t:1096.19,s:"lặng lẽ xoay quanh một hố đen khổng lồ ở"},{t:1098.61,s:"rất xa nơi tâm thiên hà. Chúng ta đã luôn"},{t:1101.04,s:"là một phần của cái vũ điệu chậm rãi quanh"},{t:1103.46,s:"vực thẳm ấy, từ trước khi loài người có"},{t:1105.88,s:"mặt."},{t:1108.31,s:"Và trong hàng thế kỷ, hố đen chỉ là một"},{t:1110.78,s:"điều ta suy ra từ phương trình, một cái"},{t:1113.24,s:"bóng ta chưa từng nhìn thấy tận mắt. Cho"},{t:1115.71,s:"tới một ngày, điều đó thay đổi. Vào năm"},{t:1118.18,s:"hai nghìn không trăm mười chín, con người"},{t:1120.65,s:"lần đầu tiên công bố một tấm ảnh thực sự"},{t:1123.11,s:"của một hố đen."},{t:1125.58,s:"Để chụp được nó, các nhà khoa học đã nối"},{t:1128,s:"những kính thiên văn rải khắp Trái Đất lại"},{t:1130.41,s:"với nhau, biến cả hành tinh của chúng ta"},{t:1132.83,s:"thành một chiếc ống kính khổng lồ. Họ"},{t:1135.24,s:"hướng nó về một hố đen siêu khối lượng ở"},{t:1137.66,s:"tâm một thiên hà tên là M tám mươi bảy,"},{t:1140.08,s:"cách chúng ta năm mươi lăm triệu năm ánh"},{t:1142.49,s:"sáng."},{t:1144.91,s:"Và tấm ảnh hiện ra đúng như lý thuyết đã"},{t:1147.57,s:"tiên đoán suốt một trăm năm. Một vòng ánh"},{t:1150.23,s:"sáng cam rực, méo mó, uốn cong, tạo bởi"},{t:1152.89,s:"thứ vật chất nóng bỏng đang xoáy quanh"},{t:1155.55,s:"trước khi rơi vào. Và ngay chính giữa, một"},{t:1158.2,s:"khoảng tối tròn trịa hoàn hảo. Cái bóng"},{t:1160.86,s:"của một hố đen. Lần đầu tiên trong lịch"},{t:1163.52,s:"sử, loài người nhìn thẳng vào khuôn mặt"},{t:1166.18,s:"của bóng tối, và thấy nó nhìn lại."},{t:1171.84,s:"Vậy nên hãy quay lại, một lần cuối, với"},{t:1174.48,s:"hình dung ban đầu. Bạn, đang rơi. Giờ đây"},{t:1177.12,s:"bạn đã biết những gì chờ đợi. Cái ranh"},{t:1179.76,s:"giới vô hình mà bạn vượt qua trong lặng"},{t:1182.4,s:"lẽ. Thời gian vỡ thành hai dòng, một cho"},{t:1185.05,s:"bạn, một cho cả vũ trụ. Cơ thể kéo thành"},{t:1187.69,s:"sợi. Và ở tận cùng, một nơi mà ngay cả"},{t:1190.33,s:"khoa học cũng phải cúi đầu im lặng."},{t:1192.97,s:"Điều làm tôi trở đi trở lại với hố đen"},{t:1195.64,s:"không phải là nỗi sợ. Mà là cách chúng"},{t:1198.32,s:"đứng ngay tại đường ranh giới của mọi điều"},{t:1200.99,s:"con người có thể biết. Chúng là nơi những"},{t:1203.67,s:"định luật đẹp đẽ nhất của chúng ta được"},{t:1206.34,s:"đẩy tới cực hạn, rồi gãy. Chúng là một câu"},{t:1209.02,s:"hỏi được viết bằng chính cấu trúc của vũ"},{t:1211.69,s:"trụ, treo lơ lửng ngoài kia, chờ ai đó đủ"},{t:1214.37,s:"can đảm và đủ thông minh để đọc."},{t:1217.04,s:"Mỗi lần ta tưởng đã hiểu chúng, chúng lại"},{t:1219.63,s:"mở ra một bí ẩn sâu hơn. Chúng nuốt ánh"},{t:1222.22,s:"sáng, nhưng lại soi rọi cho ta thấy giới"},{t:1224.81,s:"hạn của chính mình. Chúng là những vực"},{t:1227.4,s:"thẳm của sự hủy diệt, nhưng cũng là những"},{t:1230,s:"phòng thí nghiệm vĩ đại nhất mà tự nhiên"},{t:1232.59,s:"ban tặng, nơi trọng lực, thời gian và"},{t:1235.18,s:"lượng tử buộc phải gặp nhau."},{t:1237.77,s:"Và đây là điều tôi muốn bạn mang theo, sau"},{t:1240.39,s:"tất cả. Một hố đen không chỉ là một cái"},{t:1243,s:"kết. Nó là một cánh cửa. Một cánh cửa mở"},{t:1245.62,s:"vào đúng cái nơi mà hiểu biết của con"},{t:1248.23,s:"người dừng lại, và điều chưa biết bắt đầu."},{t:1250.85,s:"Đứng trước nó, ta bé nhỏ. Nhưng chính vì"},{t:1253.47,s:"dám nhìn vào nó, dám hỏi cái gì nằm bên"},{t:1256.08,s:"kia bóng tối, mà ta lớn lên."},{t:1261.2,s:"Ngoài kia, ngay lúc này, những hố đen vẫn"},{t:1263.87,s:"lặng lẽ xoay tròn trong bóng tối. Kiên"},{t:1266.54,s:"nhẫn. Bất động. Giữ trong lòng chúng những"},{t:1269.21,s:"câu trả lời mà ta khao khát, và có lẽ sẽ"},{t:1271.89,s:"mất hàng thế kỷ nữa mới chạm tới. Chúng"},{t:1274.56,s:"không vội. Chúng đã chờ từ thuở vũ trụ còn"},{t:1277.23,s:"non trẻ, và chúng sẽ còn chờ, rất lâu sau"},{t:1279.9,s:"khi những ngôi sao cuối cùng đã tắt. Còn"},{t:1282.57,s:"chúng ta, những sinh vật nhỏ bé biết ngước"},{t:1285.24,s:"nhìn lên, vẫn sẽ tiếp tục hỏi. Và có lẽ,"},{t:1287.92,s:"chính trong câu hỏi ấy, chứ không phải câu"},{t:1290.59,s:"trả lời, ta mới thật sự chạm được vào bờ"},{t:1293.26,s:"của những điều vĩ đại."}];
+function subAt(t){let idx=0;for(let i=0;i<CUES.length;i++){if(CUES[i].t<=t+1e-6)idx=i;else break;}return CUES[idx]?CUES[idx].s:"";}
+
+/* ---------------- helpers 3D per scene ---------------- */
+/* showBH(op, bright, doppler, ring, eht, rs, din, dout)
+   BH ray-march là NỀN toàn khung → khi bật thì ẩn sao in-scene
+   (shader tự sinh sao bị lensing); uRs điều khiển kích cỡ biểu kiến. */
+function showBH(op,bright,asym,ring,eht,rs,din,dout){
+  if(op<=0.004){bh.visible=false;stars.visible=true;milkyBand.visible=true;return;}/* mờ hẳn → bỏ ray-march, hiện sao */
+  bh.visible=true; stars.visible=false; milkyBand.visible=false;
+  bhMat.uniforms.uOp.value=op;bhMat.uniforms.uBright.value=bright;
+  bhMat.uniforms.uAsym.value=asym;bhMat.uniforms.uRing.value=ring;
+  bhMat.uniforms.uEHT.value=eht||0;bhMat.uniforms.uRs.value=rs||20;
+  bhMat.uniforms.uDiskIn.value=(din||2.6);bhMat.uniforms.uDiskOut.value=(dout||10.0);
+}
+/* đẩy vị trí + cơ sở camera vào shader để dựng tia mỗi pixel */
+function pushCam(){
+  camera.updateMatrixWorld();
+  const m=camera.matrixWorld.elements;
+  bhMat.uniforms.uCamPos.value.copy(camera.position);
+  bhMat.uniforms.uCamRight.value.set(m[0],m[1],m[2]);
+  bhMat.uniforms.uCamUp.value.set(m[4],m[5],m[6]);
+  bhMat.uniforms.uCamFwd.value.set(-m[8],-m[9],-m[10]);
+  bhMat.uniforms.uTanHalf.value=Math.tan(camera.fov*0.5*Math.PI/180);
+  bhMat.uniforms.uAspect.value=W/H;
+}
+function orbit(d,elev,speed,t){const a=t*speed;camera.position.set(Math.sin(a)*d*0.35,elev,Math.cos(a)*d);camera.lookAt(0,0,0);}
+
+/* ============================================================
+   renderAtTime(t) — hàm thuần, mọi chuyển động là hàm của t
+   (KHÔNG remap: hình dựng thẳng trên timeline giọng)
+   ============================================================ */
+function renderAtTime(tReal){
+  const t=clamp(tReal,0,TOTAL);
+  stars.rotation.y=t*0.0006; milkyBand.rotation.y=t*0.0006;
+  bhMat.uniforms.uT.value=t; hawkMat.uniforms.uT.value=t;
+  let A=1;for(let i=1;i<=9;i++){if(t>=SB[i-1])A=i;}
+  bh.visible=false;hawkPts.visible=false;gridMesh.visible=false;lensPass.uniforms.uLens.value=0;
+  stars.visible=true;milkyBand.visible=true;
+  camera.fov=50;camera.up.set(0,1,0);
+
+  if(A===1){
+    /* tiến về hố đen từ xa; ray-march lensing: sao bẻ quanh rìa + đĩa hiện dần */
+    const app=ss(0,81.26,t);
+    const d=lerp(1400,520,smooth(app));
+    orbit(d,lerp(70,26,app),0.012,t);
+    showBH(clamp(app*3,0,1),lerp(1.05,1.35,app),0.9,1.0,0,lerp(17,21,app));
+  }else if(A===2){
+    /* ĐĨA BỒI TỤ iconic (Gargantua) — cận cảnh, Doppler mạnh, vành trên/dưới */
+    orbit(360,44+9*Math.sin((t-81.26)*0.05),0.014,t);
+    showBH(win(t,81.26,248.14,1.4,1.5),1.4,0.98,1.15,0,23);
+  }else if(A===3){
+    /* lao qua vòng sáng vào trong — hố phình to (Rs lớn dần), lensing đỉnh */
+    const dive=ss(248.14,340,t);
+    const d=lerp(320,150,smooth(dive));
+    orbit(d,lerp(34,8,dive),0.01,t);
+    showBH(win(t,248.14,347.41,1.2,1.5)*(1-ss(338,347.41,t)*0.55),lerp(1.25,1.5,dive),0.9,1.25,0,lerp(20,30,dive));
+  }else if(A===4){
+    /* THỜI GIAN VỠ VỤN — hố đen thật mờ ở nền, 2D split chiếm chính */
+    orbit(950,64,0.008,t);
+    showBH(win(t,347.41,553.33,2,3)*0.55,0.62,0.85,0.8,0,15);
+  }else if(A===5){
+    /* MÌ HÓA — hố đen thật mờ bên dưới, 2D metaphor */
+    orbit(680,96,0.01,t);camera.lookAt(0,-40,0);
+    showBH(win(t,553.33,700.59,2,3)*0.5,0.66,0.85,0.85,0,15);
+  }else if(A===6){
+    /* ĐIỂM KỲ DỊ — lưới giếng vô tận + sao nền (kinetic, không cần BH thật) */
+    const deep=lerp(140,520,ss(700.59,829.92,t));
+    gridMesh.visible=true;gridMesh.position.set(0,-70,0);gridMesh.rotation.y=t*0.02;
+    updateGrid(t,deep,lerp(1.0,0.35,ss(700.59,829.92,t)));
+    gridMesh.material.opacity=0.42*win(t,700.59,829.92,4,5);
+    const a=(t-700.59)*0.02;camera.position.set(Math.sin(a)*120,220,470);camera.lookAt(0,-90,0);
+    lensPass.uniforms.uLens.value=0.08;
+  }else if(A===7){
+    /* HỐ ĐEN BỐC HƠI — hố CO LẠI (Rs giảm) rất chậm + hạt Hawking rỉ ở rìa */
+    const evap=ss(914.58,1006.05,t);
+    const d=lerp(560,760,evap);
+    orbit(d,46,0.011,t);
+    showBH(win(t,829.92,1006.05,1.5,2),1.15,0.9,1.05,0,lerp(22,14,evap));
+    hawkPts.visible=true;hawkMat.uniforms.uOp.value=win(t,891.65,1006.05,3,2);
+  }else if(A===8){
+    /* NHỮNG GÃ KHỔNG LỒ — 2D so sánh, rồi ẢNH EHT (donut cam, nhìn gần trực diện) */
+    if(t>=1145.9){
+      /* camera gần pole-on cho "donut" EHT 2019 */
+      const a=(t-1145.9)*0.05;
+      camera.position.set(Math.sin(a)*70,360,210);camera.lookAt(0,0,0);
+      showBH(win(t,1145.9,1171.84,1.3,2),1.25,0.3,0.6,1,25,3.0,9.0);
+    }else{
+      orbit(430,34,0.01,t); /* ẩn BH: 2D so sánh cỡ hố đen */
+    }
+  }else if(A===9){
+    /* KẾT — hố đen cô độc bẻ cong ánh sáng trong đêm sao, lắng đọng */
+    orbit(430,32,0.01,t);
+    showBH(win(t,1171.84,1295.93,2,4),1.05,0.85,1.0,0,22);
+  }
+
+  camera.updateProjectionMatrix();camera.updateMatrixWorld();
+  if(bh.visible)pushCam();
+  updateBHscreen();
+  lensPass.uniforms.uT.value=t;
+  composer.render();
+
+  /* ---- 2D overlay ---- */
+  clearFx();
+  for(let i=1;i<=9;i++){const o=sceneOp(i,t);if(o>0.004)FX[i](t,o);}
+  const fb=(t<1.4?(1-t/1.4):0)+(t>TOTAL-2.5?clamp((t-(TOTAL-2.5))/2.4,0,1):0);
+  if(fb>0){X.fillStyle="rgba(1,1,6,"+clamp(fb,0,1)+")";X.fillRect(0,0,W,H);}
+
+  /* ---- tiêu đề chương + phụ đề ---- */
+  const chapO=win(t,SB[A-1],SB[A-1]+6.5,0.8,1.5);
+  chapEl.textContent=CHAP[A];chapEl.style.opacity=(chapO*clamp(1-fb,0,1)).toFixed(3);
+  subEl.textContent=subAt(t);subEl.style.opacity=clamp(1-fb,0,1).toFixed(3);
+}
+
+/* ---------------- timeline TẤT ĐỊNH ---------------- */
+window.__timelines=window.__timelines||{};
+const tl=gsap.timeline({paused:true});
+const clk={t:0};
+tl.to(clk,{t:TOTAL,duration:TOTAL,ease:"none",onUpdate:()=>renderAtTime(clk.t)},0);
+window.__timelines["tap-04-roi-vao-ho-den"]=tl;
+renderAtTime(0);
+</script>
+</body>
+</html>

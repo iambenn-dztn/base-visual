@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, height=1080">
+<title>Sắt — nguyên tố nuôi sự sống và kết liễu những ngôi sao — HyperFrames</title>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{width:1920px;height:1080px;overflow:hidden;background:#060406;font-family:"Segoe UI",-apple-system,Roboto,sans-serif;}
+  #root{position:relative;width:1920px;height:1080px;}
+  #c{position:absolute;inset:0;display:block;z-index:0;}
+  #vig{position:absolute;inset:0;pointer-events:none;z-index:6;background:radial-gradient(ellipse at center,rgba(0,0,0,0) 46%,rgba(6,4,6,.74) 100%);}
+  #chap{position:absolute;left:50%;top:6.4%;transform:translateX(-50%);z-index:18;color:#d8b28a;font-size:26px;font-weight:600;letter-spacing:6px;text-transform:uppercase;opacity:0;text-shadow:0 2px 18px rgba(0,0,0,.95);white-space:nowrap;}
+  #sub{position:absolute;left:50%;bottom:8.5%;transform:translateX(-50%);z-index:20;width:min(1400px,86%);text-align:center;color:#f2f2f2;font-size:40px;font-weight:600;line-height:1.4;text-shadow:0 2px 18px rgba(0,0,0,.96),0 0 3px rgba(0,0,0,.96);}
+  #err{position:absolute;left:12px;top:12px;z-index:99;color:#ff9090;background:rgba(0,0,0,.8);padding:8px 10px;font:12px/1.5 monospace;max-width:90%;white-space:pre-wrap;border-radius:8px;display:none;}
+</style>
+</head>
+<body>
+<div data-hf-id="hf-root" id="root" data-composition-id="nguyen-to-sat" data-start="0" data-duration="792.3" data-width="1920" data-height="1080">
+  <canvas data-hf-id="hf-c" id="c" class="clip" data-start="0.01" data-duration="792.3" data-track-index="0"></canvas>
+  <audio data-hf-id="hf-narr" id="narr" class="clip" data-start="0" data-duration="792.3" data-track-index="1" src="projects/nguyen-to-sat/voice/narration_mixed.mp3"></audio>
+  <div data-hf-id="hf-vig" id="vig"></div>
+  <div data-hf-id="hf-chap" id="chap" data-layout-allow-occlusion></div>
+  <div data-hf-id="hf-sub" id="sub" data-layout-allow-occlusion></div>
+  <div data-hf-id="hf-err" id="err"></div>
+</div>
+
+<script>
+window.addEventListener('error',function(e){var d=document.getElementById('err');if(!d)return;d.style.display='block';
+  d.textContent='LỖI: '+(e.message||e.type)+(e.filename?('\n@ '+e.filename.split('/').pop()+':'+e.lineno):'');});
+
+/* ============================================================
+   "SẮT — nguyên tố nuôi sự sống và kết liễu những ngôi sao" — nguyen-to-sat
+   Composition TẤT ĐỊNH theo t. Nhiều CẢNH khác biệt, cắt theo cue.
+   Timeline khớp timing.json THẬT (t hình = t tiếng, KHÔNG remap).
+   Palette: graphite đen nền · MÁU đỏ trầm (#8A2B2B/#C4453B) · SẮT xám
+            bạc kim loại (#9AA3AD/#C9D0D6) sắc rỉ sét ấm (#B5763A) ·
+            LỬA SAO đỏ-cam (#FF6A2B/#FFB03A) · trắng chói siêu tân tinh ·
+            oxy/từ quyển xanh-lơ (#7FE0FF) · cực quang (#4FF0A0/#B57BFF).
+
+   SCENE (bật/tắt theo t, cắt dứt khoát) — biên = cue.start (timing.json):
+    A blood    (C01-C02  0      – 26.87 ) Tay lên ngực · nhịp tim · mạch máu đỏ
+    B hemo     (C03-C05  26.87  – 75.81 ) Đặt tên Sắt · hemoglobin ôm/nhả oxy
+    C secret   (C06-C08  75.81  – 121.5 ) Bí mật: máu-sắt ↔ ngôi sao hấp hối
+    D forge    (C09-C11  121.5  – 152.8 ) Cỗ máy luyện kim · giằng co trọng lực↔lửa
+    E onion    (C12-C14  152.8  – 232.28) Chuỗi hợp hạch · onion shells → lõi sắt
+    F curve    (C15-C19  232.28 – 305.04) Đường cong năng lượng liên kết · đỉnh Fe-56
+    G ash      (C20-C21  305.04 – 340.98) Cục tro chết câm lặng · phình tới giới hạn
+    H limit    (C22-C24  340.98 – 378.19) Giới hạn Chandrasekhar ~1,4 M☉ · < 1 giây
+    I collapse (C25      378.19 – 398.14) Lõi sắt sụp đổ trong 1/4 giây
+    J neutron  (C26-C27  398.14 – 435.54) e+p→n · quả cầu neutron · cú va · dội ngược
+    K nova     (C28-C30  435.54 – 492.03) Siêu tân tinh · sáng hơn thiên hà · nghịch lý
+    L seed     (C31-C35  492.03 – 588.26) Gieo sắt · sao lùn trắng · hệ mặt trời mới
+    M core     (C36-C37  588.26 – 617.73) Trái Đất non trẻ · sắt+niken chìm thành lõi
+    N dynamo   (C38-C39  617.73 – 650.76) Mặt cắt lõi Ni-Fe · geodynamo → từ quyển
+    O shield   (C40-C41  650.76 – 691.06) Gió Mặt Trời bị bẻ cong · cực quang
+    P close    (C42-C47  691.06 – 792.3 ) Đối chiếu chết↔sống · tay lên ngực · fade
+   ============================================================ */
+
+const TOTAL=792.3;
+
+const CUES=[
+ {t:0,ch:"CHƯƠNG 1",s:"Tôi đặt tay lên ngực mình, và tôi cảm thấy"},
+ {t:3.37,s:"nó."},
+ {t:3.61,s:"Một nhịp đập."},
+ {t:5.26,s:"Đều đặn, âm thầm, chưa từng ngừng lại kể"},
+ {t:8.74,s:"từ trước khi tôi ra đời."},
+ {t:10.83,s:"Mỗi nhịp ấy đẩy một dòng máu đỏ đi khắp cơ"},
+ {t:14.25,s:"thể tôi."},
+ {t:14.9,s:"Và cái màu đỏ đó, bạn có biết nó từ đâu ra"},
+ {t:18.32,s:"không?"},
+ {t:18.81,s:"Nó đến từ một kim loại."},
+ {t:20.86,s:"Một thứ kim loại đang chảy, ngay lúc này,"},
+ {t:24.44,s:"trong từng mạch máu của tôi."},
+ {t:26.87,s:"Đó là sắt."},
+ {t:28.37,s:"Cùng một nguyên tố mà người ta rèn thành"},
+ {t:31.08,s:"dao, thành cày, thành những cây cầu thép"},
+ {t:33.78,s:"khổng lồ."},
+ {t:34.39,s:"Nó cũng đang có mặt trong máu tôi, bé xíu,"},
+ {t:37.32,s:"để làm một công việc thiết yếu bậc nhất"},
+ {t:40.05,s:"cho sự sống."},
+ {t:40.89,s:"Trong máu tôi có một phân tử tên là"},
+ {t:43.65,s:"hemoglobin."},
+ {t:44.52,s:"Ở trái tim của mỗi phân tử ấy là một"},
+ {t:47.38,s:"nguyên tử sắt."},
+ {t:48.49,s:"Và chính nguyên tử sắt đó bắt lấy oxy khi"},
+ {t:51.75,s:"máu chảy qua phổi, giữ chặt nó, rồi buông"},
+ {t:55,s:"ra khi tới từng tế bào đang khát thở."},
+ {t:59.43,s:"Không có sắt, máu tôi không thể mang oxy."},
+ {t:62.73,s:"Không có oxy, không một tế bào nào trong"},
+ {t:66.01,s:"tôi sống nổi quá vài phút."},
+ {t:68.14,s:"Nói cách khác, tôi đang sống, ngay lúc"},
+ {t:71.31,s:"này, nhờ vài gam kim loại tí hon trôi"},
+ {t:74.39,s:"trong huyết quản."},
+ {t:75.81,s:"Nhưng tối nay tôi muốn kể cho bạn nghe một"},
+ {t:78.58,s:"bí mật đen tối của cái nguyên tố hiền lành"},
+ {t:81.35,s:"này."},
+ {t:81.61,s:"Sắt nuôi sống tôi."},
+ {t:83.71,s:"Nhưng với một ngôi sao, sắt lại là một bản"},
+ {t:87.74,s:"án tử hình."},
+ {t:88.81,s:"Cùng một nguyên tố."},
+ {t:90.45,s:"Cái thứ giữ cho tim tôi đập, cái thứ dựng"},
+ {t:93.43,s:"nên lõi Trái Đất dưới chân tôi, lại là thứ"},
+ {t:96.48,s:"có thể kết liễu cả một mặt trời."},
+ {t:98.81,s:"Khi một ngôi sao khổng lồ bắt đầu rèn ra"},
+ {t:101.42,s:"sắt trong lõi của nó, thì đồng hồ đếm"},
+ {t:103.83,s:"ngược cái chết của nó cũng bắt đầu chạy."},
+ {t:106.44,s:"Tôi muốn dẫn bạn đi vào lòng một ngôi sao"},
+ {t:109.09,s:"đang hấp hối, để hiểu vì sao thứ kim loại"},
+ {t:111.74,s:"đang chảy trong máu tôi lại đáng sợ đến"},
+ {t:114.26,s:"thế với những vì sao."},
+ {t:115.62,s:"Nhưng trước hết, tôi phải kể cho bạn nghe"},
+ {t:118.3,s:"một quy luật kỳ lạ ẩn sau mọi ngọn lửa của"},
+ {t:121.04,s:"vũ trụ."},
+ {t:121.5,ch:"CHƯƠNG 2",s:"Một ngôi sao, thật ra, là một cỗ máy luyện"},
+ {t:124.83,s:"kim khổng lồ."},
+ {t:125.86,s:"Suốt cả cuộc đời, nó làm đúng một việc."},
+ {t:128.82,s:"Nó ép các hạt nhân nhẹ hợp lại thành hạt"},
+ {t:131.78,s:"nhân nặng hơn, và mỗi lần như thế, nó nhả"},
+ {t:134.82,s:"ra năng lượng."},
+ {t:135.85,s:"Mặt Trời của chúng ta ngay lúc này đang ép"},
+ {t:138.85,s:"hydro thành heli."},
+ {t:140.06,s:"Đó là nguồn ánh sáng và hơi ấm đã nuôi"},
+ {t:143.09,s:"sống Trái Đất suốt bốn tỉ rưỡi năm."},
+ {t:145.88,s:"Và cái năng lượng tuôn ra ấy chính là thứ"},
+ {t:149.21,s:"chống đỡ ngôi sao, giữ nó khỏi sụp vào"},
+ {t:152.31,s:"trong."},
+ {t:152.8,s:"Bạn cần hiểu rằng một ngôi sao lúc nào"},
+ {t:155.25,s:"cũng đang trong một cuộc giằng co."},
+ {t:157.45,s:"Trọng lực của chính nó luôn muốn nghiến nó"},
+ {t:160.91,s:"lại, ép nó sụp vào tâm."},
+ {t:162.8,s:"Còn năng lượng từ lửa hạt nhân trong lõi"},
+ {t:165.61,s:"thì đẩy ngược ra, chống lại."},
+ {t:167.57,s:"Chừng nào lửa còn cháy, ngôi sao còn đứng"},
+ {t:171.76,s:"vững."},
+ {t:172.27,s:"Với một ngôi sao thật lớn, nặng gấp nhiều"},
+ {t:175.3,s:"lần Mặt Trời, cuộc đốt cháy ấy đi rất xa."},
+ {t:178.33,s:"Đốt hết hydro, nó đốt heli thành cacbon."},
+ {t:181.95,s:"Đốt cacbon thành oxy, thành neon, thành"},
+ {t:185.94,s:"silic."},
+ {t:186.55,s:"Mỗi bước, lõi lại nóng hơn, nặng hơn, và"},
+ {t:190.08,s:"mỗi bước nó vẫn thu về năng lượng."},
+ {t:193.08,s:"Đến những ngày cuối, ngôi sao khổng lồ ấy"},
+ {t:195.92,s:"có cấu tạo hệt như một củ hành."},
+ {t:198.06,s:"Từng lớp, từng lớp vỏ đồng tâm, mỗi lớp"},
+ {t:200.97,s:"đang đốt một loại nhiên liệu khác nhau."},
+ {t:203.87,s:"Ngoài cùng là hydro, rồi vào trong là"},
+ {t:207.57,s:"heli, cacbon, oxy, silic."},
+ {t:210.07,s:"Càng vào sâu, lửa càng dữ, và nhiệt độ"},
+ {t:213.7,s:"càng khủng khiếp."},
+ {t:215.33,s:"Và rồi, ở tận trung tâm, lớp silic bắt đầu"},
+ {t:218.68,s:"hợp lại thành một thứ mới."},
+ {t:220.76,s:"Một thứ xám bạc, đặc quánh, tụ dần ở lõi."},
+ {t:224.72,s:"Đó chính là sắt."},
+ {t:226.69,s:"Và khoảnh khắc lõi sắt ấy hình thành, số"},
+ {t:229.63,s:"phận của ngôi sao đã được định đoạt."},
+ {t:232.28,s:"Bởi vì sắt là một thứ tro đặc biệt."},
+ {t:234.84,s:"Nó là thứ tro không thể cháy được nữa."},
+ {t:237.83,s:"Để hiểu tại sao, tôi cần kể cho bạn nghe"},
+ {t:240.68,s:"về một quy luật ẩn sâu trong lòng mọi hạt"},
+ {t:243.6,s:"nhân nguyên tử."},
+ {t:244.66,s:"Hãy hình dung mỗi hạt nhân có một độ bền,"},
+ {t:247.14,s:"một mức năng lượng giữ các thành phần của"},
+ {t:249.61,s:"nó dính chặt vào nhau."},
+ {t:250.94,s:"Các nhà khoa học vẽ độ bền ấy thành một"},
+ {t:253.8,s:"đường cong."},
+ {t:254.61,s:"Và đường cong đó có một đỉnh."},
+ {t:257.61,s:"Đúng ngay trên đỉnh của đường cong ấy là"},
+ {t:260.29,s:"sắt."},
+ {t:260.56,s:"Sắt, và người anh em rất gần của nó là"},
+ {t:264.11,s:"niken."},
+ {t:264.67,s:"Đó là những hạt nhân bền chặt nhất, ổn"},
+ {t:267.41,s:"định nhất, khít khao nhất trong toàn vũ"},
+ {t:270.21,s:"trụ."},
+ {t:270.5,s:"Không có gì bền hơn sắt."},
+ {t:272.74,s:"Và đây là chỗ mấu chốt."},
+ {t:274.72,s:"Khi bạn hợp hai hạt nhân nhẹ hơn sắt lại,"},
+ {t:277.57,s:"bạn leo lên gần đỉnh hơn, và bạn được"},
+ {t:280.15,s:"thưởng năng lượng."},
+ {t:281.4,s:"Đó là cách ngôi sao kiếm sống suốt đời."},
+ {t:284.75,s:"Nhưng một khi đã chạm tới đỉnh, tới sắt,"},
+ {t:287.72,s:"thì không còn đường leo nào cao hơn nữa."},
+ {t:290.69,s:"Muốn rèn ra thứ gì nặng hơn sắt, ngôi sao"},
+ {t:293.55,s:"phải leo xuống bên kia sườn dốc."},
+ {t:295.78,s:"Và khi đi xuống, nó không những không được"},
+ {t:298.82,s:"thưởng, mà còn phải trả giá."},
+ {t:300.85,s:"Nó phải tiêu tốn năng lượng, chứ không"},
+ {t:303.65,s:"sinh ra năng lượng."},
+ {t:305.04,s:"Bạn có thấy vấn đề không?"},
+ {t:306.91,s:"Cả đời ngôi sao đứng vững nhờ lửa hạt nhân"},
+ {t:309.64,s:"đẩy ra chống lại trọng lực."},
+ {t:311.39,s:"Nhưng cái lõi sắt kia không chịu cháy."},
+ {t:314.48,s:"Nó không nhả ra năng lượng nào cả."},
+ {t:316.93,s:"Nó chỉ nằm đó, câm lặng, một cục tro chết"},
+ {t:320.5,s:"ngay giữa trái tim ngôi sao."},
+ {t:322.94,s:"Và lõi sắt ấy không đứng yên."},
+ {t:325.97,s:"Các lớp vỏ hành bên ngoài vẫn miệt mài đốt"},
+ {t:329.03,s:"silic, và cứ đổ thêm sắt xuống lõi."},
+ {t:331.58,s:"Cục tro chết ngày một nặng thêm, nặng"},
+ {t:334.59,s:"thêm, phình to thêm từng giây một."},
+ {t:337.36,s:"Nó đang tiến thẳng tới một giới hạn chết"},
+ {t:340.51,s:"người."},
+ {t:340.98,ch:"CHƯƠNG 3",s:"Có một con số kỳ lạ mà thiên nhiên vạch ra"},
+ {t:344.05,s:"như một lằn ranh sinh tử."},
+ {t:345.88,s:"Một khối lượng tối đa mà cái lõi sắt kia"},
+ {t:348.68,s:"có thể chịu đựng trước khi nó không tự"},
+ {t:351.34,s:"chống đỡ nổi mình."},
+ {t:352.6,s:"Cái lõi ấy được giữ vững không phải bằng"},
+ {t:355.02,s:"lửa nữa, mà bằng một áp lực tinh vi từ"},
+ {t:357.33,s:"chính các electron chen chúc bên trong nó."},
+ {t:359.87,s:"Nhưng áp lực ấy có hạn."},
+ {t:362.03,s:"Khi lõi sắt phình tới khoảng một phẩy bốn"},
+ {t:365.27,s:"lần khối lượng Mặt Trời, nó chạm đúng cái"},
+ {t:368.51,s:"lằn ranh đó."},
+ {t:369.46,s:"Và khi vượt qua lằn ranh ấy, mọi thứ đổ vỡ"},
+ {t:372.33,s:"không phải trong hàng triệu năm, không"},
+ {t:374.92,s:"phải trong hàng ngày, mà trong chưa đầy"},
+ {t:377.58,s:"một giây."},
+ {t:378.19,s:"Trọng lực thắng cuộc giằng co ngàn đời."},
+ {t:380.79,s:"Cái lõi sắt to bằng cả một hành tinh bỗng"},
+ {t:383.7,s:"sụp vào trong."},
+ {t:384.69,s:"Trong khoảng một phần tư giây, một khối"},
+ {t:387.47,s:"cầu rộng hàng nghìn cây số co sập lại chỉ"},
+ {t:390.39,s:"còn cỡ một thành phố."},
+ {t:391.88,s:"Vật chất lao vào tâm với vận tốc bằng một"},
+ {t:395.77,s:"phần tư vận tốc ánh sáng."},
+ {t:398.14,s:"Sức ép trong lõi trở nên điên rồ đến mức"},
+ {t:400.86,s:"nó nghiền nát chính vật chất."},
+ {t:402.83,s:"Các electron bị ép thẳng vào trong proton."},
+ {t:406.22,s:"Chúng gộp lại thành neutron."},
+ {t:408.64,s:"Và trong khoảnh khắc kinh hoàng đó, cả cái"},
+ {t:411.5,s:"lõi biến thành một quả cầu neutron đặc"},
+ {t:414.08,s:"quánh, một hạt nhân khổng lồ to bằng cả"},
+ {t:416.73,s:"một đô thị."},
+ {t:417.48,s:"Rồi cú sụp đột ngột khựng lại."},
+ {t:420.15,s:"Quả cầu neutron ở tâm đặc đến mức không"},
+ {t:423.31,s:"thể nén thêm được nữa."},
+ {t:425.09,s:"Nó cứng như một bức tường thép của vũ trụ."},
+ {t:428.02,s:"Và toàn bộ vật chất đang lao vào với vận"},
+ {t:430.86,s:"tốc kinh hoàng bỗng đâm sầm vào bức tường"},
+ {t:433.76,s:"ấy, rồi dội ngược trở ra."},
+ {t:435.54,s:"Một sóng xung kích khủng khiếp bùng lên,"},
+ {t:438.29,s:"xé toạc ngôi sao từ trong ra ngoài."},
+ {t:440.7,s:"Cả những lớp vỏ hành, cả cacbon, oxy,"},
+ {t:444.19,s:"silic, sắt, tất cả bị thổi tung vào không"},
+ {t:448.06,s:"gian."},
+ {t:448.53,s:"Đó chính là một siêu tân tinh."},
+ {t:451.07,s:"Cái chết chói lòa nhất của một ngôi sao"},
+ {t:454.71,s:"khổng lồ."},
+ {t:455.54,s:"Trong vài ngày, một siêu tân tinh có thể"},
+ {t:458.22,s:"phát sáng rực rỡ hơn cả một thiên hà chứa"},
+ {t:460.96,s:"hàng trăm tỉ ngôi sao."},
+ {t:462.43,s:"Một điểm sáng lóe lên giữa bầu trời, chói"},
+ {t:465.77,s:"đến mức ban ngày cũng thấy được, rồi tàn"},
+ {t:469.03,s:"dần trong nhiều tuần."},
+ {t:470.74,s:"Và bạn có thấy điều trớ trêu tuyệt đối ở"},
+ {t:473.62,s:"đây không?"},
+ {t:474.34,s:"Chính cái lõi sắt, cái cục tro chết không"},
+ {t:477.66,s:"chịu cháy, lại là thứ châm ngòi cho vụ nổ"},
+ {t:480.98,s:"dữ dội nhất này."},
+ {t:482.27,s:"Sắt không giết ngôi sao bằng bạo lực."},
+ {t:485.22,s:"Nó giết bằng cách im lặng."},
+ {t:487.97,s:"Bằng cách từ chối cháy."},
+ {t:492.03,s:"Ở đây tôi phải nói thật rõ một điều, để"},
+ {t:494.66,s:"bạn không hiểu nhầm."},
+ {t:496.01,s:"Siêu tân tinh không tạo ra sắt từ hư"},
+ {t:498.98,s:"không."},
+ {t:499.47,s:"Cái lõi sắt ấy đã được ngôi sao cần mẫn"},
+ {t:502.36,s:"rèn ra suốt những ngày cuối đời, từng chút"},
+ {t:505.47,s:"một, từ silic."},
+ {t:506.51,s:"Vụ nổ chỉ làm hai việc."},
+ {t:509.06,s:"Việc thứ nhất, nó gieo cái kho sắt đã rèn"},
+ {t:511.94,s:"sẵn ấy ra khắp không gian, thay vì chôn"},
+ {t:514.69,s:"vùi mãi mãi trong xác một ngôi sao."},
+ {t:517.15,s:"Việc thứ hai, trong chính khoảnh khắc bùng"},
+ {t:520.27,s:"nổ dữ dội, nó rèn thêm được một ít nguyên"},
+ {t:523.32,s:"tố nặng hơn nữa, bằng đúng cái năng lượng"},
+ {t:526.37,s:"khổng lồ mà vụ nổ giải phóng."},
+ {t:528.52,s:"Và sắt trong vũ trụ không chỉ đến từ những"},
+ {t:531.86,s:"vụ nổ như thế."},
+ {t:532.97,s:"Một phần lớn còn đến từ một loại siêu tân"},
+ {t:535.66,s:"tinh khác, khi một ngôi sao đã chết teo"},
+ {t:538.21,s:"lại thành một tàn dư đặc quánh gọi là sao"},
+ {t:540.9,s:"lùn trắng, rồi bị châm ngòi và nổ tung,"},
+ {t:543.46,s:"phun ra một lượng sắt khổng lồ."},
+ {t:545.49,s:"Bằng cách này hay cách khác, sắt được gieo"},
+ {t:548.59,s:"khắp thiên hà từ những cái chết của các vì"},
+ {t:551.69,s:"sao."},
+ {t:552,s:"Cái đám mây khí giàu sắt bị thổi ra ấy"},
+ {t:554.41,s:"trôi lang thang trong bóng tối liên sao"},
+ {t:556.89,s:"hàng triệu, hàng tỉ năm."},
+ {t:558.41,s:"Rồi một ngày, nó co lại thành một đám mây"},
+ {t:562.3,s:"mới."},
+ {t:562.68,s:"Ở trung tâm, một ngôi sao mới bừng sáng."},
+ {t:566.38,s:"Và quanh đó, những hành tinh mới ngưng tụ"},
+ {t:569.44,s:"lại từ chính đám bụi có lẫn sắt ấy."},
+ {t:572.05,s:"Mặt Trời của chúng ta là một ngôi sao như"},
+ {t:575.28,s:"thế."},
+ {t:575.6,s:"Một ngôi sao thế hệ sau, sinh ra từ tro"},
+ {t:578.5,s:"tàn của những ngôi sao đã chết trước nó."},
+ {t:581.47,s:"Và Trái Đất, cùng cái nguyên tử sắt trong"},
+ {t:584.64,s:"máu tôi, đều được nặn ra từ đám tro giàu"},
+ {t:587.73,s:"sắt đó."},
+ {t:588.26,ch:"CHƯƠNG 4",s:"Nhưng câu chuyện của sắt trên hành tinh"},
+ {t:590.56,s:"này còn một chương nữa, mà tôi muốn kể nốt"},
+ {t:593.04,s:"cho bạn."},
+ {t:593.51,s:"Bởi sắt không chỉ chảy trong máu tôi."},
+ {t:596.79,s:"Nó còn đang chảy sâu dưới chân tôi, ở nơi"},
+ {t:599.94,s:"tôi không bao giờ chạm tới."},
+ {t:602.02,s:"Khi Trái Đất còn non trẻ và nóng chảy,"},
+ {t:604.99,s:"sắt, vốn rất nặng, đã chìm dần xuống tâm"},
+ {t:608.11,s:"hành tinh."},
+ {t:608.89,s:"Nó tụ lại ở đó, cùng với niken, tạo thành"},
+ {t:612.04,s:"một cái lõi kim loại khổng lồ, cách chúng"},
+ {t:615.2,s:"ta hàng nghìn cây số dưới lớp đá."},
+ {t:617.73,s:"Cái lõi ấy có hai phần."},
+ {t:619.91,s:"Trong cùng là một khối sắt rắn đặc, nóng"},
+ {t:623.01,s:"gần bằng bề mặt Mặt Trời."},
+ {t:624.95,s:"Bao quanh nó là một biển sắt lỏng khổng"},
+ {t:627.7,s:"lồ, cuộn chảy không ngừng."},
+ {t:629.53,s:"Và chính cái biển sắt lỏng đang cuộn ấy"},
+ {t:632.31,s:"làm nên một trong những điều kỳ diệu nhất"},
+ {t:635.24,s:"giữ cho ta sống."},
+ {t:636.38,s:"Khi cả một đại dương sắt lỏng cuộn chảy"},
+ {t:639.03,s:"như thế, nó sinh ra dòng điện."},
+ {t:641.06,s:"Và dòng điện ấy tạo ra một từ trường bao"},
+ {t:643.86,s:"trùm toàn bộ hành tinh."},
+ {t:645.47,s:"Một tấm khiên vô hình vươn ra tận không"},
+ {t:648.85,s:"gian, gọi là từ quyển."},
+ {t:650.76,s:"Bạn cần tấm khiên ấy hơn bạn tưởng."},
+ {t:653.31,s:"Bởi Mặt Trời không chỉ gửi cho ta ánh"},
+ {t:656.25,s:"sáng."},
+ {t:656.65,s:"Nó còn phun ra một cơn gió hạt tích điện"},
+ {t:659.36,s:"dữ dội, một dòng thác có thể bào mòn cả"},
+ {t:662.01,s:"bầu khí quyển, xé toạc lớp không khí ta"},
+ {t:664.65,s:"thở, biến hành tinh thành một sa mạc khô"},
+ {t:667.36,s:"cằn không sự sống."},
+ {t:668.59,s:"Nhưng tấm khiên từ trường sinh ra từ lõi"},
+ {t:671.56,s:"sắt kia đã đứng ra chắn cho ta."},
+ {t:673.86,s:"Nó bẻ cong dòng gió Mặt Trời, đẩy nó lệch"},
+ {t:676.97,s:"sang hai bên, ôm lấy Trái Đất như một bàn"},
+ {t:680.08,s:"tay chở che."},
+ {t:680.99,s:"Và khi những hạt gió ấy trượt dọc theo tấm"},
+ {t:684.19,s:"khiên rồi lao xuống hai cực, chúng thắp"},
+ {t:687.17,s:"lên những dải cực quang lung linh trên bầu"},
+ {t:690.37,s:"trời đêm."},
+ {t:691.06,s:"Nên hãy dừng lại một nhịp mà nghĩ về điều"},
+ {t:693.99,s:"này."},
+ {t:694.28,s:"Cùng một nguyên tố."},
+ {t:696.38,s:"Cục tro chết đã kết liễu những ngôi sao"},
+ {t:698.83,s:"khổng lồ, lại chính là thứ dựng nên lá"},
+ {t:701.21,s:"chắn giữ cho không khí trên hành tinh này"},
+ {t:703.78,s:"không bị thổi bay vào vũ trụ."},
+ {t:707.61,s:"Và bây giờ, tôi lại đặt tay lên ngực mình."},
+ {t:710.93,s:"Tôi lại cảm thấy nhịp đập ấy."},
+ {t:713.16,s:"Nhưng lần này, tôi nghe nó bằng một đôi"},
+ {t:716.15,s:"tai hoàn toàn khác."},
+ {t:717.6,s:"Cái màu đỏ trong máu tôi, cái sắc đỏ giữ"},
+ {t:720.48,s:"cho tôi sống, chính là màu của sắt đang ôm"},
+ {t:723.51,s:"lấy oxy."},
+ {t:724.09,s:"Và mỗi nguyên tử sắt ấy đã từng nằm trong"},
+ {t:727.08,s:"lõi của một ngôi sao đã chết."},
+ {t:729.19,s:"Đã từng bị thổi tung ra không gian trong"},
+ {t:732.18,s:"một vụ nổ dữ dội nhất vũ trụ, rồi lang"},
+ {t:735.02,s:"thang hàng tỉ năm, để cuối cùng lắng vào"},
+ {t:738.01,s:"chính trái tim tôi."},
+ {t:739.42,s:"Cái nguyên tố đã kết liễu những mặt trời,"},
+ {t:741.9,s:"giờ đang mang từng hơi thở đi khắp cơ thể"},
+ {t:744.38,s:"tôi."},
+ {t:744.62,s:"Cái cục tro không chịu cháy, giờ đang dựng"},
+ {t:747.35,s:"lên tấm khiên che chở cho toàn bộ sự sống"},
+ {t:750.02,s:"trên hành tinh này."},
+ {t:751.26,s:"Sự sống và cái chết, hóa ra, được rèn từ"},
+ {t:755.13,s:"đúng cùng một thứ."},
+ {t:756.87,s:"Tôi thấy mình bé nhỏ, và cùng lúc, thấy"},
+ {t:759.33,s:"mình được nối liền với những điều lớn lao"},
+ {t:761.92,s:"khủng khiếp."},
+ {t:762.68,s:"Trong mỗi nhịp tim của tôi là tiếng vọng"},
+ {t:765.84,s:"của một ngôi sao đã tan vỡ để tôi có thể"},
+ {t:769,s:"thở."},
+ {t:769.32,s:"Nên lần tới, khi bạn đặt tay lên ngực và"},
+ {t:772.2,s:"cảm thấy trái tim mình đập, hãy khẽ nhớ"},
+ {t:775.01,s:"điều này."},
+ {t:775.66,s:"Dòng máu ấm chảy trong bạn mang theo một"},
+ {t:778.46,s:"kim loại đã từng giết chết những ngôi sao."},
+ {t:781.4,s:"Một chút cái chết của các vì sao, đã đi"},
+ {t:784.36,s:"hàng tỉ năm, chỉ để giữ cho bạn được sống,"},
+ {t:787.55,s:"được thở, ngay lúc này."}
+];
+
+// _NEWT (mốc cue timeline giọng thật) — khớp timing.json.cues.start + totalDuration
+const _NEWT=[0,10.83,26.87,40.89,59.43,75.81,88.81,106.44,121.5,135.85,152.8,172.27,193.08,215.33,232.28,244.66,257.61,272.74,290.69,305.04,322.94,340.98,352.6,369.46,378.19,398.14,417.48,435.54,455.54,470.74,492.03,509.06,528.52,552,572.05,588.26,602.02,617.73,636.38,650.76,668.59,691.06,707.61,717.6,739.42,756.87,769.32,792.3];
+
+// ---- seeded PRNG (mulberry32) ----
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+
+// ---- scene boundaries (real time = cue.start) ----
+const SC={
+  A:[0,26.87], B:[26.87,75.81], C:[75.81,121.5], D:[121.5,152.8],
+  E:[152.8,232.28], F:[232.28,305.04], G:[305.04,340.98], H:[340.98,378.19],
+  I:[378.19,398.14], J:[398.14,435.54], K:[435.54,492.03], L:[492.03,588.26],
+  M:[588.26,617.73], N:[617.73,650.76], O:[650.76,691.06], P:[691.06,792.3]
+};
+function loc(t,k){const w=SC[k];return Math.min(1,Math.max(0,(t-w[0])/(w[1]-w[0])));}
+function inSc(t,k){const w=SC[k];return t>=w[0]&&t<w[1];}
+const clamp=(x,a,b)=>Math.min(b,Math.max(a,x));
+const smooth=(x)=>{x=clamp(x,0,1);return x*x*(3-2*x);};
+function band(t,a,b,f){f=f||0.8;if(t<a-f||t>b+f)return 0;let up=smooth((t-(a-f))/(2*f));let dn=smooth(((b+f)-t)/(2*f));return Math.min(1,Math.min(up,dn));}
+// heartbeat pulse (deterministic) — ~1 beat / 0.92s
+function heart(t){const ph=(t/0.92)%1;const a=Math.exp(-ph*ph*40)*1.0+Math.exp(-(ph-0.16)*(ph-0.16)*30)*0.55;return Math.min(1,a);}
+
+// ============ THREE core ============
+const W=1920,H=1080;
+const renderer=new THREE.WebGLRenderer({canvas:document.getElementById('c'),antialias:true,alpha:false});
+renderer.setPixelRatio(1);renderer.setSize(W,H);
+renderer.setClearColor(0x060406,1);
+renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.05;
+renderer.outputEncoding=THREE.sRGBEncoding;
+
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(46,W/H,0.1,60000);
+camera.position.set(0,0,60);
+
+const amb=new THREE.AmbientLight(0x2a2530,0.9);scene.add(amb);
+const key=new THREE.DirectionalLight(0xfff0dc,1.15);key.position.set(6,4,8);scene.add(key);
+const rim=new THREE.DirectionalLight(0x6fa8ff,0.35);rim.position.set(-8,-3,-6);scene.add(rim);
+
+// texture loader (local assets)
+const texLoader=new THREE.TextureLoader();texLoader.setCrossOrigin('anonymous');
+function loadTex(p,enc){const tx=texLoader.load(p);if(enc)tx.encoding=enc;tx.anisotropy=renderer.capabilities.getMaxAnisotropy();return tx;}
+const TEX={
+  earth:loadTex('assets/tex/2_no_clouds_4k.jpg',THREE.sRGBEncoding),
+  earthBump:loadTex('assets/tex/elev_bump_4k.jpg'),
+  earthSpec:loadTex('assets/tex/water_4k.png'),
+  clouds:loadTex('assets/tex/earthcloudmap.jpg')
+};
+
+// ---------- postprocessing ----------
+const composer=new THREE.EffectComposer(renderer);
+composer.addPass(new THREE.RenderPass(scene,camera));
+const bloom=new THREE.UnrealBloomPass(new THREE.Vector2(W,H),0.85,0.72,0.60);
+composer.addPass(bloom);
+const LensShader={
+  uniforms:{tDiffuse:{value:null},uT:{value:0},uVig:{value:0.34},uCA:{value:0.0016},uGrain:{value:0.045},uFade:{value:1.0},uFlash:{value:0.0}},
+  vertexShader:`varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
+  fragmentShader:`
+   varying vec2 vUv;uniform sampler2D tDiffuse;uniform float uT,uVig,uCA,uGrain,uFade,uFlash;
+   float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+   void main(){
+     vec2 d=vUv-0.5;float r=dot(d,d);
+     vec2 off=d*uCA*(1.0+r*2.2);
+     vec3 col;
+     col.r=texture2D(tDiffuse,vUv+off).r;
+     col.g=texture2D(tDiffuse,vUv).g;
+     col.b=texture2D(tDiffuse,vUv-off).b;
+     float vig=smoothstep(1.02,uVig,r*2.0);
+     col*=mix(1.0,vig,0.85);
+     float g=h(vUv*vec2(1920.0,1080.0)+fract(uT)*97.3)-0.5;
+     col+=g*uGrain;
+     col=mix(col,vec3(0.95,0.98,1.0),uFlash);
+     col*=uFade;
+     gl_FragColor=vec4(col,1.0);
+   }`
+};
+const lens=new THREE.ShaderPass(LensShader);lens.renderToScreen=true;composer.addPass(lens);
+
+// ============================================================
+//  SHARED: starfield (temperature-colored) + Milky Way band
+// ============================================================
+const STAR_R=14000;
+function buildStars(){
+  const N=5200,pr=mulberry32(20260808);
+  const pos=new Float32Array(N*3),col=new Float32Array(N*3),siz=new Float32Array(N);
+  const tmp=new THREE.Vector3();
+  for(let i=0;i<N;i++){
+    let u=pr(),v=pr();
+    let theta=Math.acos(2*u-1),phi=2*Math.PI*v;
+    let bnd=pr();if(bnd<0.42){theta=Math.PI*0.5+(pr()-0.5)*0.5;}
+    tmp.set(Math.sin(theta)*Math.cos(phi),Math.cos(theta)*0.7,Math.sin(theta)*Math.sin(phi)).normalize().multiplyScalar(STAR_R);
+    pos[i*3]=tmp.x;pos[i*3+1]=tmp.y;pos[i*3+2]=tmp.z;
+    let tt=pr();let c=new THREE.Color();
+    if(tt<0.12)c.setRGB(0.62,0.72,1.0);
+    else if(tt<0.34)c.setRGB(0.9,0.94,1.0);
+    else if(tt<0.66)c.setRGB(1.0,0.96,0.82);
+    else if(tt<0.86)c.setRGB(1.0,0.82,0.56);
+    else c.setRGB(1.0,0.62,0.44);
+    let br=0.4+pr()*0.6;c.multiplyScalar(br);
+    col[i*3]=c.r;col[i*3+1]=c.g;col[i*3+2]=c.b;
+    siz[i]=(pr()<0.06?3.4:1.0)*(0.9+pr()*1.7);
+  }
+  const g=new THREE.BufferGeometry();
+  g.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  g.setAttribute('color',new THREE.BufferAttribute(col,3));
+  g.setAttribute('aS',new THREE.BufferAttribute(siz,1));
+  const m=new THREE.ShaderMaterial({
+    uniforms:{uOp:{value:1}},transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,
+    vertexShader:`attribute float aS;attribute vec3 color;varying vec3 vC;
+      void main(){vC=color;vec4 mv=modelViewMatrix*vec4(position,1.0);
+      gl_PointSize=aS*(${STAR_R.toFixed(1)}/-mv.z);gl_Position=projectionMatrix*mv;}`,
+    fragmentShader:`varying vec3 vC;uniform float uOp;
+      void main(){vec2 d=gl_PointCoord-0.5;float r=length(d);
+      float a=smoothstep(0.5,0.0,r);gl_FragColor=vec4(vC,a*uOp);}`
+  });
+  return new THREE.Points(g,m);
+}
+const stars=buildStars();scene.add(stars);
+
+function softDisc(inner,outer,r,g,b){
+  const cv=document.createElement('canvas');cv.width=cv.height=256;const cx=cv.getContext('2d');
+  const gr=cx.createRadialGradient(128,128,inner,128,128,outer);
+  gr.addColorStop(0,`rgba(${r},${g},${b},0.9)`);gr.addColorStop(0.5,`rgba(${r},${g},${b},0.28)`);gr.addColorStop(1,'rgba(0,0,0,0)');
+  cx.fillStyle=gr;cx.fillRect(0,0,256,256);
+  const tx=new THREE.CanvasTexture(cv);tx.encoding=THREE.sRGBEncoding;return tx;
+}
+const mwSprite=new THREE.Sprite(new THREE.SpriteMaterial({map:softDisc(0,128,150,150,190),color:0x9fb4e0,transparent:true,opacity:0.16,depthWrite:false,blending:THREE.AdditiveBlending}));
+mwSprite.scale.set(STAR_R*2.2,STAR_R*0.9,1);mwSprite.position.set(-STAR_R*0.5,-STAR_R*0.2,-STAR_R*0.7);scene.add(mwSprite);
+
+// ============================================================
+//  Reusable soft particle sprite textures
+// ============================================================
+function dotTex(rr,gg,bb){
+  const cv=document.createElement('canvas');cv.width=cv.height=64;const cx=cv.getContext('2d');
+  const gr=cx.createRadialGradient(32,32,0,32,32,32);
+  gr.addColorStop(0,`rgba(${rr},${gg},${bb},1)`);gr.addColorStop(0.4,`rgba(${rr},${gg},${bb},0.55)`);gr.addColorStop(1,'rgba(0,0,0,0)');
+  cx.fillStyle=gr;cx.fillRect(0,0,64,64);const tx=new THREE.CanvasTexture(cv);tx.encoding=THREE.sRGBEncoding;return tx;
+}
+const TDOT={iron:dotTex(154,163,173),iron2:dotTex(201,208,214),rust:dotTex(181,118,58),blood:dotTex(180,55,55),oxy:dotTex(127,224,255),ember:dotTex(255,120,50),amber:dotTex(255,176,96),white:dotTex(245,248,255),elec:dotTex(120,180,255),neut:dotTex(190,200,214),aur:dotTex(79,240,160),aurv:dotTex(181,123,255)};
+
+// ============================================================
+//  Photosphere star (shader) — reusable, deterministic by uT
+// ============================================================
+function makeStar(radius,c1,c2,c3){
+  const grp=new THREE.Group();
+  const photoMat=new THREE.ShaderMaterial({
+    uniforms:{uT:{value:0},uCol1:{value:new THREE.Color(c1||0x8a2400)},uCol2:{value:new THREE.Color(c2||0xff9628)},uCol3:{value:new THREE.Color(c3||0xffeeb8)},uBright:{value:1.4}},
+    vertexShader:`varying vec3 vP;varying vec3 vN;void main(){vP=normalize(position);vN=normalize(normalMatrix*normal);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
+    fragmentShader:`
+      varying vec3 vP;varying vec3 vN;uniform float uT,uBright;uniform vec3 uCol1,uCol2,uCol3;
+      vec3 hash3(vec3 p){p=vec3(dot(p,vec3(127.1,311.7,74.7)),dot(p,vec3(269.5,183.3,246.1)),dot(p,vec3(113.5,271.9,124.6)));return -1.0+2.0*fract(sin(p)*43758.5453);}
+      float snoise(vec3 p){vec3 i=floor(p);vec3 f=fract(p);vec3 u=f*f*(3.0-2.0*f);
+        return mix(mix(mix(dot(hash3(i+vec3(0,0,0)),f-vec3(0,0,0)),dot(hash3(i+vec3(1,0,0)),f-vec3(1,0,0)),u.x),
+                       mix(dot(hash3(i+vec3(0,1,0)),f-vec3(0,1,0)),dot(hash3(i+vec3(1,1,0)),f-vec3(1,1,0)),u.x),u.y),
+                   mix(mix(dot(hash3(i+vec3(0,0,1)),f-vec3(0,0,1)),dot(hash3(i+vec3(1,0,1)),f-vec3(1,0,1)),u.x),
+                       mix(dot(hash3(i+vec3(0,1,1)),f-vec3(0,1,1)),dot(hash3(i+vec3(1,1,1)),f-vec3(1,1,1)),u.x),u.y),u.z);}
+      float fbm(vec3 p){float s=0.0,a=0.5;for(int i=0;i<5;i++){s+=a*snoise(p);p*=2.02;a*=0.5;}return s;}
+      void main(){
+        vec3 d=normalize(vP);
+        float conv=fbm(d*7.0+vec3(0.0,0.0,uT*0.02));
+        float fine=fbm(d*22.0+vec3(uT*0.05));
+        float n=0.6*conv+0.4*fine;
+        float spot=smoothstep(0.56,0.78,fbm(d*1.7+11.0));
+        vec3 col=mix(uCol1,uCol2,smoothstep(-0.3,0.4,n));
+        col=mix(col,uCol3,smoothstep(0.35,0.85,n));
+        col*=mix(1.0,0.35,spot);
+        float mu=clamp(dot(normalize(vN),vec3(0.0,0.0,1.0)),0.0,1.0);
+        col*=0.30+0.70*pow(mu,0.6);
+        gl_FragColor=vec4(col*uBright,1.0);
+      }`});
+  const core=new THREE.Mesh(new THREE.SphereGeometry(radius,64,64),photoMat);grp.add(core);
+  const chromo=new THREE.Mesh(new THREE.SphereGeometry(radius*1.028,48,48),new THREE.ShaderMaterial({
+    transparent:true,depthWrite:false,side:THREE.BackSide,blending:THREE.AdditiveBlending,
+    uniforms:{uCr:{value:new THREE.Color(c2||0xff6a28)}},
+    vertexShader:`varying vec3 vN;varying vec3 vP;void main(){vN=normalize(normalMatrix*normal);vec4 mv=modelViewMatrix*vec4(position,1.0);vP=mv.xyz;gl_Position=projectionMatrix*mv;}`,
+    fragmentShader:`varying vec3 vN;varying vec3 vP;uniform vec3 uCr;void main(){float f=pow(1.0-abs(dot(normalize(vN),normalize(-vP))),3.2);gl_FragColor=vec4(uCr*f,f);}`}));
+  grp.add(chromo);
+  const cpr=mulberry32(99);
+  function coronaTex(cr,cg,cb){
+    const cv=document.createElement('canvas');cv.width=cv.height=512;const cx=cv.getContext('2d');
+    const gr=cx.createRadialGradient(256,256,20,256,256,256);
+    gr.addColorStop(0,`rgba(${cr},${cg},${cb},0.9)`);gr.addColorStop(0.25,`rgba(${cr},${Math.round(cg*0.6)},${Math.round(cb*0.4)},0.35)`);gr.addColorStop(1,'rgba(0,0,0,0)');
+    cx.fillStyle=gr;cx.fillRect(0,0,512,512);
+    cx.globalCompositeOperation='lighter';
+    for(let i=0;i<26;i++){const a=cpr()*6.283,len=140+cpr()*130;cx.save();cx.translate(256,256);cx.rotate(a);
+      const lg=cx.createLinearGradient(0,0,len,0);lg.addColorStop(0,`rgba(${cr},${Math.round(cg*0.75)},${Math.round(cb*0.5)},0.5)`);lg.addColorStop(1,'rgba(0,0,0,0)');
+      cx.fillStyle=lg;cx.beginPath();cx.moveTo(30,-6);cx.lineTo(len,0);cx.lineTo(30,6);cx.closePath();cx.fill();cx.restore();}
+    const tx=new THREE.CanvasTexture(cv);tx.encoding=THREE.sRGBEncoding;return tx;
+  }
+  const cor=new THREE.Sprite(new THREE.SpriteMaterial({map:coronaTex(255,176,96),color:0xffb060,transparent:true,opacity:0.85,depthWrite:false,blending:THREE.AdditiveBlending}));
+  cor.scale.setScalar(radius*5.5);grp.add(cor);
+  return {grp,core,photoMat,chromo,cor,radius};
+}
+
+// ============================================================
+//  Neutron ball (hot blue-white, dense) — reusable
+// ============================================================
+function makeNeutronBall(radius){
+  const grp=new THREE.Group();
+  const mat=new THREE.ShaderMaterial({
+    uniforms:{uT:{value:0},uBright:{value:2.0}},
+    vertexShader:`varying vec3 vP;varying vec3 vN;void main(){vP=normalize(position);vN=normalize(normalMatrix*normal);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
+    fragmentShader:`
+      varying vec3 vP;varying vec3 vN;uniform float uT,uBright;
+      vec3 hash3(vec3 p){p=vec3(dot(p,vec3(127.1,311.7,74.7)),dot(p,vec3(269.5,183.3,246.1)),dot(p,vec3(113.5,271.9,124.6)));return -1.0+2.0*fract(sin(p)*43758.5453);}
+      float snoise(vec3 p){vec3 i=floor(p);vec3 f=fract(p);vec3 u=f*f*(3.0-2.0*f);
+        return mix(mix(mix(dot(hash3(i+vec3(0,0,0)),f-vec3(0,0,0)),dot(hash3(i+vec3(1,0,0)),f-vec3(1,0,0)),u.x),
+                       mix(dot(hash3(i+vec3(0,1,0)),f-vec3(0,1,0)),dot(hash3(i+vec3(1,1,0)),f-vec3(1,1,0)),u.x),u.y),
+                   mix(mix(dot(hash3(i+vec3(0,0,1)),f-vec3(0,0,1)),dot(hash3(i+vec3(1,0,1)),f-vec3(1,0,1)),u.x),
+                       mix(dot(hash3(i+vec3(0,1,1)),f-vec3(0,1,1)),dot(hash3(i+vec3(1,1,1)),f-vec3(1,1,1)),u.x),u.y),u.z);}
+      float fbm(vec3 p){float s=0.0,a=0.5;for(int i=0;i<4;i++){s+=a*snoise(p);p*=2.02;a*=0.5;}return s;}
+      void main(){
+        vec3 d=normalize(vP);
+        float n=fbm(d*13.0+vec3(0.0,0.0,uT*0.5));
+        vec3 c1=vec3(0.32,0.55,1.0);vec3 c2=vec3(0.78,0.9,1.0);vec3 c3=vec3(1.0,1.0,1.0);
+        vec3 col=mix(c1,c2,smoothstep(-0.2,0.4,n));
+        col=mix(col,c3,smoothstep(0.4,0.9,n));
+        float mu=clamp(dot(normalize(vN),vec3(0.0,0.0,1.0)),0.0,1.0);
+        col*=0.5+0.5*pow(mu,0.5);
+        gl_FragColor=vec4(col*uBright,1.0);
+      }`});
+  const core=new THREE.Mesh(new THREE.SphereGeometry(radius,48,48),mat);grp.add(core);
+  const halo=new THREE.Mesh(new THREE.SphereGeometry(radius*1.6,32,32),new THREE.ShaderMaterial({
+    transparent:true,depthWrite:false,side:THREE.BackSide,blending:THREE.AdditiveBlending,
+    vertexShader:`varying vec3 vN;varying vec3 vP;void main(){vN=normalize(normalMatrix*normal);vec4 mv=modelViewMatrix*vec4(position,1.0);vP=mv.xyz;gl_Position=projectionMatrix*mv;}`,
+    fragmentShader:`varying vec3 vN;varying vec3 vP;void main(){float f=pow(1.0-abs(dot(normalize(vN),normalize(-vP))),2.6);gl_FragColor=vec4(vec3(0.55,0.75,1.0)*f,f*0.9);}`}));
+  grp.add(halo);
+  return {grp,core,mat,halo,radius};
+}
+
+// ============================================================
+//  Iron core sphere (grey metallic, cold-inert)  — reusable
+// ============================================================
+function makeIronCore(radius){
+  const mat=new THREE.MeshStandardMaterial({color:0x9aa3ad,emissive:0x231a12,emissiveIntensity:0.25,roughness:0.5,metalness:1.0});
+  return new THREE.Mesh(new THREE.SphereGeometry(radius,48,48),mat);
+}
+
+// ============================================================
+//  Text/label sprite
+// ============================================================
+function labelSprite(txt,color,px){
+  const cv=document.createElement('canvas');cv.width=512;cv.height=160;const cx=cv.getContext('2d');
+  cx.fillStyle=color;cx.font='bold '+(px||70)+'px Segoe UI, sans-serif';cx.textAlign='center';cx.textBaseline='middle';
+  cx.shadowColor='rgba(0,0,0,0.9)';cx.shadowBlur=14;cx.fillText(txt,256,80);
+  const tx=new THREE.CanvasTexture(cv);tx.encoding=THREE.sRGBEncoding;
+  const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tx,transparent:true,depthWrite:false}));
+  sp.scale.set(512/160*1.2,1.2,1);
+  return sp;
+}
+
+// ============================================================
+//  GROUPS
+// ============================================================
+function G(){const g=new THREE.Group();g.visible=false;scene.add(g);return g;}
+
+// blood vessel builder (tube of red cells + oxy + iron sparks)
+function bloodDots(count,seed,spanZ,rMax,tex,color,size,op){
+  const pr=mulberry32(seed);const N=count;
+  const pos=new Float32Array(N*3),base=new Float32Array(N*4);
+  for(let i=0;i<N;i++){const z=(pr()-0.5)*spanZ,a=pr()*6.283,rr=(0.3+pr()*0.7)*rMax;
+    base[i*4]=z;base[i*4+1]=a;base[i*4+2]=rr;base[i*4+3]=0.3+pr()*0.6;
+    pos[i*3]=Math.cos(a)*rr;pos[i*3+1]=Math.sin(a)*rr;pos[i*3+2]=z;}
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  const pts=new THREE.Points(g,new THREE.PointsMaterial({map:tex,size:size,transparent:true,depthWrite:false,blending:THREE.NormalBlending,color:color,opacity:op}));
+  return {pts,base,N,spanZ};
+}
+
+// ---------- A: hand on chest / heartbeat / blood vessel ----------
+const gA=G();
+(function(){
+  const glow=new THREE.Sprite(new THREE.SpriteMaterial({map:softDisc(0,128,196,66,58),color:0xc4453b,transparent:true,opacity:0,depthWrite:false,blending:THREE.AdditiveBlending}));
+  glow.scale.set(9,9,1);glow.position.set(0,0,0);gA.add(glow);
+  const bl=bloodDots(120,101,40,3.0,TDOT.blood,0xc4453b,1.1,0.85);bl.pts.material.blending=THREE.NormalBlending;gA.add(bl.pts);
+  const iron=bloodDots(18,102,40,1.6,TDOT.iron,0xc9d0d6,0.7,0.9);iron.pts.material.blending=THREE.AdditiveBlending;gA.add(iron.pts);
+  gA.userData={glow,bl,iron};
+})();
+
+// ---------- B: iron named / hemoglobin catch-release oxygen ----------
+const gB=G();
+(function(){
+  const bl=bloodDots(90,201,36,4.5,TDOT.blood,0xb23838,1.4,0.8);bl.pts.material.blending=THREE.NormalBlending;gB.add(bl.pts);
+  const hemo=new THREE.Group();gB.add(hemo);
+  const hub=new THREE.Mesh(new THREE.IcosahedronGeometry(0.9,1),new THREE.MeshStandardMaterial({color:0x7a2626,emissive:0x2a0808,emissiveIntensity:0.5,roughness:0.6,flatShading:true}));
+  hemo.add(hub);
+  const irons=[],oxys=[];
+  const armDir=[[1.6,0.9,0],[-1.6,0.9,0],[1.2,-1.3,0.4],[-1.2,-1.3,-0.4]];
+  for(let i=0;i<4;i++){
+    const fe=makeIronCore(0.42);fe.position.set(armDir[i][0],armDir[i][1],armDir[i][2]);hemo.add(fe);irons.push(fe);
+    const ox=new THREE.Mesh(new THREE.SphereGeometry(0.16,16,16),new THREE.MeshStandardMaterial({color:0x7fe0ff,emissive:0x2aa0d0,emissiveIntensity:1.3,roughness:0.3}));
+    ox.userData={arm:armDir[i],ph:i*1.4};hemo.add(ox);oxys.push(ox);
+  }
+  const feLbl=labelSprite('Sắt (Fe)','#c9d0d6',54);feLbl.position.set(0,-2.6,0);feLbl.scale.set(3.4,1.05,1);gB.add(feLbl);
+  const oxLbl=labelSprite('O₂','#7fe0ff',54);oxLbl.position.set(2.9,1.4,0);oxLbl.scale.set(1.6,0.9,1);gB.add(oxLbl);
+  gB.userData={bl,hemo,irons,oxys,feLbl,oxLbl};
+})();
+
+// ---------- C: dark secret — blood iron vs dying star ----------
+const gC=G();
+(function(){
+  const bloodGlow=new THREE.Sprite(new THREE.SpriteMaterial({map:softDisc(0,128,196,66,58),color:0xc4453b,transparent:true,opacity:0.5,depthWrite:false,blending:THREE.AdditiveBlending}));
+  bloodGlow.scale.set(6,6,1);bloodGlow.position.set(-7,0,0);gC.add(bloodGlow);
+  const feDot=makeIronCore(0.55);feDot.position.set(-7,0,0);gC.add(feDot);
+  const earthSmall=new THREE.Mesh(new THREE.SphereGeometry(1.0,48,48),new THREE.MeshPhongMaterial({map:TEX.earth,bumpMap:TEX.earthBump,bumpScale:0.03,specularMap:TEX.earthSpec,specular:new THREE.Color(0x223050),shininess:10}));
+  earthSmall.position.set(-7,-2.4,0);gC.add(earthSmall);
+  const star=makeStar(2.6,0x7a1e00,0xff7a28,0xffe0a0);star.grp.position.set(6,0,0);gC.add(star.grp);
+  const feNuc=makeIronCore(0.4);feNuc.position.set(6,0,0);feNuc.visible=false;gC.add(feNuc);
+  gC.userData={bloodGlow,feDot,earthSmall,star,feNuc};
+})();
+
+// ---------- D: forge machine / tug of war ----------
+const gD=G();
+(function(){
+  const star=makeStar(3.0,0x7a1e00,0xff7a28,0xffe6b0);gD.add(star.grp);
+  const N=60,pr=mulberry32(301);
+  const pos=new Float32Array(N*3),base=new Float32Array(N*4);
+  for(let i=0;i<N;i++){const a=pr()*6.283,b=Math.acos(2*pr()-1),r=2.0+pr()*2.5;
+    base[i*4]=a;base[i*4+1]=b;base[i*4+2]=r;base[i*4+3]=pr()*6.283;
+    pos[i*3]=r*Math.sin(b)*Math.cos(a);pos[i*3+1]=r*Math.cos(b);pos[i*3+2]=r*Math.sin(b)*Math.sin(a);}
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  const spark=new THREE.Points(g,new THREE.PointsMaterial({map:TDOT.amber,size:0.5,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,color:0xffcf80,opacity:0.8}));
+  gD.add(spark);
+  const arrows=new THREE.Group();gD.add(arrows);
+  const gravMat=new THREE.LineBasicMaterial({color:0xbfc6d0,transparent:true,opacity:0.6});
+  const pressMat=new THREE.LineBasicMaterial({color:0xff8a3a,transparent:true,opacity:0.6});
+  const gravLines=[],pressLines=[];
+  for(let i=0;i<10;i++){const a=i/10*6.283;
+    const gl=new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(Math.cos(a)*7,Math.sin(a)*7,0),new THREE.Vector3(Math.cos(a)*4.2,Math.sin(a)*4.2,0)]),gravMat);arrows.add(gl);gravLines.push(gl);
+    const pl=new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(Math.cos(a)*3.4,Math.sin(a)*3.4,0),new THREE.Vector3(Math.cos(a)*5.6,Math.sin(a)*5.6,0)]),pressMat);arrows.add(pl);pressLines.push(pl);}
+  const lblH=labelSprite('hydro → heli','#ffcf80',48);lblH.position.set(0,-4.4,0);lblH.scale.set(4.2,0.95,1);gD.add(lblH);
+  gD.userData={star,spark,base,N,arrows,gravLines,pressLines,lblH};
+})();
+
+// ---------- E: fusion chain + onion shells → iron core ----------
+const gE=G();
+(function(){
+  const onion=new THREE.Group();gE.add(onion);
+  const shellDefs=[
+    {r:5.6,c:0xff8a3a,name:'hydro'},
+    {r:4.6,c:0xff7a2b,name:'heli'},
+    {r:3.7,c:0xff6a24,name:'cacbon'},
+    {r:2.9,c:0xff5a1e,name:'oxy'},
+    {r:2.2,c:0xffae4a,name:'neon'},
+    {r:1.5,c:0xffd07a,name:'silic'}
+  ];
+  const shells=[];
+  shellDefs.forEach((s,i)=>{
+    const m=new THREE.Mesh(new THREE.SphereGeometry(s.r,48,48),new THREE.MeshBasicMaterial({color:s.c,transparent:true,opacity:0.22,blending:THREE.AdditiveBlending,side:THREE.BackSide,depthWrite:false}));
+    onion.add(m);shells.push(m);
+  });
+  const feCore=makeIronCore(0.85);onion.add(feCore);
+  const labels=[];
+  shellDefs.forEach((s,i)=>{const l=labelSprite(s.name,'#ffd8a0',44);l.position.set(0,s.r-0.35,0.2);l.scale.set(2.4,0.7,1);l.material.opacity=0;onion.add(l);labels.push(l);});
+  const feLbl=labelSprite('Sắt','#c9d0d6',52);feLbl.position.set(0,-2.9,0);feLbl.scale.set(2.6,0.9,1);feLbl.material.opacity=0;gE.add(feLbl);
+  const chain=new THREE.Group();gE.add(chain);
+  const steps=['H','He','C','O','Ne','Si'];const stepSp=[];
+  steps.forEach((s,i)=>{const sp=labelSprite(s,'#ffcf80',80);sp.position.set(-6.5+i*2.6,3.2,0);sp.scale.set(1.4,1.4,1);sp.material.opacity=0;chain.add(sp);stepSp.push(sp);});
+  gE.userData={onion,shells,feCore,labels,feLbl,stepSp,shellDefs};
+})();
+
+// ---------- F: binding-energy curve, peak Fe-56 ----------
+const gF=G();
+(function(){
+  const NPT=120,pts=[];
+  for(let i=0;i<NPT;i++){const x=i/(NPT-1);
+    let y=1.0-Math.exp(-x*7.0);y-=0.42*Math.max(0,(x-0.5))*1.4;
+    pts.push(new THREE.Vector3(-7+x*14,-2.2+y*4.6,0));}
+  const g=new THREE.BufferGeometry().setFromPoints(pts);
+  const curve=new THREE.Line(g,new THREE.LineBasicMaterial({color:0xffd07a,transparent:true,opacity:0.95}));gF.add(curve);
+  const axMat=new THREE.LineBasicMaterial({color:0x555a63,transparent:true,opacity:0.6});
+  gF.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-7,-2.4,0),new THREE.Vector3(7,-2.4,0)]),axMat));
+  gF.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-7,-2.4,0),new THREE.Vector3(-7,3.2,0)]),axMat));
+  function curveY(x){let y=1.0-Math.exp(-x*7.0);y-=0.42*Math.max(0,(x-0.5))*1.4;return -2.2+y*4.6;}
+  const peakX=0, peakY=curveY(0.5);
+  const feMark=new THREE.Mesh(new THREE.SphereGeometry(0.18,16,16),new THREE.MeshBasicMaterial({color:0xc9d0d6}));
+  feMark.position.set(peakX,peakY,0.02);gF.add(feMark);
+  const feLbl=labelSprite('Fe-56','#c9d0d6',56);feLbl.position.set(0.2,peakY+0.9,0);feLbl.scale.set(2.4,0.8,1);gF.add(feLbl);
+  const niLbl=labelSprite('Ni','#b5763a',44);niLbl.position.set(1.2,peakY+0.4,0);niLbl.scale.set(1.2,0.7,1);niLbl.material.opacity=0;gF.add(niLbl);
+  const cursor=new THREE.Mesh(new THREE.SphereGeometry(0.14,12,12),new THREE.MeshBasicMaterial({color:0xffe6b0}));gF.add(cursor);
+  const rewardLbl=labelSprite('+ được thưởng','#7fe0a0',44);rewardLbl.position.set(-3.6,2.4,0);rewardLbl.scale.set(3.4,0.8,1);rewardLbl.material.opacity=0;gF.add(rewardLbl);
+  const costLbl=labelSprite('− phải trả giá','#ff6a4a',44);costLbl.position.set(3.6,1.2,0);costLbl.scale.set(3.4,0.8,1);costLbl.material.opacity=0;gF.add(costLbl);
+  const axL=labelSprite('số khối →','#8a9098',40);axL.position.set(3.5,-3.0,0);axL.scale.set(3.0,0.7,1);gF.add(axL);
+  gF.userData={curve,feMark,feLbl,niLbl,cursor,rewardLbl,costLbl,curveY};
+})();
+
+// ---------- G: dead ash core, growing to limit ----------
+const gG=G();
+(function(){
+  const feCore=makeIronCore(1.1);gG.add(feCore);
+  const fire=new THREE.Mesh(new THREE.SphereGeometry(2.6,48,48),new THREE.MeshBasicMaterial({color:0xff6a2b,transparent:true,opacity:0.22,blending:THREE.AdditiveBlending,side:THREE.BackSide,depthWrite:false}));gG.add(fire);
+  const N=140,pr=mulberry32(701);
+  const pos=new Float32Array(N*3),base=new Float32Array(N*4);
+  for(let i=0;i<N;i++){const a=pr()*6.283,b=Math.acos(2*pr()-1);base[i*4]=a;base[i*4+1]=b;base[i*4+2]=pr();base[i*4+3]=pr()*6.283;
+    pos[i*3]=0;pos[i*3+1]=0;pos[i*3+2]=0;}
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  const rain=new THREE.Points(g,new THREE.PointsMaterial({map:TDOT.iron,size:0.34,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,color:0xc9d0d6,opacity:0.85}));gG.add(rain);
+  const lbl=labelSprite('cục tro chết — không cháy','#9aa3ad',44);lbl.position.set(0,-3.4,0);lbl.scale.set(4.8,0.8,1);lbl.material.opacity=0;gG.add(lbl);
+  gG.userData={feCore,fire,rain,base,N,lbl};
+})();
+
+// ---------- H: Chandrasekhar limit / <1s ----------
+const gH=G();
+(function(){
+  const barBg=new THREE.Mesh(new THREE.PlaneGeometry(1.4,6),new THREE.MeshBasicMaterial({color:0x1a1c22,transparent:true,opacity:0.7}));barBg.position.set(-3.5,0,0);gH.add(barBg);
+  const barFill=new THREE.Mesh(new THREE.PlaneGeometry(1.2,6),new THREE.MeshBasicMaterial({color:0x9aa3ad}));barFill.position.set(-3.5,-3,0);gH.add(barFill);
+  const limitLine=new THREE.Mesh(new THREE.PlaneGeometry(2.2,0.08,1),new THREE.MeshBasicMaterial({color:0xff4a3a}));limitLine.position.set(-3.5,1.8,0.01);gH.add(limitLine);
+  const limLbl=labelSprite('~1,4 M☉','#ff6a4a',48);limLbl.position.set(-1.4,1.8,0);limLbl.scale.set(2.6,0.8,1);gH.add(limLbl);
+  const N=120,pr=mulberry32(801);
+  const pos=new Float32Array(N*3),base=new Float32Array(N*3);
+  for(let i=0;i<N;i++){const a=pr()*6.283,rr=pr()*2.2;base[i*3]=Math.cos(a)*rr;base[i*3+1]=Math.sin(a)*rr;base[i*3+2]=(pr()-0.5)*1.5;
+    pos[i*3]=3.5+base[i*3];pos[i*3+1]=base[i*3+1];pos[i*3+2]=base[i*3+2];}
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  const elec=new THREE.Points(g,new THREE.PointsMaterial({map:TDOT.elec,size:0.28,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,color:0x9fc4ff,opacity:0.85}));gH.add(elec);
+  const eLbl=labelSprite('áp lực electron','#9fc4ff',44);eLbl.position.set(3.5,-2.8,0);eLbl.scale.set(3.6,0.8,1);gH.add(eLbl);
+  const secLbl=labelSprite('< 1 giây','#ff4a3a',80);secLbl.position.set(0,0,0);secLbl.scale.set(3.2,1.4,1);secLbl.material.opacity=0;gH.add(secLbl);
+  gH.userData={barFill,limitLine,limLbl,elec,base,N,eLbl,secLbl};
+})();
+
+// ---------- I: core collapse ----------
+const gI=G();
+(function(){
+  const feCore=makeIronCore(3.2);gI.add(feCore);
+  const N=200,pr=mulberry32(901);
+  const pos=new Float32Array(N*3),base=new Float32Array(N*4);
+  for(let i=0;i<N;i++){const a=pr()*6.283,b=Math.acos(2*pr()-1);base[i*4]=a;base[i*4+1]=b;base[i*4+2]=0.4+pr()*0.6;base[i*4+3]=pr();
+    pos[i*3]=0;pos[i*3+1]=0;pos[i*3+2]=0;}
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  const infall=new THREE.Points(g,new THREE.PointsMaterial({map:TDOT.iron2,size:0.4,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,color:0xd6dce2,opacity:0.9}));gI.add(infall);
+  const hot=new THREE.Sprite(new THREE.SpriteMaterial({map:softDisc(0,128,255,240,220),color:0xfff0d0,transparent:true,opacity:0,depthWrite:false,blending:THREE.AdditiveBlending}));hot.scale.set(3,3,1);gI.add(hot);
+  const lbl=labelSprite('sụp trong 1/4 giây','#ff8a5a',48);lbl.position.set(0,-3.6,0);lbl.scale.set(4.2,0.8,1);gI.add(lbl);
+  gI.userData={feCore,infall,base,N,hot,lbl};
+})();
+
+// ---------- J: e+p→n / neutron ball / bounce ----------
+const gJ=G();
+(function(){
+  const nb=makeNeutronBall(1.6);gJ.add(nb.grp);
+  const N=90,pr=mulberry32(1001);
+  const pos=new Float32Array(N*3),base=new Float32Array(N*4);
+  for(let i=0;i<N;i++){const a=pr()*6.283,b=Math.acos(2*pr()-1);base[i*4]=a;base[i*4+1]=b;base[i*4+2]=pr();base[i*4+3]=pr()*6.283;
+    pos[i*3]=0;pos[i*3+1]=0;pos[i*3+2]=0;}
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  const elec=new THREE.Points(g,new THREE.PointsMaterial({map:TDOT.elec,size:0.36,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,color:0x9fc4ff,opacity:0.9}));gJ.add(elec);
+  const shock=new THREE.Mesh(new THREE.RingGeometry(1.7,1.9,64),new THREE.MeshBasicMaterial({color:0xbfe0ff,transparent:true,opacity:0,side:THREE.DoubleSide,blending:THREE.AdditiveBlending,depthWrite:false}));gJ.add(shock);
+  const lbl=labelSprite('quả cầu neutron','#bfe0ff',48);lbl.position.set(0,-3.0,0);lbl.scale.set(4.0,0.8,1);gJ.add(lbl);
+  gJ.userData={nb,elec,base,N,shock,lbl};
+})();
+
+// ---------- K: supernova core-collapse explosion ----------
+const gK=G();
+(function(){
+  const nb=makeNeutronBall(0.8);gK.add(nb.grp);
+  const shock=new THREE.Mesh(new THREE.SphereGeometry(1,48,48),new THREE.MeshBasicMaterial({color:0xffe0b0,transparent:true,opacity:0.4,blending:THREE.AdditiveBlending,side:THREE.BackSide,depthWrite:false}));gK.add(shock);
+  const N=900,pr=mulberry32(1101);
+  const pos=new Float32Array(N*3),base=new Float32Array(N*4),col=new Float32Array(N*3);
+  for(let i=0;i<N;i++){const a=pr()*6.283,b=Math.acos(2*pr()-1);base[i*4]=a;base[i*4+1]=b;base[i*4+2]=0.5+pr()*1.4;base[i*4+3]=pr();
+    pos[i*3]=0;pos[i*3+1]=0;pos[i*3+2]=0;
+    const tt=pr();let c;if(tt<0.3)c=[0.6,0.63,0.68];else if(tt<0.6)c=[1.0,0.55,0.24];else c=[1.0,0.78,0.4];
+    col[i*3]=c[0];col[i*3+1]=c[1];col[i*3+2]=c[2];}
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));g.setAttribute('color',new THREE.BufferAttribute(col,3));
+  const ejecta=new THREE.Points(g,new THREE.PointsMaterial({map:TDOT.ember,size:0.42,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,vertexColors:true,opacity:0.9}));gK.add(ejecta);
+  const galaxy=new THREE.Sprite(new THREE.SpriteMaterial({map:softDisc(10,128,200,190,230),color:0xc8b8ff,transparent:true,opacity:0,depthWrite:false,blending:THREE.AdditiveBlending}));galaxy.scale.set(7,3,1);galaxy.position.set(9,-2,-6);gK.add(galaxy);
+  const novaFlash=new THREE.Sprite(new THREE.SpriteMaterial({map:softDisc(0,128,255,250,240),color:0xffffff,transparent:true,opacity:0,depthWrite:false,blending:THREE.AdditiveBlending}));novaFlash.scale.set(16,16,1);gK.add(novaFlash);
+  const lbl=labelSprite('Siêu tân tinh','#ffd8a0',56);lbl.position.set(0,-4.0,0);lbl.scale.set(4.2,0.9,1);lbl.material.opacity=0;gK.add(lbl);
+  gK.userData={nb,shock,ejecta,base,N,galaxy,novaFlash,lbl};
+})();
+
+// ---------- L: seed iron / white dwarf / new solar system ----------
+const gL=G();
+(function(){
+  const N=700,pr=mulberry32(1201);
+  const pos=new Float32Array(N*3),base=new Float32Array(N*4);
+  for(let i=0;i<N;i++){base[i*4]=(pr()-0.5)*40;base[i*4+1]=(pr()-0.5)*22;base[i*4+2]=(pr()-0.5)*30;base[i*4+3]=pr()*6.283;
+    pos[i*3]=base[i*4];pos[i*3+1]=base[i*4+1];pos[i*3+2]=base[i*4+2];}
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  const cloud=new THREE.Points(g,new THREE.PointsMaterial({map:TDOT.iron,size:0.42,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,color:0x9aa3ad,opacity:0.7}));gL.add(cloud);
+  const wd=new THREE.Mesh(new THREE.SphereGeometry(0.7,32,32),new THREE.MeshBasicMaterial({color:0xeaf2ff}));wd.position.set(0,0,0);wd.visible=false;gL.add(wd);
+  const wdFlash=new THREE.Sprite(new THREE.SpriteMaterial({map:softDisc(0,128,255,240,200),color:0xfff0d0,transparent:true,opacity:0,depthWrite:false,blending:THREE.AdditiveBlending}));wdFlash.scale.set(10,10,1);gL.add(wdFlash);
+  const sun=makeStar(1.6,0x7a1e00,0xff9628,0xffeeb8);sun.grp.visible=false;gL.add(sun.grp);
+  const disk=new THREE.Group();disk.visible=false;gL.add(disk);
+  const dN=260,dpr=mulberry32(1202);
+  const dpos=new Float32Array(dN*3),dbase=new Float32Array(dN*2);
+  for(let i=0;i<dN;i++){const a=dpr()*6.283,rr=2.2+dpr()*4.0;dbase[i*2]=a;dbase[i*2+1]=rr;
+    dpos[i*3]=Math.cos(a)*rr;dpos[i*3+1]=(dpr()-0.5)*0.3;dpos[i*3+2]=Math.sin(a)*rr;}
+  const dg=new THREE.BufferGeometry();dg.setAttribute('position',new THREE.BufferAttribute(dpos,3));
+  const diskPts=new THREE.Points(dg,new THREE.PointsMaterial({map:TDOT.rust,size:0.28,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,color:0xc79a6a,opacity:0.7}));disk.add(diskPts);
+  const lbl=labelSprite('sao lùn trắng','#eaf2ff',44);lbl.position.set(0,-2.4,0);lbl.scale.set(3.4,0.8,1);lbl.material.opacity=0;gL.add(lbl);
+  gL.userData={cloud,base,N,wd,wdFlash,sun,disk,diskPts,dbase,dN,lbl};
+})();
+
+// ---------- M: young Earth / iron sinks to core ----------
+const gM=G();
+(function(){
+  const earth=new THREE.Mesh(new THREE.SphereGeometry(3,64,64),new THREE.ShaderMaterial({
+    uniforms:{uT:{value:0},uMelt:{value:1}},
+    vertexShader:`varying vec3 vP;varying vec3 vN;void main(){vP=normalize(position);vN=normalize(normalMatrix*normal);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
+    fragmentShader:`
+      varying vec3 vP;varying vec3 vN;uniform float uT,uMelt;
+      vec3 hash3(vec3 p){p=vec3(dot(p,vec3(127.1,311.7,74.7)),dot(p,vec3(269.5,183.3,246.1)),dot(p,vec3(113.5,271.9,124.6)));return -1.0+2.0*fract(sin(p)*43758.5453);}
+      float snoise(vec3 p){vec3 i=floor(p);vec3 f=fract(p);vec3 u=f*f*(3.0-2.0*f);
+        return mix(mix(mix(dot(hash3(i+vec3(0,0,0)),f-vec3(0,0,0)),dot(hash3(i+vec3(1,0,0)),f-vec3(1,0,0)),u.x),
+                       mix(dot(hash3(i+vec3(0,1,0)),f-vec3(0,1,0)),dot(hash3(i+vec3(1,1,0)),f-vec3(1,1,0)),u.x),u.y),
+                   mix(mix(dot(hash3(i+vec3(0,0,1)),f-vec3(0,0,1)),dot(hash3(i+vec3(1,0,1)),f-vec3(1,0,1)),u.x),
+                       mix(dot(hash3(i+vec3(0,1,1)),f-vec3(0,1,1)),dot(hash3(i+vec3(1,1,1)),f-vec3(1,1,1)),u.x),u.y),u.z);}
+      float fbm(vec3 p){float s=0.0,a=0.5;for(int i=0;i<4;i++){s+=a*snoise(p);p*=2.02;a*=0.5;}return s;}
+      void main(){
+        vec3 d=normalize(vP);
+        float n=fbm(d*4.0+vec3(0.0,0.0,uT*0.05));
+        float crack=smoothstep(0.15,0.0,abs(fbm(d*9.0+uT*0.03)));
+        vec3 lava=mix(vec3(0.35,0.06,0.01),vec3(1.0,0.5,0.1),smoothstep(-0.3,0.5,n));
+        lava=mix(lava,vec3(1.0,0.85,0.5),crack);
+        float mu=clamp(dot(normalize(vN),vec3(0.3,0.4,0.8)),0.0,1.0);
+        lava*=0.4+0.7*mu;
+        gl_FragColor=vec4(lava*uMelt,1.0);
+      }`}));
+  gM.add(earth);
+  const N=180,pr=mulberry32(1301);
+  const pos=new Float32Array(N*3),base=new Float32Array(N*4);
+  for(let i=0;i<N;i++){const a=pr()*6.283,b=Math.acos(2*pr()-1);base[i*4]=a;base[i*4+1]=b;base[i*4+2]=pr();base[i*4+3]=pr()*6.283;
+    pos[i*3]=0;pos[i*3+1]=0;pos[i*3+2]=0;}
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  const sink=new THREE.Points(g,new THREE.PointsMaterial({map:TDOT.iron,size:0.3,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,color:0xc9d0d6,opacity:0.85}));gM.add(sink);
+  const core=makeIronCore(0.7);core.visible=false;gM.add(core);
+  const lbl=labelSprite('lõi Ni-Fe','#c9d0d6',48);lbl.position.set(0,-3.8,0);lbl.scale.set(2.8,0.8,1);lbl.material.opacity=0;gM.add(lbl);
+  gM.userData={earth,sink,base,N,core,lbl};
+})();
+
+// ---------- N: Earth core cross-section / geodynamo → magnetosphere ----------
+const gN=G();
+(function(){
+  const grp=new THREE.Group();gN.add(grp);
+  const mantle=new THREE.Mesh(new THREE.SphereGeometry(3.4,48,48),new THREE.MeshBasicMaterial({color:0x3a2a24,transparent:true,opacity:0.28,side:THREE.BackSide,depthWrite:false,blending:THREE.NormalBlending}));grp.add(mantle);
+  const outer=new THREE.Mesh(new THREE.SphereGeometry(2.3,48,48),new THREE.MeshBasicMaterial({color:0xff7a3a,transparent:true,opacity:0.5,blending:THREE.AdditiveBlending,depthWrite:false}));grp.add(outer);
+  const inner=makeIronCore(1.1);inner.material.emissive=new THREE.Color(0xff6030);inner.material.emissiveIntensity=0.5;grp.add(inner);
+  const field=new THREE.Group();grp.add(field);
+  const fMat=new THREE.LineBasicMaterial({color:0x7fe0ff,transparent:true,opacity:0.55});
+  const loops=[];
+  for(let k=0;k<8;k++){
+    const ang=k/8*6.283;const R=4.5+ (k%2)*1.4;
+    const seg=[];for(let s=0;s<=40;s++){const th=-Math.PI*0.5+Math.PI*(s/40);
+      const x=R*Math.cos(th)*Math.cos(th)*Math.cos(th);const y=R*Math.sin(th)*0.9;
+      seg.push(new THREE.Vector3(x,y,0));}
+    const ln=new THREE.Line(new THREE.BufferGeometry().setFromPoints(seg),fMat);ln.rotation.y=ang;field.add(ln);loops.push(ln);
+  }
+  field.visible=false;
+  const lblIn=labelSprite('lõi trong rắn','#c9d0d6',40);lblIn.position.set(0,-1.0,1.4);lblIn.scale.set(3.0,0.7,1);lblIn.material.opacity=0;grp.add(lblIn);
+  const lblOut=labelSprite('lõi ngoài lỏng','#ff9a5a',40);lblOut.position.set(2.6,1.6,0);lblOut.scale.set(3.2,0.7,1);lblOut.material.opacity=0;grp.add(lblOut);
+  const lblMag=labelSprite('từ quyển','#7fe0ff',48);lblMag.position.set(0,-4.6,0);lblMag.scale.set(2.8,0.8,1);lblMag.material.opacity=0;gN.add(lblMag);
+  gN.userData={grp,mantle,outer,inner,field,loops,lblIn,lblOut,lblMag};
+})();
+
+// ---------- O: magnetosphere shielding solar wind + aurora ----------
+const gO=G();
+(function(){
+  const earth=new THREE.Mesh(new THREE.SphereGeometry(2.2,64,64),new THREE.MeshPhongMaterial({map:TEX.earth,bumpMap:TEX.earthBump,bumpScale:0.05,specularMap:TEX.earthSpec,specular:new THREE.Color(0x223050),shininess:12}));gO.add(earth);
+  const cloud=new THREE.Mesh(new THREE.SphereGeometry(2.24,64,64),new THREE.MeshPhongMaterial({map:TEX.clouds,alphaMap:TEX.clouds,transparent:true,opacity:0.5,depthWrite:false}));gO.add(cloud);
+  const magMat=new THREE.ShaderMaterial({transparent:true,depthWrite:false,side:THREE.BackSide,blending:THREE.AdditiveBlending,
+    vertexShader:`varying vec3 vN;varying vec3 vP;void main(){vN=normalize(normalMatrix*normal);vec4 mv=modelViewMatrix*vec4(position,1.0);vP=mv.xyz;gl_Position=projectionMatrix*mv;}`,
+    fragmentShader:`varying vec3 vN;varying vec3 vP;void main(){float f=pow(1.0-abs(dot(normalize(vN),normalize(-vP))),2.4);gl_FragColor=vec4(vec3(0.5,0.88,1.0)*f,f*0.85);}`});
+  const mag=new THREE.Mesh(new THREE.SphereGeometry(3.6,48,48),magMat);mag.scale.set(0.85,0.9,1.7);mag.position.set(0,0,-1.6);gO.add(mag);
+  const N=360,pr=mulberry32(1401);
+  const pos=new Float32Array(N*3),base=new Float32Array(N*4);
+  for(let i=0;i<N;i++){base[i*4]=(pr()-0.5)*8;base[i*4+1]=(pr()-0.5)*8;base[i*4+2]=pr();base[i*4+3]=pr()*6.283;
+    pos[i*3]=0;pos[i*3+1]=0;pos[i*3+2]=0;}
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  const wind=new THREE.Points(g,new THREE.PointsMaterial({map:TDOT.oxy,size:0.24,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,color:0xbfe6ff,opacity:0.8}));gO.add(wind);
+  const aurN=new THREE.Mesh(new THREE.TorusGeometry(0.8,0.14,12,48),new THREE.MeshBasicMaterial({color:0x4ff0a0,transparent:true,opacity:0,blending:THREE.AdditiveBlending,depthWrite:false}));aurN.rotation.x=Math.PI*0.5;aurN.position.set(0,2.0,0);gO.add(aurN);
+  const aurS=new THREE.Mesh(new THREE.TorusGeometry(0.8,0.14,12,48),new THREE.MeshBasicMaterial({color:0xb57bff,transparent:true,opacity:0,blending:THREE.AdditiveBlending,depthWrite:false}));aurS.rotation.x=Math.PI*0.5;aurS.position.set(0,-2.0,0);gO.add(aurS);
+  const lblWind=labelSprite('gió Mặt Trời','#bfe6ff',44);lblWind.position.set(4.4,3.0,0);lblWind.scale.set(3.2,0.8,1);lblWind.material.opacity=0;gO.add(lblWind);
+  const lblAur=labelSprite('cực quang','#4ff0a0',44);lblAur.position.set(0,3.6,0);lblAur.scale.set(2.6,0.8,1);lblAur.material.opacity=0;gO.add(lblAur);
+  gO.userData={earth,cloud,mag,wind,base,N,aurN,aurS,lblWind,lblAur};
+})();
+
+// ---------- P: closing — death↔life ↔ hand on chest ----------
+const gP=G();
+(function(){
+  const feDeath=makeIronCore(1.0);feDeath.position.set(-6,1.5,0);gP.add(feDeath);
+  const deathFire=new THREE.Mesh(new THREE.SphereGeometry(1.7,32,32),new THREE.MeshBasicMaterial({color:0xff5a24,transparent:true,opacity:0.35,blending:THREE.AdditiveBlending,side:THREE.BackSide,depthWrite:false}));deathFire.position.set(-6,1.5,0);gP.add(deathFire);
+  const earthLife=new THREE.Mesh(new THREE.SphereGeometry(1.2,48,48),new THREE.MeshPhongMaterial({map:TEX.earth,bumpMap:TEX.earthBump,bumpScale:0.03,specularMap:TEX.earthSpec,specular:new THREE.Color(0x223050),shininess:10}));earthLife.position.set(6,1.5,0);gP.add(earthLife);
+  const lifeMag=new THREE.Mesh(new THREE.SphereGeometry(1.7,32,32),new THREE.MeshBasicMaterial({color:0x7fe0ff,transparent:true,opacity:0.3,blending:THREE.AdditiveBlending,side:THREE.BackSide,depthWrite:false}));lifeMag.position.set(6,1.5,0);gP.add(lifeMag);
+  const glow=new THREE.Sprite(new THREE.SpriteMaterial({map:softDisc(0,128,196,66,58),color:0xc4453b,transparent:true,opacity:0,depthWrite:false,blending:THREE.AdditiveBlending}));glow.scale.set(9,9,1);gP.add(glow);
+  const hemo=new THREE.Group();hemo.visible=false;gP.add(hemo);
+  const hub=new THREE.Mesh(new THREE.IcosahedronGeometry(0.55,1),new THREE.MeshStandardMaterial({color:0x7a2626,emissive:0x2a0808,emissiveIntensity:0.5,roughness:0.6,flatShading:true}));hemo.add(hub);
+  const fe=makeIronCore(0.32);fe.position.set(0.9,0.3,0);hemo.add(fe);
+  const ox=new THREE.Mesh(new THREE.SphereGeometry(0.13,16,16),new THREE.MeshStandardMaterial({color:0x7fe0ff,emissive:0x2aa0d0,emissiveIntensity:1.3,roughness:0.3}));ox.position.set(1.35,0.5,0);hemo.add(ox);
+  const N=200,pr=mulberry32(1501);
+  const pos=new Float32Array(N*3),base=new Float32Array(N*4);
+  for(let i=0;i<N;i++){base[i*4]=(pr()-0.5)*30;base[i*4+1]=(pr()-0.5)*14;base[i*4+2]=(pr()-0.5)*18;base[i*4+3]=pr()*6.283;
+    pos[i*3]=base[i*4];pos[i*3+1]=base[i*4+1];pos[i*3+2]=base[i*4+2];}
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  const link=new THREE.Points(g,new THREE.PointsMaterial({map:TDOT.iron,size:0.34,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,color:0x9aa3ad,opacity:0.6}));gP.add(link);
+  const novaFar=new THREE.Sprite(new THREE.SpriteMaterial({map:softDisc(0,128,255,220,180),color:0xffd8a0,transparent:true,opacity:0,depthWrite:false,blending:THREE.AdditiveBlending}));novaFar.scale.set(5,5,1);novaFar.position.set(-9,4,-8);gP.add(novaFar);
+  const lblSame=labelSprite('cùng một nguyên tố','#c9d0d6',48);lblSame.position.set(0,-3.4,0);lblSame.scale.set(4.2,0.8,1);lblSame.material.opacity=0;gP.add(lblSame);
+  gP.userData={feDeath,deathFire,earthLife,lifeMag,glow,hemo,fe,ox,link,base,N,novaFar,lblSame};
+})();
+
+function setCam(px,py,pz,lx,ly,lz,fov){camera.position.set(px,py,pz);camera.lookAt(lx||0,ly||0,lz||0);if(fov){camera.fov=fov;camera.updateProjectionMatrix();}}
+
+// ============================================================
+//  MAIN renderAtTime(t) — deterministic
+// ============================================================
+function renderAtTime(t){
+  gA.visible=inSc(t,'A');gB.visible=inSc(t,'B');gC.visible=inSc(t,'C');gD.visible=inSc(t,'D');
+  gE.visible=inSc(t,'E');gF.visible=inSc(t,'F');gG.visible=inSc(t,'G');gH.visible=inSc(t,'H');
+  gI.visible=inSc(t,'I');gJ.visible=inSc(t,'J');gK.visible=inSc(t,'K');gL.visible=inSc(t,'L');
+  gM.visible=inSc(t,'M');gN.visible=inSc(t,'N');gO.visible=inSc(t,'O');gP.visible=inSc(t,'P');
+
+  stars.rotation.y=t*0.0016;stars.rotation.x=Math.sin(t*0.02)*0.02;
+  const meditative=inSc(t,'A')||inSc(t,'B')||inSc(t,'P');
+  const fieryScene=inSc(t,'K')||inSc(t,'I')||inSc(t,'J');
+  const starOp=meditative?0.4:(fieryScene?0.8:0.75);
+  stars.material.uniforms.uOp.value=starOp;
+  mwSprite.material.opacity=0.16*starOp;
+
+  let flash=0.0;
+  key.intensity=1.15;
+
+  try{
+  // ---------------- A: blood / heartbeat ----------------
+  if(gA.visible){
+    const d=gA.userData;const p=loc(t,'A');const hb=heart(t);
+    d.glow.material.opacity=(0.3+0.6*hb)*smooth(clamp(t/2.0,0,1))*(t<11?1:smooth(clamp((13-t)/2,0,1)));
+    d.glow.scale.setScalar(8+hb*2.2);
+    const flowOp=smooth(clamp((t-11)/2.5,0,1));
+    const bl=d.bl,arr=bl.pts.geometry.attributes.position.array;
+    for(let i=0;i<bl.N;i++){const z0=bl.base[i*4],a=bl.base[i*4+1],rr=bl.base[i*4+2],sp=bl.base[i*4+3];
+      let z=((z0+t*(3+sp*4))%bl.spanZ);if(z>bl.spanZ/2)z-=bl.spanZ;
+      arr[i*3]=Math.cos(a+t*0.1)*rr;arr[i*3+1]=Math.sin(a+t*0.1)*rr;arr[i*3+2]=z;}
+    bl.pts.geometry.attributes.position.needsUpdate=true;bl.pts.material.opacity=0.85*flowOp;
+    const ir=d.iron,iarr=ir.pts.geometry.attributes.position.array;
+    for(let i=0;i<ir.N;i++){const z0=ir.base[i*4],a=ir.base[i*4+1],rr=ir.base[i*4+2],sp=ir.base[i*4+3];
+      let z=((z0+t*(3+sp*4))%ir.spanZ);if(z>ir.spanZ/2)z-=ir.spanZ;
+      iarr[i*3]=Math.cos(a+t*0.1)*rr;iarr[i*3+1]=Math.sin(a+t*0.1)*rr;iarr[i*3+2]=z;}
+    ir.pts.geometry.attributes.position.needsUpdate=true;ir.pts.material.opacity=0.9*flowOp;
+    if(t<11)setCam(0,0,22,0,0,0,42);
+    else setCam(Math.sin(t*0.06)*1.2,Math.cos(t*0.05)*0.6,6+p*2,0,0,-2,50);
+  }
+
+  // ---------------- B: hemoglobin catch/release oxygen ----------------
+  if(gB.visible){
+    const d=gB.userData;const hb=heart(t);
+    const bl=d.bl,arr=bl.pts.geometry.attributes.position.array;
+    for(let i=0;i<bl.N;i++){const z0=bl.base[i*4],a=bl.base[i*4+1],rr=bl.base[i*4+2];
+      let z=((z0+t*2.0)%bl.spanZ);if(z>bl.spanZ/2)z-=bl.spanZ;
+      arr[i*3]=Math.cos(a+t*0.08)*rr;arr[i*3+1]=Math.sin(a+t*0.08)*rr-1.0;arr[i*3+2]=z-8;}
+    bl.pts.geometry.attributes.position.needsUpdate=true;
+    const hemoOn=smooth(clamp((t-41)/2.5,0,1));
+    d.hemo.visible=hemoOn>0.02;d.hemo.rotation.y=t*0.15;d.hemo.rotation.x=Math.sin(t*0.1)*0.15;
+    d.hemo.scale.setScalar(0.7+hemoOn*0.55);
+    const cyc=(Math.sin(t*0.5)*0.5+0.5);
+    d.oxys.forEach((ox,i)=>{const arm=ox.userData.arm,ph=ox.userData.ph;
+      const feX=arm[0],feY=arm[1],feZ=arm[2];
+      const boundX=feX*1.15,boundY=feY*1.15,boundZ=feZ*1.15;
+      const freeX=feX*2.6,freeY=feY*2.6+Math.sin(t+ph)*0.4,freeZ=feZ*2.6;
+      const c=(Math.sin(t*0.5+ph)*0.5+0.5);
+      ox.position.set(boundX+(freeX-boundX)*c,boundY+(freeY-boundY)*c,boundZ+(freeZ-boundZ)*c);
+      ox.material.emissiveIntensity=1.3-c*0.7;ox.visible=hemoOn>0.1;});
+    d.feLbl.material.opacity=0.9*smooth(clamp((t-42)/2,0,1));
+    d.oxLbl.material.opacity=0.85*smooth(clamp((t-49)/2,0,1))*(0.6+0.4*cyc);
+    setCam(Math.sin(t*0.05)*2.4,0.4+Math.sin(t*0.04)*0.3,9-hemoOn*1.5,0,0,0,46);
+  }
+
+  // ---------------- C: dark secret ----------------
+  if(gC.visible){
+    const d=gC.userData;const hb=heart(t);
+    d.bloodGlow.material.opacity=(0.35+0.4*hb);
+    d.feDot.rotation.y=t*0.4;
+    d.earthSmall.rotation.y=t*0.08;
+    d.star.photoMat.uniforms.uT.value=t;d.star.core.rotation.y=t*0.02;
+    const feOn=smooth(clamp((t-99)/4,0,1));d.feNuc.visible=feOn>0.05;d.feNuc.scale.setScalar(0.3+feOn*0.9);d.feNuc.rotation.y=t*0.3;
+    const p=loc(t,'C');
+    const cx=-3+smooth(clamp((t-88)/6,0,1))*3;
+    setCam(cx,0,16-p*1.5,cx*0.4,0,0,46);
+  }
+
+  // ---------------- D: forge / tug of war ----------------
+  if(gD.visible){
+    const d=gD.userData;
+    d.star.photoMat.uniforms.uT.value=t;d.star.core.rotation.y=t*0.03;
+    const arr=d.spark.geometry.attributes.position.array;
+    for(let i=0;i<d.N;i++){const a=d.base[i*4],b=d.base[i*4+1],r0=d.base[i*4+2],ph=d.base[i*4+3];
+      const pulse=(Math.sin(t*0.8+ph)*0.5+0.5);const r=r0-pulse*1.4;
+      arr[i*3]=r*Math.sin(b)*Math.cos(a+t*0.05);arr[i*3+1]=r*Math.cos(b);arr[i*3+2]=r*Math.sin(b)*Math.sin(a+t*0.05);}
+    d.spark.geometry.attributes.position.needsUpdate=true;
+    const tug=smooth(clamp((t-135)/6,0,1));
+    d.arrows.visible=tug>0.05;
+    const beat=(Math.sin(t*1.2)*0.5+0.5);
+    d.gravLines.forEach(l=>l.material.opacity=0.6*tug);
+    d.pressLines.forEach(l=>l.material.opacity=(0.4+0.4*beat)*tug);
+    d.lblH.material.opacity=0.9*smooth(clamp((t-124)/3,0,1))*smooth(clamp((150-t)/4,0,1));
+    setCam(Math.sin(t*0.05)*2,Math.sin(t*0.04)*1,11,0,0,0,48);
+  }
+
+  // ---------------- E: fusion chain + onion → iron core ----------------
+  if(gE.visible){
+    const d=gE.userData;
+    d.onion.rotation.y=t*0.04;
+    d.stepSp.forEach((sp,i)=>{const on=smooth(clamp((t-(172+i*3.0))/2,0,1))*smooth(clamp((198-t)/4,0,1));sp.material.opacity=on;});
+    const onionOn=smooth(clamp((t-193)/3,0,1));
+    d.shells.forEach((s,i)=>{s.material.opacity=0.22*onionOn*(0.7+0.3*Math.sin(t*0.5+i));});
+    d.labels.forEach((l,i)=>{l.material.opacity=0.7*smooth(clamp((t-(196+i*1.2))/2,0,1))*smooth(clamp((232-t)/4,0,1));});
+    const feOn=smooth(clamp((t-216)/4,0,1));d.feCore.visible=feOn>0.03;d.feCore.scale.setScalar(0.3+feOn*1.0);d.feCore.rotation.y=t*0.2;
+    d.feLbl.material.opacity=0.9*smooth(clamp((t-224)/2,0,1));
+    if(t<193)setCam(0,0,13,0,0,0,48);
+    else setCam(Math.sin(t*0.04)*1.5,0.3,12-smooth(clamp((t-193)/39,0,1))*4.5,0,0,0,46);
+  }
+
+  // ---------------- F: binding energy curve ----------------
+  if(gF.visible){
+    const d=gF.userData;
+    let cx;
+    if(t<290.69){cx=smooth(clamp((t-244)/44,0,1))*0.5;}
+    else {cx=0.5+smooth(clamp((t-290.69)/13,0,1))*0.42;}
+    const sx=-7+cx*14, sy=d.curveY(cx);
+    d.cursor.position.set(sx,sy,0.05);
+    d.feMark.material.opacity=1;
+    d.feLbl.material.opacity=0.95*smooth(clamp((t-257)/2,0,1));
+    d.niLbl.material.opacity=0.8*smooth(clamp((t-260)/2,0,1));
+    d.rewardLbl.material.opacity=0.9*smooth(clamp((t-272)/2,0,1))*smooth(clamp((291-t)/2,0,1));
+    d.costLbl.material.opacity=0.9*smooth(clamp((t-291)/2,0,1))*smooth(clamp((305-t)/3,0,1));
+    setCam(0,0.2,12-Math.sin(t*0.05)*0.5,0,0,0,44);
+  }
+
+  // ---------------- G: dead ash core ----------------
+  if(gG.visible){
+    const d=gG.userData;const p=loc(t,'G');
+    d.feCore.rotation.y=t*0.15;
+    const grow=1.1+smooth(p)*0.9;d.feCore.scale.setScalar(grow/1.1);
+    d.fire.material.opacity=0.22*(0.8+0.2*Math.sin(t*0.6));
+    const arr=d.rain.geometry.attributes.position.array;
+    for(let i=0;i<d.N;i++){const a=d.base[i*4],b=d.base[i*4+1],ph=d.base[i*4+3];
+      const life=((t*0.25*(0.5+d.base[i*4+2])+ph)%1);
+      const r=3.0*(1-life)+grow;
+      arr[i*3]=r*Math.sin(b)*Math.cos(a);arr[i*3+1]=r*Math.cos(b);arr[i*3+2]=r*Math.sin(b)*Math.sin(a);}
+    d.rain.geometry.attributes.position.needsUpdate=true;
+    d.lbl.material.opacity=0.85*smooth(clamp((t-311)/2,0,1));
+    setCam(Math.sin(t*0.05)*1.5,0,9-p*1.5,0,0,0,46);
+  }
+
+  // ---------------- H: Chandrasekhar limit ----------------
+  if(gH.visible){
+    const d=gH.userData;const p=loc(t,'H');
+    let fill;
+    if(t<369.46)fill=smooth(clamp((t-341)/28,0,1))*0.8;
+    else fill=0.8+smooth(clamp((t-369.46)/4,0,1))*0.35;
+    d.barFill.scale.y=Math.max(0.001,fill);
+    d.barFill.position.y=-3+fill*3;
+    const past=t>=369.46;
+    d.limitLine.material.color.setHex(past?0xff2020:0xff4a3a);
+    d.limLbl.material.opacity=0.9*smooth(clamp((t-362)/2,0,1));
+    const arr=d.elec.geometry.attributes.position.array;
+    for(let i=0;i<d.N;i++){const jit=Math.sin(t*3+i)*0.06;
+      arr[i*3]=3.5+d.base[i*3]*(1-p*0.2)+Math.sin(t*2+i)*0.05;arr[i*3+1]=d.base[i*3+1]*(1-p*0.2)+jit;arr[i*3+2]=d.base[i*3+2];}
+    d.elec.geometry.attributes.position.needsUpdate=true;
+    d.eLbl.material.opacity=0.85*smooth(clamp((t-352)/2,0,1));
+    d.secLbl.material.opacity=smooth(clamp((t-370)/1.5,0,1))*(0.6+0.4*Math.sin(t*6));
+    setCam(0,0,12,0,0,0,46);
+  }
+
+  // ---------------- I: core collapse ----------------
+  if(gI.visible){
+    const d=gI.userData;const p=loc(t,'I');
+    const sh=1-smooth(p)*0.88;d.feCore.scale.setScalar(sh);d.feCore.rotation.y=t*0.5;
+    const arr=d.infall.geometry.attributes.position.array;
+    for(let i=0;i<d.N;i++){const a=d.base[i*4],b=d.base[i*4+1],r0=d.base[i*4+2],ph=d.base[i*4+3];
+      const life=((t*(1.2+ph*1.5)+ph*10)%1);
+      const r=(4.5*(1-life))*(1-p*0.5)+0.2;
+      arr[i*3]=r*Math.sin(b)*Math.cos(a);arr[i*3+1]=r*Math.cos(b);arr[i*3+2]=r*Math.sin(b)*Math.sin(a);}
+    d.infall.geometry.attributes.position.needsUpdate=true;
+    d.hot.material.opacity=smooth(p)*0.9;d.hot.scale.setScalar(1.5+smooth(p)*2);
+    d.lbl.material.opacity=0.9*smooth(clamp((t-380)/2,0,1));
+    const shake=smooth(p)*0.12;
+    setCam(Math.sin(t*8)*shake,Math.cos(t*7)*shake,14-smooth(p)*7,0,0,0,46);
+  }
+
+  // ---------------- J: neutron ball / bounce ----------------
+  if(gJ.visible){
+    const d=gJ.userData;
+    d.nb.mat.uniforms.uT.value=t;d.nb.core.rotation.y=t*0.4;
+    const arr=d.elec.geometry.attributes.position.array;
+    for(let i=0;i<d.N;i++){const a=d.base[i*4],b=d.base[i*4+1],ph=d.base[i*4+3];
+      const life=((t*(1.0+d.base[i*4+2])+ph)%1);
+      const r=4.5*(1-life)+1.6;
+      arr[i*3]=r*Math.sin(b)*Math.cos(a);arr[i*3+1]=r*Math.cos(b);arr[i*3+2]=r*Math.sin(b)*Math.sin(a);}
+    d.elec.geometry.attributes.position.needsUpdate=true;
+    d.elec.material.opacity=0.9*smooth(clamp((417.48-t)/2,0,1));
+    const nbScale=0.7+smooth(clamp((t-398)/6,0,1))*0.4;d.nb.grp.scale.setScalar(nbScale);
+    const bounce=band(t,418,428,1.5);
+    d.shock.material.opacity=bounce*0.8;d.shock.scale.setScalar(1+smooth(clamp((t-418)/6,0,1))*3);
+    d.lbl.material.opacity=0.9*smooth(clamp((t-409)/2,0,1));
+    setCam(Math.sin(t*0.06)*1.5,0.2,10-smooth(clamp((t-398)/20,0,1))*1.5,0,0,0,46);
+  }
+
+  // ---------------- K: supernova ----------------
+  if(gK.visible){
+    const d=gK.userData;
+    d.nb.mat.uniforms.uT.value=t;d.nb.core.rotation.y=t*0.5;
+    const exp=smooth(clamp((t-435.54)/2.5,0,1));
+    flash=Math.max(flash,band(t,435.54,437.5,0.6)*0.85);
+    const sw=exp*8;d.shock.scale.setScalar(0.5+sw);d.shock.material.opacity=0.4*smooth(clamp((450-t)/12,0,1));
+    const arr=d.ejecta.geometry.attributes.position.array;
+    for(let i=0;i<d.N;i++){const a=d.base[i*4],b=d.base[i*4+1],sp=d.base[i*4+2],ph=d.base[i*4+3];
+      const r=(t-435.54)*(0.8+sp*1.4)*(0.4+ph*0.8);const rr=Math.max(0,r);
+      arr[i*3]=rr*Math.sin(b)*Math.cos(a);arr[i*3+1]=rr*Math.cos(b);arr[i*3+2]=rr*Math.sin(b)*Math.sin(a);}
+    d.ejecta.geometry.attributes.position.needsUpdate=true;
+    d.ejecta.material.opacity=0.9*exp;
+    d.nb.grp.scale.setScalar(Math.max(0.15,1-exp*0.6));
+    d.novaFlash.material.opacity=band(t,436,455,3)*0.5+band(t,435.54,438,0.8)*0.5;
+    d.novaFlash.scale.setScalar(6+exp*10);
+    d.galaxy.material.opacity=smooth(clamp((t-456)/3,0,1))*smooth(clamp((490-t)/4,0,1))*0.5;
+    d.lbl.material.opacity=0.9*smooth(clamp((t-448)/2,0,1))*smooth(clamp((492-t)/3,0,1));
+    setCam(Math.sin(t*0.05)*2,0.5,10+smooth(clamp((t-435.54)/40,0,1))*8,0,0,0,50);
+  }
+
+  // ---------------- L: seed iron / white dwarf / new solar system ----------------
+  if(gL.visible){
+    const d=gL.userData;
+    const arr=d.cloud.geometry.attributes.position.array;
+    const collapse=smooth(clamp((t-552)/16,0,1));
+    for(let i=0;i<d.N;i++){const x0=d.base[i*4],y0=d.base[i*4+1],z0=d.base[i*4+2],ph=d.base[i*4+3];
+      const drift=Math.sin(t*0.1+ph)*0.5;
+      arr[i*3]=x0*(1-collapse*0.85)+drift;arr[i*3+1]=y0*(1-collapse*0.85)+Math.cos(t*0.08+ph)*0.4;arr[i*3+2]=z0*(1-collapse*0.85);}
+    d.cloud.geometry.attributes.position.needsUpdate=true;
+    d.cloud.material.opacity=0.7*(1-collapse*0.4);
+    const wdOn=band(t,529,545,1.5);d.wd.visible=wdOn>0.05;d.wd.scale.setScalar(0.7*(1-band(t,538,545,1)*0.5));
+    d.wdFlash.material.opacity=band(t,538,546,1.2)*0.7;d.wdFlash.scale.setScalar(6+band(t,538,546,1.2)*8);
+    d.sun.grp.visible=collapse>0.1;d.sun.photoMat.uniforms.uT.value=t;d.sun.core.rotation.y=t*0.05;
+    d.sun.grp.scale.setScalar(0.3+collapse*0.9);
+    d.disk.visible=collapse>0.2;d.disk.rotation.y=t*0.15;
+    const darr=d.diskPts.geometry.attributes.position.array;
+    for(let i=0;i<d.dN;i++){const a=d.dbase[i*2],rr=d.dbase[i*2+1];
+      darr[i*3]=Math.cos(a+t*0.2)*rr;darr[i*3+2]=Math.sin(a+t*0.2)*rr;}
+    d.diskPts.geometry.attributes.position.needsUpdate=true;
+    d.diskPts.material.opacity=0.7*smooth(clamp((t-556)/3,0,1));
+    d.lbl.material.opacity=0.85*smooth(clamp((t-533)/2,0,1))*smooth(clamp((548-t)/3,0,1));
+    if(t<552)setCam(Math.sin(t*0.04)*3,Math.cos(t*0.03)*1.5,14,0,0,0,50);
+    else setCam(Math.sin(t*0.04)*2,0.5,13-collapse*3,0,0,0,48);
+  }
+
+  // ---------------- M: young Earth / iron sinks ----------------
+  if(gM.visible){
+    const d=gM.userData;
+    d.earth.material.uniforms.uT.value=t;d.earth.rotation.y=t*0.06;
+    const sinkOn=smooth(clamp((t-602)/4,0,1));
+    const arr=d.sink.geometry.attributes.position.array;
+    for(let i=0;i<d.N;i++){const a=d.base[i*4],b=d.base[i*4+1],r0=d.base[i*4+2],ph=d.base[i*4+3];
+      const life=((t*0.2*(0.5+r0)+ph)%1);
+      const r=3.2*(1-life);
+      arr[i*3]=r*Math.sin(b)*Math.cos(a);arr[i*3+1]=r*Math.cos(b);arr[i*3+2]=r*Math.sin(b)*Math.sin(a);}
+    d.sink.geometry.attributes.position.needsUpdate=true;
+    d.sink.material.opacity=0.85*sinkOn;
+    d.core.visible=sinkOn>0.4;d.core.scale.setScalar(0.4+sinkOn*0.5);d.core.rotation.y=t*0.2;
+    d.lbl.material.opacity=0.85*smooth(clamp((t-609)/2,0,1));
+    setCam(Math.sin(t*0.04)*2,0.3,13-smooth(clamp((t-588)/29,0,1))*3,0,0,0,48);
+  }
+
+  // ---------------- N: geodynamo / magnetosphere ----------------
+  if(gN.visible){
+    const d=gN.userData;
+    d.grp.rotation.y=t*0.05;
+    d.inner.rotation.y=t*0.3;
+    d.outer.material.opacity=0.5*(0.75+0.25*Math.sin(t*0.8));
+    const fieldOn=smooth(clamp((t-636)/4,0,1));d.field.visible=fieldOn>0.05;
+    d.loops.forEach((l,i)=>l.material.opacity=0.55*fieldOn*(0.7+0.3*Math.sin(t*0.6+i)));
+    d.lblIn.material.opacity=0.85*smooth(clamp((t-620)/2,0,1))*smooth(clamp((636-t)/2,0,1));
+    d.lblOut.material.opacity=0.85*smooth(clamp((t-625)/2,0,1))*smooth(clamp((636-t)/2,0,1));
+    d.lblMag.material.opacity=0.9*smooth(clamp((t-645)/2,0,1));
+    if(t<636)setCam(Math.sin(t*0.05)*2,0.3,11-smooth(clamp((t-617)/18,0,1))*2,0,0,0,46);
+    else setCam(Math.sin(t*0.04)*2.5,0.8,12+smooth(clamp((t-636)/14,0,1))*2,0,0,0,50);
+  }
+
+  // ---------------- O: solar wind shield + aurora ----------------
+  if(gO.visible){
+    const d=gO.userData;
+    d.earth.rotation.y=t*0.06;d.cloud.rotation.y=t*0.075;
+    d.mag.material.opacity=1;
+    const arr=d.wind.geometry.attributes.position.array;
+    for(let i=0;i<d.N;i++){const y0=d.base[i*4+1],ph=d.base[i*4+3],sp=d.base[i*4+2];
+      const life=((t*(0.4+sp*0.5)+ph)%1);
+      let x=9-life*18;
+      const bend=Math.exp(-x*x*0.12);const yb=y0+Math.sign(y0||1)*bend*2.2;
+      arr[i*3]=x;arr[i*3+1]=yb;arr[i*3+2]=d.base[i*4+1]*0.3;}
+    d.wind.geometry.attributes.position.needsUpdate=true;
+    d.wind.material.opacity=0.8*smooth(clamp((t-651)/2,0,1));
+    const aurOn=smooth(clamp((t-669)/3,0,1))*(0.6+0.4*Math.sin(t*1.5));
+    d.aurN.material.opacity=0.8*aurOn;d.aurS.material.opacity=0.8*aurOn;
+    d.aurN.scale.setScalar(1+0.15*Math.sin(t*2));d.aurS.scale.setScalar(1+0.15*Math.cos(t*2));
+    d.lblWind.material.opacity=0.85*smooth(clamp((t-653)/2,0,1))*smooth(clamp((668-t)/2,0,1));
+    d.lblAur.material.opacity=0.85*smooth(clamp((t-670)/2,0,1));
+    setCam(4-smooth(clamp((t-650.76)/40,0,1))*3,0.5,11,0,0,0,48);
+  }
+
+  // ---------------- P: closing ----------------
+  if(gP.visible){
+    const d=gP.userData;const hb=heart(t);
+    const cmpOn=smooth(clamp((t-691)/2,0,1))*smooth(clamp((707-t)/2,0,1));
+    d.feDeath.visible=cmpOn>0.02;d.feDeath.rotation.y=t*0.15;
+    d.deathFire.visible=cmpOn>0.02;d.deathFire.material.opacity=0.35*cmpOn*(0.8+0.2*Math.sin(t*0.7));
+    d.earthLife.visible=cmpOn>0.02;d.earthLife.rotation.y=t*0.08;
+    d.lifeMag.visible=cmpOn>0.02;d.lifeMag.material.opacity=0.3*cmpOn;
+    d.lblSame.material.opacity=0.9*smooth(clamp((t-694)/2,0,1))*smooth(clamp((707-t)/2,0,1));
+    const chestOn=smooth(clamp((t-707.61)/2,0,1));
+    d.glow.material.opacity=(0.25+0.55*hb)*chestOn;d.glow.scale.setScalar(8+hb*2.2);
+    const hemoOn=smooth(clamp((t-718)/3,0,1))*smooth(clamp((740-t)/3,0,1));
+    d.hemo.visible=hemoOn>0.05;d.hemo.rotation.y=t*0.15;d.hemo.scale.setScalar(0.6+hemoOn*0.5);
+    const cyc=(Math.sin(t*0.5)*0.5+0.5);
+    d.ox.material.emissiveIntensity=1.0+0.5*cyc;
+    const arr=d.link.geometry.attributes.position.array;
+    for(let i=0;i<d.N;i++){const x0=d.base[i*4],y0=d.base[i*4+1],z0=d.base[i*4+2],ph=d.base[i*4+3];
+      arr[i*3]=x0+Math.sin(t*0.1+ph)*0.5;arr[i*3+1]=y0+Math.cos(t*0.08+ph)*0.4;arr[i*3+2]=z0+Math.sin(t*0.07+ph)*0.4;}
+    d.link.geometry.attributes.position.needsUpdate=true;
+    d.link.material.opacity=0.5*smooth(clamp((t-724)/3,0,1));
+    d.novaFar.material.opacity=0.5*smooth(clamp((t-724)/3,0,1))*(0.7+0.3*Math.sin(t*0.5));
+    if(t<707.61)setCam(0,0,16,0,0,0,48);
+    else if(t<769)setCam(Math.sin(t*0.04)*2,Math.sin(t*0.03)*1,10-smooth(clamp((t-707.61)/40,0,1))*2,0,0,0,46);
+    else setCam(Math.sin(t*0.04)*2,1.0,10+smooth(clamp((t-769)/20,0,1))*3,0,0,0,48);
+  }
+  }catch(err){var ed=document.getElementById('err');if(ed){ed.style.display='block';ed.textContent='SCENE ERR @t='+t.toFixed(1)+': '+(err&&err.message||err);}}
+
+  // ---------------- global fades ----------------
+  let fade=1.0;
+  fade*=smooth(clamp(t/3.5,0,1));
+  fade*=smooth(clamp((TOTAL-t)/4.5,0,1));
+
+  lens.uniforms.uT.value=t;
+  lens.uniforms.uFade.value=fade;
+  lens.uniforms.uFlash.value=flash;
+  const fiery=inSc(t,'D')||inSc(t,'E')||inSc(t,'G')||inSc(t,'I')||inSc(t,'K')||(inSc(t,'M')&&t<610);
+  bloom.strength=fiery?1.15:(fieryScene?1.2:0.85);
+
+  updateText(t);
+  composer.render();
+}
+
+// subtitle / chapter lookup
+let _lastSub=-1,_lastChap='';
+function updateText(t){
+  let idx=0;for(let i=0;i<CUES.length;i++){if(CUES[i].t<=t+1e-6)idx=i;else break;}
+  const cur=CUES[idx];
+  if(idx!==_lastSub){document.getElementById('sub').textContent=cur?cur.s:'';_lastSub=idx;}
+  let chT=-1,chS='';for(const c of CUES){if(c.ch&&c.t<=t){chT=c.t;chS=c.ch;}}
+  const chapEl=document.getElementById('chap');
+  if(chS!==_lastChap){chapEl.textContent=chS;_lastChap=chS;}
+  const op=chT>=0?smooth(clamp((t-chT)/0.8,0,1))*smooth(clamp((chT+4.5-t)/1.2,0,1)):0;
+  chapEl.style.opacity=op;
+  document.getElementById('sub').style.opacity=1;
+}
+
+// ============================================================
+//  GSAP timeline (paused) — deterministic driver
+// ============================================================
+window.__timelines=window.__timelines||{};
+const tl=gsap.timeline({paused:true});
+const clk={t:0};
+tl.to(clk,{t:TOTAL,duration:TOTAL,ease:"none",onUpdate:()=>renderAtTime(clk.t)},0);
+window.__timelines["nguyen-to-sat"]=tl;
+
+// initial render
+renderAtTime(0);
+</script>
+</body>
+</html>

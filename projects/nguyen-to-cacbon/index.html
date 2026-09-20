@@ -1,0 +1,1331 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, height=1080">
+<title>Cacbon — Nguyên tố của vũ trụ và của sự sống — HyperFrames</title>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{width:1920px;height:1080px;overflow:hidden;background:#050406;font-family:"Segoe UI",-apple-system,Roboto,sans-serif;}
+  #root{position:relative;width:1920px;height:1080px;}
+  #c{position:absolute;inset:0;display:block;z-index:0;}
+  #vig{position:absolute;inset:0;pointer-events:none;z-index:6;background:radial-gradient(ellipse at center,rgba(0,0,0,0) 46%,rgba(5,4,6,.72) 100%);}
+  #chap{position:absolute;left:50%;top:6.4%;transform:translateX(-50%);z-index:18;color:#ffcf9a;font-size:26px;font-weight:600;letter-spacing:6px;text-transform:uppercase;opacity:0;text-shadow:0 2px 18px rgba(0,0,0,.95);white-space:nowrap;}
+  #sub{position:absolute;left:50%;bottom:8.5%;transform:translateX(-50%);z-index:20;width:min(1400px,86%);text-align:center;color:#f4f0ea;font-size:40px;font-weight:600;line-height:1.4;text-shadow:0 2px 18px rgba(0,0,0,.96),0 0 3px rgba(0,0,0,.96);}
+  #err{position:absolute;left:12px;top:12px;z-index:99;color:#ff9090;background:rgba(0,0,0,.8);padding:8px 10px;font:12px/1.5 monospace;max-width:90%;white-space:pre-wrap;border-radius:8px;display:none;}
+</style>
+</head>
+<body>
+<div data-hf-id="hf-root" id="root" data-composition-id="nguyen-to-cacbon" data-start="0" data-duration="584.05" data-width="1920" data-height="1080">
+  <canvas data-hf-id="hf-c" id="c" class="clip" data-start="0.01" data-duration="584.05" data-track-index="0"></canvas>
+  <audio data-hf-id="hf-narr" id="narr" class="clip" data-start="0" data-duration="584.05" data-track-index="1" src="projects/nguyen-to-cacbon/voice/narration_mixed.mp3"></audio>
+  <div data-hf-id="hf-vig" id="vig"></div>
+  <div data-hf-id="hf-chap" id="chap" data-layout-allow-occlusion></div>
+  <div data-hf-id="hf-sub" id="sub" data-layout-allow-occlusion></div>
+  <div data-hf-id="hf-err" id="err"></div>
+</div>
+
+<script>
+window.addEventListener('error',function(e){var d=document.getElementById('err');if(!d)return;d.style.display='block';
+  d.textContent='LỖI: '+(e.message||e.type)+(e.filename?('\n@ '+e.filename.split('/').pop()+':'+e.lineno):'');});
+
+/* ============================================================
+   "CACBON — Nguyên tố của vũ trụ và của sự sống" — nguyen-to-cacbon
+   Composition TẤT ĐỊNH theo t. Nhiều CẢNH khác biệt, cắt theo cue.
+   Timeline khớp timing.json THẬT (t hình = t tiếng, KHÔNG remap).
+   Palette: graphite đen-xám nền · vàng-cam lò sao ấm (#FFB347/#FF6A2B) ·
+            xanh lá hữu cơ (#6FCF97) · trắng-xanh lạnh vũ trụ (#BFD9FF).
+
+   SCENE (bật/tắt theo t, cắt dứt khoát):
+    A breath    (C01-C03  0      – 27.19)  Hơi thở ra → hạt cacbon tan vào sao trường
+    B body      (C04-C05  27.19  – 50.52)  Silhouette người dựng bằng điểm cacbon
+    C earth     (C06-C08  50.52  – 85.16)  Trái Đất cô độc → sao sống-cháy-chết → tro sao
+    D bigbang   (C09-C12  85.16  – 125.54) Vũ trụ sơ khai: chỉ H + He, ô O/Fe/C tắt
+    E forge     (C13-C16  125.54 – 174.25) Bổ dọc sao → lõi lò lửa → red giant → heli va chạm
+    F triple    (C17-C19  174.25 – 214.59) Triple-alpha: 3He, Be-8 vỡ, He thứ ba near-miss
+    G hoyle     (C20-C25  214.59 – 300.56) Nghịch lý → thanh mức 7.65 MeV nét đứt → xác nhận
+    H resonance (C26-C28  300.56 – 345.47) Đường cong độ nhạy · hệ quả tắt · khe hẹp sự sống
+    I seed      (C29-C32  345.47 – 391.90) Red giant gieo vỏ · tinh vân · supernova · mây bụi
+    J cloud     (C33-C35  391.90 – 427.30) Bay trong mây bụi · kim cương nano · buckyball C60
+    K solar     (C36-C37  427.30 – 454.69) Đĩa tiền hành tinh → mặt trời mới → Trái Đất; câu hỏi
+    L bonds     (C38-C40  454.69 – 504.02) 4 tay tứ diện → chuỗi/benzen/lattice → DNA
+    M cycle     (C41-C44  504.02 – 556.88) Hơi thở vào · vòng tuần hoàn cacbon · tương lai xa
+    N close     (C45-C46  556.88 – 584.05) Người chứa sao trường · thở ra kết · fade đen
+   ============================================================ */
+
+const TOTAL=584.05;
+
+const CUES=[
+ {t:0,ch:"CHƯƠNG 1",s:"Tôi hít vào một hơi thật sâu."},
+ {t:2.18,s:"Giữ lại một nhịp."},
+ {t:4.08,s:"Rồi thở ra."},
+ {t:6.12,s:"Cái hơi tôi vừa thở ra ấy — nó không rỗng"},
+ {t:8.96,s:"không."},
+ {t:9.37,s:"Nó mang theo cacbon."},
+ {t:11.53,s:"Những nguyên tử cacbon vừa mới rời khỏi cơ"},
+ {t:14.58,s:"thể tôi, tan vào không khí quanh tôi."},
+ {t:17.25,s:"Và tôi muốn kể cho bạn nghe về những"},
+ {t:19.53,s:"nguyên tử ấy."},
+ {t:20.36,s:"Bởi vì chúng già hơn Trái Đất."},
+ {t:22.9,s:"Chúng già hơn cả Mặt Trời."},
+ {t:27.19,s:"Hãy nhìn vào bàn tay mình."},
+ {t:28.92,s:"Xương của tôi, da của tôi, từng sợi tóc."},
+ {t:33.15,s:"Bộ não đang lưu giữ mọi kỷ niệm của tôi."},
+ {t:36.52,s:"Tất cả đều được dựng lên từ cùng một viên"},
+ {t:39.5,s:"gạch nền tảng: nguyên tử cacbon."},
+ {t:41.82,s:"Cứ mỗi năm nguyên tử trong cơ thể tôi thì"},
+ {t:44.58,s:"có gần một nguyên tử là cacbon."},
+ {t:46.67,s:"Nó là bộ khung xương của mọi thứ làm nên"},
+ {t:49.89,s:"sự sống."},
+ {t:50.52,s:"Nhưng đây mới là điều khiến tôi lặng"},
+ {t:52.77,s:"người."},
+ {t:53.14,s:"Không một nguyên tử cacbon nào trong tôi"},
+ {t:55.87,s:"được sinh ra ở đây."},
+ {t:57.16,s:"Không một nguyên tử nào ra đời trên hành"},
+ {t:60.34,s:"tinh này."},
+ {t:61.05,s:"Chúng được nung, được rèn, trong lò lửa"},
+ {t:64.15,s:"của những ngôi sao."},
+ {t:65.66,s:"Những ngôi sao đã sống, đã cháy, và đã"},
+ {t:68.46,s:"chết — từ rất lâu trước khi Mặt Trời của"},
+ {t:71.41,s:"chúng ta kịp thắp sáng."},
+ {t:73.1,s:"Tôi, theo đúng nghĩa đen của từng con chữ,"},
+ {t:76.34,s:"là tàn tro của các vì sao."},
+ {t:78.35,s:"Và tôi muốn dẫn bạn về tận nơi khởi đầu,"},
+ {t:81.84,s:"để hiểu vì sao."},
+ {t:85.16,ch:"CHƯƠNG 2",s:"Hãy trôi ngược cùng tôi về mười ba tỉ năm"},
+ {t:88,s:"trước."},
+ {t:88.42,s:"Về những khoảnh khắc đầu tiên sau Big"},
+ {t:91.34,s:"Bang."},
+ {t:91.73,s:"Vũ trụ lúc ấy nóng bỏng và đơn giản đến kỳ"},
+ {t:95.24,s:"lạ."},
+ {t:95.49,s:"Nó chỉ biết làm ra hai thứ."},
+ {t:97.83,s:"Hydro, nguyên tố nhẹ nhất."},
+ {t:100.55,s:"Và một chút heli."},
+ {t:102.9,s:"Chỉ có thế."},
+ {t:104.22,s:"Không có oxy để thở."},
+ {t:106.34,s:"Không có sắt để đúc."},
+ {t:108.22,s:"Và tuyệt nhiên, không có một nguyên tử"},
+ {t:111.38,s:"cacbon nào."},
+ {t:112.3,s:"Không có gì để làm nên tôi."},
+ {t:115.09,s:"Một vũ trụ chỉ toàn hydro và heli là một"},
+ {t:118.43,s:"vũ trụ chết."},
+ {t:119.43,s:"Một vũ trụ không thể mơ tới sự sống."},
+ {t:122.56,s:"Vậy thì cacbon đã đến từ đâu?"},
+ {t:125.54,s:"Câu trả lời nằm trong bụng của những ngôi"},
+ {t:128.05,s:"sao."},
+ {t:128.3,s:"Ngôi sao là một cái lò luyện kim khổng lồ."},
+ {t:131.51,s:"Ở tâm nó, trọng lực nghiến các nguyên tử"},
+ {t:134.29,s:"vào nhau với sức ép không thể tưởng tượng"},
+ {t:137.14,s:"nổi."},
+ {t:137.43,s:"Suốt hàng tỉ năm, một ngôi sao đốt hydro"},
+ {t:140.68,s:"thành heli."},
+ {t:141.58,s:"Đó là cả cuộc đời bình yên của nó."},
+ {t:144.6,s:"Nhưng rồi nhiên liệu cạn."},
+ {t:147.02,s:"Và đây là lúc câu chuyện thật sự bắt đầu."},
+ {t:150.65,s:"Ngôi sao phồng lên."},
+ {t:152.31,s:"Nó biến thành một quái vật đỏ rực gọi là"},
+ {t:155.09,s:"sao khổng lồ đỏ, lớn đến mức có thể nuốt"},
+ {t:157.87,s:"trọn cả quỹ đạo của những hành tinh."},
+ {t:160.37,s:"Và trong cái lõi đang co lại của nó, nhiệt"},
+ {t:163.55,s:"độ vọt lên hàng trăm triệu độ."},
+ {t:165.82,s:"Nóng đến mức đó, những hạt nhân heli bắt"},
+ {t:168.3,s:"đầu lao vào nhau."},
+ {t:169.35,s:"Và ở đây, tôi phải kể cho bạn nghe một"},
+ {t:172.31,s:"phép màu ẩn trong vật lý."},
+ {t:174.25,s:"Để làm ra một nguyên tử cacbon, cần ba hạt"},
+ {t:177.34,s:"nhân heli hợp lại làm một."},
+ {t:179.25,s:"Người ta gọi đó là phản ứng ba-alpha."},
+ {t:182.64,s:"Nhưng có một trục trặc chết người."},
+ {t:185.17,s:"Khi hai hạt heli đầu tiên dính vào nhau,"},
+ {t:187.91,s:"chúng tạo ra một mảnh ghép cực kỳ mong"},
+ {t:190.51,s:"manh."},
+ {t:190.85,s:"Nó tồn tại trong khoảng thời gian ngắn đến"},
+ {t:193.96,s:"vô lý — một phần tỉ tỉ của giây rồi vỡ"},
+ {t:196.78,s:"tan."},
+ {t:197.09,s:"Vậy làm sao hạt heli thứ ba kịp lao tới và"},
+ {t:200.18,s:"dính vào, trong cái khoảnh khắc mong manh"},
+ {t:203.2,s:"đến thế?"},
+ {t:203.79,s:"Về lý thuyết, gần như là không thể."},
+ {t:207.05,s:"Cacbon lẽ ra không nên tồn tại."},
+ {t:209.81,s:"Và tôi lẽ ra cũng không nên tồn tại."},
+ {t:214.59,ch:"CHƯƠNG 3",s:"Bảy mươi năm trước, một nhà thiên văn tên"},
+ {t:217.83,s:"Fred Hoyle nhìn vào nghịch lý này."},
+ {t:220.51,s:"Ông thấy rõ: nếu phép tính đúng, sẽ chẳng"},
+ {t:224.4,s:"có cacbon nào cả."},
+ {t:226.01,s:"Nhưng cacbon rõ ràng đang tồn tại."},
+ {t:229.03,s:"Nó nằm trong chính cơ thể ông."},
+ {t:231.64,s:"Thế là Hoyle đưa ra một tiên đoán táo bạo"},
+ {t:234.23,s:"đến mức liều lĩnh."},
+ {t:235.36,s:"Ông nói: hẳn phải có một cánh cửa bí mật."},
+ {t:239.34,s:"Một điểm cộng hưởng."},
+ {t:241.46,s:"Ông tính ra rằng hạt nhân cacbon phải sở"},
+ {t:244.8,s:"hữu một mức năng lượng rất riêng, ở đúng"},
+ {t:248.15,s:"một con số: bảy phẩy sáu năm triệu"},
+ {t:250.99,s:"electron-vôn."},
+ {t:252.08,s:"Không hơn, không kém."},
+ {t:255.22,s:"Nếu tồn tại đúng cái mức năng lượng ấy, nó"},
+ {t:257.93,s:"sẽ hoạt động như một tần số cộng hưởng."},
+ {t:260.44,s:"Giống như khi bạn đẩy xích đu đúng nhịp,"},
+ {t:263.4,s:"một cú đẩy nhỏ cũng làm nó bay cao."},
+ {t:265.99,s:"Cái mức năng lượng ấy sẽ khiến ba hạt heli"},
+ {t:268.64,s:"khớp vào nhau một cách nhịp nhàng, và"},
+ {t:270.97,s:"cacbon được tạo ra hiệu quả hơn hàng chục"},
+ {t:273.56,s:"triệu lần."},
+ {t:274.18,s:"Đây là điều tôi thấy kinh ngạc nhất."},
+ {t:276.52,s:"Hoyle chưa hề nhìn thấy mức năng lượng đó."},
+ {t:280.01,s:"Chưa ai đo được nó."},
+ {t:282.17,s:"Ông tiên đoán nó phải tồn tại, chỉ vì một"},
+ {t:285.67,s:"lẽ đơn giản: vì chúng ta đang ở đây để đặt"},
+ {t:289.26,s:"câu hỏi."},
+ {t:289.94,s:"Rồi người ta mang ông vào phòng thí"},
+ {t:291.95,s:"nghiệm."},
+ {t:292.35,s:"Họ đo."},
+ {t:293.76,s:"Và cánh cửa bí mật ấy có thật."},
+ {t:296.93,s:"Nằm gần như chính xác ở nơi Hoyle đã chỉ."},
+ {t:300.56,s:"Hãy dừng lại một nhịp mà cảm nhận điều"},
+ {t:303.48,s:"này."},
+ {t:303.79,s:"Nếu cái mức năng lượng đó chỉ lệch đi một"},
+ {t:306.51,s:"chút xíu thôi, một phần rất nhỏ, thì phản"},
+ {t:309.22,s:"ứng sẽ tắt ngấm."},
+ {t:310.28,s:"Vũ trụ sẽ gần như trống trơn cacbon."},
+ {t:313.71,s:"Không cacbon, thì không có phân tử của sự"},
+ {t:317.21,s:"sống."},
+ {t:317.64,s:"Không có cây."},
+ {t:319.35,s:"Không có bạn."},
+ {t:320.77,s:"Không có tôi đang thở ra hơi này."},
+ {t:323.56,s:"Vũ trụ của chúng ta dường như được tinh"},
+ {t:326.14,s:"chỉnh đến mức hoàn hảo, chỉ vừa đủ để làm"},
+ {t:328.86,s:"ra những nguyên tử tạo nên chúng ta."},
+ {t:331.24,s:"Tôi không biết gọi đó là may mắn, là tình"},
+ {t:334.22,s:"cờ, hay là điều gì đó sâu xa hơn."},
+ {t:336.61,s:"Nhưng tôi biết một điều: chính trong cái"},
+ {t:339.59,s:"khe hẹp mong manh ấy của vật lý, sự sống"},
+ {t:342.57,s:"đã lách qua."},
+ {t:345.47,s:"Nhưng cacbon nằm sâu trong bụng một ngôi"},
+ {t:348.38,s:"sao thì đâu thể làm nên tôi."},
+ {t:350.41,s:"Nó phải thoát ra."},
+ {t:352.24,s:"Nó phải được gieo đi."},
+ {t:354.41,s:"Và những ngôi sao, khi về già, chính là"},
+ {t:357.22,s:"những kẻ gieo hạt hào phóng nhất vũ trụ."},
+ {t:360.1,s:"Ngôi sao khổng lồ đỏ bắt đầu run rẩy, phập"},
+ {t:363.62,s:"phồng."},
+ {t:364.12,s:"Nó thổi bay những lớp vỏ ngoài của chính"},
+ {t:366.97,s:"mình vào không gian."},
+ {t:368.4,s:"Từng đợt, từng đợt gió sao mang cacbon rời"},
+ {t:371.5,s:"khỏi lò lửa, trải vào bóng tối."},
+ {t:373.79,s:"Có ngôi sao lớn hơn thì kết thúc bằng một"},
+ {t:376.47,s:"tiếng nổ chói lòa, phóng vật chất của mình"},
+ {t:379.22,s:"đi khắp thiên hà."},
+ {t:380.33,s:"Cái chết của một ngôi sao trở thành một vụ"},
+ {t:383.3,s:"mùa."},
+ {t:383.58,s:"Nó gieo cacbon thành những đám mây bụi"},
+ {t:386.59,s:"mênh mông, tối đen, trôi lững lờ giữa các"},
+ {t:389.84,s:"vì sao."},
+ {t:391.9,ch:"CHƯƠNG 4",s:"Nếu bạn bay cùng tôi qua những đám mây bụi"},
+ {t:394.74,s:"ấy, bạn sẽ ngạc nhiên vì chúng sống động"},
+ {t:397.45,s:"đến nhường nào."},
+ {t:398.47,s:"Trong đó có những hạt bụi cacbon li ti,"},
+ {t:401.09,s:"giống như bồ hóng của vũ trụ, nhuộm đen cả"},
+ {t:403.92,s:"những đám mây giữa các vì sao."},
+ {t:405.94,s:"Có những phân tử hữu cơ đang lặng lẽ hình"},
+ {t:408.7,s:"thành trong lạnh giá."},
+ {t:410.11,s:"Ở đó, thậm chí có cả những viên kim cương"},
+ {t:413.21,s:"nhỏ xíu trôi nổi."},
+ {t:414.49,s:"Và có những phân tử cacbon kết thành hình"},
+ {t:417.69,s:"quả cầu rỗng hoàn hảo, như những trái bóng"},
+ {t:420.96,s:"tí hon."},
+ {t:421.51,s:"Vũ trụ, hóa ra, là một phòng thí nghiệm"},
+ {t:425.21,s:"hóa học cacbon vĩ đại."},
+ {t:427.3,s:"Rồi một ngày, một đám mây như thế co lại"},
+ {t:430.3,s:"dưới trọng lực."},
+ {t:431.43,s:"Ở trung tâm nó, một mặt trời mới bừng"},
+ {t:434.92,s:"sáng."},
+ {t:435.39,s:"Quanh đó, từ chính đám bụi cacbon ấy,"},
+ {t:438.51,s:"những hành tinh ngưng tụ lại."},
+ {t:440.95,s:"Một trong số đó là Trái Đất."},
+ {t:443.68,s:"Và bây giờ, hãy để tôi hỏi bạn một câu tôi"},
+ {t:447.3,s:"luôn tự hỏi."},
+ {t:448.33,s:"Trong cả trăm nguyên tố của vũ trụ, vì sao"},
+ {t:451.51,s:"lại là cacbon được chọn để xây nên sự"},
+ {t:454.31,s:"sống?"},
+ {t:454.69,s:"Bí mật nằm ở chỗ này."},
+ {t:456.8,s:"Mỗi nguyên tử cacbon có bốn cánh tay để"},
+ {t:459.72,s:"nắm lấy những nguyên tử khác."},
+ {t:461.89,s:"Bốn cánh tay linh hoạt, không quá tham lam"},
+ {t:465.43,s:"cũng không quá hờ hững."},
+ {t:467.37,s:"Với bốn cánh tay ấy, cacbon xây được những"},
+ {t:470.25,s:"chuỗi dài vô tận."},
+ {t:471.42,s:"Nó cuộn thành vòng."},
+ {t:473.34,s:"Nó đan thành mạng."},
+ {t:475.02,s:"Nó ghép nên những kiến trúc phức tạp không"},
+ {t:477.84,s:"nguyên tố nào khác sánh được."},
+ {t:479.78,s:"Chính vì thế mà cacbon là bộ xương của mọi"},
+ {t:482.74,s:"thứ trong tôi."},
+ {t:483.73,s:"Nó là xương sống của chuỗi DNA lưu giữ bản"},
+ {t:487.28,s:"thiết kế của tôi."},
+ {t:488.72,s:"Nó dựng nên protein, nên đường, nên chất"},
+ {t:492.97,s:"béo."},
+ {t:493.4,s:"Người ta nói, hóa học của sự sống chính là"},
+ {t:496.87,s:"hóa học của cacbon."},
+ {t:498.44,s:"Và tôi thấy câu đó đúng đến tận từng tế"},
+ {t:501.69,s:"bào."},
+ {t:504.02,s:"Vậy nên bây giờ, tôi lại hít vào một hơi"},
+ {t:507.24,s:"thật sâu."},
+ {t:507.97,s:"Và tôi nghĩ về hành trình của những nguyên"},
+ {t:510.8,s:"tử này."},
+ {t:511.28,s:"Từ một lò lửa sao đã tắt hàng tỉ năm"},
+ {t:514.22,s:"trước."},
+ {t:514.71,s:"Qua gió sao và bóng tối lạnh giá."},
+ {t:517.81,s:"Qua đám bụi, qua Trái Đất non trẻ, qua"},
+ {t:521.23,s:"đất, qua cây, qua thức ăn tôi từng ăn."},
+ {t:524.64,s:"Cho đến khoảnh khắc này, khi chúng đang là"},
+ {t:528.54,s:"chính tôi."},
+ {t:529.46,s:"Và câu chuyện chưa dừng lại."},
+ {t:531.32,s:"Cacbon trong tôi chỉ đang mượn đường qua"},
+ {t:534.09,s:"tôi mà thôi."},
+ {t:534.92,s:"Một ngày kia, nó sẽ trở về với đất, tan"},
+ {t:538.14,s:"vào không khí, được một cái cây khác hít"},
+ {t:541.44,s:"lấy, thành một sinh vật khác."},
+ {t:543.83,s:"Và trong một tương lai xa xôi không thể"},
+ {t:546.61,s:"hình dung, khi cả Mặt Trời cũng lụi tàn,"},
+ {t:549.46,s:"những nguyên tử này có thể lại trôi vào"},
+ {t:552.24,s:"không gian, và một ngày nào đó, lại được"},
+ {t:555.1,s:"góp vào một ngôi sao mới."},
+ {t:556.88,s:"Tôi không tách rời khỏi vũ trụ."},
+ {t:559.1,s:"Tôi không phải là kẻ đứng ngoài ngắm nhìn"},
+ {t:561.65,s:"những vì sao."},
+ {t:562.46,s:"Tôi được làm ra từ chúng."},
+ {t:565.06,s:"Tôi là một cách để vũ trụ, trong một"},
+ {t:567.55,s:"khoảnh khắc ngắn ngủi, tự chiêm ngưỡng"},
+ {t:570.18,s:"chính mình."},
+ {t:570.95,s:"Nên lần tới, khi bạn thở ra, hãy nhớ."},
+ {t:574.18,s:"Hơi thở ấy mang theo tàn tro của những vì"},
+ {t:577.35,s:"sao."},
+ {t:577.66,s:"Và bạn, cũng chính là một vì sao — chỉ là"},
+ {t:581.15,s:"đang thở, đang nghĩ, và đang sống."}
+];
+
+// ---- seeded PRNG (mulberry32) ----
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+
+// ---- scene boundaries (real time) ----
+const SC={
+  A:[0,27.19], B:[27.19,50.52], C:[50.52,85.16], D:[85.16,125.54],
+  E:[125.54,174.25], F:[174.25,214.59], G:[214.59,300.56], H:[300.56,345.47],
+  I:[345.47,391.90], J:[391.90,427.30], K:[427.30,454.69], L:[454.69,504.02],
+  M:[504.02,556.88], N:[556.88,584.05]
+};
+// local progress 0..1 within a scene window
+function loc(t,k){const w=SC[k];return Math.min(1,Math.max(0,(t-w[0])/(w[1]-w[0])));}
+function inSc(t,k){const w=SC[k];return t>=w[0]&&t<w[1];}
+const clamp=(x,a,b)=>Math.min(b,Math.max(a,x));
+const smooth=(x)=>{x=clamp(x,0,1);return x*x*(3-2*x);};
+// fade helper: rises 0..1 over [a,a+f], holds, falls over [b-f,b]
+function band(t,a,b,f){f=f||0.8;if(t<a-f||t>b+f)return 0;let up=smooth((t-(a-f))/(2*f));let dn=smooth((( b+f)-t)/(2*f));return Math.min(1,Math.min(up,dn));}
+
+// ============ THREE core ============
+const W=1920,H=1080;
+const renderer=new THREE.WebGLRenderer({canvas:document.getElementById('c'),antialias:true,alpha:false});
+renderer.setPixelRatio(1);renderer.setSize(W,H);
+renderer.setClearColor(0x050406,1);
+renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.05;
+renderer.outputEncoding=THREE.sRGBEncoding;
+
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(46,W/H,0.1,60000);
+camera.position.set(0,0,60);
+
+const amb=new THREE.AmbientLight(0x2a2530,0.9);scene.add(amb);
+const key=new THREE.DirectionalLight(0xfff0dc,1.15);key.position.set(6,4,8);scene.add(key);
+const rim=new THREE.DirectionalLight(0x6fa8ff,0.35);rim.position.set(-8,-3,-6);scene.add(rim);
+const sunPt=new THREE.PointLight(0xffb060,0,0);scene.add(sunPt); // used by forge/solar
+
+// texture loader (local assets)
+const texLoader=new THREE.TextureLoader();texLoader.setCrossOrigin('anonymous');
+function loadTex(p,enc){const tx=texLoader.load(p);if(enc)tx.encoding=enc;tx.anisotropy=renderer.capabilities.getMaxAnisotropy();return tx;}
+const TEX={
+  earth:loadTex('assets/tex/2_no_clouds_4k.jpg',THREE.sRGBEncoding),
+  earthBump:loadTex('assets/tex/elev_bump_4k.jpg'),
+  earthSpec:loadTex('assets/tex/water_4k.png'),
+  clouds:loadTex('assets/tex/earthcloudmap.jpg')
+};
+
+// ---------- postprocessing ----------
+const composer=new THREE.EffectComposer(renderer);
+composer.addPass(new THREE.RenderPass(scene,camera));
+const bloom=new THREE.UnrealBloomPass(new THREE.Vector2(W,H),0.85,0.72,0.62);
+composer.addPass(bloom);
+const LensShader={
+  uniforms:{tDiffuse:{value:null},uT:{value:0},uVig:{value:0.34},uCA:{value:0.0016},uGrain:{value:0.045},uFade:{value:1.0}},
+  vertexShader:`varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
+  fragmentShader:`
+   varying vec2 vUv;uniform sampler2D tDiffuse;uniform float uT,uVig,uCA,uGrain,uFade;
+   float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+   void main(){
+     vec2 d=vUv-0.5;float r=dot(d,d);
+     vec2 off=d*uCA*(1.0+r*2.2);
+     vec3 col;
+     col.r=texture2D(tDiffuse,vUv+off).r;
+     col.g=texture2D(tDiffuse,vUv).g;
+     col.b=texture2D(tDiffuse,vUv-off).b;
+     float vig=smoothstep(1.02,uVig,r*2.0);
+     col*=mix(1.0,vig,0.85);
+     float g=h(vUv*vec2(1920.0,1080.0)+fract(uT)*97.3)-0.5;
+     col+=g*uGrain;
+     col*=uFade;
+     gl_FragColor=vec4(col,1.0);
+   }`
+};
+const lens=new THREE.ShaderPass(LensShader);lens.renderToScreen=true;composer.addPass(lens);
+
+// ============================================================
+//  SHARED: starfield (temperature-colored) with Milky Way band
+// ============================================================
+const STAR_R=14000;
+function buildStars(){
+  const N=5200,pr=mulberry32(20250731);
+  const pos=new Float32Array(N*3),col=new Float32Array(N*3),siz=new Float32Array(N);
+  const tmp=new THREE.Vector3();
+  for(let i=0;i<N;i++){
+    // bias toward a milky-way band plane
+    let u=pr(),v=pr();
+    let theta=Math.acos(2*u-1),phi=2*Math.PI*v;
+    // squash toward band
+    let band=pr();if(band<0.42){theta=Math.PI*0.5+(pr()-0.5)*0.5;}
+    tmp.set(Math.sin(theta)*Math.cos(phi),Math.cos(theta)*0.7,Math.sin(theta)*Math.sin(phi)).normalize().multiplyScalar(STAR_R);
+    pos[i*3]=tmp.x;pos[i*3+1]=tmp.y;pos[i*3+2]=tmp.z;
+    // color by temperature
+    let tt=pr();let c=new THREE.Color();
+    if(tt<0.12)c.setRGB(0.62,0.72,1.0);        // blue
+    else if(tt<0.34)c.setRGB(0.9,0.94,1.0);    // white
+    else if(tt<0.66)c.setRGB(1.0,0.96,0.82);   // yellow-white
+    else if(tt<0.86)c.setRGB(1.0,0.82,0.56);   // orange
+    else c.setRGB(1.0,0.62,0.44);              // red
+    let br=0.4+pr()*0.6;c.multiplyScalar(br);
+    col[i*3]=c.r;col[i*3+1]=c.g;col[i*3+2]=c.b;
+    siz[i]=(pr()<0.06?3.4:1.0)*(0.9+pr()*1.7);
+  }
+  const g=new THREE.BufferGeometry();
+  g.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  g.setAttribute('color',new THREE.BufferAttribute(col,3));
+  g.setAttribute('aS',new THREE.BufferAttribute(siz,1));
+  const m=new THREE.ShaderMaterial({
+    uniforms:{uOp:{value:1}},transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,
+    vertexShader:`attribute float aS;attribute vec3 color;varying vec3 vC;
+      void main(){vC=color;vec4 mv=modelViewMatrix*vec4(position,1.0);
+      gl_PointSize=aS*(${STAR_R.toFixed(1)}/-mv.z);gl_Position=projectionMatrix*mv;}`,
+    fragmentShader:`varying vec3 vC;uniform float uOp;
+      void main(){vec2 d=gl_PointCoord-0.5;float r=length(d);
+      float a=smoothstep(0.5,0.0,r);gl_FragColor=vec4(vC,a*uOp);}`
+  });
+  return new THREE.Points(g,m);
+}
+const stars=buildStars();scene.add(stars);
+
+// faint milky-way nebulosity band (large soft sprite ring)
+function softDisc(inner,outer,r,g,b){
+  const cv=document.createElement('canvas');cv.width=cv.height=256;const cx=cv.getContext('2d');
+  const gr=cx.createRadialGradient(128,128,inner,128,128,outer);
+  gr.addColorStop(0,`rgba(${r},${g},${b},0.9)`);gr.addColorStop(0.5,`rgba(${r},${g},${b},0.28)`);gr.addColorStop(1,'rgba(0,0,0,0)');
+  cx.fillStyle=gr;cx.fillRect(0,0,256,256);
+  const tx=new THREE.CanvasTexture(cv);tx.encoding=THREE.sRGBEncoding;return tx;
+}
+const mwSprite=new THREE.Sprite(new THREE.SpriteMaterial({map:softDisc(0,128,150,150,190),color:0x9fb4e0,transparent:true,opacity:0.16,depthWrite:false,blending:THREE.AdditiveBlending}));
+mwSprite.scale.set(STAR_R*2.2,STAR_R*0.9,1);mwSprite.position.set(-STAR_R*0.5,-STAR_R*0.2,-STAR_R*0.7);scene.add(mwSprite);
+
+// ============================================================
+//  Reusable soft particle sprite textures
+// ============================================================
+function dotTex(rr,gg,bb){
+  const cv=document.createElement('canvas');cv.width=cv.height=64;const cx=cv.getContext('2d');
+  const gr=cx.createRadialGradient(32,32,0,32,32,32);
+  gr.addColorStop(0,`rgba(${rr},${gg},${bb},1)`);gr.addColorStop(0.4,`rgba(${rr},${gg},${bb},0.55)`);gr.addColorStop(1,'rgba(0,0,0,0)');
+  cx.fillStyle=gr;cx.fillRect(0,0,64,64);const tx=new THREE.CanvasTexture(cv);tx.encoding=THREE.sRGBEncoding;return tx;
+}
+const TDOT={carbon:dotTex(255,176,90),soot:dotTex(60,54,64),cold:dotTex(191,217,255),life:dotTex(111,207,151),white:dotTex(255,244,220)};
+
+// ============================================================
+//  GROUPS (each scene lives in its own THREE.Group, toggled by t)
+// ============================================================
+function G(){const g=new THREE.Group();g.visible=false;scene.add(g);return g;}
+
+// ---------- A: breath particles ----------
+const gA=G();
+(function(){
+  const N=900,pr=mulberry32(11);
+  const pos=new Float32Array(N*3),ph=new Float32Array(N),sp=new Float32Array(N),sz=new Float32Array(N);
+  for(let i=0;i<N;i++){
+    ph[i]=pr()*6.283;sp[i]=0.3+pr()*0.9;sz[i]=6+pr()*22;
+    pos[i*3]=(pr()-0.5)*4;pos[i*3+1]=(pr()-0.5)*4;pos[i*3+2]=(pr()-0.5)*4;
+  }
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  const m=new THREE.PointsMaterial({map:TDOT.carbon,size:12,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,color:0xffb86a});
+  const pts=new THREE.Points(g,m);gA.add(pts);
+  gA.userData={pos,ph,sp,sz,pts,N,base:pos.slice()};
+})();
+
+// ---------- B: human silhouette from carbon points ----------
+const gB=G();
+(function(){
+  // sample points in a rough standing-figure silhouette (deterministic)
+  const pr=mulberry32(42),parts=[];
+  function blob(cx,cy,rx,ry,n,tag){for(let i=0;i<n;i++){let a=pr()*6.283,rr=Math.sqrt(pr());parts.push([cx+Math.cos(a)*rr*rx,cy+Math.sin(a)*rr*ry,tag]);}}
+  blob(0,3.2,0.7,0.85,140,'head');        // head
+  blob(0,1.3,1.15,1.7,420,'torso');       // torso
+  blob(-1.6,1.5,0.5,1.5,150,'armL');      // arms
+  blob(1.6,1.5,0.5,1.5,150,'armR');
+  blob(-0.55,-2.2,0.55,1.9,180,'legL');   // legs
+  blob(0.55,-2.2,0.55,1.9,180,'legR');
+  blob(-2.2,0.2,0.55,0.5,90,'hand');      // hand emphasis
+  const N=parts.length;
+  const pos=new Float32Array(N*3),col=new Float32Array(N*3),tag=[];
+  for(let i=0;i<N;i++){pos[i*3]=parts[i][0];pos[i*3+1]=parts[i][1];pos[i*3+2]=(pr()-0.5)*0.7;
+    tag.push(parts[i][2]);col[i*3]=1;col[i*3+1]=0.72;col[i*3+2]=0.4;}
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  g.setAttribute('color',new THREE.BufferAttribute(col,3));
+  const m=new THREE.PointsMaterial({map:TDOT.carbon,size:0.16,vertexColors:true,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending});
+  const pts=new THREE.Points(g,m);gB.add(pts);
+  gB.userData={pos,col,tag,N,pts};
+  // the "1 in 5 is carbon" cluster (5 spheres, 1 big carbon)
+  const cl=new THREE.Group();gB.add(cl);
+  const geoS=new THREE.SphereGeometry(0.22,20,20);
+  for(let i=0;i<5;i++){
+    const big=(i===0);
+    const mat=new THREE.MeshStandardMaterial({color:big?0xff8a3a:0x556070,emissive:big?0xff5a20:0x111820,emissiveIntensity:big?0.9:0.2,roughness:0.5,metalness:0.2});
+    const s=new THREE.Mesh(geoS,mat);s.scale.setScalar(big?1.9:1.0);
+    const a=i/5*6.283;s.position.set(Math.cos(a)*1.6,Math.sin(a)*1.0,0);
+    cl.add(s);
+  }
+  cl.position.set(3.6,0.2,0);gB.userData.cluster=cl;
+})();
+
+// ---------- C: earth + dying star + ember dust ----------
+const gC=G();
+(function(){
+  const earth=new THREE.Mesh(new THREE.SphereGeometry(3,64,64),new THREE.MeshPhongMaterial({
+    map:TEX.earth,bumpMap:TEX.earthBump,bumpScale:0.06,specularMap:TEX.earthSpec,specular:new THREE.Color(0x2a3550),shininess:12}));
+  earth.position.set(0,0,0);gC.add(earth);
+  const cloud=new THREE.Mesh(new THREE.SphereGeometry(3.05,64,64),new THREE.MeshPhongMaterial({map:TEX.clouds,alphaMap:TEX.clouds,transparent:true,opacity:0.55,depthWrite:false}));
+  gC.add(cloud);
+  const atmo=new THREE.Mesh(new THREE.SphereGeometry(3.35,64,64),new THREE.ShaderMaterial({
+    transparent:true,depthWrite:false,side:THREE.BackSide,blending:THREE.AdditiveBlending,
+    uniforms:{},vertexShader:`varying vec3 vN;varying vec3 vP;void main(){vN=normalize(normalMatrix*normal);vec4 mv=modelViewMatrix*vec4(position,1.0);vP=mv.xyz;gl_Position=projectionMatrix*mv;}`,
+    fragmentShader:`varying vec3 vN;varying vec3 vP;void main(){float f=pow(1.0-abs(dot(normalize(vN),normalize(-vP))),3.0);gl_FragColor=vec4(vec3(0.35,0.55,1.0)*f,f);}`}));
+  gC.add(atmo);
+  gC.userData={earth,cloud,atmo};
+  // a small star that will live-burn-die (built with photosphere shader) placed offscreen at start
+  const star=makeStar(1.0);star.grp.position.set(0,0,0);gC.add(star.grp);star.grp.visible=false;
+  gC.userData.star=star;
+  // ember dust that gathers into a faint human shape
+  const N=700,pr=mulberry32(7);
+  const pos=new Float32Array(N*3),tgt=new Float32Array(N*3),rnd=new Float32Array(N*3);
+  const hp=humanPoints(N,pr);
+  for(let i=0;i<N;i++){
+    rnd[i*3]=(pr()-0.5)*30;rnd[i*3+1]=(pr()-0.5)*18;rnd[i*3+2]=(pr()-0.5)*20;
+    tgt[i*3]=hp[i][0]*1.4;tgt[i*3+1]=hp[i][1]*1.4;tgt[i*3+2]=hp[i][2]*1.4;
+    pos[i*3]=rnd[i*3];pos[i*3+1]=rnd[i*3+1];pos[i*3+2]=rnd[i*3+2];
+  }
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  const m=new THREE.PointsMaterial({map:TDOT.carbon,size:0.5,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,color:0xffb060,opacity:0.9});
+  const emb=new THREE.Points(g,m);emb.visible=false;gC.add(emb);
+  gC.userData.emb=emb;gC.userData.embData={pos,tgt,rnd,N};
+})();
+
+// human silhouette point cloud generator (shared)
+function humanPoints(N,pr){
+  const parts=[];function blob(cx,cy,rx,ry,frac){const n=Math.floor(N*frac);for(let i=0;i<n;i++){let a=pr()*6.283,rr=Math.sqrt(pr());parts.push([cx+Math.cos(a)*rr*rx,cy+Math.sin(a)*rr*ry,(pr()-0.5)*0.5]);}}
+  blob(0,3.2,0.7,0.85,0.12);blob(0,1.2,1.15,1.7,0.34);blob(-1.6,1.5,0.5,1.5,0.12);blob(1.6,1.5,0.5,1.5,0.12);blob(-0.55,-2.3,0.55,1.9,0.14);blob(0.55,-2.3,0.55,1.9,0.14);
+  while(parts.length<N)parts.push([(pr()-0.5)*3,(pr()-0.5)*8,(pr()-0.5)*0.5]);
+  return parts;
+}
+
+// ============================================================
+//  Photosphere star (shader) — reusable, deterministic by uT
+// ============================================================
+function makeStar(radius){
+  const grp=new THREE.Group();
+  const photoMat=new THREE.ShaderMaterial({
+    uniforms:{uT:{value:0},uCol1:{value:new THREE.Color(0x8a2400)},uCol2:{value:new THREE.Color(0xff9628)},uCol3:{value:new THREE.Color(0xffeeb8)},uBright:{value:1.4}},
+    vertexShader:`varying vec3 vP;varying vec3 vN;void main(){vP=normalize(position);vN=normalize(normalMatrix*normal);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
+    fragmentShader:`
+      varying vec3 vP;varying vec3 vN;uniform float uT,uBright;uniform vec3 uCol1,uCol2,uCol3;
+      vec3 hash3(vec3 p){p=vec3(dot(p,vec3(127.1,311.7,74.7)),dot(p,vec3(269.5,183.3,246.1)),dot(p,vec3(113.5,271.9,124.6)));return -1.0+2.0*fract(sin(p)*43758.5453);}
+      float snoise(vec3 p){vec3 i=floor(p);vec3 f=fract(p);vec3 u=f*f*(3.0-2.0*f);
+        return mix(mix(mix(dot(hash3(i+vec3(0,0,0)),f-vec3(0,0,0)),dot(hash3(i+vec3(1,0,0)),f-vec3(1,0,0)),u.x),
+                       mix(dot(hash3(i+vec3(0,1,0)),f-vec3(0,1,0)),dot(hash3(i+vec3(1,1,0)),f-vec3(1,1,0)),u.x),u.y),
+                   mix(mix(dot(hash3(i+vec3(0,0,1)),f-vec3(0,0,1)),dot(hash3(i+vec3(1,0,1)),f-vec3(1,0,1)),u.x),
+                       mix(dot(hash3(i+vec3(0,1,1)),f-vec3(0,1,1)),dot(hash3(i+vec3(1,1,1)),f-vec3(1,1,1)),u.x),u.y),u.z);}
+      float fbm(vec3 p){float s=0.0,a=0.5;for(int i=0;i<5;i++){s+=a*snoise(p);p*=2.02;a*=0.5;}return s;}
+      void main(){
+        vec3 d=normalize(vP);
+        float conv=fbm(d*7.0+vec3(0.0,0.0,uT*0.02));
+        float fine=fbm(d*22.0+vec3(uT*0.05));
+        float n=0.6*conv+0.4*fine;
+        float spot=smoothstep(0.56,0.78,fbm(d*1.7+11.0));
+        vec3 col=mix(uCol1,uCol2,smoothstep(-0.3,0.4,n));
+        col=mix(col,uCol3,smoothstep(0.35,0.85,n));
+        col*=mix(1.0,0.35,spot);
+        float mu=clamp(dot(normalize(vN),vec3(0.0,0.0,1.0)),0.0,1.0);
+        col*=0.30+0.70*pow(mu,0.6);
+        gl_FragColor=vec4(col*uBright,1.0);
+      }`});
+  const core=new THREE.Mesh(new THREE.SphereGeometry(radius,64,64),photoMat);grp.add(core);
+  const chromo=new THREE.Mesh(new THREE.SphereGeometry(radius*1.028,48,48),new THREE.ShaderMaterial({
+    transparent:true,depthWrite:false,side:THREE.BackSide,blending:THREE.AdditiveBlending,
+    vertexShader:`varying vec3 vN;varying vec3 vP;void main(){vN=normalize(normalMatrix*normal);vec4 mv=modelViewMatrix*vec4(position,1.0);vP=mv.xyz;gl_Position=projectionMatrix*mv;}`,
+    fragmentShader:`varying vec3 vN;varying vec3 vP;void main(){float f=pow(1.0-abs(dot(normalize(vN),normalize(-vP))),3.2);gl_FragColor=vec4(vec3(1.0,0.42,0.16)*f,f);}`}));
+  grp.add(chromo);
+  // corona sprites (own PRNG so layout is stable)
+  const cpr=mulberry32(99);
+  function coronaTex(){
+    const cv=document.createElement('canvas');cv.width=cv.height=512;const cx=cv.getContext('2d');
+    const gr=cx.createRadialGradient(256,256,20,256,256,256);
+    gr.addColorStop(0,'rgba(255,210,140,0.9)');gr.addColorStop(0.25,'rgba(255,150,60,0.35)');gr.addColorStop(1,'rgba(0,0,0,0)');
+    cx.fillStyle=gr;cx.fillRect(0,0,512,512);
+    cx.globalCompositeOperation='lighter';
+    for(let i=0;i<26;i++){const a=cpr()*6.283,len=140+cpr()*130;cx.save();cx.translate(256,256);cx.rotate(a);
+      const lg=cx.createLinearGradient(0,0,len,0);lg.addColorStop(0,'rgba(255,190,110,0.5)');lg.addColorStop(1,'rgba(255,150,60,0)');
+      cx.fillStyle=lg;cx.beginPath();cx.moveTo(30,-6);cx.lineTo(len,0);cx.lineTo(30,6);cx.closePath();cx.fill();cx.restore();}
+    const tx=new THREE.CanvasTexture(cv);tx.encoding=THREE.sRGBEncoding;return tx;
+  }
+  const cor=new THREE.Sprite(new THREE.SpriteMaterial({map:coronaTex(),color:0xffb060,transparent:true,opacity:0.85,depthWrite:false,blending:THREE.AdditiveBlending}));
+  cor.scale.setScalar(radius*5.5);grp.add(cor);
+  return {grp,core,photoMat,chromo,cor,radius};
+}
+
+// ---------- D: big bang / early universe (H + He + faded elements) ----------
+const gD=G();
+(function(){
+  // hot glow sprite (fades to darkness)
+  const glow=new THREE.Sprite(new THREE.SpriteMaterial({map:softDisc(0,128,255,210,150),color:0xffd9a0,transparent:true,opacity:0,depthWrite:false,blending:THREE.AdditiveBlending}));
+  glow.scale.set(120,120,1);gD.add(glow);gD.userData={glow};
+  // H particles (many) + He (few) as points
+  const NH=1400,NHe=140,pr=mulberry32(88);
+  function cloudPts(n,spreadR,colr){
+    const pos=new Float32Array(n*3);for(let i=0;i<n;i++){const a=pr()*6.283,b=Math.acos(2*pr()-1),r=Math.pow(pr(),0.5)*spreadR;
+      pos[i*3]=r*Math.sin(b)*Math.cos(a);pos[i*3+1]=r*Math.sin(b)*Math.sin(a)*0.6;pos[i*3+2]=r*Math.cos(b);}
+    const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));
+    const m=new THREE.PointsMaterial({map:TDOT.cold,size:colr==='he'?1.3:0.6,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,color:colr==='he'?0xbfe0ff:0x8fb8ff,opacity:0.85});
+    return {pts:new THREE.Points(g,m),base:pos.slice(),pos};
+  }
+  const Hc=cloudPts(NH,26,'h'),Hec=cloudPts(NHe,20,'he');
+  gD.add(Hc.pts);gD.add(Hec.pts);gD.userData.Hc=Hc;gD.userData.Hec=Hec;
+})();
+
+// ---------- E: stellar forge (cut-away core → red giant → helium collide) ----------
+const gE=G();
+(function(){
+  const star=makeStar(3.2);gE.add(star.grp);gE.userData={star};
+  // shrinking hot core sphere (inner)
+  const core=new THREE.Mesh(new THREE.SphereGeometry(1.0,48,48),new THREE.MeshBasicMaterial({color:0xffffff}));
+  core.visible=false;gE.add(core);gE.userData.core=core;
+  // helium nuclei particles (collision phase)
+  const N=90,pr=mulberry32(303);
+  const he=new THREE.Group();he.visible=false;gE.add(he);
+  const geoHe=new THREE.SphereGeometry(0.12,16,16);
+  const matHe=new THREE.MeshStandardMaterial({color:0xffd27a,emissive:0xff8a20,emissiveIntensity:1.1,roughness:0.4});
+  const heData=[];
+  for(let i=0;i<N;i++){const m=new THREE.Mesh(geoHe,matHe);const a=pr()*6.283,rr=1.2+pr()*3.5,y=(pr()-0.5)*2;
+    he.add(m);heData.push({a,rr,y,sp:0.4+pr()*1.3,ph:pr()*6.283,m});}
+  gE.userData.he=he;gE.userData.heData=heData;
+})();
+
+// ---------- F: triple-alpha (procedural nuclei diagram) ----------
+const gF=G();
+(function(){
+  // build a helium nucleus = cluster of 4 nucleons (2p red, 2n blue)
+  function nucleus(np,nn,scale){
+    const grp=new THREE.Group();const geo=new THREE.SphereGeometry(0.16*scale,18,18);
+    const pmat=new THREE.MeshStandardMaterial({color:0xff6a3a,emissive:0x902000,emissiveIntensity:0.5,roughness:0.4});
+    const nmat=new THREE.MeshStandardMaterial({color:0x6fa8ff,emissive:0x203060,emissiveIntensity:0.4,roughness:0.4});
+    const pr=mulberry32(np*7+nn*13+99);const tot=np+nn;
+    for(let i=0;i<tot;i++){const a=i/tot*6.283+pr(),rr=0.16*scale*(i<2?0.8:1.4);
+      const m=new THREE.Mesh(geo,i<np?pmat:nmat);m.position.set(Math.cos(a)*rr,Math.sin(a)*rr,(pr()-0.5)*0.2*scale);grp.add(m);}
+    return grp;
+  }
+  const he1=nucleus(2,2,1),he2=nucleus(2,2,1),he3=nucleus(2,2,1);
+  const carbon=nucleus(6,6,1.25);carbon.visible=false;
+  gF.add(he1);gF.add(he2);gF.add(he3);gF.add(carbon);
+  // glow for Be-8 fragile intermediate
+  const be=new THREE.Sprite(new THREE.SpriteMaterial({map:softDisc(0,128,255,140,80),color:0xff7a3a,transparent:true,opacity:0,depthWrite:false,blending:THREE.AdditiveBlending}));
+  be.scale.set(2.2,2.2,1);gF.add(be);
+  gF.userData={he1,he2,he3,carbon,be};
+})();
+
+// ---------- G: Hoyle — energy-level bar 7.65 MeV ----------
+const gG=G();
+(function(){
+  // silhouette (simple dark figure plane via points) reuse humanPoints
+  const pr=mulberry32(555);const hp=humanPoints(300,pr);
+  const pos=new Float32Array(300*3);for(let i=0;i<300;i++){pos[i*3]=hp[i][0]*0.9-5.5;pos[i*3+1]=hp[i][1]*0.9;pos[i*3+2]=hp[i][2];}
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  const sil=new THREE.Points(g,new THREE.PointsMaterial({map:TDOT.carbon,size:0.14,color:0x9a6a3a,transparent:true,opacity:0.5,depthWrite:false,blending:THREE.AdditiveBlending}));
+  gG.add(sil);gG.userData={sil};
+  // energy ladder: vertical axis + several levels; the 7.65 highlighted
+  const ladder=new THREE.Group();ladder.position.set(2.5,0,0);gG.add(ladder);
+  const axisMat=new THREE.LineBasicMaterial({color:0x555560});
+  const axG=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0,-4,0),new THREE.Vector3(0,4,0)]);
+  ladder.add(new THREE.Line(axG,axisMat));
+  const levels=[-3.0,-1.6,-0.4,1.1,2.6];const bars=[];
+  levels.forEach((y,i)=>{
+    const hoyle=(i===3);
+    const barG=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0,y,0),new THREE.Vector3(hoyle?3.2:2.2,y,0)]);
+    const bm=new THREE.LineBasicMaterial({color:hoyle?0xffb347:0x8890a0,transparent:true,opacity:hoyle?0.9:0.6});
+    const ln=new THREE.Line(barG,bm);ladder.add(ln);bars.push({ln,hoyle,y});
+    if(hoyle){
+      const glowS=new THREE.Sprite(new THREE.SpriteMaterial({map:softDisc(0,128,255,180,90),color:0xffb347,transparent:true,opacity:0,depthWrite:false,blending:THREE.AdditiveBlending}));
+      glowS.position.set(1.6,y,0);glowS.scale.set(5,1.6,1);ladder.add(glowS);gG.userData.hoyleGlow=glowS;
+    }
+  });
+  gG.userData.bars=bars;gG.userData.ladder=ladder;
+})();
+
+// ---------- H: resonance sensitivity curve (graph) + narrow slit ----------
+const gH=G();
+(function(){
+  // curve: sharp peak at x=0 (7.65). Draw as line built from points; a marker slides off peak.
+  const NP=140;const pts=[];
+  for(let i=0;i<NP;i++){const x=(i/(NP-1)-0.5)*8;const y=Math.exp(-x*x*3.2)*3.2-2.2;pts.push(new THREE.Vector3(x,y,0));}
+  const curveG=new THREE.BufferGeometry().setFromPoints(pts);
+  const curve=new THREE.Line(curveG,new THREE.LineBasicMaterial({color:0xffb347}));
+  gH.add(curve);
+  // axes
+  const axMat=new THREE.LineBasicMaterial({color:0x50505c});
+  gH.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-4.2,-2.4,0),new THREE.Vector3(4.2,-2.4,0)]),axMat));
+  gH.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-4.2,-2.4,0),new THREE.Vector3(-4.2,1.6,0)]),axMat));
+  const marker=new THREE.Mesh(new THREE.SphereGeometry(0.13,16,16),new THREE.MeshBasicMaterial({color:0xffffff}));
+  gH.add(marker);
+  // life particles slipping through a narrow slit (second half)
+  const N=260,pr=mulberry32(71);const pos=new Float32Array(N*3),ph=new Float32Array(N);
+  for(let i=0;i<N;i++){pos[i*3]=-6-pr()*4;pos[i*3+1]=(pr()-0.5)*0.6;pos[i*3+2]=(pr()-0.5)*1.2;ph[i]=pr();}
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  const slit=new THREE.Points(g,new THREE.PointsMaterial({map:TDOT.life,size:0.3,color:0x6fcf97,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,opacity:0.9}));
+  slit.visible=false;gH.add(slit);
+  gH.userData={curve,curveG,pts,marker,slit,slitData:{pos,ph,N},curvePts:pts};
+})();
+
+// ---------- I: seeding — red giant → nebula shell + supernova + dust cloud ----------
+const gI=G();
+(function(){
+  const star=makeStar(2.4);gI.add(star.grp);gI.userData={star};
+  // expanding shell particles (planetary nebula)
+  const N=1600,pr=mulberry32(1212);
+  const dir=new Float32Array(N*3),pos=new Float32Array(N*3),sp=new Float32Array(N),col=new Float32Array(N*3);
+  for(let i=0;i<N;i++){const a=pr()*6.283,b=Math.acos(2*pr()-1);
+    dir[i*3]=Math.sin(b)*Math.cos(a);dir[i*3+1]=Math.sin(b)*Math.sin(a);dir[i*3+2]=Math.cos(b);
+    sp[i]=0.6+pr()*1.4;const warm=pr()<0.5;
+    col[i*3]=warm?1.0:0.6;col[i*3+1]=warm?0.7:0.8;col[i*3+2]=warm?0.4:1.0;}
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));g.setAttribute('color',new THREE.BufferAttribute(col,3));
+  const shell=new THREE.Points(g,new THREE.PointsMaterial({map:TDOT.carbon,size:0.45,vertexColors:true,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,opacity:0.9}));
+  gI.add(shell);gI.userData.shell=shell;gI.userData.shellData={dir,pos,sp,N};
+  // supernova flash
+  const flash=new THREE.Sprite(new THREE.SpriteMaterial({map:softDisc(0,128,255,255,255),color:0xffffff,transparent:true,opacity:0,depthWrite:false,blending:THREE.AdditiveBlending}));
+  flash.scale.set(60,60,1);gI.add(flash);gI.userData.flash=flash;
+  // dark dust cloud sprite (soot)
+  const dust=new THREE.Sprite(new THREE.SpriteMaterial({map:softDisc(0,128,40,34,44),color:0x2a2530,transparent:true,opacity:0,depthWrite:false}));
+  dust.scale.set(80,50,1);dust.position.set(0,0,-6);gI.add(dust);gI.userData.dust=dust;
+})();
+
+// ---------- J: dust cloud fly-through + diamond + buckyball ----------
+const gJ=G();
+(function(){
+  // soot particles field
+  const N=2200,pr=mulberry32(4004);
+  const pos=new Float32Array(N*3),base=new Float32Array(N*3),ph=new Float32Array(N),isC=new Float32Array(N),col=new Float32Array(N*3);
+  for(let i=0;i<N;i++){pos[i*3]=base[i*3]=(pr()-0.5)*70;pos[i*3+1]=base[i*3+1]=(pr()-0.5)*40;pos[i*3+2]=base[i*3+2]=(pr()-0.5)*90;
+    ph[i]=pr()*6.283;const carbon=pr()<0.22;isC[i]=carbon?1:0;
+    col[i*3]=carbon?1.0:0.16;col[i*3+1]=carbon?0.7:0.14;col[i*3+2]=carbon?0.42:0.18;}
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));g.setAttribute('color',new THREE.BufferAttribute(col,3));
+  const soot=new THREE.Points(g,new THREE.PointsMaterial({map:TDOT.carbon,size:0.8,vertexColors:true,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,opacity:0.85}));
+  gJ.add(soot);gJ.userData={soot,sootData:{pos,base,ph,N}};
+  // organic molecules (small green rings)
+  const org=new THREE.Group();gJ.add(org);const opr=mulberry32(9);
+  for(let k=0;k<7;k++){const ring=new THREE.Mesh(new THREE.TorusGeometry(0.9,0.09,10,24),new THREE.MeshStandardMaterial({color:0x6fcf97,emissive:0x2a7a4a,emissiveIntensity:0.6,roughness:0.5}));
+    ring.position.set((opr()-0.5)*30,(opr()-0.5)*16,(opr()-0.5)*20);ring.rotation.set(opr()*6.28,opr()*6.28,0);org.add(ring);}
+  gJ.userData.org=org;
+  // nano-diamond (octahedron lattice look) + buckyball C60
+  const diamond=new THREE.Mesh(new THREE.OctahedronGeometry(1.4,0),new THREE.MeshPhysicalMaterial({color:0xbfe0ff,metalness:0.1,roughness:0.05,transmission:0.9,transparent:true,opacity:0.85,clearcoat:1,emissive:0x223344,emissiveIntensity:0.3}));
+  diamond.position.set(-7,1,4);gJ.add(diamond);gJ.userData.diamond=diamond;
+  const bucky=buildBucky();bucky.position.set(7,-1,4);gJ.add(bucky);gJ.userData.bucky=bucky;
+})();
+
+// buckyball C60 (icosahedron-derived point/edge cage, approximate but round & hollow)
+function buildBucky(){
+  const grp=new THREE.Group();
+  const ico=new THREE.IcosahedronGeometry(1.5,1); // 42 verts — round cage look
+  const pos=ico.attributes.position;const verts=[];
+  for(let i=0;i<pos.count;i++)verts.push(new THREE.Vector3(pos.getX(i),pos.getY(i),pos.getZ(i)));
+  // dedup
+  const uniq=[];verts.forEach(v=>{if(!uniq.some(u=>u.distanceTo(v)<0.01))uniq.push(v);});
+  const nmat=new THREE.MeshStandardMaterial({color:0x3a3a42,emissive:0x1a1a22,roughness:0.4,metalness:0.3});
+  const ng=new THREE.SphereGeometry(0.12,12,12);
+  uniq.forEach(v=>{const m=new THREE.Mesh(ng,nmat);m.position.copy(v);grp.add(m);});
+  // edges
+  const emat=new THREE.LineBasicMaterial({color:0x8a8a96,transparent:true,opacity:0.6});
+  for(let i=0;i<uniq.length;i++)for(let j=i+1;j<uniq.length;j++){const d=uniq[i].distanceTo(uniq[j]);
+    if(d<0.9){grp.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([uniq[i],uniq[j]]),emat));}}
+  return grp;
+}
+
+// ---------- K: protoplanetary disk → new sun → planets (earth) ----------
+const gK=G();
+(function(){
+  const sun=makeStar(1.6);gK.add(sun.grp);sun.grp.position.set(0,0,0);gK.userData={sun};
+  // disk particles orbiting
+  const N=2600,pr=mulberry32(717);
+  const rr=new Float32Array(N),a0=new Float32Array(N),yy=new Float32Array(N),sp=new Float32Array(N);
+  const pos=new Float32Array(N*3),col=new Float32Array(N*3);
+  for(let i=0;i<N;i++){rr[i]=3+Math.pow(pr(),0.7)*16;a0[i]=pr()*6.283;yy[i]=(pr()-0.5)*0.6*(rr[i]*0.06);sp[i]=0.6/Math.sqrt(rr[i]);
+    const warm=rr[i]<7;col[i*3]=warm?1.0:0.7;col[i*3+1]=warm?0.72:0.6;col[i*3+2]=warm?0.45:0.55;}
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));g.setAttribute('color',new THREE.BufferAttribute(col,3));
+  const disk=new THREE.Points(g,new THREE.PointsMaterial({map:TDOT.carbon,size:0.32,vertexColors:true,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,opacity:0.8}));
+  gK.add(disk);gK.userData.disk=disk;gK.userData.diskData={rr,a0,yy,sp,N};
+  // young earth
+  const earth=new THREE.Mesh(new THREE.SphereGeometry(0.9,48,48),new THREE.MeshPhongMaterial({map:TEX.earth,bumpMap:TEX.earthBump,bumpScale:0.04,specularMap:TEX.earthSpec,specular:0x223045,shininess:10,emissive:0x1a0d05,emissiveIntensity:0.3}));
+  earth.visible=false;gK.add(earth);gK.userData.earth=earth;
+})();
+
+// ---------- L: carbon bonds — tetra → chain/benzene/lattice → DNA ----------
+const gL=G();
+(function(){
+  const cmat=new THREE.MeshStandardMaterial({color:0x2a2a30,emissive:0xff7a2a,emissiveIntensity:0.25,roughness:0.4,metalness:0.3});
+  const hmat=new THREE.MeshStandardMaterial({color:0x9fb4c8,roughness:0.5});
+  const bmat=new THREE.MeshStandardMaterial({color:0x8a8a96,roughness:0.5});
+  // central carbon with 4 arms (tetrahedral)
+  const tetra=new THREE.Group();gL.add(tetra);
+  const c0=new THREE.Mesh(new THREE.SphereGeometry(0.55,32,32),cmat);tetra.add(c0);
+  const dirs=[new THREE.Vector3(1,1,1),new THREE.Vector3(1,-1,-1),new THREE.Vector3(-1,1,-1),new THREE.Vector3(-1,-1,1)].map(v=>v.normalize());
+  const arms=[];
+  dirs.forEach(d=>{
+    const bond=new THREE.Mesh(new THREE.CylinderGeometry(0.08,0.08,1.4,12),bmat);
+    bond.position.copy(d.clone().multiplyScalar(0.85));bond.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d);
+    tetra.add(bond);
+    const h=new THREE.Mesh(new THREE.SphereGeometry(0.3,24,24),hmat);h.position.copy(d.clone().multiplyScalar(1.55));tetra.add(h);
+    arms.push({bond,h});
+  });
+  gL.userData={tetra,arms};
+  // chain / benzene ring / lattice group (appears mid)
+  const net=new THREE.Group();net.visible=false;gL.add(net);
+  // benzene ring
+  const ring=new THREE.Group();
+  for(let i=0;i<6;i++){const a=i/6*6.283;const m=new THREE.Mesh(new THREE.SphereGeometry(0.35,24,24),cmat);m.position.set(Math.cos(a)*1.6,Math.sin(a)*1.6,0);ring.add(m);
+    const a2=(i+1)/6*6.283;const p1=new THREE.Vector3(Math.cos(a)*1.6,Math.sin(a)*1.6,0),p2=new THREE.Vector3(Math.cos(a2)*1.6,Math.sin(a2)*1.6,0);
+    const mid=p1.clone().add(p2).multiplyScalar(0.5);const len=p1.distanceTo(p2);
+    const bd=new THREE.Mesh(new THREE.CylinderGeometry(0.09,0.09,len,10),bmat);bd.position.copy(mid);
+    bd.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),p2.clone().sub(p1).normalize());ring.add(bd);}
+  ring.position.set(-4,0,0);net.add(ring);
+  // chain
+  const chain=new THREE.Group();for(let i=0;i<7;i++){const m=new THREE.Mesh(new THREE.SphereGeometry(0.3,20,20),cmat);m.position.set(i*0.9-2.7,0,0);chain.add(m);
+    if(i<6){const bd=new THREE.Mesh(new THREE.CylinderGeometry(0.08,0.08,0.9,10),bmat);bd.position.set(i*0.9-2.25,0,0);bd.rotation.z=Math.PI/2;chain.add(bd);}}
+  net.add(chain);
+  // small diamond lattice cluster
+  const lat=new THREE.Group();const lpr=mulberry32(31);
+  for(let i=0;i<14;i++){const m=new THREE.Mesh(new THREE.SphereGeometry(0.24,16,16),cmat);m.position.set((lpr()-0.5)*3+4,(lpr()-0.5)*3,(lpr()-0.5)*3);lat.add(m);}
+  net.add(lat);
+  gL.userData.net=net;gL.userData.ring=ring;gL.userData.chain=chain;gL.userData.lat=lat;
+  // DNA double helix (appears late)
+  const dna=new THREE.Group();dna.visible=false;gL.add(dna);
+  const bbMat=new THREE.MeshStandardMaterial({color:0xff8a3a,emissive:0xff5a1a,emissiveIntensity:0.4,roughness:0.4});
+  const rungMat=new THREE.MeshStandardMaterial({color:0x6fcf97,emissive:0x2a7a4a,emissiveIntensity:0.4,roughness:0.5});
+  const geoBB=new THREE.SphereGeometry(0.16,14,14);
+  const rungs=40;
+  for(let i=0;i<rungs;i++){const y=(i/rungs-0.5)*9;const a=i*0.55;
+    const p1=new THREE.Vector3(Math.cos(a)*1.1,y,Math.sin(a)*1.1);
+    const p2=new THREE.Vector3(Math.cos(a+Math.PI)*1.1,y,Math.sin(a+Math.PI)*1.1);
+    const s1=new THREE.Mesh(geoBB,bbMat);s1.position.copy(p1);dna.add(s1);
+    const s2=new THREE.Mesh(geoBB,bbMat);s2.position.copy(p2);dna.add(s2);
+    if(i%2===0){const mid=p1.clone().add(p2).multiplyScalar(0.5);const len=p1.distanceTo(p2);
+      const bd=new THREE.Mesh(new THREE.CylinderGeometry(0.05,0.05,len,8),rungMat);bd.position.copy(mid);
+      bd.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),p2.clone().sub(p1).normalize());dna.add(bd);}}
+  gL.userData.dna=dna;
+})();
+
+// ---------- M: carbon cycle — one glowing atom through stages ----------
+const gM=G();
+(function(){
+  // breathing-in figure (life green) + a single glowing carbon traveling a ring path
+  const pr=mulberry32(606);const hp=humanPoints(300,pr);
+  const pos=new Float32Array(300*3);for(let i=0;i<300;i++){pos[i*3]=hp[i][0]*1.1;pos[i*3+1]=hp[i][1]*1.1;pos[i*3+2]=hp[i][2];}
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  const fig=new THREE.Points(g,new THREE.PointsMaterial({map:TDOT.life,size:0.16,color:0x6fcf97,transparent:true,opacity:0.55,depthWrite:false,blending:THREE.AdditiveBlending}));
+  gM.add(fig);gM.userData={fig};
+  // cycle ring path nodes (stars, wind, dust, earth, soil, tree, body)
+  const ring=new THREE.Group();gM.add(ring);gM.userData.ring=ring;
+  const stages=[[0xff6a2b,'forge'],[0xbfd9ff,'wind'],[0x2a2530,'dust'],[0x5a8fd0,'earth'],[0x8a6a3a,'soil'],[0x6fcf97,'tree'],[0xff9a5a,'body']];
+  const nodes=[];
+  stages.forEach((st,i)=>{const a=i/stages.length*6.283-Math.PI/2;const r=6;
+    const m=new THREE.Mesh(new THREE.SphereGeometry(0.5,20,20),new THREE.MeshStandardMaterial({color:st[0],emissive:st[0],emissiveIntensity:0.5,roughness:0.5}));
+    m.position.set(Math.cos(a)*r,Math.sin(a)*r*0.62,0);ring.add(m);nodes.push(m.position.clone());});
+  // arc lines connecting nodes
+  const lmat=new THREE.LineBasicMaterial({color:0x5a5a66,transparent:true,opacity:0.4});
+  for(let i=0;i<nodes.length;i++){const a=nodes[i],b=nodes[(i+1)%nodes.length];
+    ring.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([a,b]),lmat));}
+  gM.userData.nodes=nodes;
+  const atom=new THREE.Mesh(new THREE.SphereGeometry(0.4,24,24),new THREE.MeshBasicMaterial({color:0xffd08a}));
+  gM.add(atom);gM.userData.atom=atom;
+  const atomGlow=new THREE.Sprite(new THREE.SpriteMaterial({map:softDisc(0,128,255,200,120),color:0xffb060,transparent:true,opacity:0.9,depthWrite:false,blending:THREE.AdditiveBlending}));
+  atomGlow.scale.set(2.4,2.4,1);gM.add(atomGlow);gM.userData.atomGlow=atomGlow;
+})();
+
+// ---------- N: human = stars; final breath ----------
+const gN=G();
+(function(){
+  // figure filled with stars: points arranged in human shape but colored like stars
+  const N=1400,pr=mulberry32(909);const hp=humanPoints(N,pr);
+  const pos=new Float32Array(N*3),col=new Float32Array(N*3);
+  for(let i=0;i<N;i++){pos[i*3]=hp[i][0]*1.3;pos[i*3+1]=hp[i][1]*1.3;pos[i*3+2]=(pr()-0.5)*1.5;
+    const tt=pr();let c=new THREE.Color();
+    if(tt<0.2)c.setRGB(0.62,0.72,1.0);else if(tt<0.55)c.setRGB(1.0,0.95,0.8);else c.setRGB(1.0,0.7,0.5);
+    c.multiplyScalar(0.6+pr()*0.6);col[i*3]=c.r;col[i*3+1]=c.g;col[i*3+2]=c.b;}
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));g.setAttribute('color',new THREE.BufferAttribute(col,3));
+  const fig=new THREE.Points(g,new THREE.PointsMaterial({map:TDOT.white,size:0.22,vertexColors:true,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,opacity:0.95}));
+  gN.add(fig);gN.userData={fig};
+  // final exhale particles
+  const M=500,pr2=mulberry32(910);const bp=new Float32Array(M*3),bph=new Float32Array(M),bsp=new Float32Array(M);
+  for(let i=0;i<M;i++){bp[i*3]=0;bp[i*3+1]=1;bp[i*3+2]=0;bph[i]=pr2()*6.283;bsp[i]=0.4+pr2()*1.2;}
+  const bg=new THREE.BufferGeometry();bg.setAttribute('position',new THREE.BufferAttribute(bp,3));
+  const breath=new THREE.Points(bg,new THREE.PointsMaterial({map:TDOT.carbon,size:0.4,color:0xffb060,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,opacity:0.9}));
+  gN.add(breath);gN.userData.breath=breath;gN.userData.breathData={bp,bph,bsp,M};
+})();
+
+// helper: set camera
+function setCam(px,py,pz,lx,ly,lz,fov){camera.position.set(px,py,pz);camera.lookAt(lx||0,ly||0,lz||0);if(fov){camera.fov=fov;camera.updateProjectionMatrix();}}
+
+// ============================================================
+//  MAIN renderAtTime(t) — deterministic
+// ============================================================
+function renderAtTime(t){
+  // toggle scene groups
+  gA.visible=inSc(t,'A');gB.visible=inSc(t,'B');gC.visible=inSc(t,'C');gD.visible=inSc(t,'D');
+  gE.visible=inSc(t,'E');gF.visible=inSc(t,'F');gG.visible=inSc(t,'G');gH.visible=inSc(t,'H');
+  gI.visible=inSc(t,'I');gJ.visible=inSc(t,'J');gK.visible=inSc(t,'K');gL.visible=inSc(t,'L');
+  gM.visible=inSc(t,'M');gN.visible=inSc(t,'N');
+
+  sunPt.intensity=0;
+
+  // starfield slow drift (function of t)
+  stars.rotation.y=t*0.0016;stars.rotation.x=Math.sin(t*0.02)*0.02;
+  const starOp=inSc(t,'A')||inSc(t,'B')?0.55:(inSc(t,'D')?0.7:0.95);
+  stars.material.uniforms.uOp.value=starOp;
+  mwSprite.material.opacity=0.16*starOp;
+
+  try{
+  // ---------------- A: breath ----------------
+  if(gA.visible){
+    const p=loc(t,'A');const d=gA.userData,arr=d.pos,base=d.base;
+    for(let i=0;i<d.N;i++){
+      const ph=d.ph[i],sp=d.sp[i];
+      // emit from left-lower (mouth), drift right & disperse over t
+      const life=(t*0.12+ph/6.283)%1;
+      const spread=life*18;
+      arr[i*3]=base[i*3]*0.3-6+life*20+Math.sin(t*sp+ph)*0.6;
+      arr[i*3+1]=base[i*3+1]*0.3-1.5+Math.cos(t*sp*0.7+ph)*0.8+life*3;
+      arr[i*3+2]=base[i*3+2]*0.3+Math.sin(t*0.5+ph)*spread*0.4;
+    }
+    d.pts.geometry.attributes.position.needsUpdate=true;
+    d.pts.material.opacity=0.3+0.6*smooth(p*2)*(1-0.3*Math.max(0,p-0.7));
+    d.pts.material.size=10+8*Math.sin(t*0.4);
+    // camera slow push-in
+    setCam(0,0,26-p*4,0,0,0,46);
+  }
+
+  // ---------------- B: body silhouette ----------------
+  if(gB.visible){
+    const p=loc(t,'B');const d=gB.userData;
+    // reveal parts sequentially: bones(0.0) skin(0.2) hair(0.4) brain(0.55)
+    const cols=d.pts.geometry.attributes.color.array;
+    for(let i=0;i<d.N;i++){
+      const tg=d.tag[i];let br=0.5;
+      if(tg==='head')br=0.5+0.6*band(t,33.0,41.0,0.6);        // brain
+      else if(tg==='hand')br=0.5+0.7*band(t,27.0,31.0,0.6);
+      else if(tg==='torso'||tg==='legL'||tg==='legR')br=0.5+0.5*band(t,28.5,34.0,0.8);
+      else br=0.5+0.5*band(t,29.0,36.0,0.8);
+      cols[i*3]=1.0*br;cols[i*3+1]=0.72*br;cols[i*3+2]=0.4*br;
+    }
+    d.pts.geometry.attributes.color.needsUpdate=true;
+    d.pts.rotation.y=Math.sin(t*0.1)*0.12;
+    // cluster (1-in-5) fades in after 41.8
+    const cf=band(t,42.0,50.5,1.0);d.cluster.visible=cf>0.02;
+    d.cluster.rotation.y=t*0.35;d.cluster.rotation.x=Math.sin(t*0.2)*0.2;
+    d.cluster.children.forEach(m=>{m.material.opacity=cf;m.material.transparent=true;});
+    // dolly from hand up to head then to cluster
+    const q=smooth(p);
+    setCam(0.6*q+ (cf>0?cf*1.5:0),1.4-2.0*q,12-1.5*q,0.5, 0.6-1.2*q,0,42);
+  }
+
+  // ---------------- C: earth → dying star → embers ----------------
+  if(gC.visible){
+    const p=loc(t,'C');const d=gC.userData;
+    // Phase 1 (C06 50.5-61): earth lonely, pull back
+    // Phase 2 (C07 61-73): star lives/burns/dies
+    // Phase 3 (C08 73-85): embers gather into human
+    const earthVis=t<62;const starVis=t>=60&&t<74.5;const embVis=t>=73;
+    d.earth.visible=earthVis;d.cloud.visible=earthVis;d.atmo.visible=earthVis;
+    d.star.grp.visible=starVis;d.emb.visible=embVis;
+    // earth
+    d.earth.rotation.y=t*0.05;d.cloud.rotation.y=t*0.06;
+    const eFade=band(t,50.5,62,1.0);
+    [d.earth,d.cloud].forEach(m=>{});
+    d.cloud.material.opacity=0.55*eFade;d.atmo.material.opacity=eFade;
+    // key light dims as "no carbon born here"
+    key.intensity=1.15*(1-0.5*smooth((t-50.5)/11));
+    // star burn/die
+    if(starVis){
+      const sp=clamp((t-60)/14.5,0,1);
+      d.star.photoMat.uniforms.uT.value=t;
+      d.star.core.rotation.y=t*0.02;
+      // swell then dim (red giant → death)
+      const sc=0.5+smooth(sp)*1.6*(1-0.5*Math.max(0,sp-0.6)/0.4);
+      d.star.grp.scale.setScalar(sc);
+      // shift color to red as it dies
+      const die=smooth(Math.max(0,(sp-0.55)/0.45));
+      d.star.photoMat.uniforms.uCol2.value.setRGB(1.0,0.6-die*0.35,0.16);
+      d.star.photoMat.uniforms.uBright.value=1.4*(1-die*0.75);
+      d.star.cor.material.opacity=0.85*(1-die*0.9);
+    }
+    // embers gather to human
+    if(embVis){
+      const ed=d.embData;const g=Math.min(1,smooth((t-73)/9));
+      const arr=d.emb.geometry.attributes.position.array;
+      for(let i=0;i<ed.N;i++){
+        for(let k=0;k<3;k++){const from=ed.rnd[i*3+k],to=ed.tgt[i*3+k];
+          arr[i*3+k]=from+(to-from)*g+Math.sin(t*0.6+i)*0.15*(1-g);}
+      }
+      d.emb.geometry.attributes.position.needsUpdate=true;
+      d.emb.material.opacity=0.9*band(t,73,85.2,0.8);
+    }
+    // camera: pullback then approach star then hold on embers
+    if(t<62)setCam(0,0,10+ (t-50.5)*0.5,0,0,0,44);
+    else if(t<74.5)setCam(0,0,16-smooth((t-62)/12)*4,0,0,0,44);
+    else setCam(0,0,16,0,0,0,44);
+    key.intensity=1.15;
+  } else {key.intensity=1.15;}
+
+  // ---------------- D: big bang / H+He ----------------
+  if(gD.visible){
+    const p=loc(t,'D');const d=gD.userData;
+    // glow fades from bright to dark over first cue
+    d.glow.material.opacity=0.9*(1-smooth(clamp((t-85.2)/9,0,1)));
+    d.glow.scale.setScalar(120+p*80);
+    // drift H/He clouds slowly
+    [d.Hc,d.Hec].forEach((c,ci)=>{const arr=c.pts.geometry.attributes.position.array,base=c.base;
+      for(let i=0;i<base.length;i+=3){arr[i]=base[i]+Math.sin(t*0.15+i)*0.4;arr[i+1]=base[i+1]+Math.cos(t*0.12+i)*0.4;arr[i+2]=base[i+2];}
+      c.pts.geometry.attributes.position.needsUpdate=true;});
+    d.Hc.pts.material.opacity=0.85*band(t,92,125.5,1.0);
+    d.Hec.pts.material.opacity=0.85*band(t,100,125.5,1.0);
+    // dead-universe cold hue via slight camera
+    const q=smooth(p);
+    setCam(Math.sin(t*0.03)*4,0,40-q*6,0,0,0,50);
+  }
+
+  // ---------------- E: forge ----------------
+  if(gE.visible){
+    const d=gE.userData;d.star.photoMat.uniforms.uT.value=t;
+    // C13-14 (125.5-150.6): cut-away core, push in
+    // C15 (150.6-165.8): red giant swell
+    // C16 (165.8-174.25): helium collide
+    const giant=t>=150.65;const collide=t>=165.82;
+    d.star.grp.visible=!collide;d.core.visible=false;
+    d.he.visible=collide;
+    d.star.core.rotation.y=t*0.02;
+    if(!collide){
+      // swell for red giant
+      const sw=giant?(1+smooth((t-150.65)/15)*1.9):1.0;
+      d.star.grp.scale.setScalar(sw);
+      d.star.photoMat.uniforms.uCol2.value.setRGB(1.0,giant?0.5:0.6,0.16);
+      d.star.photoMat.uniforms.uBright.value=1.4;
+      d.star.cor.material.opacity=0.85;
+    }
+    if(collide){
+      const cd=d.heData;
+      cd.forEach((h,i)=>{const a=h.a+t*h.sp;const r=h.rr*(0.7+0.3*Math.sin(t*1.5+h.ph));
+        h.m.position.set(Math.cos(a)*r,h.y+Math.sin(t*1.2+h.ph)*0.5,Math.sin(a)*r);});
+    }
+    // camera: push into core, then pull back for giant, then macro for collide
+    if(t<150.65)setCam(0,0,14-smooth((t-125.5)/25)*7,0,0,0,44);
+    else if(t<165.82){const s=smooth((t-150.65)/15);setCam(0,0,7+s*20,0,0,0,46);}
+    else setCam(0,0,9,0,0,0,40);
+  }
+
+  // ---------------- F: triple-alpha ----------------
+  if(gF.visible){
+    const d=gF.userData;
+    // C17 (174.25-182.6): 3 He shown, combine into carbon (concept)
+    // C18 (182.6-197): 2 He form fragile Be-8, breaks
+    // C19 (197-214.6): 3rd He near-miss, "shouldn't exist"
+    const t17=clamp((t-174.25)/8.4,0,1);
+    const t18=clamp((t-182.64)/14.4,0,1);
+    const t19=clamp((t-197.09)/17.5,0,1);
+    // positions
+    let show3=t<182.64;
+    if(show3){
+      // 3 helium approaching center, combine at end of C17
+      const app=smooth(t17);
+      d.he1.position.set(-3.5+app*3.0,1.6-app*1.6,0);
+      d.he2.position.set(3.5-app*3.0,1.6-app*1.6,0);
+      d.he3.position.set(0,-3.2+app*3.2,0);
+      d.he1.visible=d.he2.visible=d.he3.visible=true;d.carbon.visible=app>0.9;d.be.material.opacity=0;
+      d.carbon.position.set(0,0,0);d.carbon.scale.setScalar(smooth(Math.max(0,(t17-0.85)/0.15)));
+    } else {
+      // C18/C19: two helium form Be-8 (fragile), pulse-break; 3rd tries and misses
+      const cyc=(t-182.64)% 3.0;const merged=cyc<1.4;
+      d.he1.visible=d.he2.visible=true;d.he3.visible=t>=197.09;d.carbon.visible=false;
+      const m=merged?smooth(cyc/1.0):0;
+      d.he1.position.set(-1.4+m*1.0,0.2,0);
+      d.he2.position.set(1.4-m*1.0,0.2,0);
+      // Be-8 glow pulses then breaks (opacity spikes then drops)
+      d.be.position.set(0,0.2,0);
+      d.be.material.opacity=merged?Math.max(0,Math.sin(cyc/1.4*Math.PI))*0.9:0;
+      if(!merged){d.he1.position.x=-1.4-Math.min(2,(cyc-1.4)*3);d.he2.position.x=1.4+Math.min(2,(cyc-1.4)*3);}
+      // 3rd helium tries to come in but Be breaks before (near miss)
+      if(t>=197.09){const tc=(t-197.09)%3.0;const in3=smooth(clamp(tc/1.3,0,1));
+        d.he3.position.set(0,4-in3*3.6,0);d.he3.visible=true;
+        if(tc>1.35)d.he3.position.y=4;} // resets = miss
+    }
+    d.he1.rotation.z=t*0.5;d.he2.rotation.z=-t*0.5;d.he3.rotation.z=t*0.4;d.carbon.rotation.z=t*0.3;
+    setCam(0,0,10-smooth(clamp((t-174.25)/40,0,1))*1.5,0,0,0,42);
+  }
+
+  // ---------------- G: Hoyle energy ladder ----------------
+  if(gG.visible){
+    const d=gG.userData;
+    d.sil.rotation.y=Math.sin(t*0.15)*0.1;
+    // the 7.65 bar: dashed/dim during prediction (C24 274-290), bright when measured (C25 290+)
+    const measured=t>=289.94;
+    const predict=t>=274.18&&t<289.94;
+    d.bars.forEach(b=>{
+      if(b.hoyle){
+        if(measured){b.ln.material.opacity=0.95;b.ln.material.color.setHex(0xffd27a);}
+        else if(predict){b.ln.material.opacity=0.35+0.35*Math.abs(Math.sin(t*3.0));b.ln.material.color.setHex(0xffb347);}
+        else{b.ln.material.opacity=0.85;b.ln.material.color.setHex(0xffb347);}
+      }
+    });
+    d.hoyleGlow.material.opacity=measured?0.85*band(t,289.94,300.6,1.0):(predict?0.15:0.3);
+    d.ladder.rotation.y=Math.sin(t*0.08)*0.06;
+    // camera: hold; slight push toward ladder when bar highlighted, big push on reveal
+    const rev=smooth(clamp((t-289.94)/4,0,1));
+    setCam(0.5+rev*1.4,0.3,13-smooth(clamp((t-214.6)/80,0,1))*2-rev*3,2.5,0.2,0,44);
+  }
+
+  // ---------------- H: resonance curve + slit ----------------
+  if(gH.visible){
+    const d=gH.userData;
+    // C26 (300.6-313.7): marker slides off peak, curve/output collapse implied
+    // C27 (313.7-331.2): consequences
+    // C28 (331.2-345.5): narrow slit, life slips through
+    const t26=clamp((t-300.56)/13.1,0,1);
+    // marker slides from peak (x=0) to off-peak
+    const mx=Math.sin(t*0.8)*3.0*smooth(t26);
+    const my=Math.exp(-mx*mx*3.2)*3.2-2.2;
+    d.marker.position.set(mx,my,0);
+    d.marker.material.color.setRGB(1,1-Math.abs(mx)/3*0.7,0.5-Math.abs(mx)/3*0.4);
+    d.curve.material.opacity=1;d.curve.visible=t<331.24;d.marker.visible=t<331.24;
+    // slit + life particles for C28
+    d.slit.visible=t>=331.24;
+    if(t>=331.24){
+      const sd=d.slitData;const arr=d.slit.geometry.attributes.position.array;
+      for(let i=0;i<sd.N;i++){const life=(t*0.18+sd.ph[i])%1;
+        arr[i*3]=-6+life*12;
+        // squeeze through slit at x~0
+        const sq=1-Math.exp(-arr[i*3]*arr[i*3]*0.5);
+        arr[i*3+1]=(sd.ph[i]-0.5)*3*sq*0.4+Math.sin(t+i)*0.1;
+        arr[i*3+2]=(sd.ph[i]-0.5)*2*sq;}
+      d.slit.geometry.attributes.position.needsUpdate=true;
+    }
+    setCam(0,0,9-smooth(clamp((t-300.56)/44,0,1))*1.5,0,-0.4,0,46);
+  }
+
+  // ---------------- I: seeding ----------------
+  if(gI.visible){
+    const d=gI.userData;d.star.photoMat.uniforms.uT.value=t;
+    // C29-30 (345.5-368.4): red giant pulsates, blows shell
+    // C31 (368.4-380.3): supernova flash for big star
+    // C32 (380.3-391.9): dark dust cloud
+    const pulse=1+Math.sin(t*2.2)*0.05+Math.sin(t*0.7)*0.03;
+    const shellStart=354.0;
+    d.star.grp.scale.setScalar((1.4)*pulse);
+    d.star.photoMat.uniforms.uCol2.value.setRGB(1.0,0.48,0.16);
+    // shell expansion
+    const sd=d.shellData;const arr=d.shell.geometry.attributes.position.array;
+    const ex=Math.max(0,(t-shellStart));
+    for(let i=0;i<sd.N;i++){const r=3+ex*sd.sp[i]*1.1;
+      arr[i*3]=sd.dir[i*3]*r;arr[i*3+1]=sd.dir[i*3+1]*r;arr[i*3+2]=sd.dir[i*3+2]*r;}
+    d.shell.geometry.attributes.position.needsUpdate=true;
+    d.shell.material.opacity=0.9*band(t,354,392,1.5);
+    // supernova flash C31
+    const fl=band(t,368.4,373.5,0.6);d.flash.material.opacity=fl*Math.max(0,1-((t-369.5)/3));
+    d.flash.scale.setScalar(40+fl*120);
+    d.star.grp.visible=t<380.5;
+    // dark dust cloud
+    d.dust.material.opacity=0.7*band(t,380,392,1.2);
+    d.dust.scale.setScalar(70+smooth(clamp((t-380)/12,0,1))*40);
+    setCam(Math.sin(t*0.05)*3,1.5,20+smooth(clamp((t-345.5)/46,0,1))*8,0,0,0,48);
+  }
+
+  // ---------------- J: dust cloud fly-through ----------------
+  if(gJ.visible){
+    const d=gJ.userData;const sd=d.sootData;
+    const arr=d.soot.geometry.attributes.position.array,base=sd.base;
+    // fly-through: shift z with t, wrap
+    const fly=(t-391.9)*3.2;
+    for(let i=0;i<sd.N;i++){
+      let z=base[i*3+2]+fly;z=((z+45)%90)-45;
+      arr[i*3]=base[i*3]+Math.sin(t*0.1+sd.ph[i])*1.2;
+      arr[i*3+1]=base[i*3+1]+Math.cos(t*0.08+sd.ph[i])*1.0;
+      arr[i*3+2]=z;
+    }
+    d.soot.geometry.attributes.position.needsUpdate=true;
+    d.soot.material.opacity=0.85*band(t,392,427.3,1.2);
+    d.org.children.forEach((r,i)=>{r.rotation.x=t*0.2+i;r.rotation.y=t*0.15;r.material.opacity=band(t,405,427.3,1.0);r.material.transparent=true;});
+    // diamond + bucky appear at C35 (410-427)
+    const dbf=band(t,410,427.3,1.0);
+    d.diamond.visible=dbf>0.02;d.bucky.visible=dbf>0.02;
+    d.diamond.rotation.x=t*0.4;d.diamond.rotation.y=t*0.3;d.diamond.material.opacity=0.85*dbf;
+    d.bucky.rotation.y=t*0.35;d.bucky.rotation.x=t*0.2;
+    d.bucky.children.forEach(c=>{if(c.material){c.material.opacity=dbf;c.material.transparent=true;}});
+    setCam(Math.sin(t*0.06)*2,Math.cos(t*0.05)*1.5,18,0,0,-4,52);
+  }
+
+  // ---------------- K: new solar system ----------------
+  if(gK.visible){
+    const d=gK.userData;d.sun.photoMat.uniforms.uT.value=t;
+    // C36 (427.3-443.7): cloud collapse → sun ignites → disk → earth condenses
+    // C37 (443.7-454.7): question, element table hint (kept minimal, focus earth)
+    const ign=smooth(clamp((t-428)/8,0,1));
+    d.sun.grp.scale.setScalar(0.3+ign*1.0);
+    d.sun.photoMat.uniforms.uBright.value=0.6+ign*0.8;
+    d.sun.cor.material.opacity=0.85*ign;
+    // disk orbit
+    const dd=d.diskData;const arr=d.disk.geometry.attributes.position.array;
+    for(let i=0;i<dd.N;i++){const a=dd.a0[i]+t*dd.sp[i];const r=dd.rr[i];
+      arr[i*3]=Math.cos(a)*r;arr[i*3+1]=dd.yy[i];arr[i*3+2]=Math.sin(a)*r;}
+    d.disk.geometry.attributes.position.needsUpdate=true;
+    d.disk.material.opacity=0.8*band(t,428,454.7,1.0);
+    // earth condenses at C36 late
+    const ef=band(t,438,454.7,0.8);d.earth.visible=ef>0.02;
+    const ea=t*0.4;d.earth.position.set(Math.cos(ea)*9,0,Math.sin(ea)*9);d.earth.rotation.y=t*0.3;
+    d.earth.material.emissiveIntensity=0.3+0.4*(1-ef);
+    // camera: pull back over disk then push toward earth
+    if(t<442)setCam(0,8-smooth(clamp((t-427.3)/15,0,1))*3,26-smooth(clamp((t-427.3)/15,0,1))*4,0,0,0,48);
+    else{const s=smooth(clamp((t-442)/12,0,1));const ea2=t*0.4;
+      setCam(Math.cos(ea2)*9*0.6,3-s*1.5,20-s*8,Math.cos(ea2)*9,0,Math.sin(ea2)*9,46);}
+  }
+
+  // ---------------- L: carbon bonds ----------------
+  if(gL.visible){
+    const d=gL.userData;
+    // C38 (454.7-467.4): tetra 4 arms
+    // C39 (467.4-479.8): chain/benzene/lattice net
+    // C40 (479.8-504): DNA
+    const showTetra=t<468;const showNet=t>=467.4&&t<480.5;const showDNA=t>=479.8;
+    d.tetra.visible=showTetra;d.net.visible=showNet;d.dna.visible=showDNA;
+    d.tetra.rotation.y=t*0.4;d.tetra.rotation.x=Math.sin(t*0.2)*0.3;
+    if(showNet){d.ring.rotation.z=t*0.3;d.chain.rotation.z=Math.sin(t*0.2)*0.2;d.chain.position.y=1.6;d.lat.rotation.y=t*0.3;d.net.rotation.y=Math.sin(t*0.1)*0.15;}
+    if(showDNA){d.dna.rotation.y=t*0.35;d.dna.position.y=Math.sin(t*0.15)*0.2;}
+    // camera
+    if(showTetra)setCam(0,0,7-smooth(clamp((t-454.7)/13,0,1))*1,0,0,0,44);
+    else if(showNet)setCam(0,0,12,0,0,0,50);
+    else setCam(4,0,10,0,0,0,50);
+  }
+
+  // ---------------- M: carbon cycle ----------------
+  if(gM.visible){
+    const d=gM.userData;
+    // breathing figure fades in early (C41 504-511)
+    d.fig.material.opacity=0.55*band(t,504,556,1.5);
+    d.fig.position.x=-9;
+    // atom travels the ring loop; loop position by t (guard: loopT >= 0)
+    const nodes=d.nodes;const NN=nodes.length;
+    let loopT=Math.max(0,(t-511.28))*0.11;loopT=loopT-Math.floor(loopT);
+    const seg=loopT*NN;let i0=Math.floor(seg)%NN;if(i0<0)i0+=NN;const i1=(i0+1)%NN;const f=seg-Math.floor(seg);
+    const a=nodes[i0],b=nodes[i1];
+    d.atom.position.set(a.x+(b.x-a.x)*f,a.y+(b.y-a.y)*f,a.z+(b.z-a.z)*f);
+    d.atomGlow.position.copy(d.atom.position);
+    d.atomGlow.material.opacity=0.9*band(t,511,556,1.0);
+    d.atom.visible=t>=511;d.atomGlow.visible=t>=511;
+    // brighten cycle nodes so the ring reads
+    d.ring.children.forEach(c=>{if(c.material&&c.material.emissiveIntensity!==undefined)c.material.emissiveIntensity=0.7+0.4*Math.sin(t*0.8+c.position.x);});
+    d.ring.rotation.z=Math.sin(t*0.05)*0.05;
+    setCam(-2+Math.sin(t*0.05)*1.5,0.3,15,-1,0,0,52);
+  }
+
+  // ---------------- N: human = stars, final breath ----------------
+  if(gN.visible){
+    const d=gN.userData;
+    // C45 (556.9-570.95): figure of stars, push in
+    // C46 (570.95-584): final exhale, fade to black
+    d.fig.rotation.y=Math.sin(t*0.08)*0.15;
+    d.fig.material.opacity=0.95*band(t,557,584,1.5);
+    // final breath particles
+    const bd=d.breathData;const arr=d.breath.geometry.attributes.position.array;
+    const emit=t>=571;
+    d.breath.visible=emit;
+    if(emit){
+      for(let i=0;i<bd.M;i++){const life=(t*0.1+bd.bph[i]/6.283)%1;
+        arr[i*3]=1+life*10+Math.sin(t*bd.bsp[i]+bd.bph[i])*0.6;
+        arr[i*3+1]=2+Math.cos(t*0.5+bd.bph[i])*1.2+life*2;
+        arr[i*3+2]=Math.sin(t*0.4+bd.bph[i])*life*5;}
+      d.breath.geometry.attributes.position.needsUpdate=true;
+      d.breath.material.opacity=0.9*(1-smooth(clamp((t-580)/4,0,1)));
+    }
+    setCam(0,0,16-smooth(clamp((t-556.9)/27,0,1))*3,0,0,0,44);
+  }
+  }catch(err){var ed=document.getElementById('err');if(ed){ed.style.display='block';ed.textContent='SCENE ERR @t='+t.toFixed(1)+': '+(err&&err.message||err);}}
+
+  // ---------------- global fades (open + close) ----------------
+  let fade=1.0;
+  fade*=smooth(clamp(t/3.5,0,1));           // fade-in from black
+  fade*=smooth(clamp((TOTAL-t)/4.0,0,1));   // fade-out to black at end
+
+  // ---------------- postprocessing uniforms ----------------
+  lens.uniforms.uT.value=t;
+  lens.uniforms.uFade.value=fade;
+  // bloom stronger in fiery scenes
+  const fiery=inSc(t,'E')||inSc(t,'I')||inSc(t,'C')&&t>=60&&t<74.5;
+  bloom.strength=fiery?1.15:0.85;
+
+  // ---------------- subtitle + chapter ----------------
+  updateText(t);
+
+  composer.render();
+}
+
+// subtitle / chapter lookup
+let _lastSub=-1,_lastChap='';
+function updateText(t){
+  // find current cue
+  let idx=0;for(let i=0;i<CUES.length;i++){if(CUES[i].t<=t+1e-6)idx=i;else break;}
+  const cur=CUES[idx];
+  if(idx!==_lastSub){document.getElementById('sub').textContent=cur?cur.s:'';_lastSub=idx;}
+  // chapter: latest ch defined at or before t, show for ~4s after its start
+  let chT=-1,chS='';for(const c of CUES){if(c.ch&&c.t<=t){chT=c.t;chS=c.ch;}}
+  const chapEl=document.getElementById('chap');
+  if(chS!==_lastChap){chapEl.textContent=chS;_lastChap=chS;}
+  const op=chT>=0?smooth(clamp((t-chT)/0.8,0,1))*smooth(clamp((chT+4.5-t)/1.2,0,1)):0;
+  chapEl.style.opacity=op;
+  // subtitle opacity: hide during long gaps (>0.6s before next cue with silence) — keep simple: always visible if within cue span
+  document.getElementById('sub').style.opacity=1;
+}
+
+// ============================================================
+//  GSAP timeline (paused) — deterministic driver
+// ============================================================
+window.__timelines=window.__timelines||{};
+const tl=gsap.timeline({paused:true});
+const clk={t:0};
+tl.to(clk,{t:TOTAL,duration:TOTAL,ease:"none",onUpdate:()=>renderAtTime(clk.t)},0);
+window.__timelines["nguyen-to-cacbon"]=tl;
+
+// initial render
+renderAtTime(0);
+</script>
+</body>
+</html>

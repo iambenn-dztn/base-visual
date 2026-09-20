@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, height=1080">
+<title>Neutrino — Hạt ma xuyên qua mọi thứ — HyperFrames</title>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{width:1920px;height:1080px;overflow:hidden;background:#05060a;font-family:"Segoe UI",-apple-system,Roboto,sans-serif;}
+  #root{position:relative;width:1920px;height:1080px;}
+  #c{position:absolute;inset:0;display:block;z-index:0;}
+  #vig{position:absolute;inset:0;pointer-events:none;z-index:6;background:radial-gradient(ellipse at center,rgba(0,0,0,0) 46%,rgba(5,6,10,.74) 100%);}
+  #chap{position:absolute;left:50%;top:6.4%;transform:translateX(-50%);z-index:18;color:#9fe6ff;font-size:26px;font-weight:600;letter-spacing:6px;text-transform:uppercase;opacity:0;text-shadow:0 2px 18px rgba(0,0,0,.95);white-space:nowrap;}
+  #sub{position:absolute;left:50%;bottom:8.5%;transform:translateX(-50%);z-index:20;width:min(1400px,86%);text-align:center;color:#f2f6f8;font-size:40px;font-weight:600;line-height:1.4;text-shadow:0 2px 18px rgba(0,0,0,.96),0 0 3px rgba(0,0,0,.96);}
+  #err{position:absolute;left:12px;top:12px;z-index:99;color:#ff9090;background:rgba(0,0,0,.8);padding:8px 10px;font:12px/1.5 monospace;max-width:90%;white-space:pre-wrap;border-radius:8px;display:none;}
+</style>
+</head>
+<body>
+<div data-hf-id="hf-root" id="root" data-composition-id="hat-neutrino" data-start="0" data-duration="806.14" data-width="1920" data-height="1080">
+  <canvas data-hf-id="hf-c" id="c" class="clip" data-start="0.01" data-duration="806.14" data-track-index="0"></canvas>
+  <audio data-hf-id="hf-narr" id="narr" class="clip" data-start="0" data-duration="806.14" data-track-index="1" src="projects/hat-neutrino/voice/narration_mixed.mp3"></audio>
+  <div data-hf-id="hf-vig" id="vig"></div>
+  <div data-hf-id="hf-chap" id="chap" data-layout-allow-occlusion></div>
+  <div data-hf-id="hf-sub" id="sub" data-layout-allow-occlusion></div>
+  <div data-hf-id="hf-err" id="err"></div>
+</div>
+
+<script>
+window.addEventListener('error',function(e){var d=document.getElementById('err');if(!d)return;d.style.display='block';
+  d.textContent='LỖI: '+(e.message||e.type)+(e.filename?('\n@ '+e.filename.split('/').pop()+':'+e.lineno):'');});
+
+/* ============================================================
+   "NEUTRINO — Hạt ma xuyên qua mọi thứ" — hat-neutrino
+   Composition TẤT ĐỊNH theo t. Nhiều CẢNH khác biệt, cắt theo cue.
+   Timeline khớp timing.json THẬT (t hình = t tiếng, KHÔNG remap).
+   Palette: graphite đen nền · NEUTRINO trắng-xanh lơ #8FE3FF ·
+            lõi sao vàng-cam #FF7A2B/#FFC04A · Cherenkov xanh ngọc #2BE6C8 ·
+            ba hương e #8FE3FF / μ #B57BFF / τ #FF8FA3 · tím vũ trụ.
+
+   SCENE (bật/tắt theo t, cắt dứt khoát) — biên = cue.start (timing.json):
+    A intro    (C01-C03  0      – 35.43 ) Người ngồi yên · cơn mưa hạt vô hình xuyên qua
+    B name     (C04-C08  35.43  – 108.34) Đặt tên "hạt ma" · Mặt Trời nguồn · Trái Đất trong suốt · phía đêm
+    C suncore  (C09-C13  108.34 – 188.6 ) Vào lõi Mặt Trời · hợp hạch · ánh sáng zic-zắc vs neutrino thẳng
+    D forces   (C14-C19  188.6  – 281.15) 4 lực · tương tác yếu · kẽ hở nguyên tử · bức tường chì 1 năm as
+    E messenger(C20-C21  281.15 – 310.57) Nghịch lý · sứ giả trung thực · ảnh chụp trực tiếp lõi
+    F detector (C22-C27  310.57 – 412.2 ) Lòng đất · khối nguyên tử · bể Super-K · vòng Cherenkov xanh
+    G problem  (C28-C30  412.2  – 456.3 ) Đồ thị đếm · bài toán Davis 1/3
+    H flavors  (C31-C34  456.3  – 532.06) Hóa trang · ba hương e/μ/τ · dao động sóng · giải bài toán
+    I mass     (C35-C36  532.06 – 572.99) Đổi hương ⇒ có khối lượng · thanh khối lượng · Nobel
+    J supernova(C37-C39  572.99 – 617.32) Không gian sâu · siêu tân tinh nổ · SN 1987A
+    K race     (C40-C42  617.32 – 664.14) Neutrino về trước ánh sáng · timeline · ~20 hạt lẻ tẻ
+    L bigbang  (C43-C45  664.14 – 716.61) Tin cổ xưa · Big Bang · nền neutrino vũ trụ ~300/cm³
+    M closing  (C46-C50  716.61 – 806.14) Ngồi yên trở lại · tế bào · ba nguồn hạt · fade đen
+   ============================================================ */
+
+const TOTAL=806.14;
+
+const CUES=[
+ {t:0,ch:"CHƯƠNG 1",s:"Tôi muốn bạn ngồi thật yên một chút."},
+ {t:2.27,s:"Nhắm mắt lại nếu có thể."},
+ {t:4.42,s:"Và lắng nghe."},
+ {t:6.26,s:"Vì ngay lúc này, một cơn mưa đang xuyên"},
+ {t:9.64,s:"qua bạn."},
+ {t:10.33,s:"Một cơn mưa mà bạn không thấy, không nghe,"},
+ {t:13.76,s:"không hề cảm nhận được."},
+ {t:15.64,s:"Nhưng nó chưa từng ngừng lại, dù chỉ một"},
+ {t:19.02,s:"khoảnh khắc."},
+ {t:20.04,s:"Trong đúng một giây bạn vừa nghe câu này,"},
+ {t:22.58,s:"khoảng một trăm nghìn tỉ hạt đã đi xuyên"},
+ {t:25.05,s:"qua cơ thể bạn."},
+ {t:25.98,s:"Xuyên qua da, qua xương, qua trái tim đang"},
+ {t:29.38,s:"đập."},
+ {t:29.7,s:"Và không một hạt nào chạm vào bất cứ thứ"},
+ {t:32.57,s:"gì trong người bạn."},
+ {t:35.43,s:"Những hạt ấy có một cái tên nghe như bước"},
+ {t:38.4,s:"ra từ truyện ma."},
+ {t:39.56,s:"Neutrino."},
+ {t:41.26,s:"Hạt trung hòa nhỏ bé."},
+ {t:43.36,s:"Và người ta thường gọi nó bằng một biệt"},
+ {t:46.03,s:"danh khác, đúng hơn với bản chất của nó."},
+ {t:48.77,s:"Hạt ma."},
+ {t:50.54,s:"Chúng đến từ Mặt Trời."},
+ {t:52.41,s:"Từ tận trong lõi của ngôi sao ấy, cách"},
+ {t:55.2,s:"chúng ta một trăm năm mươi triệu cây số."},
+ {t:58.13,s:"Và chúng vừa lao một mạch qua khoảng không"},
+ {t:61.02,s:"vũ trụ, để rồi đi thẳng qua bạn như thể"},
+ {t:63.7,s:"bạn không hề tồn tại."},
+ {t:65.15,s:"Nhưng đây mới là điều khiến tôi lặng"},
+ {t:67.75,s:"người."},
+ {t:68.18,s:"Chúng không chỉ xuyên qua bạn."},
+ {t:70.43,s:"Chúng xuyên qua cả Trái Đất."},
+ {t:72.98,s:"Ngay lúc này là ban đêm ở đâu đó bên kia"},
+ {t:76.4,s:"hành tinh."},
+ {t:77.25,s:"Với những người ở đó, Mặt Trời đang nằm"},
+ {t:80.18,s:"dưới chân họ, bị cả một khối cầu đất đá"},
+ {t:83.1,s:"dày mười hai nghìn cây số che khuất."},
+ {t:85.8,s:"Vậy mà cơn mưa neutrino vẫn đang tưới lên"},
+ {t:88.97,s:"họ, y hệt như tưới lên bạn giữa ban ngày."},
+ {t:92.13,s:"Với neutrino, cả Trái Đất trong suốt như"},
+ {t:95.13,s:"một tấm kính."},
+ {t:96.1,s:"Cả hành tinh của chúng ta chỉ là một làn"},
+ {t:98.97,s:"sương mà nó đi xuyên qua mà không hề chậm"},
+ {t:101.9,s:"lại."},
+ {t:102.19,s:"Và tôi muốn dẫn bạn đi tìm hiểu, làm sao"},
+ {t:105.34,s:"một hạt lại có thể vô hình đến mức đó."},
+ {t:108.34,ch:"CHƯƠNG 2",s:"Để hiểu neutrino, trước hết tôi phải kể"},
+ {t:111.22,s:"cho bạn nghe về nơi nó ra đời."},
+ {t:113.43,s:"Về cái lò đã sinh ra nó."},
+ {t:116.12,s:"Sâu trong lõi Mặt Trời, trọng lực nghiến"},
+ {t:118.91,s:"các hạt nhân hydro vào nhau với sức ép"},
+ {t:121.56,s:"khủng khiếp, ép chúng hợp lại thành heli."},
+ {t:124.42,s:"Đó chính là phản ứng nuôi sống Mặt Trời,"},
+ {t:127.28,s:"thứ đã thắp sáng bầu trời của chúng ta"},
+ {t:130.01,s:"suốt bốn tỉ rưỡi năm."},
+ {t:131.51,s:"Và mỗi lần các hạt nhân ấy hợp nhất, chúng"},
+ {t:134.43,s:"nhả ra hai thứ."},
+ {t:135.47,s:"Một là ánh sáng."},
+ {t:137.28,s:"Hai là những hạt ma."},
+ {t:139.87,s:"Neutrino sinh ra ngay trong khoảnh khắc"},
+ {t:143.11,s:"lửa hạt nhân bùng lên ở trái tim ngôi sao."},
+ {t:146.6,s:"Nhưng số phận của hai thứ đó khác nhau một"},
+ {t:150.18,s:"trời một vực."},
+ {t:151.29,s:"Ánh sáng thì bị nhốt lại."},
+ {t:153.58,s:"Nó va vào vô số hạt trên đường, bị hấp thụ"},
+ {t:156.96,s:"rồi nhả ra, hết lần này đến lần khác."},
+ {t:159.94,s:"Một hạt ánh sáng sinh ra trong lõi Mặt"},
+ {t:162.71,s:"Trời phải mất hàng chục nghìn năm mới lết"},
+ {t:165.7,s:"được ra tới bề mặt."},
+ {t:167.09,s:"Còn neutrino thì khác hẳn."},
+ {t:169.42,s:"Vừa sinh ra, nó phóng thẳng ra khỏi Mặt"},
+ {t:172.72,s:"Trời."},
+ {t:173.14,s:"Không va vào gì."},
+ {t:174.86,s:"Không bị cản lại."},
+ {t:176.66,s:"Cả một ngôi sao đặc quánh vật chất, với"},
+ {t:179.75,s:"nó, cũng gần như là hư không."},
+ {t:182.04,s:"Chỉ hai giây sau khi ra đời, nó đã thoát"},
+ {t:185.4,s:"ra tới bề mặt và lao về phía chúng ta."},
+ {t:188.6,s:"Vậy điều gì làm cho neutrino trơn tuột đến"},
+ {t:191.93,s:"thế?"},
+ {t:192.25,s:"Vì sao nó có thể phớt lờ cả một ngôi sao,"},
+ {t:195.88,s:"cả một hành tinh, cả cơ thể bạn?"},
+ {t:198.71,s:"Bí mật nằm ở chỗ này."},
+ {t:200.51,s:"Trong vũ trụ có bốn lực cơ bản chi phối"},
+ {t:203.49,s:"mọi thứ."},
+ {t:204.1,s:"Nhưng neutrino gần như làm ngơ tất cả."},
+ {t:207.5,s:"Nó không mang điện, nên lực điện từ không"},
+ {t:210.64,s:"níu được nó."},
+ {t:211.56,s:"Nó gần như không có khối lượng, nên trọng"},
+ {t:215.55,s:"lực gần như bỏ quên nó."},
+ {t:217.78,s:"Nó chỉ trò chuyện với thế giới qua đúng"},
+ {t:220.4,s:"một kênh duy nhất, một lực gọi là tương"},
+ {t:223.02,s:"tác yếu."},
+ {t:223.56,s:"Và đúng như tên gọi, lực ấy yếu đến mức"},
+ {t:226.39,s:"chỉ khi neutrino đâm sầm trực diện vào tâm"},
+ {t:229.44,s:"một hạt nhân, may ra mới có chuyện xảy ra."},
+ {t:232.49,s:"Nhưng hạt nhân thì bé đến vô lý, còn"},
+ {t:234.83,s:"khoảng trống giữa chúng thì mênh mông."},
+ {t:237.29,s:"Với neutrino, vật chất mà chúng ta thấy"},
+ {t:240.4,s:"đặc cứng lại chủ yếu là khoảng không."},
+ {t:243.35,s:"Nó cứ thế len qua những kẽ hở khổng lồ"},
+ {t:246.42,s:"giữa các nguyên tử."},
+ {t:247.96,s:"Các nhà vật lý đã tính ra một con số làm"},
+ {t:251,s:"tôi choáng váng."},
+ {t:252.21,s:"Nếu bạn muốn chặn đứng một dòng neutrino,"},
+ {t:255.34,s:"bạn cần một bức tường chì."},
+ {t:257.33,s:"Nhưng không phải dày vài mét."},
+ {t:259.78,s:"Mà là một bức tường chì dày cỡ một năm ánh"},
+ {t:263.27,s:"sáng."},
+ {t:263.69,s:"Một bức tường chì dài bằng quãng đường ánh"},
+ {t:266.46,s:"sáng đi trong trọn một năm, mới có thể"},
+ {t:268.97,s:"chặn được một nửa số neutrino lao tới."},
+ {t:271.48,s:"Vậy thì một hạt gần như không bao giờ chạm"},
+ {t:274.35,s:"vào gì, làm sao ta có thể bắt được nó?"},
+ {t:276.94,s:"Làm sao ta biết nó có thật?"},
+ {t:281.15,s:"Và đây là nghịch lý đẹp nhất của câu"},
+ {t:283.53,s:"chuyện này."},
+ {t:284.26,s:"Chính vì neutrino trơn tuột đến thế, nó"},
+ {t:287.18,s:"lại trở thành một sứ giả trung thực đến"},
+ {t:290.1,s:"tuyệt đối."},
+ {t:290.85,s:"Ánh sáng Mặt Trời mà tôi nhìn thấy là ánh"},
+ {t:293.36,s:"sáng của bề mặt, đã bị nhào nặn suốt hàng"},
+ {t:295.87,s:"chục nghìn năm trước khi thoát ra."},
+ {t:297.95,s:"Nó không kể cho tôi nghe gì về cái lõi."},
+ {t:300.97,s:"Nhưng neutrino thì bay thẳng từ lõi ra,"},
+ {t:304.05,s:"không hề bị bóp méo."},
+ {t:305.63,s:"Nó là tấm ảnh chụp trực tiếp trái tim Mặt"},
+ {t:308.37,s:"Trời, chụp cách đây chỉ tám phút."},
+ {t:310.57,ch:"CHƯƠNG 3",s:"Vậy là con người quyết tâm bắt cho được"},
+ {t:313.01,s:"một hạt ma."},
+ {t:313.7,s:"Và cách chúng ta làm điều đó, với tôi, là"},
+ {t:316.57,s:"một trong những kỳ tích điên rồ nhất của"},
+ {t:319.38,s:"khoa học."},
+ {t:320.01,s:"Nếu neutrino chỉ va chạm cực kỳ hiếm hoi,"},
+ {t:323.31,s:"thì cách duy nhất là gom thật nhiều nguyên"},
+ {t:326.7,s:"tử lại một chỗ, rồi kiên nhẫn chờ."},
+ {t:329.44,s:"Chờ cái khoảnh khắc một trong hàng tỉ tỉ"},
+ {t:332.26,s:"hạt bay qua tình cờ đâm trúng một hạt"},
+ {t:334.87,s:"nhân."},
+ {t:335.22,s:"Thế là người ta xây những cỗ máy dò khổng"},
+ {t:337.91,s:"lồ."},
+ {t:338.11,s:"Không phải trên mặt đất, mà chôn sâu dưới"},
+ {t:341.42,s:"lòng đất, dưới cả một ngọn núi."},
+ {t:343.92,s:"Bởi chỉ có lớp đá dày hàng cây số mới chặn"},
+ {t:347.08,s:"được mọi thứ khác, mọi hạt ồn ào của vũ"},
+ {t:350.01,s:"trụ."},
+ {t:350.31,s:"Chỉ có neutrino, kẻ xuyên thấu mọi thứ,"},
+ {t:353.75,s:"mới lọt được xuống tận đó."},
+ {t:356.05,s:"Hãy hình dung cùng tôi một trong những cỗ"},
+ {t:359.13,s:"máy ấy, ở Nhật Bản."},
+ {t:360.56,s:"Nó là một bể chứa khổng lồ nằm sâu một cây"},
+ {t:363.4,s:"số dưới một ngọn núi, đựng năm mươi nghìn"},
+ {t:366.16,s:"tấn nước siêu tinh khiết."},
+ {t:367.85,s:"Thành bể phủ kín hàng chục nghìn con mắt"},
+ {t:370.72,s:"điện tử, im lìm chờ đợi trong bóng tối"},
+ {t:373.52,s:"tuyệt đối."},
+ {t:374.24,s:"Rồi thi thoảng, rất thi thoảng, một hạt ma"},
+ {t:377.39,s:"trong hàng tỉ tỉ hạt đâm trúng một nguyên"},
+ {t:380.47,s:"tử trong bể nước."},
+ {t:381.74,s:"Và trong tích tắc va chạm đó, một tia sáng"},
+ {t:385.05,s:"xanh mờ lóe lên trong nước, một vòng ánh"},
+ {t:388.2,s:"sáng lan ra như gợn sóng."},
+ {t:390.17,s:"Những con mắt điện tử bắt lấy nó."},
+ {t:393.26,s:"Cái chớp sáng xanh li ti ấy chính là dấu"},
+ {t:396.23,s:"chân của một hạt ma."},
+ {t:397.71,s:"Lần đầu tiên, con người nhìn thấy bóng"},
+ {t:400.51,s:"dáng của thứ tưởng như vô hình."},
+ {t:402.8,s:"Và họ có thể lần theo vòng sáng để biết"},
+ {t:406.1,s:"hạt ấy đến từ đâu."},
+ {t:407.62,s:"Nó chỉ thẳng về phía Mặt Trời."},
+ {t:412.2,s:"Nhưng khi con người bắt đầu đếm những hạt"},
+ {t:415.13,s:"ma từ Mặt Trời, một bí ẩn kỳ lạ hiện ra."},
+ {t:417.99,s:"Một bí ẩn ám ảnh các nhà khoa học suốt mấy"},
+ {t:421.16,s:"chục năm."},
+ {t:421.83,s:"Một nhà khoa học tên Ray Davis đã dựng một"},
+ {t:424.68,s:"máy dò và cần mẫn đếm neutrino Mặt Trời"},
+ {t:427.32,s:"qua từng năm tháng."},
+ {t:428.61,s:"Ông biết rõ Mặt Trời phải phun ra bao"},
+ {t:431.26,s:"nhiêu hạt."},
+ {t:431.97,s:"Lý thuyết đã tính rất chắc chắn."},
+ {t:434.94,s:"Vậy mà ông đếm đi đếm lại, chỉ thấy khoảng"},
+ {t:438.21,s:"một phần ba con số ấy."},
+ {t:439.92,s:"Hai phần ba số neutrino đã biến đi đâu mất"},
+ {t:442.81,s:"trên đường từ Mặt Trời đến Trái Đất."},
+ {t:445.29,s:"Người ta gọi đó là bài toán neutrino Mặt"},
+ {t:449.33,s:"Trời."},
+ {t:449.83,s:"Hoặc là chúng ta hiểu sai về Mặt Trời."},
+ {t:452.78,s:"Hoặc là chúng ta hiểu sai về chính hạt ma"},
+ {t:455.99,s:"này."},
+ {t:456.3,s:"Và sự thật hóa ra còn lạ lùng hơn cả hai"},
+ {t:459.59,s:"khả năng đó."},
+ {t:460.58,s:"Những hạt neutrino ấy chưa hề biến mất."},
+ {t:463.59,s:"Chúng chỉ đã hóa trang."},
+ {t:465.79,s:"Bạn thấy đấy, neutrino không chỉ có một"},
+ {t:469.38,s:"loại."},
+ {t:469.84,s:"Nó có ba khuôn mặt, ba hương vị khác nhau,"},
+ {t:473.04,s:"mà các nhà khoa học gọi là ba hương."},
+ {t:475.78,s:"Có neutrino electron, neutrino muon, và"},
+ {t:479.88,s:"neutrino tau."},
+ {t:481.24,s:"Mặt Trời chỉ sinh ra loại thứ nhất."},
+ {t:483.87,s:"Còn máy dò của Ray Davis cũng chỉ đếm được"},
+ {t:486.97,s:"đúng loại thứ nhất ấy."},
+ {t:488.59,s:"Điều kỳ diệu là thế này."},
+ {t:490.37,s:"Trên đường bay từ Mặt Trời đến Trái Đất,"},
+ {t:493,s:"mỗi hạt neutrino liên tục thay đổi khuôn"},
+ {t:495.63,s:"mặt của mình."},
+ {t:496.48,s:"Nó rời Mặt Trời với một hương, rồi hóa"},
+ {t:499.91,s:"thành hương thứ hai, rồi thứ ba, rồi quay"},
+ {t:503.61,s:"lại, cứ thế đổi qua đổi lại suốt hành"},
+ {t:506.95,s:"trình."},
+ {t:507.49,s:"Người ta gọi hiện tượng này là dao động"},
+ {t:510.64,s:"neutrino."},
+ {t:511.37,s:"Thế nên khi những hạt ma ấy tới được Trái"},
+ {t:513.85,s:"Đất, chỉ còn khoảng một phần ba đang khoác"},
+ {t:516.39,s:"đúng khuôn mặt mà máy của Davis nhìn thấy"},
+ {t:518.87,s:"được."},
+ {t:519.17,s:"Hai phần ba kia không hề mất."},
+ {t:521.55,s:"Chúng chỉ đang đội một hương khác."},
+ {t:524.05,s:"Bài toán được giải, không phải bằng cách"},
+ {t:526.99,s:"sửa Mặt Trời, mà bằng cách hé lộ một bí"},
+ {t:529.86,s:"mật sâu thẳm của chính hạt ma."},
+ {t:532.06,s:"Và bí mật ấy còn đi xa hơn."},
+ {t:534.57,s:"Bởi vì để đổi được khuôn mặt như vậy, một"},
+ {t:537.38,s:"hạt buộc phải có khối lượng."},
+ {t:539.3,s:"Dù cực kỳ nhỏ bé."},
+ {t:541.5,s:"Suốt bao năm, người ta cứ ngỡ neutrino"},
+ {t:544.11,s:"hoàn toàn không có khối lượng."},
+ {t:546.17,s:"Nhưng chính sự hóa trang này đã chứng minh"},
+ {t:549.17,s:"điều ngược lại."},
+ {t:550.24,s:"Neutrino có khối lượng."},
+ {t:552.03,s:"Nhỏ đến mức gần như không thể tin nổi, nhỏ"},
+ {t:555,s:"hơn cả một phần triệu khối lượng một"},
+ {t:557.54,s:"electron, nhưng khác không."},
+ {t:559.45,s:"Khám phá ấy làm rung chuyển vật lý, và"},
+ {t:562.08,s:"mang về một giải Nobel cho hai nhà khoa"},
+ {t:564.78,s:"học đã vén được tấm màn."},
+ {t:566.44,s:"Một hạt trơn tuột và vô hình, hóa ra lại"},
+ {t:569.32,s:"giấu trong mình một bí mật về bản chất của"},
+ {t:572.34,s:"vật chất."},
+ {t:572.99,ch:"CHƯƠNG 4",s:"Nhưng neutrino không chỉ mang tin từ Mặt"},
+ {t:576.12,s:"Trời."},
+ {t:576.51,s:"Nó còn là sứ giả của những sự kiện dữ dội"},
+ {t:579.49,s:"nhất trong cả vũ trụ."},
+ {t:581.02,s:"Và tôi muốn kể cho bạn nghe về một đêm đặc"},
+ {t:584.42,s:"biệt."},
+ {t:584.83,s:"Khi một ngôi sao khổng lồ chết đi trong"},
+ {t:587.68,s:"một vụ nổ siêu tân tinh, lõi của nó sụp đổ"},
+ {t:590.74,s:"trong tích tắc."},
+ {t:591.84,s:"Và trong khoảnh khắc kinh hoàng ấy, nó"},
+ {t:594.4,s:"giải phóng một cơn lũ neutrino không thể"},
+ {t:597.1,s:"tưởng tượng nổi."},
+ {t:598.18,s:"Gần như toàn bộ năng lượng của cái chết ấy"},
+ {t:601.27,s:"tuôn ra dưới dạng hạt ma."},
+ {t:603.1,s:"Năm một nghìn chín trăm tám mươi bảy, một"},
+ {t:605.68,s:"ngôi sao nổ tung ở một thiên hà lân cận,"},
+ {t:608.19,s:"cách chúng ta một trăm sáu mươi nghìn năm"},
+ {t:610.76,s:"ánh sáng."},
+ {t:611.33,s:"Và điều đáng kinh ngạc là các máy dò dưới"},
+ {t:614.19,s:"lòng đất đã bắt được đợt neutrino từ vụ nổ"},
+ {t:617.11,s:"ấy."},
+ {t:617.32,s:"Nhưng đây mới là chi tiết khiến tôi nổi da"},
+ {t:620.22,s:"gà."},
+ {t:620.43,s:"Đợt neutrino ấy đến Trái Đất sớm hơn ánh"},
+ {t:623.55,s:"sáng của vụ nổ vài giờ đồng hồ."},
+ {t:625.96,s:"Vài giờ."},
+ {t:627.81,s:"Vì ánh sáng phải chật vật chen qua các lớp"},
+ {t:630.33,s:"vật chất đang bùng nổ của ngôi sao mới"},
+ {t:632.6,s:"thoát ra được."},
+ {t:633.44,s:"Còn neutrino, như mọi khi, phóng thẳng qua"},
+ {t:637.51,s:"tất cả, không gì cản nổi."},
+ {t:639.93,s:"Chúng lao một mạch qua một trăm sáu mươi"},
+ {t:642.77,s:"nghìn năm ánh sáng, và về đích trước ánh"},
+ {t:645.61,s:"sáng."},
+ {t:645.97,s:"Chỉ hai mươi mấy hạt ma được bắt trong vài"},
+ {t:648.77,s:"giây ngắn ngủi ấy."},
+ {t:649.97,s:"Hai mươi mấy hạt, sau một hành trình một"},
+ {t:652.85,s:"trăm sáu mươi nghìn năm."},
+ {t:654.58,s:"Nhưng chúng là lời báo tin đầu tiên loài"},
+ {t:657.57,s:"người nhận được, rằng ở tận nơi xa xôi"},
+ {t:660.4,s:"kia, một ngôi sao vừa qua đời."},
+ {t:664.14,s:"Và neutrino còn mang trong mình một tin"},
+ {t:666.96,s:"nhắn cổ xưa hơn tất cả."},
+ {t:668.62,s:"Cổ xưa hơn cả Mặt Trời, cả các ngôi sao."},
+ {t:672.37,s:"Một tin nhắn từ chính buổi bình minh của"},
+ {t:675.51,s:"vũ trụ."},
+ {t:676.06,s:"Chỉ một giây sau Big Bang, khi vũ trụ còn"},
+ {t:679.1,s:"là một biển lửa đặc quánh, ánh sáng còn bị"},
+ {t:682.22,s:"giam cầm không lối thoát, thì neutrino đã"},
+ {t:685.26,s:"tự do bay đi."},
+ {t:686.23,s:"Chúng thoát ra sớm hơn ánh sáng cả hàng"},
+ {t:689.01,s:"trăm nghìn năm."},
+ {t:690.08,s:"Và chúng vẫn còn ở đây, ngay lúc này, trôi"},
+ {t:694.34,s:"khắp vũ trụ."},
+ {t:695.56,s:"Người ta gọi đó là nền neutrino vũ trụ."},
+ {t:698.64,s:"Trong mỗi centimet khối không gian quanh"},
+ {t:701.57,s:"bạn có khoảng ba trăm hạt ma cổ đại ấy."},
+ {t:704.42,s:"Chúng là những nhân chứng già nhất còn"},
+ {t:707.19,s:"sống, đã lang thang gần mười bốn tỉ năm,"},
+ {t:710.1,s:"mang trên mình dấu vết của giây đầu tiên"},
+ {t:713.01,s:"khi vũ trụ vừa ra đời."},
+ {t:716.61,s:"Vậy nên bây giờ, tôi lại ngồi thật yên."},
+ {t:719.62,s:"Và tôi nghĩ về cơn mưa vô hình vẫn đang"},
+ {t:722.28,s:"tưới qua tôi, không ngừng nghỉ, ngay trong"},
+ {t:725.14,s:"giây phút này."},
+ {t:726.09,s:"Trong lúc bạn nghe câu này, hàng tỉ tỉ hạt"},
+ {t:729.19,s:"ma vừa đi xuyên qua cơ thể bạn."},
+ {t:731.48,s:"Phần lớn đến thẳng từ lõi Mặt Trời, rời"},
+ {t:734.4,s:"khỏi trái tim ngôi sao chỉ tám phút trước."},
+ {t:737.55,s:"Chúng vừa lướt qua từng tế bào của bạn,"},
+ {t:740.08,s:"mang theo một tin nhắn trực tiếp từ nơi mà"},
+ {t:742.8,s:"không ánh mắt nào chạm tới được."},
+ {t:744.88,s:"Và lẫn trong cơn mưa ấy, có cả những hạt"},
+ {t:747.72,s:"ma đến từ những ngôi sao đã nổ tung từ"},
+ {t:750.42,s:"lâu, ở những thiên hà xa xôi."},
+ {t:752.48,s:"Có cả những hạt đã lang thang từ giây đầu"},
+ {t:755.28,s:"tiên của vũ trụ, già hơn mọi thứ bạn từng"},
+ {t:758.09,s:"biết."},
+ {t:758.43,s:"Tất cả cùng lặng lẽ đi xuyên qua bạn, ngay"},
+ {t:761.98,s:"lúc này."},
+ {t:762.65,s:"Chúng ta cứ ngỡ mình đứng ngoài vũ trụ mà"},
+ {t:765.51,s:"ngắm nhìn nó."},
+ {t:766.42,s:"Nhưng vũ trụ chưa từng ngừng chảy qua ta."},
+ {t:769.6,s:"Mỗi giây, nó gửi tới ta hàng nghìn tỉ sứ"},
+ {t:772.57,s:"giả vô hình, thầm lặng, trung thực, kể cho"},
+ {t:775.69,s:"ta nghe về những nơi ta không bao giờ tới"},
+ {t:778.73,s:"được."},
+ {t:779.1,s:"Nên lần tới, khi ánh nắng chạm vào da bạn,"},
+ {t:782.61,s:"hãy khẽ nhớ điều này."},
+ {t:784.37,s:"Ngay dưới lớp nắng ấy, một cơn mưa ma đang"},
+ {t:787.69,s:"lặng lẽ xuyên qua bạn."},
+ {t:789.43,s:"Mang trên mình câu chuyện của lõi Mặt"},
+ {t:791.99,s:"Trời, của những ngôi sao đã chết, và của"},
+ {t:794.75,s:"khoảnh khắc đầu tiên khi tất cả bắt đầu."},
+ {t:797.52,s:"Bạn không hề tách khỏi nó."},
+ {t:799.86,s:"Bạn đang tắm trong nó, ngay lúc này."},
+];
+
+// _NEWT (mốc cue timeline giọng thật) — dựng lại khi voice/timing đổi
+const _NEWT=[0,6.26,20.04,35.43,50.54,65.15,72.98,92.13,108.34,116.12,131.51,146.6,167.09,188.6,198.71,217.78,232.49,247.96,263.69,281.15,290.85,310.57,320.01,335.22,356.05,374.24,393.26,412.2,421.83,439.92,456.3,465.79,488.59,511.37,532.06,550.24,572.99,584.83,603.1,617.32,627.81,645.97,664.14,676.06,695.56,716.61,726.09,744.88,762.65,779.1,806.14];
+
+// ---- seeded PRNG (mulberry32) ----
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+
+// ---- scene boundaries (real time = cue.start) ----
+const SC={
+  A:[0,35.43], B:[35.43,108.34], C:[108.34,188.6], D:[188.6,281.15],
+  E:[281.15,310.57], F:[310.57,412.2], G:[412.2,456.3], H:[456.3,532.06],
+  I:[532.06,572.99], J:[572.99,617.32], K:[617.32,664.14], L:[664.14,716.61],
+  M:[716.61,806.14]
+};
+function loc(t,k){const w=SC[k];return Math.min(1,Math.max(0,(t-w[0])/(w[1]-w[0])));}
+function inSc(t,k){const w=SC[k];return t>=w[0]&&t<w[1];}
+const clamp=(x,a,b)=>Math.min(b,Math.max(a,x));
+const smooth=(x)=>{x=clamp(x,0,1);return x*x*(3-2*x);};
+function band(t,a,b,f){f=f||0.8;if(t<a-f||t>b+f)return 0;let up=smooth((t-(a-f))/(2*f));let dn=smooth(((b+f)-t)/(2*f));return Math.min(1,Math.min(up,dn));}
+
+// ============ THREE core ============
+const W=1920,H=1080;
+const renderer=new THREE.WebGLRenderer({canvas:document.getElementById('c'),antialias:true,alpha:false});
+renderer.setPixelRatio(1);renderer.setSize(W,H);
+renderer.setClearColor(0x05060a,1);
+renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.05;
+renderer.outputEncoding=THREE.sRGBEncoding;
+
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(46,W/H,0.1,60000);
+camera.position.set(0,0,60);
+
+const amb=new THREE.AmbientLight(0x22283a,0.9);scene.add(amb);
+const key=new THREE.DirectionalLight(0xdfeeff,1.05);key.position.set(6,4,8);scene.add(key);
+const rim=new THREE.DirectionalLight(0x6fa8ff,0.35);rim.position.set(-8,-3,-6);scene.add(rim);
+
+// texture loader (local assets)
+const texLoader=new THREE.TextureLoader();texLoader.setCrossOrigin('anonymous');
+function loadTex(p,enc){const tx=texLoader.load(p);if(enc)tx.encoding=enc;tx.anisotropy=renderer.capabilities.getMaxAnisotropy();return tx;}
+const TEX={
+  earth:loadTex('assets/tex/2_no_clouds_4k.jpg',THREE.sRGBEncoding),
+  earthBump:loadTex('assets/tex/elev_bump_4k.jpg'),
+  earthSpec:loadTex('assets/tex/water_4k.png'),
+  clouds:loadTex('assets/tex/earthcloudmap.jpg')
+};
+
+// ---------- postprocessing ----------
+const composer=new THREE.EffectComposer(renderer);
+composer.addPass(new THREE.RenderPass(scene,camera));
+const bloom=new THREE.UnrealBloomPass(new THREE.Vector2(W,H),0.9,0.7,0.55);
+composer.addPass(bloom);
+const LensShader={
+  uniforms:{tDiffuse:{value:null},uT:{value:0},uVig:{value:0.34},uCA:{value:0.0016},uGrain:{value:0.045},uFade:{value:1.0},uFlash:{value:0.0}},
+  vertexShader:`varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
+  fragmentShader:`
+   varying vec2 vUv;uniform sampler2D tDiffuse;uniform float uT,uVig,uCA,uGrain,uFade,uFlash;
+   float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+   void main(){
+     vec2 d=vUv-0.5;float r=dot(d,d);
+     vec2 off=d*uCA*(1.0+r*2.2);
+     vec3 col;
+     col.r=texture2D(tDiffuse,vUv+off).r;
+     col.g=texture2D(tDiffuse,vUv).g;
+     col.b=texture2D(tDiffuse,vUv-off).b;
+     float vig=smoothstep(1.02,uVig,r*2.0);
+     col*=mix(1.0,vig,0.85);
+     float g=h(vUv*vec2(1920.0,1080.0)+fract(uT)*97.3)-0.5;
+     col+=g*uGrain;
+     col=mix(col,vec3(0.85,0.95,1.0),uFlash);
+     col*=uFade;
+     gl_FragColor=vec4(col,1.0);
+   }`
+};
+const lens=new THREE.ShaderPass(LensShader);lens.renderToScreen=true;composer.addPass(lens);
+
+// ============================================================
+//  SHARED: starfield (temperature-colored) + Milky Way band
+// ============================================================
+const STAR_R=14000;
+function buildStars(){
+  const N=5200,pr=mulberry32(20260808);
+  const pos=new Float32Array(N*3),col=new Float32Array(N*3),siz=new Float32Array(N);
+  const tmp=new THREE.Vector3();
+  for(let i=0;i<N;i++){
+    let u=pr(),v=pr();
+    let theta=Math.acos(2*u-1),phi=2*Math.PI*v;
+    let bnd=pr();if(bnd<0.42){theta=Math.PI*0.5+(pr()-0.5)*0.5;}
+    tmp.set(Math.sin(theta)*Math.cos(phi),Math.cos(theta)*0.7,Math.sin(theta)*Math.sin(phi)).normalize().multiplyScalar(STAR_R);
+    pos[i*3]=tmp.x;pos[i*3+1]=tmp.y;pos[i*3+2]=tmp.z;
+    let tt=pr();let c=new THREE.Color();
+    if(tt<0.12)c.setRGB(0.62,0.72,1.0);
+    else if(tt<0.34)c.setRGB(0.9,0.94,1.0);
+    else if(tt<0.66)c.setRGB(1.0,0.96,0.82);
+    else if(tt<0.86)c.setRGB(1.0,0.82,0.56);
+    else c.setRGB(1.0,0.62,0.44);
+    let br=0.4+pr()*0.6;c.multiplyScalar(br);
+    col[i*3]=c.r;col[i*3+1]=c.g;col[i*3+2]=c.b;
+    siz[i]=(pr()<0.06?3.4:1.0)*(0.9+pr()*1.7);
+  }
+  const g=new THREE.BufferGeometry();
+  g.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  g.setAttribute('color',new THREE.BufferAttribute(col,3));
+  g.setAttribute('aS',new THREE.BufferAttribute(siz,1));
+  const m=new THREE.ShaderMaterial({
+    uniforms:{uOp:{value:1}},transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,
+    vertexShader:`attribute float aS;attribute vec3 color;varying vec3 vC;
+      void main(){vC=color;vec4 mv=modelViewMatrix*vec4(position,1.0);
+      gl_PointSize=aS*(${STAR_R.toFixed(1)}/-mv.z);gl_Position=projectionMatrix*mv;}`,
+    fragmentShader:`varying vec3 vC;uniform float uOp;
+      void main(){vec2 d=gl_PointCoord-0.5;float r=length(d);
+      float a=smoothstep(0.5,0.0,r);gl_FragColor=vec4(vC,a*uOp);}`
+  });
+  return new THREE.Points(g,m);
+}
+const stars=buildStars();scene.add(stars);
+
+function softDisc(inner,outer,r,g,b){
+  const cv=document.createElement('canvas');cv.width=cv.height=256;const cx=cv.getContext('2d');
+  const gr=cx.createRadialGradient(128,128,inner,128,128,outer);
+  gr.addColorStop(0,`rgba(${r},${g},${b},0.9)`);gr.addColorStop(0.5,`rgba(${r},${g},${b},0.28)`);gr.addColorStop(1,'rgba(0,0,0,0)');
+  cx.fillStyle=gr;cx.fillRect(0,0,256,256);
+  const tx=new THREE.CanvasTexture(cv);tx.encoding=THREE.sRGBEncoding;return tx;
+}
+const mwSprite=new THREE.Sprite(new THREE.SpriteMaterial({map:softDisc(0,128,140,160,210),color:0x8fb4e6,transparent:true,opacity:0.15,depthWrite:false,blending:THREE.AdditiveBlending}));
+mwSprite.scale.set(STAR_R*2.2,STAR_R*0.9,1);mwSprite.position.set(-STAR_R*0.5,-STAR_R*0.2,-STAR_R*0.7);scene.add(mwSprite);
+
+// ============================================================
+//  Reusable soft particle sprite textures
+// ============================================================
+function dotTex(rr,gg,bb){
+  const cv=document.createElement('canvas');cv.width=cv.height=64;const cx=cv.getContext('2d');
+  const gr=cx.createRadialGradient(32,32,0,32,32,32);
+  gr.addColorStop(0,`rgba(${rr},${gg},${bb},1)`);gr.addColorStop(0.4,`rgba(${rr},${gg},${bb},0.55)`);gr.addColorStop(1,'rgba(0,0,0,0)');
+  cx.fillStyle=gr;cx.fillRect(0,0,64,64);const tx=new THREE.CanvasTexture(cv);tx.encoding=THREE.sRGBEncoding;return tx;
+}
+const TDOT={
+  neu:dotTex(143,227,255),   // neutrino xanh-lơ #8FE3FF
+  amber:dotTex(255,176,96),
+  cyan:dotTex(43,230,200),   // Cherenkov #2BE6C8
+  muon:dotTex(181,123,255),  // muon tím #B57BFF
+  tau:dotTex(255,143,163),   // tau hồng-cam #FF8FA3
+  gold:dotTex(255,196,74),
+  anc:dotTex(150,180,210)    // hạt cổ đại mờ
+};
+
+// ============================================================
+//  Realistic Sun (photosphere shader + chromosphere + corona)
+// ============================================================
+function makeStar(radius,c1,c2,c3){
+  const grp=new THREE.Group();
+  const photoMat=new THREE.ShaderMaterial({
+    uniforms:{uT:{value:0},uCol1:{value:new THREE.Color(c1||0xb83400)},uCol2:{value:new THREE.Color(c2||0xff9628)},uCol3:{value:new THREE.Color(c3||0xffeeb8)},uBright:{value:1.4}},
+    vertexShader:`varying vec3 vP;varying vec3 vN;void main(){vP=position;vN=normalize(normalMatrix*normal);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
+    fragmentShader:`varying vec3 vP;varying vec3 vN;uniform float uT,uBright;uniform vec3 uCol1,uCol2,uCol3;
+      float hash(vec3 p){return fract(sin(dot(p,vec3(12.9898,78.233,37.719)))*43758.5453);}
+      float snoise(vec3 p){vec3 i=floor(p);vec3 f=fract(p);vec3 u=f*f*(3.0-2.0*f);
+        float n000=hash(i+vec3(0.0,0.0,0.0));float n100=hash(i+vec3(1.0,0.0,0.0));
+        float n010=hash(i+vec3(0.0,1.0,0.0));float n110=hash(i+vec3(1.0,1.0,0.0));
+        float n001=hash(i+vec3(0.0,0.0,1.0));float n101=hash(i+vec3(1.0,0.0,1.0));
+        float n011=hash(i+vec3(0.0,1.0,1.0));float n111=hash(i+vec3(1.0,1.0,1.0));
+        float nx00=mix(n000,n100,u.x);float nx10=mix(n010,n110,u.x);
+        float nx01=mix(n001,n101,u.x);float nx11=mix(n011,n111,u.x);
+        float nxy0=mix(nx00,nx10,u.y);float nxy1=mix(nx01,nx11,u.y);
+        return mix(nxy0,nxy1,u.z);}
+      float fbm(vec3 p){float s=0.0,a=0.5;for(int i=0;i<5;i++){s+=a*snoise(p);p*=2.02;a*=0.5;}return s;}
+      void main(){
+        vec3 d=normalize(vP);
+        float conv=fbm(d*7.0+vec3(0.0,0.0,uT*0.02));
+        float fine=fbm(d*22.0+vec3(uT*0.05));
+        float v=conv*0.7+fine*0.3;
+        float spot=smoothstep(0.56,0.78,fbm(d*1.7+11.0));
+        vec3 col=mix(uCol1,uCol2,smoothstep(0.2,0.6,v));
+        col=mix(col,uCol3,smoothstep(0.6,0.95,v));
+        col=mix(col,uCol1*0.4,spot*0.8);
+        float mu=clamp(dot(vN,vec3(0.0,0.0,1.0)),0.0,1.0);
+        col*=(0.30+0.70*pow(mu,0.6));
+        gl_FragColor=vec4(col*uBright,1.0);
+      }`
+  });
+  const core=new THREE.Mesh(new THREE.SphereGeometry(radius,64,64),photoMat);grp.add(core);
+  const chromo=new THREE.Mesh(new THREE.SphereGeometry(radius*1.028,48,48),new THREE.ShaderMaterial({
+    transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,side:THREE.BackSide,
+    uniforms:{uCr:{value:new THREE.Color(c2||0xff6a28)}},
+    vertexShader:`varying vec3 vN;varying vec3 vE;void main(){vN=normalize(normalMatrix*normal);vec4 mv=modelViewMatrix*vec4(position,1.0);vE=normalize(-mv.xyz);gl_Position=projectionMatrix*mv;}`,
+    fragmentShader:`varying vec3 vN;varying vec3 vE;uniform vec3 uCr;void main(){float f=pow(1.0-max(dot(vN,vE),0.0),3.2);gl_FragColor=vec4(uCr*f,f);}`
+  }));grp.add(chromo);
+  const cpr=mulberry32(99);
+  function coronaTex(cr,cg,cb){
+    const cv=document.createElement('canvas');cv.width=cv.height=512;const cx=cv.getContext('2d');
+    const gr=cx.createRadialGradient(256,256,40,256,256,256);
+    gr.addColorStop(0,`rgba(${cr},${cg},${cb},0.55)`);gr.addColorStop(0.35,`rgba(${cr},${cg},${cb},0.18)`);gr.addColorStop(1,'rgba(0,0,0,0)');
+    cx.fillStyle=gr;cx.fillRect(0,0,512,512);
+    cx.globalCompositeOperation='lighter';
+    for(let i=0;i<14;i++){const a=cpr()*6.283;const len=120+cpr()*130;
+      cx.save();cx.translate(256,256);cx.rotate(a);
+      const lg=cx.createLinearGradient(0,0,len,0);lg.addColorStop(0,`rgba(${cr},${cg},${cb},0.22)`);lg.addColorStop(1,'rgba(0,0,0,0)');
+      cx.fillStyle=lg;cx.beginPath();cx.moveTo(0,-6);cx.lineTo(len,0);cx.lineTo(0,6);cx.closePath();cx.fill();cx.restore();}
+    const tx=new THREE.CanvasTexture(cv);tx.encoding=THREE.sRGBEncoding;return tx;
+  }
+  const cor=new THREE.Sprite(new THREE.SpriteMaterial({map:coronaTex(255,176,96),color:0xffb060,transparent:true,opacity:0.85,depthWrite:false,blending:THREE.AdditiveBlending}));
+  cor.scale.set(radius*5.2,radius*5.2,1);grp.add(cor);
+  return {grp,core,photoMat,chromo,cor};
+}
+
+// text label sprite
+function labelSprite(txt,color,px){
+  px=px||46;const cv=document.createElement('canvas');cv.width=1024;cv.height=160;const cx=cv.getContext('2d');
+  cx.font=`600 ${px}px "Segoe UI",sans-serif`;cx.textAlign='center';cx.textBaseline='middle';
+  cx.shadowColor='rgba(0,0,0,0.9)';cx.shadowBlur=12;cx.fillStyle=color||'#9fe6ff';
+  cx.fillText(txt,512,80);
+  const tx=new THREE.CanvasTexture(cv);tx.encoding=THREE.sRGBEncoding;
+  const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tx,transparent:true,depthWrite:false}));
+  sp.scale.set(px*0.075*8,px*0.075*1.25,1);return sp;
+}
+
+// group helper
+function G(){const g=new THREE.Group();g.visible=false;scene.add(g);return g;}
+
+// straight downward neutrino rain builder (returns update fn)
+function makeRain(N,seed,color,size,spanX,spanY,spanZ){
+  const pr=mulberry32(seed);
+  const pos=new Float32Array(N*3);const ph=new Float32Array(N);const spd=new Float32Array(N);
+  for(let i=0;i<N;i++){
+    pos[i*3]=(pr()-0.5)*spanX;pos[i*3+1]=(pr()-0.5)*spanY;pos[i*3+2]=(pr()-0.5)*spanZ;
+    ph[i]=pr()*spanY;spd[i]=0.7+pr()*0.6;
+  }
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  const mat=new THREE.PointsMaterial({map:color,size:size,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,opacity:0.85});
+  const pts=new THREE.Points(g,mat);
+  return {pts,pos,ph,spd,N,spanY,base:pos.slice()};
+}
+function updateRain(r,t,fall,dirY){
+  const arr=r.pts.geometry.attributes.position.array;dirY=dirY||-1;
+  const half=r.spanY*0.5;
+  for(let i=0;i<r.N;i++){
+    let y=r.base[i*3+1]+dirY*(((t*fall*r.spd[i]+r.ph[i])%r.spanY));
+    y=((y+half)%r.spanY+r.spanY)%r.spanY-half;
+    arr[i*3]=r.base[i*3];arr[i*3+1]=y;arr[i*3+2]=r.base[i*3+2];
+  }
+  r.pts.geometry.attributes.position.needsUpdate=true;
+}
+
+// ============================================================
+//  SCENE A — intro: person silhouette + invisible rain
+// ============================================================
+const gA=G();
+(function(){
+  const body=new THREE.Group();gA.add(body);
+  const mat=new THREE.MeshStandardMaterial({color:0x14161f,emissive:0x0a0c14,roughness:0.9,metalness:0.0});
+  const head=new THREE.Mesh(new THREE.SphereGeometry(0.62,32,32),mat);head.position.set(0,2.1,0);body.add(head);
+  const torso=new THREE.Mesh(new THREE.CylinderGeometry(0.72,1.05,2.4,24),mat);torso.position.set(0,0.6,0);body.add(torso);
+  const lap=new THREE.Mesh(new THREE.CylinderGeometry(1.05,1.15,0.7,24),mat);lap.position.set(0,-0.75,0.35);lap.rotation.x=0.5;body.add(lap);
+  const sh1=new THREE.Mesh(new THREE.SphereGeometry(0.42,20,20),mat);sh1.position.set(-0.85,1.4,0);body.add(sh1);
+  const sh2=new THREE.Mesh(new THREE.SphereGeometry(0.42,20,20),mat);sh2.position.set(0.85,1.4,0);body.add(sh2);
+  const rimGlow=new THREE.Mesh(new THREE.SphereGeometry(2.6,32,32),new THREE.MeshBasicMaterial({color:0x18324a,transparent:true,opacity:0.0,side:THREE.BackSide,blending:THREE.AdditiveBlending,depthWrite:false}));
+  body.add(rimGlow);
+  const rain=makeRain(1400,101,TDOT.neu,0.13,14,20,8);gA.add(rain.pts);
+  gA.userData={body,rain,rimGlow,head};
+})();
+
+// ============================================================
+//  SCENE B — name / Sun source / Earth transparent / night side
+// ============================================================
+const gB=G();
+(function(){
+  const ghost=new THREE.Mesh(new THREE.SphereGeometry(0.5,32,32),new THREE.MeshBasicMaterial({color:0x8fe3ff,transparent:true,opacity:0.85}));
+  const ghostHalo=new THREE.Sprite(new THREE.SpriteMaterial({map:softDisc(0,128,143,227,255),color:0x8fe3ff,transparent:true,opacity:0.7,depthWrite:false,blending:THREE.AdditiveBlending}));
+  ghostHalo.scale.set(4,4,1);const ghostGrp=new THREE.Group();ghostGrp.add(ghost);ghostGrp.add(ghostHalo);gB.add(ghostGrp);
+  const lblN=labelSprite('Neutrino','#8fe3ff',52);lblN.position.set(0,1.6,0);ghostGrp.add(lblN);
+  const lblG=labelSprite('— Hạt ma —','#b9d7e6',40);lblG.position.set(0,-1.5,0);ghostGrp.add(lblG);
+  const sun=makeStar(2.4);sun.grp.visible=false;gB.add(sun.grp);
+  const streamB=makeRain(900,102,TDOT.neu,0.12,3,26,3);streamB.pts.visible=false;gB.add(streamB.pts);
+  const earth=new THREE.Mesh(new THREE.SphereGeometry(3,64,64),new THREE.MeshPhongMaterial({
+    map:TEX.earth,bumpMap:TEX.earthBump,bumpScale:0.05,specularMap:TEX.earthSpec,specular:new THREE.Color(0x2a3550),shininess:12}));
+  const cloud=new THREE.Mesh(new THREE.SphereGeometry(3.05,64,64),new THREE.MeshPhongMaterial({map:TEX.clouds,alphaMap:TEX.clouds,transparent:true,opacity:0.5,depthWrite:false}));
+  const atmo=new THREE.Mesh(new THREE.SphereGeometry(3.35,64,64),new THREE.ShaderMaterial({transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,side:THREE.BackSide,
+    uniforms:{},vertexShader:`varying vec3 vN;varying vec3 vE;void main(){vN=normalize(normalMatrix*normal);vec4 mv=modelViewMatrix*vec4(position,1.0);vE=normalize(-mv.xyz);gl_Position=projectionMatrix*mv;}`,
+    fragmentShader:`varying vec3 vN;varying vec3 vE;void main(){float f=pow(1.0-max(dot(vN,vE),0.0),2.6);gl_FragColor=vec4(vec3(0.35,0.6,1.0)*f,f);}`}));
+  const earthGrp=new THREE.Group();earthGrp.add(earth);earthGrp.add(cloud);earthGrp.add(atmo);earthGrp.visible=false;gB.add(earthGrp);
+  const streamE=makeRain(1100,103,TDOT.neu,0.11,10,24,10);streamE.pts.visible=false;gB.add(streamE.pts);
+  const lbl12k=labelSprite('12.000 km đất đá','#b9d7e6',34);lbl12k.position.set(0,-4.4,0);lbl12k.visible=false;gB.add(lbl12k);
+  gB.userData={ghostGrp,ghost,ghostHalo,lblN,lblG,sun,streamB,earthGrp,earth,cloud,atmo,streamE,lbl12k};
+})();
+
+// ============================================================
+//  SCENE C — Sun core: fusion, light zigzag vs neutrino straight
+// ============================================================
+const gC=G();
+(function(){
+  const core=makeStar(6.5,0xd24200,0xff8a24,0xfff0c0);gC.add(core.grp);
+  const fpr=mulberry32(71);const flashes=[];const fGeo=new THREE.SphereGeometry(0.16,12,12);
+  for(let i=0;i<10;i++){const m=new THREE.Mesh(fGeo,new THREE.MeshBasicMaterial({color:0xfff2c0,transparent:true,opacity:0}));
+    m.userData={a:fpr()*6.283,r:2+fpr()*3.5,ph:fpr()*6.283,z:(fpr()-0.5)*4};core.grp.add(m);flashes.push(m);}
+  const zpr=mulberry32(72);const zpts=[];let zx=0,zy=0;
+  for(let i=0;i<80;i++){zpts.push(new THREE.Vector3(zx,zy,(zpr()-0.5)*1.5));zx+=(zpr()-0.5)*1.2;zy+=(zpr()-0.5)*1.2;}
+  const zg=new THREE.BufferGeometry().setFromPoints(zpts);
+  const zline=new THREE.Line(zg,new THREE.LineBasicMaterial({color:0xffcf6a,transparent:true,opacity:0.0}));gC.add(zline);
+  const photon=new THREE.Mesh(new THREE.SphereGeometry(0.24,16,16),new THREE.MeshBasicMaterial({color:0xffe090}));photon.visible=false;gC.add(photon);
+  const nline=new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0,0,0),new THREE.Vector3(11,3.2,0)]),new THREE.LineBasicMaterial({color:0x8fe3ff,transparent:true,opacity:0.0}));gC.add(nline);
+  const neu=new THREE.Mesh(new THREE.SphereGeometry(0.26,16,16),new THREE.MeshBasicMaterial({color:0x8fe3ff}));neu.visible=false;gC.add(neu);
+  const lblLight=labelSprite('Ánh sáng: hàng chục nghìn năm','#ffcf6a',34);lblLight.position.set(-3.5,-6,0);lblLight.visible=false;gC.add(lblLight);
+  const lblNeu=labelSprite('Neutrino: chỉ 2 giây','#8fe3ff',34);lblNeu.position.set(4,-6,0);lblNeu.visible=false;gC.add(lblNeu);
+  gC.userData={core,flashes,zline,zpts,photon,nline,neu,lblLight,lblNeu};
+})();
+
+// ============================================================
+//  SCENE D — 4 forces / weak interaction / atomic gaps / lead wall
+// ============================================================
+const gD=G();
+(function(){
+  const neu=new THREE.Mesh(new THREE.SphereGeometry(0.5,24,24),new THREE.MeshBasicMaterial({color:0x8fe3ff}));
+  const neuHalo=new THREE.Sprite(new THREE.SpriteMaterial({map:softDisc(0,128,143,227,255),color:0x8fe3ff,transparent:true,opacity:0.6,depthWrite:false,blending:THREE.AdditiveBlending}));neuHalo.scale.set(3.4,3.4,1);
+  const neuGrp=new THREE.Group();neuGrp.add(neu);neuGrp.add(neuHalo);gD.add(neuGrp);
+  const forces=new THREE.Group();gD.add(forces);
+  const fnames=['Điện từ','Trọng lực','Tương tác mạnh','Tương tác yếu'];
+  const fcols=['#7fa8ff','#c9b6ff','#ff9a6a','#8fe3ff'];
+  const flabels=[];
+  for(let i=0;i<4;i++){const a=i/4*6.283+0.4;const sp=labelSprite(fnames[i],fcols[i],36);
+    sp.position.set(Math.cos(a)*4.5,Math.sin(a)*3.2,0);forces.add(sp);flabels.push(sp);}
+  const nucleus=new THREE.Mesh(new THREE.SphereGeometry(0.7,24,24),new THREE.MeshStandardMaterial({color:0xff6a3a,emissive:0x902000,emissiveIntensity:0.6,roughness:0.5}));
+  const nucGrp=new THREE.Group();nucGrp.add(nucleus);nucGrp.visible=false;gD.add(nucGrp);
+  const hitFlash=new THREE.Sprite(new THREE.SpriteMaterial({map:softDisc(0,128,143,227,255),color:0xbfeeff,transparent:true,opacity:0,depthWrite:false,blending:THREE.AdditiveBlending}));hitFlash.scale.set(3,3,1);nucGrp.add(hitFlash);
+  const passStream=makeRain(500,131,TDOT.neu,0.1,12,4,3);passStream.pts.visible=false;gD.add(passStream.pts);
+  const lblWeak=labelSprite('tương tác yếu','#8fe3ff',34);lblWeak.position.set(0,-4.5,0);lblWeak.visible=false;gD.add(lblWeak);
+  const lattice=new THREE.Group();lattice.visible=false;gD.add(lattice);
+  for(let i=-3;i<=3;i++)for(let j=-2;j<=2;j++){
+    const dot=new THREE.Mesh(new THREE.SphereGeometry(0.09,10,10),new THREE.MeshBasicMaterial({color:0xff7a3a}));
+    dot.position.set(i*1.7,j*1.7,0);lattice.add(dot);
+  }
+  const gapStream=makeRain(400,134,TDOT.neu,0.09,12,10,2);gapStream.pts.visible=false;gD.add(gapStream.pts);
+  const lblGap=labelSprite('vật chất chủ yếu là khoảng trống','#b9d7e6',32);lblGap.position.set(0,-5,0);lblGap.visible=false;gD.add(lblGap);
+  const wall=new THREE.Mesh(new THREE.BoxGeometry(2.4,7,7),new THREE.MeshStandardMaterial({color:0x6a6f7a,metalness:0.6,roughness:0.5,emissive:0x101216,emissiveIntensity:0.2}));
+  const wallGrp=new THREE.Group();wallGrp.add(wall);wallGrp.visible=false;gD.add(wallGrp);
+  const wallStream=makeRain(700,135,TDOT.neu,0.1,3,10,10);wallStream.pts.visible=false;gD.add(wallStream.pts);
+  const lblWall=labelSprite('bức tường chì ~ 1 năm ánh sáng','#cfd6e0',34);lblWall.position.set(0,-5,0);lblWall.visible=false;gD.add(lblWall);
+  const lblHalf=labelSprite('chỉ chặn được MỘT NỬA','#ff9a6a',34);lblHalf.position.set(0,4.4,0);lblHalf.visible=false;gD.add(lblHalf);
+  gD.userData={neuGrp,neu,forces,flabels,nucGrp,nucleus,hitFlash,passStream,lblWeak,lattice,gapStream,lblGap,wallGrp,wall,wallStream,lblWall,lblHalf};
+})();
+
+// ============================================================
+//  SCENE E — honest messenger / direct photo of core
+// ============================================================
+const gE=G();
+(function(){
+  const sun=makeStar(3.0,0xd24200,0xff8a24,0xfff0c0);gE.add(sun.grp);
+  const beam=makeRain(700,141,TDOT.neu,0.12,2.2,26,2.2);gE.add(beam.pts);
+  const lbl=labelSprite('ảnh chụp trực tiếp lõi — 8 phút trước','#8fe3ff',34);lbl.position.set(0,-6,0);gE.add(lbl);
+  const halo=new THREE.Sprite(new THREE.SpriteMaterial({map:softDisc(0,128,143,227,255),color:0x8fe3ff,transparent:true,opacity:0.3,depthWrite:false,blending:THREE.AdditiveBlending}));halo.scale.set(10,10,1);gE.add(halo);
+  gE.userData={sun,beam,lbl,halo};
+})();
+
+// ============================================================
+//  SCENE F — detector: underground / atom block / Super-K tank / Cherenkov ring
+// ============================================================
+const gF=G();
+(function(){
+  const rock=new THREE.Mesh(new THREE.ConeGeometry(9,7,5,1),new THREE.MeshStandardMaterial({color:0x2a2620,roughness:1,metalness:0,flatShading:true}));
+  rock.position.set(0,3.5,-3);const rockGrp=new THREE.Group();rockGrp.add(rock);rockGrp.visible=false;gF.add(rockGrp);
+  const tank=new THREE.Group();gF.add(tank);
+  const cyl=new THREE.Mesh(new THREE.CylinderGeometry(4.2,4.2,6,48,1,true),new THREE.MeshStandardMaterial({color:0x0a1420,side:THREE.BackSide,roughness:0.7,metalness:0.3,emissive:0x040a12,emissiveIntensity:0.4}));
+  tank.add(cyl);
+  const pmtGeo=new THREE.SphereGeometry(0.11,8,8);
+  const pmtMatBase=new THREE.MeshStandardMaterial({color:0x2a3340,emissive:0x101820,emissiveIntensity:0.3,roughness:0.6});
+  const pmts=[];
+  for(let ring=0;ring<14;ring++){const y=-2.8+ring*0.43;const rr=4.05;
+    for(let k=0;k<40;k++){const a=k/40*6.283;const m=new THREE.Mesh(pmtGeo,pmtMatBase.clone());
+      m.position.set(Math.cos(a)*rr,y,Math.sin(a)*rr);m.userData={a,y};tank.add(m);pmts.push(m);}}
+  tank.visible=false;
+  const ring=new THREE.Mesh(new THREE.RingGeometry(0.1,0.3,64),new THREE.MeshBasicMaterial({color:0x2be6c8,transparent:true,opacity:0,side:THREE.DoubleSide,blending:THREE.AdditiveBlending,depthWrite:false}));
+  ring.rotation.x=Math.PI*0.5;tank.add(ring);
+  const hit=new THREE.Sprite(new THREE.SpriteMaterial({map:softDisc(0,128,43,230,200),color:0x2be6c8,transparent:true,opacity:0,depthWrite:false,blending:THREE.AdditiveBlending}));hit.scale.set(2,2,1);tank.add(hit);
+  const block=new THREE.Group();block.visible=false;gF.add(block);
+  const bpr=mulberry32(152);
+  for(let i=0;i<180;i++){const dd=new THREE.Mesh(new THREE.SphereGeometry(0.07,8,8),new THREE.MeshBasicMaterial({color:0x445066,transparent:true,opacity:0.7}));
+    dd.position.set((bpr()-0.5)*7,(bpr()-0.5)*6,(bpr()-0.5)*4);block.add(dd);}
+  const blockStream=makeRain(500,153,TDOT.neu,0.09,10,12,3);blockStream.pts.visible=false;gF.add(blockStream.pts);
+  const arrow=labelSprite('→ chỉ về phía Mặt Trời','#ffc04a',34);arrow.position.set(0,-5,0);arrow.visible=false;gF.add(arrow);
+  const lblSK=labelSprite('Super-Kamiokande · 50.000 tấn nước · sâu 1 km','#8fe3ff',30);lblSK.position.set(0,-5,0);lblSK.visible=false;gF.add(lblSK);
+  gF.userData={rockGrp,tank,pmts,ring,hit,block,blockStream,arrow,lblSK};
+})();
+
+// ============================================================
+//  SCENE G — counting graph / Davis 1/3 problem
+// ============================================================
+const gG=G();
+(function(){
+  const barTh=new THREE.Mesh(new THREE.BoxGeometry(1.6,5,1),new THREE.MeshStandardMaterial({color:0x3a4358,emissive:0x121826,emissiveIntensity:0.4,roughness:0.6}));
+  barTh.position.set(-2.4,2.5,0);gG.add(barTh);
+  const barMe=new THREE.Mesh(new THREE.BoxGeometry(1.6,1.67,1),new THREE.MeshStandardMaterial({color:0x8fe3ff,emissive:0x1a4a5a,emissiveIntensity:0.5,roughness:0.4}));
+  barMe.position.set(2.4,0.83,0);gG.add(barMe);
+  const miss=new THREE.Mesh(new THREE.BoxGeometry(1.62,3.33,1.02),new THREE.MeshBasicMaterial({color:0xff5a5a,transparent:true,opacity:0.0,depthWrite:false}));
+  miss.position.set(2.4,3.33,0);gG.add(miss);
+  const lblTh=labelSprite('Lý thuyết dự đoán','#b9c4d6',32);lblTh.position.set(-2.4,-1.3,0);gG.add(lblTh);
+  const lblMe=labelSprite('Davis đo được: ~1/3','#8fe3ff',32);lblMe.position.set(2.4,-1.3,0);gG.add(lblMe);
+  const lblProb=labelSprite('Bài toán neutrino Mặt Trời','#ff9a6a',36);lblProb.position.set(0,5.3,0);lblProb.visible=false;gG.add(lblProb);
+  gG.userData={barTh,barMe,miss,lblTh,lblMe,lblProb};
+})();
+
+// ============================================================
+//  SCENE H — disguise / 3 flavors / oscillation / solved graph
+// ============================================================
+const gH=G();
+(function(){
+  const cols=[0x8fe3ff,0xb57bff,0xff8fa3];const names=['electron (e)','muon (μ)','tau (τ)'];
+  const flavGrp=new THREE.Group();gH.add(flavGrp);
+  const flav=[];
+  for(let i=0;i<3;i++){const g=new THREE.Group();
+    const b=new THREE.Mesh(new THREE.SphereGeometry(0.5,24,24),new THREE.MeshBasicMaterial({color:cols[i]}));
+    const halo=new THREE.Sprite(new THREE.SpriteMaterial({map:softDisc(0,128,200,200,255),color:cols[i],transparent:true,opacity:0.55,depthWrite:false,blending:THREE.AdditiveBlending}));halo.scale.set(3,3,1);
+    g.add(b);g.add(halo);g.position.set((i-1)*3.2,0.5,0);
+    const lbl=labelSprite(names[i],'#'+cols[i].toString(16).padStart(6,'0'),34);lbl.position.set(0,-1.4,0);g.add(lbl);
+    flavGrp.add(g);flav.push({g,b,halo,lbl});}
+  const osc=new THREE.Mesh(new THREE.SphereGeometry(0.42,20,20),new THREE.MeshBasicMaterial({color:0x8fe3ff}));
+  const oscHalo=new THREE.Sprite(new THREE.SpriteMaterial({map:softDisc(0,128,200,200,255),color:0x8fe3ff,transparent:true,opacity:0.6,depthWrite:false,blending:THREE.AdditiveBlending}));oscHalo.scale.set(2.6,2.6,1);
+  const oscGrp=new THREE.Group();oscGrp.add(osc);oscGrp.add(oscHalo);oscGrp.visible=false;gH.add(oscGrp);
+  const waveGrp=new THREE.Group();waveGrp.visible=false;gH.add(waveGrp);
+  const wcols=[0x8fe3ff,0xb57bff,0xff8fa3];const waves=[];
+  for(let w=0;w<3;w++){const pts=[];for(let x=0;x<=120;x++)pts.push(new THREE.Vector3(-6+x*0.1,-3,0));
+    const g=new THREE.BufferGeometry().setFromPoints(pts);const ln=new THREE.Line(g,new THREE.LineBasicMaterial({color:wcols[w],transparent:true,opacity:0.9}));
+    waveGrp.add(ln);waves.push({ln,pts});}
+  const lblOsc=labelSprite('dao động neutrino','#8fe3ff',34);lblOsc.position.set(0,4.6,0);lblOsc.visible=false;gH.add(lblOsc);
+  const solved=new THREE.Group();solved.visible=false;gH.add(solved);
+  const sTh=new THREE.Mesh(new THREE.BoxGeometry(1.7,5,1),new THREE.MeshStandardMaterial({color:0x3a4358,emissive:0x121826,emissiveIntensity:0.4,roughness:0.6}));sTh.position.set(-2.6,2.5,0);solved.add(sTh);
+  const sE=new THREE.Mesh(new THREE.BoxGeometry(1.7,1.67,1),new THREE.MeshStandardMaterial({color:0x8fe3ff,emissive:0x1a4a5a,emissiveIntensity:0.5,roughness:0.4}));sE.position.set(2.6,0.83,0);solved.add(sE);
+  const sM=new THREE.Mesh(new THREE.BoxGeometry(1.7,1.67,1),new THREE.MeshStandardMaterial({color:0xb57bff,emissive:0x3a1a5a,emissiveIntensity:0.5,roughness:0.4}));sM.position.set(2.6,2.5,0);solved.add(sM);
+  const sT=new THREE.Mesh(new THREE.BoxGeometry(1.7,1.67,1),new THREE.MeshStandardMaterial({color:0xff8fa3,emissive:0x5a1a2a,emissiveIntensity:0.5,roughness:0.4}));sT.position.set(2.6,4.17,0);solved.add(sT);
+  const lblSolved=labelSprite('bài toán được giải · không mất, chỉ đội hương khác','#8fe3ff',28);lblSolved.position.set(0,-1.4,0);solved.add(lblSolved);
+  gH.userData={flavGrp,flav,oscGrp,osc,oscHalo,waveGrp,waves,lblOsc,solved,sM,sT,lblSolved};
+})();
+
+// ============================================================
+//  SCENE I — mass / Nobel
+// ============================================================
+const gI=G();
+(function(){
+  const scaleLine=new THREE.Mesh(new THREE.BoxGeometry(7,0.06,0.3),new THREE.MeshBasicMaterial({color:0x556072}));scaleLine.position.set(0,-2,0);gI.add(scaleLine);
+  const massBar=new THREE.Mesh(new THREE.BoxGeometry(1.2,0.1,0.6),new THREE.MeshStandardMaterial({color:0x8fe3ff,emissive:0x1a4a5a,emissiveIntensity:0.6,roughness:0.4}));
+  massBar.position.set(0,-1.9,0);gI.add(massBar);
+  const lblMass=labelSprite('khối lượng: khác 0','#8fe3ff',34);lblMass.position.set(0,-3.4,0);gI.add(lblMass);
+  const lblTiny=labelSprite('< 1 phần triệu khối lượng electron','#b9d7e6',30);lblTiny.position.set(0,1.2,0);lblTiny.visible=false;gI.add(lblTiny);
+  const medal=new THREE.Mesh(new THREE.CircleGeometry(1.3,48),new THREE.MeshStandardMaterial({color:0xffc04a,emissive:0x6a4a10,emissiveIntensity:0.7,roughness:0.3,metalness:0.9}));
+  medal.position.set(0,2.6,0);medal.visible=false;gI.add(medal);
+  const medalGlow=new THREE.Sprite(new THREE.SpriteMaterial({map:softDisc(0,128,255,196,74),color:0xffc04a,transparent:true,opacity:0,depthWrite:false,blending:THREE.AdditiveBlending}));medalGlow.scale.set(6,6,1);medalGlow.position.set(0,2.6,0);gI.add(medalGlow);
+  const lblNobel=labelSprite('Giải Nobel','#ffc04a',36);lblNobel.position.set(0,4.4,0);lblNobel.visible=false;gI.add(lblNobel);
+  gI.userData={massBar,lblMass,lblTiny,medal,medalGlow,lblNobel};
+})();
+
+// ============================================================
+//  SCENE J — supernova / SN 1987A
+// ============================================================
+const gJ=G();
+(function(){
+  const star=makeStar(2.8,0x9a2a00,0xff6a24,0xffd8a0);gJ.add(star.grp);
+  const blast=new THREE.Sprite(new THREE.SpriteMaterial({map:softDisc(0,128,255,220,180),color:0xffe0b0,transparent:true,opacity:0,depthWrite:false,blending:THREE.AdditiveBlending}));blast.scale.set(6,6,1);gJ.add(blast);
+  const flood=makeRain(1600,161,TDOT.neu,0.13,20,20,20);flood.pts.visible=false;gJ.add(flood.pts);
+  const lbl=labelSprite('SN 1987A · 160.000 năm ánh sáng','#8fe3ff',34);lbl.position.set(0,-6,0);lbl.visible=false;gJ.add(lbl);
+  gJ.userData={star,blast,flood,lbl};
+})();
+
+// ============================================================
+//  SCENE K — race: neutrino beats light + ~20 particles
+// ============================================================
+const gK=G();
+(function(){
+  const track=new THREE.Mesh(new THREE.BoxGeometry(11,0.05,0.3),new THREE.MeshBasicMaterial({color:0x556072}));track.position.set(0,0,0);gK.add(track);
+  const start=new THREE.Mesh(new THREE.BoxGeometry(0.1,1.4,0.4),new THREE.MeshBasicMaterial({color:0xff6a24}));start.position.set(-5.5,0,0);gK.add(start);
+  const finish=new THREE.Mesh(new THREE.BoxGeometry(0.1,1.4,0.4),new THREE.MeshBasicMaterial({color:0xcfd6e0}));finish.position.set(5.5,0,0);gK.add(finish);
+  const nR=new THREE.Mesh(new THREE.SphereGeometry(0.3,16,16),new THREE.MeshBasicMaterial({color:0x8fe3ff}));nR.position.set(-5.5,0.9,0);gK.add(nR);
+  const lR=new THREE.Mesh(new THREE.SphereGeometry(0.3,16,16),new THREE.MeshBasicMaterial({color:0xffcf6a}));lR.position.set(-5.5,-0.9,0);gK.add(lR);
+  const lblN=labelSprite('Neutrino','#8fe3ff',30);lblN.position.set(-7,0.9,0);gK.add(lblN);
+  const lblL=labelSprite('Ánh sáng','#ffcf6a',30);lblL.position.set(-7,-0.9,0);gK.add(lblL);
+  const lblEarly=labelSprite('về đích sớm hơn vài giờ','#8fe3ff',34);lblEarly.position.set(0,3.4,0);lblEarly.visible=false;gK.add(lblEarly);
+  const flashGrp=new THREE.Group();flashGrp.visible=false;gK.add(flashGrp);
+  const cpr=mulberry32(171);const cflash=[];
+  for(let i=0;i<24;i++){const s=new THREE.Sprite(new THREE.SpriteMaterial({map:softDisc(0,128,43,230,200),color:0x2be6c8,transparent:true,opacity:0,depthWrite:false,blending:THREE.AdditiveBlending}));
+    s.scale.set(0.8,0.8,1);s.position.set((cpr()-0.5)*9,(cpr()-0.5)*4.5,(cpr()-0.5)*2);s.userData={ph:cpr(),tt:i/24};flashGrp.add(s);cflash.push(s);}
+  const lblCount=labelSprite('~20 hạt · vài giây · sau 160.000 năm','#2be6c8',30);lblCount.position.set(0,-4,0);lblCount.visible=false;gK.add(lblCount);
+  gK.userData={nR,lR,lblN,lblL,lblEarly,flashGrp,cflash,lblCount};
+})();
+
+// ============================================================
+//  SCENE L — ancient message / Big Bang / cosmic neutrino background
+// ============================================================
+const gL=G();
+(function(){
+  const fire=makeStar(7,0xff3a00,0xff8a30,0xffe0a0);fire.grp.visible=false;gL.add(fire.grp);
+  const trapPr=mulberry32(181);const tpts=[];let tx=0,ty=0;
+  for(let i=0;i<60;i++){tpts.push(new THREE.Vector3(tx,ty,(trapPr()-0.5)*1.5));tx+=(trapPr()-0.5)*0.9;ty+=(trapPr()-0.5)*0.9;}
+  const tg=new THREE.BufferGeometry().setFromPoints(tpts);
+  const trapLine=new THREE.Line(tg,new THREE.LineBasicMaterial({color:0xffcf6a,transparent:true,opacity:0}));trapLine.visible=false;gL.add(trapLine);
+  const freeStream=makeRain(600,182,TDOT.neu,0.12,4,22,4);freeStream.pts.visible=false;gL.add(freeStream.pts);
+  const lblBB=labelSprite('1 giây sau Big Bang','#8fe3ff',34);lblBB.position.set(0,-6,0);lblBB.visible=false;gL.add(lblBB);
+  const bg=makeRain(2000,183,TDOT.anc,0.1,26,22,18);bg.pts.visible=false;bg.pts.material.opacity=0.5;gL.add(bg.pts);
+  const lblBG=labelSprite('nền neutrino vũ trụ · ~300 hạt/cm³ · gần 14 tỉ năm','#b9d7e6',28);lblBG.position.set(0,-6,0);lblBG.visible=false;gL.add(lblBG);
+  gL.userData={fire,trapLine,tpts,freeStream,lblBB,bg,lblBG};
+})();
+
+// ============================================================
+//  SCENE M — closing: person + rain + three sources + fade
+// ============================================================
+const gM=G();
+(function(){
+  const body=new THREE.Group();gM.add(body);
+  const mat=new THREE.MeshStandardMaterial({color:0x14161f,emissive:0x0a0c14,roughness:0.9,metalness:0.0});
+  const head=new THREE.Mesh(new THREE.SphereGeometry(0.62,32,32),mat);head.position.set(0,2.1,0);body.add(head);
+  const torso=new THREE.Mesh(new THREE.CylinderGeometry(0.72,1.05,2.4,24),mat);torso.position.set(0,0.6,0);body.add(torso);
+  const lap=new THREE.Mesh(new THREE.CylinderGeometry(1.05,1.15,0.7,24),mat);lap.position.set(0,-0.75,0.35);lap.rotation.x=0.5;body.add(lap);
+  const sh1=new THREE.Mesh(new THREE.SphereGeometry(0.42,20,20),mat);sh1.position.set(-0.85,1.4,0);body.add(sh1);
+  const sh2=new THREE.Mesh(new THREE.SphereGeometry(0.42,20,20),mat);sh2.position.set(0.85,1.4,0);body.add(sh2);
+  const rainSun=makeRain(900,191,TDOT.neu,0.12,14,20,8);gM.add(rainSun.pts);
+  const rainStar=makeRain(260,192,TDOT.amber,0.11,14,20,8);rainStar.pts.material.opacity=0.6;gM.add(rainStar.pts);
+  const rainAnc=makeRain(220,193,TDOT.anc,0.1,14,20,8);rainAnc.pts.material.opacity=0.45;gM.add(rainAnc.pts);
+  const inner=new THREE.Sprite(new THREE.SpriteMaterial({map:softDisc(0,128,140,180,230),color:0x9fb8e0,transparent:true,opacity:0,depthWrite:false,blending:THREE.AdditiveBlending}));inner.scale.set(4,5,1);inner.position.set(0,0.6,0.6);body.add(inner);
+  gM.userData={body,head,rainSun,rainStar,rainAnc,inner};
+})();
+
+function setCam(px,py,pz,lx,ly,lz,fov){camera.position.set(px,py,pz);camera.lookAt(lx||0,ly||0,lz||0);if(fov){camera.fov=fov;camera.updateProjectionMatrix();}}
+
+// ============================================================
+//  MAIN renderAtTime(t) — deterministic
+// ============================================================
+function renderAtTime(t){
+  gA.visible=inSc(t,'A');gB.visible=inSc(t,'B');gC.visible=inSc(t,'C');gD.visible=inSc(t,'D');
+  gE.visible=inSc(t,'E');gF.visible=inSc(t,'F');gG.visible=inSc(t,'G');gH.visible=inSc(t,'H');
+  gI.visible=inSc(t,'I');gJ.visible=inSc(t,'J');gK.visible=inSc(t,'K');gL.visible=inSc(t,'L');
+  gM.visible=inSc(t,'M');
+
+  stars.rotation.y=t*0.0015;stars.rotation.x=Math.sin(t*0.02)*0.02;
+  let starOp=0.75;
+  if(inSc(t,'A')||inSc(t,'M'))starOp=0.5;
+  else if(inSc(t,'C')||inSc(t,'F')||inSc(t,'G')||inSc(t,'H')||inSc(t,'I'))starOp=0.25;
+  else if(inSc(t,'J')||inSc(t,'L'))starOp=0.85;
+  stars.material.uniforms.uOp.value=starOp;
+  mwSprite.material.opacity=0.15*starOp;
+
+  let flash=0.0;
+  key.intensity=1.05;
+
+  try{
+  // ---------------- A: intro ----------------
+  if(gA.visible){
+    const d=gA.userData;
+    d.head.rotation.y=Math.sin(t*0.15)*0.05;
+    const rainOn=smooth(clamp((t-5)/6,0,1));
+    d.rain.pts.material.opacity=0.15+0.65*rainOn;
+    updateRain(d.rain,t,2.6,-1);
+    d.rimGlow.material.opacity=0.06+0.05*Math.sin(t*0.4);
+    const p=loc(t,'A');
+    setCam(Math.sin(t*0.04)*1.2,0.6,12-p*3.5,0,0.4,0,44);
+  }
+
+  // ---------------- B: name / sun / earth / night ----------------
+  if(gB.visible){
+    const d=gB.userData;
+    const nameP=t<50.54;
+    const sunP=t>=50.54&&t<65.15;
+    const flipP=t>=65.15&&t<72.98;
+    const nightP=t>=72.98&&t<92.13;
+    const glassP=t>=92.13;
+    d.ghostGrp.visible=nameP;
+    d.sun.grp.visible=sunP;d.streamB.pts.visible=sunP;
+    d.earthGrp.visible=flipP||nightP||glassP;
+    d.streamE.pts.visible=flipP||nightP||glassP;
+    d.lbl12k.visible=nightP;
+    if(nameP){
+      d.ghost.material.opacity=0.6+0.25*Math.sin(t*3.0);
+      d.ghostHalo.material.opacity=0.5+0.2*Math.sin(t*2.0);
+      d.ghostGrp.position.set(Math.sin(t*0.5)*0.3,Math.sin(t*0.7)*0.2,0);
+      setCam(0,0,8,0,0,0,44);
+    }
+    if(sunP){
+      d.sun.photoMat.uniforms.uT.value=t;d.sun.core.rotation.y=t*0.02;
+      d.sun.grp.position.set(-4,1.5,-2);d.sun.grp.scale.setScalar(1.0);
+      d.streamB.pts.rotation.z=-0.55;d.streamB.pts.position.set(-1,0,0);
+      d.streamB.pts.material.opacity=0.8;updateRain(d.streamB,t,3.5,-1);
+      key.intensity=0.5;
+      setCam(0,0,13,-1,0.5,0,46);
+    }
+    if(flipP||nightP||glassP){
+      d.earth.rotation.y=t*0.04;d.cloud.rotation.y=t*0.05;
+      let glass=glassP?smooth((t-92.13)/6):0;
+      d.earth.material.opacity=1-glass*0.7;d.earth.material.transparent=glass>0.01;
+      d.cloud.material.opacity=0.45*(1-glass);d.atmo.material.opacity=0.9*(1-glass*0.5);
+      d.earthGrp.scale.setScalar(1.0);
+      d.streamE.pts.material.opacity=0.75;updateRain(d.streamE,t,3.2,-1);
+      key.intensity=nightP?0.45:0.65;
+      const p=nightP?smooth((t-72.98)/19):(glassP?0.6:0.3);
+      setCam(Math.sin(t*0.05+p*2)*4,1.5,13,0,0,0,46);
+    }
+  }
+
+  // ---------------- C: sun core ----------------
+  if(gC.visible){
+    const d=gC.userData;
+    d.core.photoMat.uniforms.uT.value=t;d.core.core.rotation.y=t*0.015;
+    d.core.cor.material.opacity=0.4;
+    const fusionP=t<146.6;
+    const lightP=t>=146.6&&t<167.09;
+    const neuP=t>=167.09;
+    d.flashes.forEach((m)=>{const ph=m.userData.ph;const pulse=Math.max(0,Math.sin(t*1.5+ph));
+      m.position.set(Math.cos(m.userData.a+t*0.1)*m.userData.r,Math.sin(m.userData.a+t*0.1)*m.userData.r,m.userData.z);
+      m.material.opacity=fusionP?pulse*0.9:pulse*0.3;m.scale.setScalar(0.6+pulse*0.8);});
+    d.zline.visible=lightP;d.photon.visible=lightP;d.lblLight.visible=lightP;
+    if(lightP){
+      d.zline.material.opacity=0.7;
+      const prog=smooth((t-146.6)/20);const idx=Math.floor(prog*(d.zpts.length-1));
+      const pt=d.zpts[Math.min(idx,d.zpts.length-1)];d.photon.position.copy(pt);
+    }
+    d.nline.visible=neuP;d.neu.visible=neuP;d.lblNeu.visible=neuP;
+    if(neuP){
+      d.nline.material.opacity=0.85;
+      const prog=(((t-167.09)*0.5)%1);d.neu.position.set(prog*11,prog*3.2,0);
+    }
+    const p=loc(t,'C');
+    setCam(Math.sin(t*0.03)*2,1,16-p*3,0,0.5,0,48);
+  }
+
+  // ---------------- D: forces / weak / gaps / lead wall ----------------
+  if(gD.visible){
+    const d=gD.userData;
+    const forceP=t<217.78;
+    const weakP=t>=217.78&&t<232.49;
+    const gapP=t>=232.49&&t<247.96;
+    const wallP=t>=247.96;
+    d.neuGrp.visible=forceP;d.forces.visible=forceP;
+    d.nucGrp.visible=weakP;d.passStream.pts.visible=weakP;d.lblWeak.visible=weakP;
+    d.lattice.visible=gapP;d.gapStream.pts.visible=gapP;d.lblGap.visible=gapP;
+    d.wallGrp.visible=wallP;d.wallStream.pts.visible=wallP;d.lblWall.visible=wallP;
+    d.lblHalf.visible=wallP&&t>=263.69;
+    if(forceP){
+      d.neuGrp.position.set(Math.sin(t*0.4)*0.2,0,0);
+      d.forces.rotation.z=t*0.05;
+      const fade=smooth(clamp((t-207.5)/6,0,1));
+      d.flabels[0].material.opacity=1-fade*0.7;d.flabels[1].material.opacity=1-fade*0.7;
+      d.flabels[3].material.opacity=1;d.flabels[2].material.opacity=0.5;
+      setCam(0,0,11,0,0,0,50);
+    }
+    if(weakP){
+      d.nucleus.rotation.y=t*0.5;
+      d.passStream.pts.material.opacity=0.7;updateRain(d.passStream,t,3.0,-1);
+      d.passStream.pts.rotation.z=1.57;
+      const hit=Math.max(0,Math.sin(t*1.2)*Math.sin(t*1.2)*Math.sin(t*0.31));
+      d.hitFlash.material.opacity=hit*0.9;d.hitFlash.scale.setScalar(1.5+hit*2);
+      setCam(0,0,7,0,0,0,46);
+    }
+    if(gapP){
+      d.gapStream.pts.material.opacity=0.7;updateRain(d.gapStream,t,3.0,-1);d.gapStream.pts.rotation.z=1.57;
+      const p=smooth((t-232.49)/15);d.lattice.scale.setScalar(1+p*0.5);
+      setCam(0,0,9,0,0,0,48);
+    }
+    if(wallP){
+      d.wall.material.emissiveIntensity=0.2;
+      d.wallStream.pts.material.opacity=0.75;updateRain(d.wallStream,t,3.2,-1);d.wallStream.pts.rotation.z=1.57;
+      const p=smooth((t-247.96)/16);
+      setCam(Math.sin(t*0.05)*2,0,12+p*3,0,0,0,48);
+    }
+  }
+
+  // ---------------- E: honest messenger ----------------
+  if(gE.visible){
+    const d=gE.userData;
+    d.sun.photoMat.uniforms.uT.value=t;d.sun.core.rotation.y=t*0.02;d.sun.cor.material.opacity=0.5;
+    d.sun.grp.position.set(0,1.5,-2);
+    d.beam.pts.material.opacity=0.8;updateRain(d.beam,t,3.8,-1);d.beam.pts.rotation.z=-0.5;d.beam.pts.position.set(0,0,0);
+    d.halo.material.opacity=0.25+0.1*Math.sin(t*0.6);d.halo.position.set(0,1.5,-2);
+    const p=loc(t,'E');
+    setCam(Math.sin(t*0.04)*1.5,0.8,12-p*2,0,0.5,0,46);
+  }
+
+  // ---------------- F: detector ----------------
+  if(gF.visible){
+    const d=gF.userData;
+    const digP=t<335.22;
+    const buildP=t>=335.22&&t<356.05;
+    const tankP=t>=356.05&&t<374.24;
+    const ringP=t>=374.24&&t<393.26;
+    const dirP=t>=393.26;
+    d.rockGrp.visible=buildP;
+    d.block.visible=digP;d.blockStream.pts.visible=digP;
+    d.tank.visible=tankP||ringP||dirP;
+    d.lblSK.visible=tankP;
+    d.arrow.visible=dirP;
+    if(digP){
+      d.blockStream.pts.material.opacity=0.7;updateRain(d.blockStream,t,3.0,-1);
+      d.block.rotation.y=t*0.06;
+      setCam(Math.sin(t*0.04)*2,0,11,0,0,0,48);
+    }
+    if(buildP){
+      d.rockGrp.rotation.y=Math.sin(t*0.02)*0.1;
+      setCam(0,1,13,0,1,0,48);
+    }
+    if(tankP||ringP||dirP){
+      d.tank.rotation.y=t*0.05;
+      const ringOn=ringP||dirP;
+      if(ringOn){
+        const cyc=((t-374.24)*0.5)%1;
+        const inner=0.1+cyc*3.8,outer=inner+0.35;
+        d.ring.geometry.dispose();d.ring.geometry=new THREE.RingGeometry(inner,outer,64);
+        d.ring.material.opacity=0.8*(1-cyc);
+        d.hit.material.opacity=Math.max(0,1-cyc*4)*0.9;d.hit.scale.setScalar(1+cyc*1.5);
+        d.pmts.forEach(m=>{const lit=(inner*1.05>3.7)?Math.max(0,1-Math.abs(m.position.y-0)/3):0;
+          m.material.emissiveIntensity=0.3+lit*1.2;m.material.emissive.setHex(lit>0.3?0x1a5a6a:0x101820);});
+      }else{
+        d.ring.material.opacity=0;d.hit.material.opacity=0;
+        d.pmts.forEach(m=>{m.material.emissiveIntensity=0.3;});
+      }
+      setCam(Math.sin(t*0.06)*1.5,0.4,7.5,0,0,0,52);
+    }
+  }
+
+  // ---------------- G: problem graph ----------------
+  if(gG.visible){
+    const d=gG.userData;
+    const grow=smooth(clamp((t-421.83)/6,0,1));
+    const missOn=smooth(clamp((t-439.92)/4,0,1));
+    d.barMe.scale.y=0.15+grow*0.85;d.barMe.position.y=(1.67*d.barMe.scale.y)/2;
+    d.miss.material.opacity=missOn*0.5;
+    d.miss.position.y=1.67+(3.33/2);
+    d.lblProb.visible=missOn>0.3;
+    setCam(Math.sin(t*0.03)*1,1.5,12,0,1.5,0,48);
+  }
+
+  // ---------------- H: flavors / oscillation / solved ----------------
+  if(gH.visible){
+    const d=gH.userData;
+    const disgP=t<465.79;
+    const threeP=t>=465.79&&t<488.59;
+    const oscP=t>=488.59&&t<511.37;
+    const solvedP=t>=511.37;
+    d.oscGrp.visible=disgP||oscP;
+    d.flavGrp.visible=threeP;
+    d.waveGrp.visible=oscP;d.lblOsc.visible=oscP;
+    d.solved.visible=solvedP;
+    if(disgP){
+      const sh=0.5+0.5*Math.sin((t-456.3)*1.2);
+      const c=new THREE.Color(0x8fe3ff).lerp(new THREE.Color(0xb57bff),sh);
+      d.osc.material.color.copy(c);d.oscHalo.material.color.copy(c);
+      d.oscGrp.position.set(Math.sin(t*0.4)*0.3,0.5,0);
+      setCam(0,0,7,0,0.5,0,46);
+    }
+    if(threeP){
+      d.flav.forEach((f,i)=>{f.g.position.y=0.5+Math.sin(t*1.0+i*2)*0.15;
+        f.halo.material.opacity=0.4+0.2*Math.sin(t*1.5+i);
+        f.b.material.transparent=true;
+        f.b.material.opacity=(i===0)?1:(t>481.24?0.5:1);});
+      setCam(Math.sin(t*0.03)*1,0.5,11,0,0.5,0,48);
+    }
+    if(oscP){
+      const prog=((t-488.59)/22.78);
+      const px=-5.5+prog*11;
+      const phase=prog*6.283*2;
+      const w0=Math.max(0,Math.cos(phase));const w1=Math.max(0,Math.cos(phase-2.09));const w2=Math.max(0,Math.cos(phase-4.19));
+      const c=new THREE.Color(0x8fe3ff).multiplyScalar(w0).add(new THREE.Color(0xb57bff).multiplyScalar(w1)).add(new THREE.Color(0xff8fa3).multiplyScalar(w2));
+      const mx=Math.max(w0,w1,w2)||1;c.multiplyScalar(1/mx);
+      d.osc.material.color.copy(c);d.oscHalo.material.color.copy(c);
+      d.oscGrp.position.set(px,2.4,0);
+      d.waves.forEach((w,wi)=>{const arr=w.ln.geometry.attributes.position.array;
+        for(let x=0;x<w.pts.length;x++){const xx=x/(w.pts.length-1);
+          const ph2=xx*6.283*2-wi*2.09;arr[x*3+1]=-3+Math.max(0,Math.cos(ph2))*1.6+wi*0.05;}
+        w.ln.geometry.attributes.position.needsUpdate=true;});
+      setCam(0,0.5,11,0,0,0,50);
+    }
+    if(solvedP){
+      const fill=smooth(clamp((t-511.37)/8,0,1));
+      d.sM.scale.y=fill;d.sM.position.y=1.67+(1.67*fill)/2;
+      d.sT.scale.y=fill;d.sT.position.y=1.67+1.67+(1.67*fill)/2;
+      d.lblSolved.visible=fill>0.5;
+      setCam(Math.sin(t*0.03)*1,1.8,12,0,1.8,0,48);
+    }
+  }
+
+  // ---------------- I: mass / Nobel ----------------
+  if(gI.visible){
+    const d=gI.userData;
+    const nobelP=t>=550.24;
+    const rise=smooth(clamp((t-534.57)/8,0,1));
+    d.massBar.scale.y=1+rise*6;d.massBar.position.y=-1.9+(0.1*d.massBar.scale.y)/2;
+    d.lblTiny.visible=rise>0.6;
+    d.medal.visible=nobelP;d.lblNobel.visible=nobelP;
+    if(nobelP){const g=smooth((t-559.45)/4);d.medalGlow.material.opacity=g*(0.5+0.2*Math.sin(t*0.8));d.medal.rotation.z=Math.sin(t*0.3)*0.1;}
+    else d.medalGlow.material.opacity=0;
+    setCam(Math.sin(t*0.03)*1,0.3,12,0,0.3,0,48);
+  }
+
+  // ---------------- J: supernova ----------------
+  if(gJ.visible){
+    const d=gJ.userData;
+    d.star.photoMat.uniforms.uT.value=t;d.star.core.rotation.y=t*0.03;
+    const introP=t<584.83;
+    const blastP=t>=584.83&&t<603.1;
+    const snP=t>=603.1;
+    d.star.grp.visible=introP||blastP;
+    d.flood.pts.visible=blastP||snP;
+    d.blast.visible=blastP;
+    d.lbl.visible=snP;
+    if(introP){d.star.grp.scale.setScalar(0.4);d.star.cor.material.opacity=0.3;setCam(Math.sin(t*0.03)*2,0,20,0,0,0,46);}
+    if(blastP){
+      const bp=smooth((t-584.83)/8);
+      d.star.grp.scale.setScalar(0.4+bp*0.3);
+      d.blast.material.opacity=0.3+0.7*Math.sin(bp*Math.PI);d.blast.scale.setScalar(4+bp*14);
+      flash=Math.max(0,Math.sin(bp*Math.PI))*0.25;
+      d.flood.pts.material.opacity=0.85*bp;updateRain(d.flood,t,4.5,-1);
+      setCam(0,0,16,0,0,0,50);
+    }
+    if(snP){
+      d.flood.pts.material.opacity=0.6;updateRain(d.flood,t,4.0,-1);
+      const p=smooth((t-603.1)/14);
+      setCam(Math.sin(t*0.04)*3,1,18+p*6,0,0,0,48);
+    }
+  }
+
+  // ---------------- K: race ----------------
+  if(gK.visible){
+    const d=gK.userData;
+    const raceP=t<645.97;
+    const countP=t>=645.97;
+    d.nR.visible=raceP;d.lR.visible=raceP;d.lblN.visible=raceP;d.lblL.visible=raceP;
+    d.lblEarly.visible=raceP&&t>=627.81;
+    d.flashGrp.visible=countP;d.lblCount.visible=countP;
+    if(raceP){
+      const p=smooth(clamp((t-620.43)/22,0,1));
+      d.nR.position.x=-5.5+p*11;
+      d.lR.position.x=-5.5+p*11*0.75;
+      setCam(0,0,12,0,0,0,48);
+    }
+    if(countP){
+      d.cflash.forEach(s=>{const appear=smooth(clamp(((t-645.97)-s.userData.tt*3)/0.4,0,1));
+        const flick=0.5+0.5*Math.sin(t*3+s.userData.ph*6.283);
+        s.material.opacity=appear*flick*0.9;s.scale.setScalar(0.5+appear*0.5);});
+      setCam(Math.sin(t*0.05)*1.5,0,11,0,0,0,50);
+    }
+  }
+
+  // ---------------- L: big bang / cosmic background ----------------
+  if(gL.visible){
+    const d=gL.userData;
+    const bbP=t>=676.06&&t<695.56;
+    const bgP=t>=695.56;
+    d.fire.grp.visible=bbP;
+    d.trapLine.visible=bbP;d.freeStream.pts.visible=bbP;d.lblBB.visible=bbP;
+    d.bg.pts.visible=bgP;d.lblBG.visible=bgP;
+    if(t<676.06){setCam(Math.sin(t*0.03)*3,0,22-(t-664.14)*0.5,0,0,0,46);}
+    if(bbP){
+      d.fire.photoMat.uniforms.uT.value=t;d.fire.core.rotation.y=t*0.02;d.fire.cor.material.opacity=0.4;
+      d.fire.grp.scale.setScalar(0.9+0.1*Math.sin(t*0.5));
+      d.trapLine.material.opacity=0.6;
+      d.freeStream.pts.material.opacity=0.8;updateRain(d.freeStream,t,3.5,-1);d.freeStream.pts.position.set(5,0,0);
+      flash=Math.max(0,Math.sin((t-676.06)/4*Math.PI))*0.12;
+      setCam(0,0,14,0,0,0,50);
+    }
+    if(bgP){
+      d.bg.pts.material.opacity=0.5;updateRain(d.bg,t,0.6,-1);
+      const p=smooth((t-695.56)/15);
+      setCam(Math.sin(t*0.04)*2,0,15+p*2,0,0,0,50);
+    }
+  }
+
+  // ---------------- M: closing ----------------
+  if(gM.visible){
+    const d=gM.userData;
+    d.head.rotation.y=Math.sin(t*0.12)*0.05;
+    const threeP=t>=744.88&&t<762.65;
+    const galaxyP=t>=762.65;
+    updateRain(d.rainSun,t,2.6,-1);
+    d.rainSun.pts.material.opacity=0.7;
+    const srcOn=smooth(clamp((t-744.88)/3,0,1));
+    d.rainStar.pts.visible=threeP||galaxyP;d.rainAnc.pts.visible=threeP||galaxyP;
+    if(threeP||galaxyP){updateRain(d.rainStar,t,2.2,-1);updateRain(d.rainAnc,t,1.8,-1);
+      d.rainStar.pts.material.opacity=0.55*srcOn;d.rainAnc.pts.material.opacity=0.4*srcOn;}
+    const galOn=smooth(clamp((t-762.65)/4,0,1));
+    d.inner.material.opacity=galOn*0.5*(0.7+0.3*Math.sin(t*0.4));
+    const p=loc(t,'M');
+    setCam(Math.sin(t*0.03)*1,0.6,11-p*1.5,0,0.4,0,44);
+  }
+  }catch(err){var ed=document.getElementById('err');if(ed){ed.style.display='block';ed.textContent='SCENE ERR @t='+t.toFixed(1)+': '+(err&&err.message||err);}}
+
+  // ---------------- global fades ----------------
+  let fade=1.0;
+  fade*=smooth(clamp(t/3.5,0,1));
+  fade*=smooth(clamp((TOTAL-t)/4.5,0,1));
+
+  lens.uniforms.uT.value=t;
+  lens.uniforms.uFade.value=fade;
+  lens.uniforms.uFlash.value=flash;
+  const fiery=inSc(t,'C')||inSc(t,'E')||(inSc(t,'J')&&t>=584.83)||(inSc(t,'L')&&t>=676.06&&t<695.56);
+  bloom.strength=fiery?1.2:0.9;
+
+  updateText(t);
+  composer.render();
+}
+
+// subtitle / chapter lookup
+let _lastSub=-1,_lastChap='';
+function updateText(t){
+  let idx=0;for(let i=0;i<CUES.length;i++){if(CUES[i].t<=t+1e-6)idx=i;else break;}
+  const cur=CUES[idx];
+  if(idx!==_lastSub){document.getElementById('sub').textContent=cur?cur.s:'';_lastSub=idx;}
+  let chT=-1,chS='';for(const c of CUES){if(c.ch&&c.t<=t){chT=c.t;chS=c.ch;}}
+  const chapEl=document.getElementById('chap');
+  if(chS!==_lastChap){chapEl.textContent=chS;_lastChap=chS;}
+  const op=chT>=0?smooth(clamp((t-chT)/0.8,0,1))*smooth(clamp((chT+4.5-t)/1.2,0,1)):0;
+  chapEl.style.opacity=op;
+  document.getElementById('sub').style.opacity=1;
+}
+
+// ============================================================
+//  GSAP timeline (paused) — deterministic driver
+// ============================================================
+window.__timelines=window.__timelines||{};
+const tl=gsap.timeline({paused:true});
+const clk={t:0};
+tl.to(clk,{t:TOTAL,duration:TOTAL,ease:"none",onUpdate:()=>renderAtTime(clk.t)},0);
+window.__timelines["hat-neutrino"]=tl;
+
+// initial render
+renderAtTime(0);
+</script>
+</body>
+</html>

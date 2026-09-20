@@ -1,0 +1,888 @@
+{
+  "slug": "nguyen-to-dau-tien",
+  "fps": 30,
+  "totalDuration": 960.7,
+  "dryRun": true,
+  "narration": null,
+  "voice": {
+    "provider": "aimax-minimax",
+    "voice_id": "uv_5cee29af",
+    "voice_name": "uv_5cee29af",
+    "model": "speech-2.8-hd",
+    "speed": 0.96
+  },
+  "cues": [
+    {
+      "id": "C01",
+      "chapter": "CHƯƠNG 1 — NƠI KHÔNG GÌ TỒN TẠI NỔI",
+      "text": "Tôi đang đứng ở giây thứ nhất của vũ trụ.",
+      "file": null,
+      "start": 0,
+      "duration": 2.73
+    },
+    {
+      "id": "C02",
+      "chapter": null,
+      "text": "Không phải năm thứ nhất. Không phải ngày thứ nhất. Giây thứ nhất. Một cái chớp mắt sau khoảnh khắc mọi thứ bắt đầu.",
+      "file": null,
+      "start": 2.73,
+      "duration": 7.67
+    },
+    {
+      "id": "C03",
+      "chapter": null,
+      "text": "Và điều đầu tiên tôi nhận ra ở đây là: không có gì cả. Không một ngôi sao. Không một hành tinh. Không một hạt bụi. Không cả một nguyên tử nào.",
+      "file": null,
+      "start": 10.4,
+      "duration": 9.47
+    },
+    {
+      "id": "C04",
+      "chapter": null,
+      "text": "Cái mà tôi quen gọi là vũ trụ, lúc này, chỉ là một biển lửa. Đặc quánh. Đồng đều đến phát sợ. Và nóng khoảng mười tỉ độ.",
+      "file": null,
+      "start": 19.87,
+      "duration": 8
+    },
+    {
+      "id": "C05",
+      "chapter": null,
+      "text": "Mười tỉ độ. Con số đó lớn đến mức nó không còn nghĩa gì với da thịt tôi. Đây không phải cái nóng làm bỏng. Đây là cái nóng làm tan rã.",
+      "file": null,
+      "start": 27.87,
+      "duration": 8.93
+    },
+    {
+      "id": "C06",
+      "chapter": null,
+      "text": "Thả một mẩu sắt vào đây, nó sẽ không chảy ra, cũng không bốc hơi. Electron bị giật khỏi nguyên tử. Hạt nhân bị đấm vỡ thành từng mảnh, rồi từng mảnh lại vỡ tiếp, cho tới khi chỉ còn những viên gạch trần trụi nhất: proton và neutron.",
+      "file": null,
+      "start": 38.3,
+      "duration": 15.47
+    },
+    {
+      "id": "C07",
+      "chapter": null,
+      "text": "Đó là luật ở nơi này. Ở mười tỉ độ, mọi thứ được lắp ráp đều bị tháo tung ngay lập tức. Vũ trụ sơ khai không phải một cái lò rèn. Nó là một cái máy nghiền.",
+      "file": null,
+      "start": 53.77,
+      "duration": 10.33
+    },
+    {
+      "id": "C08",
+      "chapter": null,
+      "text": "Và vì chưa có nguyên tử, ánh sáng cũng không đi được. Mỗi photon vừa lao đi một quãng cực ngắn đã đâm vào một electron tự do và bị bắn ngược lại. Không có bầu trời, không có khoảng cách. Chỉ có một màn sương phát sáng giam mọi tia sáng tại chỗ.",
+      "file": null,
+      "start": 64.1,
+      "duration": 16.27
+    },
+    {
+      "id": "C09",
+      "chapter": null,
+      "text": "Xung quanh tôi là một đám đông không thể tưởng tượng nổi. Proton. Neutron. Electron. Và nhiều nhất, áp đảo nhất, là photon, những hạt ánh sáng.",
+      "file": null,
+      "start": 80.37,
+      "duration": 9.53
+    },
+    {
+      "id": "C10",
+      "chapter": null,
+      "text": "Cứ một proton hay một neutron thì có khoảng một tỉ photon. Một tỉ. Tỉ lệ đó nghe như một chi tiết kỹ thuật khô khan. Nhưng nó chính là nhân vật phản diện của toàn bộ câu chuyện này.",
+      "file": null,
+      "start": 89.9,
+      "duration": 12.07
+    },
+    {
+      "id": "C11",
+      "chapter": null,
+      "text": "Tôi đến đây vì một câu hỏi rất đơn giản mà tôi chưa từng dám hỏi tử tế: nguyên tử đầu tiên của vũ trụ ra đời ở đâu?",
+      "file": null,
+      "start": 103.47,
+      "duration": 7.67
+    },
+    {
+      "id": "C12",
+      "chapter": null,
+      "text": "Người ta vẫn nói các nguyên tố được nấu trong lòng những ngôi sao. Rằng chúng ta là tro tàn của sao. Đó là một câu đẹp, và nó đúng một phần.",
+      "file": null,
+      "start": 111.14,
+      "duration": 9.33
+    },
+    {
+      "id": "C13",
+      "chapter": null,
+      "text": "Nhưng có một sự thật ít được kể hơn, và tôi nghĩ nó còn choáng váng hơn nhiều.",
+      "file": null,
+      "start": 120.47,
+      "duration": 5.2
+    },
+    {
+      "id": "C14",
+      "chapter": null,
+      "text": "Nếu bạn đếm từng nguyên tử trong cơ thể mình, thì thứ đông nhất, khoảng sáu trên mười nguyên tử, không phải cacbon, không phải oxy, không phải sắt. Đó là hydro.",
+      "file": null,
+      "start": 125.67,
+      "duration": 10.67
+    },
+    {
+      "id": "C15",
+      "chapter": null,
+      "text": "Tôi đang nói theo số lượng, không phải theo cân nặng. Tính bằng cân, oxy và cacbon nặng hơn nên chúng chiếm phần lớn khối lượng tôi. Nhưng nếu đếm đầu người, hydro áp đảo.",
+      "file": null,
+      "start": 136.34,
+      "duration": 11.4
+    },
+    {
+      "id": "C16",
+      "chapter": null,
+      "text": "Và hydro trong bạn không đến từ ngôi sao nào cả. Không một ngôi sao nào từng chạm vào nó. Nó già hơn mọi ngôi sao từng tồn tại trong lịch sử vũ trụ.",
+      "file": null,
+      "start": 147.74,
+      "duration": 9.87
+    },
+    {
+      "id": "C17",
+      "chapter": null,
+      "text": "Nó được làm xong ở đây. Trong khoảng thời gian ngắn đến mức phi lý: chưa tới hai mươi phút.",
+      "file": null,
+      "start": 159.61,
+      "duration": 6.07
+    },
+    {
+      "id": "C18",
+      "chapter": null,
+      "text": "Hai mươi phút. Ngắn hơn một chuyến xe buýt đi làm. Trong hai mươi phút đó, vũ trụ quyết định xong nó sẽ được làm bằng gì, và không bao giờ sửa lại.",
+      "file": null,
+      "start": 165.68,
+      "duration": 9.8
+    },
+    {
+      "id": "C19",
+      "chapter": null,
+      "text": "Tôi ở lại để xem hai mươi phút ấy. Và tôi phát hiện ra nó không hề êm đềm. Nó là một cuộc chạy đua nghẹt thở, với một cánh cửa khoá chặt và một đồng hồ đếm ngược đang chạy.",
+      "file": null,
+      "start": 175.48,
+      "duration": 11.47
+    },
+    {
+      "id": "C20",
+      "chapter": "CHƯƠNG 2 — ĐỒNG HỒ ĐẾM NGƯỢC",
+      "text": "Để hiểu cuộc đua này, tôi phải nhìn kỹ hai loại hạt trôi quanh mình.",
+      "file": null,
+      "start": 186.95,
+      "duration": 4.53
+    },
+    {
+      "id": "C21",
+      "chapter": null,
+      "text": "Proton, mang điện dương. Và neutron, trung hoà, không mang điện. Nếu muốn có bất kỳ nguyên tố nào nặng hơn hydro, tôi bắt buộc phải có cả hai. Proton một mình chỉ cho ra hydro.",
+      "file": null,
+      "start": 191.48,
+      "duration": 11.73
+    },
+    {
+      "id": "C22",
+      "chapter": null,
+      "text": "Vấn đề là neutron rất hiếm. Và nó ngày càng hiếm hơn.",
+      "file": null,
+      "start": 203.21,
+      "duration": 3.53
+    },
+    {
+      "id": "C23",
+      "chapter": null,
+      "text": "Ở nhiệt độ cực cao, proton và neutron còn liên tục hoán đổi cho nhau. Một neutron biến thành proton, rồi lại có proton biến ngược thành neutron. Một cuộc trao đổi không dứt.",
+      "file": null,
+      "start": 206.74,
+      "duration": 11.53
+    },
+    {
+      "id": "C24",
+      "chapter": null,
+      "text": "Nhưng neutron nặng hơn proton một chút xíu. Rất ít thôi, khoảng một phần nghìn khối lượng của nó. Và trong tự nhiên, nặng hơn nghĩa là tốn kém hơn. Vũ trụ luôn thích cái rẻ.",
+      "file": null,
+      "start": 218.27,
+      "duration": 11.53
+    },
+    {
+      "id": "C25",
+      "chapter": null,
+      "text": "Nên khi nhiệt độ tụt xuống, cán cân nghiêng dần về phía proton. Càng nguội, việc tạo ra một neutron càng đắt đỏ, càng ít xảy ra.",
+      "file": null,
+      "start": 229.8,
+      "duration": 8.53
+    },
+    {
+      "id": "C26",
+      "chapter": null,
+      "text": "Rồi ở khoảng giây thứ nhất, có một khoảnh khắc mà tôi chỉ có thể gọi là đóng băng.",
+      "file": null,
+      "start": 238.33,
+      "duration": 5.47
+    },
+    {
+      "id": "C27",
+      "chapter": null,
+      "text": "Vũ trụ giãn nở nhanh đến mức các hạt không còn kịp gặp nhau để trao đổi nữa. Cuộc mặc cả giữa proton và neutron ngừng lại giữa chừng. Tỉ số bị khoá cứng ngay tại chỗ nó đang đứng.",
+      "file": null,
+      "start": 243.8,
+      "duration": 11.93
+    },
+    {
+      "id": "C28",
+      "chapter": null,
+      "text": "Và tỉ số đó là: cứ khoảng sáu proton thì có một neutron.",
+      "file": null,
+      "start": 255.73,
+      "duration": 3.73
+    },
+    {
+      "id": "C29",
+      "chapter": null,
+      "text": "Một trên sáu. Đó là toàn bộ ngân sách neutron mà vũ trụ sẽ có. Không bao giờ được cấp thêm.",
+      "file": null,
+      "start": 260.96,
+      "duration": 6.07
+    },
+    {
+      "id": "C30",
+      "chapter": null,
+      "text": "Và đây là chỗ câu chuyện trở nên tàn nhẫn. Bởi vì neutron, khi trôi tự do một mình, không sống được lâu.",
+      "file": null,
+      "start": 267.03,
+      "duration": 6.93
+    },
+    {
+      "id": "C31",
+      "chapter": null,
+      "text": "Một neutron nằm trong hạt nhân nguyên tử thì bền vững gần như vĩnh viễn. Nhưng một neutron trôi trần trụi ngoài không gian thì tự phân rã. Nó vỡ ra thành một proton, một electron, và một hạt ma nhỏ xíu.",
+      "file": null,
+      "start": 273.96,
+      "duration": 13.47
+    },
+    {
+      "id": "C32",
+      "chapter": null,
+      "text": "Chu kỳ bán rã của nó là khoảng mười phút. Nghĩa là cứ mười phút trôi qua, một nửa số neutron còn tự do sẽ biến mất.",
+      "file": null,
+      "start": 287.43,
+      "duration": 7.67
+    },
+    {
+      "id": "C33",
+      "chapter": null,
+      "text": "Hãy làm một phép tính cùng tôi. Cửa chỉ mở ở khoảng phút thứ ba. Nghĩa là gần ba phút chờ đợi, trong khi cứ mười phút thì một nửa kho neutron biến mất. Đến lúc cửa mở, tỉ số đã trượt từ khoảng một trên sáu xuống còn khoảng một trên bảy.",
+      "file": null,
+      "start": 295.1,
+      "duration": 15.73
+    },
+    {
+      "id": "C34",
+      "chapter": null,
+      "text": "Tôi đứng giữa biển lửa và nhận ra mình đang chứng kiến một thứ nguyên liệu đang chết dần. Từng giây trôi qua là từng viên gạch bốc hơi khỏi kho.",
+      "file": null,
+      "start": 311.83,
+      "duration": 9.6
+    },
+    {
+      "id": "C35",
+      "chapter": null,
+      "text": "Vậy thì đơn giản thôi. Hãy dùng chúng ngay. Cứu lấy chúng bằng cách nhốt chúng vào trong một hạt nhân, nơi chúng sẽ bền vững mãi mãi.",
+      "file": null,
+      "start": 321.43,
+      "duration": 8.87
+    },
+    {
+      "id": "C36",
+      "chapter": null,
+      "text": "Và đó chính xác là điều vũ trụ đang cố làm. Một proton và một neutron dính vào nhau tạo ra hạt nhân đơn giản nhất sau hydro. Người ta gọi nó là deuterium, hydro nặng.",
+      "file": null,
+      "start": 330.3,
+      "duration": 11.07
+    },
+    {
+      "id": "C37",
+      "chapter": null,
+      "text": "Deuterium là bậc thang đầu tiên. Không có nó thì không có bậc thang nào tiếp theo. Mọi con đường đi lên đều phải bước qua deuterium.",
+      "file": null,
+      "start": 341.37,
+      "duration": 8.8
+    },
+    {
+      "id": "C38",
+      "chapter": null,
+      "text": "Nhưng mỗi lần một deuterium vừa hình thành, nó lại bị xé toạc ra ngay tức khắc.",
+      "file": null,
+      "start": 350.17,
+      "duration": 5.27
+    },
+    {
+      "id": "C39",
+      "chapter": null,
+      "text": "Thủ phạm là đám đông tôi đã nhắc: photon. Một tỉ photon cho mỗi hạt vật chất.",
+      "file": null,
+      "start": 355.44,
+      "duration": 5.13
+    },
+    {
+      "id": "C40",
+      "chapter": null,
+      "text": "Tôi muốn bạn cảm được con số một tỉ ấy. Hãy tưởng tượng tôi cố dựng một ngôi nhà bằng đúng hai viên gạch, giữa một sân vận động có một tỉ người, và tất cả họ đều đang ném đá.",
+      "file": null,
+      "start": 360.57,
+      "duration": 11.6
+    },
+    {
+      "id": "C41",
+      "chapter": null,
+      "text": "Mối liên kết giữ deuterium lại với nhau rất yếu. Và trong một biển một tỉ photon, luôn có đủ những hạt ánh sáng mang năng lượng cao để đập vỡ nó.",
+      "file": null,
+      "start": 372.17,
+      "duration": 9.67
+    },
+    {
+      "id": "C42",
+      "chapter": null,
+      "text": "Không phải cú ném nào cũng trúng, cũng không phải cú nào cũng đủ mạnh. Nhiệt độ chỉ cho biết mức năng lượng trung bình. Nhưng khi đám đông lên tới một tỉ, chỉ một phần cực nhỏ trong số chúng đủ dữ dội là đã quá đủ.",
+      "file": null,
+      "start": 381.84,
+      "duration": 14.27
+    },
+    {
+      "id": "C43",
+      "chapter": null,
+      "text": "Ngay cả khi vũ trụ đã nguội xuống dưới mức lẽ ra là đủ an toàn, chỉ cần một phần rất nhỏ trong một tỉ photon còn đủ hung dữ là deuterium vẫn không sống nổi.",
+      "file": null,
+      "start": 396.11,
+      "duration": 10.4
+    },
+    {
+      "id": "C44",
+      "chapter": null,
+      "text": "Đây là nghịch lý mà tôi thấy đẹp một cách nghiệt ngã. Các nhà vật lý gọi nó là nút thắt cổ chai deuterium.",
+      "file": null,
+      "start": 408.01,
+      "duration": 7.07
+    },
+    {
+      "id": "C45",
+      "chapter": null,
+      "text": "Vũ trụ có sẵn nguyên liệu. Vũ trụ có sẵn nhiệt độ đủ cao để phản ứng chạy. Nhưng cánh cửa dẫn tới mọi nguyên tố nặng hơn hydro thì bị khoá, khoá bởi chính ánh sáng của nó.",
+      "file": null,
+      "start": 415.08,
+      "duration": 11.4
+    },
+    {
+      "id": "C46",
+      "chapter": null,
+      "text": "Và trong lúc cánh cửa còn khoá, đồng hồ neutron vẫn chạy. Cứ mỗi mười phút, một nửa kho nguyên liệu bốc hơi.",
+      "file": null,
+      "start": 426.48,
+      "duration": 7.2
+    },
+    {
+      "id": "C47",
+      "chapter": null,
+      "text": "Tôi nghe được cả hai thứ cùng lúc. Tiếng deuterium sinh ra rồi vỡ, sinh ra rồi vỡ, hàng tỉ tỉ lần mỗi giây. Và tiếng đếm ngược lặng lẽ của những neutron đang tự tan biến.",
+      "file": null,
+      "start": 433.68,
+      "duration": 11.33
+    },
+    {
+      "id": "C48",
+      "chapter": null,
+      "text": "Nếu vũ trụ nguội chậm thêm một chút, sẽ chẳng còn neutron nào để dùng khi cửa mở. Vũ trụ sẽ vĩnh viễn chỉ là hydro trơn. Không heli. Có lẽ không có gì cả.",
+      "file": null,
+      "start": 445.01,
+      "duration": 10.27
+    },
+    {
+      "id": "C49",
+      "chapter": null,
+      "text": "Nhưng vũ trụ vẫn đang giãn nở. Và giãn nở nghĩa là nguội đi.",
+      "file": null,
+      "start": 455.28,
+      "duration": 4
+    },
+    {
+      "id": "C50",
+      "chapter": "CHƯƠNG 3 — HAI MƯƠI PHÚT",
+      "text": "Khoảng ba phút sau Big Bang, nhiệt độ tụt xuống dưới một tỉ độ. Và cánh cửa mở.",
+      "file": null,
+      "start": 459.28,
+      "duration": 5.27
+    },
+    {
+      "id": "C51",
+      "chapter": null,
+      "text": "Không phải mở từ từ. Nó bật tung.",
+      "file": null,
+      "start": 464.55,
+      "duration": 2.2
+    },
+    {
+      "id": "C52",
+      "chapter": null,
+      "text": "Vì suốt thời gian bị khoá, các phản ứng vẫn liên tục thử. Nguyên liệu đã xếp hàng sẵn, ép sát vào cánh cửa. Khoảnh khắc photon không còn đủ sức phá deuterium nữa, tất cả tràn qua cùng một lúc.",
+      "file": null,
+      "start": 466.75,
+      "duration": 12.8
+    },
+    {
+      "id": "C53",
+      "chapter": null,
+      "text": "Và cái tôi chứng kiến tiếp theo là một trong những phản ứng dây chuyền dữ dội nhất từng xảy ra.",
+      "file": null,
+      "start": 479.55,
+      "duration": 6.33
+    },
+    {
+      "id": "C54",
+      "chapter": null,
+      "text": "Deuterium vừa sống sót được vài khoảnh khắc đã lập tức bị hút vào phản ứng tiếp theo. Deuterium bắt thêm một proton. Deuterium va vào deuterium. Các mảnh ghép lao vào nhau, dính lại, nhảy bậc.",
+      "file": null,
+      "start": 485.88,
+      "duration": 12.8
+    },
+    {
+      "id": "C55",
+      "chapter": null,
+      "text": "Tất cả đều đổ dồn về một đích duy nhất: heli-4. Hai proton và hai neutron, khoá chặt với nhau.",
+      "file": null,
+      "start": 498.68,
+      "duration": 6.27
+    },
+    {
+      "id": "C56",
+      "chapter": null,
+      "text": "Heli-4 là một cấu trúc bền lạ thường. Nó giống một cái hố sâu trong địa hình năng lượng: thứ gì rơi vào đó thì ở lại đó. Mọi con đường đều dốc xuống phía nó.",
+      "file": null,
+      "start": 504.95,
+      "duration": 10.47
+    },
+    {
+      "id": "C57",
+      "chapter": null,
+      "text": "Nên gần như toàn bộ số neutron sống sót đều bị nuốt vào heli-4. Từ chỗ đang chết dần với chu kỳ mười phút, chúng bỗng trở nên bất tử, nhốt bên trong một hạt nhân bền vững.",
+      "file": null,
+      "start": 515.42,
+      "duration": 11.4
+    },
+    {
+      "id": "C58",
+      "chapter": null,
+      "text": "Tiếng đồng hồ đếm ngược tắt. Cuộc đua kết thúc. Vũ trụ đã kịp.",
+      "file": null,
+      "start": 526.82,
+      "duration": 4.13
+    },
+    {
+      "id": "C59",
+      "chapter": null,
+      "text": "Và tôi chờ cái tiếp theo. Vì trong đầu tôi, một phản ứng dây chuyền mạnh như thế phải đi tiếp chứ. Heli rồi tới cacbon, rồi oxy. Cứ thế leo lên bảng tuần hoàn.",
+      "file": null,
+      "start": 532.95,
+      "duration": 10.6
+    },
+    {
+      "id": "C60",
+      "chapter": null,
+      "text": "Nhưng không có gì tiếp theo cả. Chuỗi phản ứng đâm sầm vào một bức tường.",
+      "file": null,
+      "start": 543.55,
+      "duration": 4.87
+    },
+    {
+      "id": "C61",
+      "chapter": null,
+      "text": "Bức tường ấy là một trong những chi tiết kỳ lạ nhất của tự nhiên.",
+      "file": null,
+      "start": 548.42,
+      "duration": 4.33
+    },
+    {
+      "id": "C62",
+      "chapter": null,
+      "text": "Hãy hình dung các hạt nhân được xếp thành một cái thang, mỗi bậc là tổng số hạt bên trong nó. Bậc một: hydro. Bậc hai: deuterium. Bậc ba, bậc bốn: heli. Rất tốt.",
+      "file": null,
+      "start": 552.75,
+      "duration": 10.73
+    },
+    {
+      "id": "C63",
+      "chapter": null,
+      "text": "Tôi thử leo lên cái thang đó. Bậc một, bậc hai, bậc ba, bậc bốn: chắc chắn, đầy đặn, đặt chân lên được. Rồi tôi với tay lên bậc thứ năm.",
+      "file": null,
+      "start": 563.48,
+      "duration": 9.07
+    },
+    {
+      "id": "C64",
+      "chapter": null,
+      "text": "Nhưng bậc thứ năm không tồn tại. Không có hạt nhân bền nào gồm đúng năm hạt. Ghép thêm một proton hay một neutron vào heli-4, cái vừa tạo ra sẽ rã ra gần như ngay lập tức.",
+      "file": null,
+      "start": 572.55,
+      "duration": 11.4
+    },
+    {
+      "id": "C65",
+      "chapter": null,
+      "text": "Không phải bậc thang ấy khó leo. Nó không có ở đó. Giống như bước lên một bậc được vẽ trên không khí: chân tôi xuyên thẳng qua và rơi trở lại bậc bốn.",
+      "file": null,
+      "start": 583.95,
+      "duration": 10
+    },
+    {
+      "id": "C66",
+      "chapter": null,
+      "text": "Được thôi, tôi nghĩ, vậy thì nhảy cóc. Cho hai hạt nhân heli-4 va vào nhau. Bốn cộng bốn là tám. Bỏ qua bậc năm.",
+      "file": null,
+      "start": 593.95,
+      "duration": 7.47
+    },
+    {
+      "id": "C67",
+      "chapter": null,
+      "text": "Nhưng bậc thứ tám cũng không tồn tại. Cái được tạo ra là beryllium-8, và nó tan rã trở lại thành hai hạt heli trong một khoảng thời gian ngắn tới mức không có từ nào diễn tả nổi.",
+      "file": null,
+      "start": 601.42,
+      "duration": 11.87
+    },
+    {
+      "id": "C68",
+      "chapter": null,
+      "text": "Ngắn hơn một phần tỉ của một phần tỉ giây. Nó không kịp gặp bất cứ hạt nào khác. Nó sinh ra và chết đi trong cùng một cái nháy mắt không tồn tại.",
+      "file": null,
+      "start": 613.29,
+      "duration": 9.67
+    },
+    {
+      "id": "C69",
+      "chapter": null,
+      "text": "Hai bậc thang bị rút mất. Số năm và số tám. Và chỉ vì hai chỗ trống đó, toàn bộ phần còn lại của bảng tuần hoàn bị chặn lại.",
+      "file": null,
+      "start": 624.46,
+      "duration": 8.27
+    },
+    {
+      "id": "C70",
+      "chapter": null,
+      "text": "Không phải vì một định luật lớn lao nào cấm đoán. Chỉ vì hai con số ấy tình cờ không có chỗ đứng trong cách lực hạt nhân buộc các hạt lại với nhau. Một tai nạn của tự nhiên.",
+      "file": null,
+      "start": 632.73,
+      "duration": 11.53
+    },
+    {
+      "id": "C71",
+      "chapter": null,
+      "text": "Tôi đứng đó và thấy sự bất lực của cả một vũ trụ. Nó có đủ nguyên liệu. Nó có đủ nhiệt. Và nó không thể đi thêm một bước nào nữa.",
+      "file": null,
+      "start": 644.26,
+      "duration": 8.6
+    },
+    {
+      "id": "C72",
+      "chapter": null,
+      "text": "Vẫn có vài phản ứng hiếm hoi lách qua khe. Một chút lithium được tạo ra, mong manh, ít đến mức gần như không đáng kể. Đó là biên giới cuối cùng. Vũ trụ dừng lại ở nguyên tố thứ ba.",
+      "file": null,
+      "start": 652.86,
+      "duration": 12
+    },
+    {
+      "id": "C73",
+      "chapter": null,
+      "text": "Và trong lúc đó, vũ trụ vẫn tiếp tục giãn ra. Vẫn tiếp tục nguội. Vẫn tiếp tục loãng dần.",
+      "file": null,
+      "start": 664.86,
+      "duration": 5.93
+    },
+    {
+      "id": "C74",
+      "chapter": null,
+      "text": "Muốn hai hạt nhân dính vào nhau, chúng phải va chạm đủ mạnh để vượt qua lực đẩy điện giữa hai điện tích dương. Nguội hơn nghĩa là chậm hơn. Loãng hơn nghĩa là ít gặp nhau hơn.",
+      "file": null,
+      "start": 670.79,
+      "duration": 11.67
+    },
+    {
+      "id": "C75",
+      "chapter": null,
+      "text": "Khoảng phút thứ hai mươi, các cú va chạm không còn đủ mạnh nữa. Không phải vì hết nguyên liệu. Chỉ vì lửa đã tàn.",
+      "file": null,
+      "start": 682.46,
+      "duration": 7.53
+    },
+    {
+      "id": "C76",
+      "chapter": null,
+      "text": "Cánh cửa đóng lại. Và nó không bao giờ mở lại nữa.",
+      "file": null,
+      "start": 689.99,
+      "duration": 3.33
+    },
+    {
+      "id": "C77",
+      "chapter": null,
+      "text": "Đó là điều làm tôi lạnh sống lưng. Trong lòng một ngôi sao, phản ứng hạt nhân có thể chạy hàng tỉ năm. Nếu hỏng, còn ngôi sao khác. Còn lần sau.",
+      "file": null,
+      "start": 695.82,
+      "duration": 9.6
+    },
+    {
+      "id": "C78",
+      "chapter": null,
+      "text": "Nhưng chuyện xảy ra ở đây thì chỉ có một lần. Toàn bộ vũ trụ, đồng loạt, trong cùng một khoảng thời gian. Và vì vũ trụ chỉ giãn nở theo một chiều, điều kiện ấy sẽ không bao giờ quay lại.",
+      "file": null,
+      "start": 705.42,
+      "duration": 12.4
+    },
+    {
+      "id": "C79",
+      "chapter": null,
+      "text": "Hai mươi phút. Xong. Vũ trụ khoá sổ.",
+      "file": null,
+      "start": 717.82,
+      "duration": 2.4
+    },
+    {
+      "id": "C80",
+      "chapter": "CHƯƠNG 4 — THỨ CỔ NHẤT TRONG BẠN",
+      "text": "Khi khói tan, tôi kiểm kê lại xem vũ trụ có gì trong tay.",
+      "file": null,
+      "start": 720.22,
+      "duration": 3.8
+    },
+    {
+      "id": "C81",
+      "chapter": null,
+      "text": "Tính theo khối lượng: khoảng ba phần tư là hydro, khoảng một phần tư là heli. Và một chút xíu deuterium với lithium.",
+      "file": null,
+      "start": 724.02,
+      "duration": 7.73
+    },
+    {
+      "id": "C82",
+      "chapter": null,
+      "text": "Không cacbon. Không oxy. Không nitơ. Không canxi, không sắt, không vàng. Không gì làm nên đá hay máu.",
+      "file": null,
+      "start": 731.75,
+      "duration": 6.73
+    },
+    {
+      "id": "C83",
+      "chapter": null,
+      "text": "Rồi là một sự trống rỗng rất dài. Hàng trăm triệu năm chỉ có mây khí hydro và heli, nguội dần, tối dần, cuộn lại dưới sức hút của chính mình.",
+      "file": null,
+      "start": 739.98,
+      "duration": 9.4
+    },
+    {
+      "id": "C84",
+      "chapter": null,
+      "text": "Cho tới khi đám mây đầu tiên nén đủ chặt để bốc cháy ở lõi. Ngôi sao đầu tiên.",
+      "file": null,
+      "start": 749.38,
+      "duration": 5.2
+    },
+    {
+      "id": "C85",
+      "chapter": null,
+      "text": "Chỉ trong lõi sao, với hàng triệu năm kiên nhẫn, mới có cách vượt qua bậc thang số tám. Vũ trụ trẻ quá vội vàng để làm được điều đó.",
+      "file": null,
+      "start": 754.58,
+      "duration": 8.8
+    },
+    {
+      "id": "C86",
+      "chapter": null,
+      "text": "Cacbon ra đời ở đó. Rồi oxy. Rồi mọi thứ nặng hơn. Nhưng đó là chương hai, đến sau rất lâu.",
+      "file": null,
+      "start": 763.38,
+      "duration": 6.07
+    },
+    {
+      "id": "C87",
+      "chapter": null,
+      "text": "Bây giờ tôi mới hiểu điều mình đến đây để tìm.",
+      "file": null,
+      "start": 770.95,
+      "duration": 3.07
+    },
+    {
+      "id": "C88",
+      "chapter": null,
+      "text": "Sắt trong máu tôi, cacbon trong xương tôi, chúng đúng là được rèn trong những ngôi sao đã chết. Nhưng nếu đếm theo số nguyên tử, phần lớn con người tôi thì không.",
+      "file": null,
+      "start": 774.02,
+      "duration": 10.8
+    },
+    {
+      "id": "C89",
+      "chapter": null,
+      "text": "Cơ thể tôi phần lớn là nước. Mỗi phân tử nước gồm một oxy và hai hydro. Oxy thì đến từ sao. Nhưng hai nguyên tử hydro kia thì không.",
+      "file": null,
+      "start": 784.82,
+      "duration": 8.8
+    },
+    {
+      "id": "C90",
+      "chapter": null,
+      "text": "Hai nguyên tử hydro. Chúng nhỏ đến mức mỗi cái chỉ là một proton duy nhất, với một electron quay quanh. Đơn giản nhất trong mọi thứ có thể gọi là nguyên tử.",
+      "file": null,
+      "start": 793.62,
+      "duration": 10.4
+    },
+    {
+      "id": "C91",
+      "chapter": null,
+      "text": "Chúng chưa bao giờ ở trong lòng một ngôi sao. Chưa từng bị nung, bị nén, bị bắn ra bởi một vụ nổ nào.",
+      "file": null,
+      "start": 804.02,
+      "duration": 6.73
+    },
+    {
+      "id": "C92",
+      "chapter": null,
+      "text": "Chúng được đúc xong trong hai mươi phút đầu tiên của thời gian, rồi chỉ trôi. Trôi qua sự sinh và chết của vô số ngôi sao mà chúng không tham gia.",
+      "file": null,
+      "start": 810.75,
+      "duration": 9.73
+    },
+    {
+      "id": "C93",
+      "chapter": null,
+      "text": "Trôi qua những đám mây lạnh giữa các vì sao. Trôi vào một hành tinh, rồi vào biển, rồi vào một cơn mưa. Đi qua vô số cơ thể sống trước tôi, và sẽ đi tiếp sau khi tôi không còn.",
+      "file": null,
+      "start": 820.48,
+      "duration": 11.73
+    },
+    {
+      "id": "C94",
+      "chapter": null,
+      "text": "Mỗi ngụm nước tôi uống chứa những hạt nhân già bằng chính vũ trụ. Cổ hơn bất kỳ ngôi sao nào từng phát sáng.",
+      "file": null,
+      "start": 832.21,
+      "duration": 7.2
+    },
+    {
+      "id": "C95",
+      "chapter": null,
+      "text": "Và có một điều nữa khiến tôi tin hai mươi phút đó là thật, chứ không phải một câu chuyện đẹp.",
+      "file": null,
+      "start": 841.41,
+      "duration": 6.2
+    },
+    {
+      "id": "C96",
+      "chapter": null,
+      "text": "Các nhà thiên văn tính trên giấy xem hai mươi phút ấy phải cho ra bao nhiêu heli. Kết quả: khoảng một phần tư khối lượng.",
+      "file": null,
+      "start": 847.61,
+      "duration": 8.07
+    },
+    {
+      "id": "C97",
+      "chapter": null,
+      "text": "Rồi họ đi đo. Đo trong khí quyển Mặt Trời. Đo trong những đám mây khí gần như chưa bị sao làm ô nhiễm.",
+      "file": null,
+      "start": 855.68,
+      "duration": 6.8
+    },
+    {
+      "id": "C98",
+      "chapter": null,
+      "text": "Ở đâu họ cũng gặp cùng một con số. Cứ như toàn bộ vũ trụ đã được nêm sẵn cùng một công thức, trước khi ngôi sao đầu tiên kịp thắp lên.",
+      "file": null,
+      "start": 862.48,
+      "duration": 8.93
+    },
+    {
+      "id": "C99",
+      "chapter": null,
+      "text": "Bởi vì nó đã được nêm sẵn thật. Bằng hai mươi phút mà không ai chứng kiến.",
+      "file": null,
+      "start": 871.41,
+      "duration": 4.93
+    },
+    {
+      "id": "C100",
+      "chapter": null,
+      "text": "Vẫn còn một chỗ chưa khớp: lượng lithium trong các ngôi sao rất già ít hơn tính toán khoảng ba lần, và chưa ai biết vì sao. Tôi thích vết xước đó.",
+      "file": null,
+      "start": 876.34,
+      "duration": 9.73
+    },
+    {
+      "id": "C101",
+      "chapter": null,
+      "text": "Tôi rời giây thứ nhất của vũ trụ và quay về với hơi thở của mình.",
+      "file": null,
+      "start": 888.07,
+      "duration": 4.33
+    },
+    {
+      "id": "C102",
+      "chapter": null,
+      "text": "Tôi nghĩ về hai mươi phút ấy như một quyết định mà không ai được biểu quyết. Không ai chọn để bậc thang số năm và số tám bị khuyết.",
+      "file": null,
+      "start": 892.4,
+      "duration": 8.73
+    },
+    {
+      "id": "C103",
+      "chapter": null,
+      "text": "Nếu neutron sống lâu hơn một chút, vũ trụ đã đầy heli đến mức các ngôi sao cháy hết quá nhanh. Nếu nó chết nhanh hơn, có lẽ chỉ còn hydro.",
+      "file": null,
+      "start": 901.13,
+      "duration": 9.2
+    },
+    {
+      "id": "C104",
+      "chapter": null,
+      "text": "Toàn bộ hoá học sau này, đá, biển, cây cỏ, da thịt, đều mọc lên từ hai món ăn nghèo nàn nấu vội trong hai mươi phút đó.",
+      "file": null,
+      "start": 910.33,
+      "duration": 7.93
+    },
+    {
+      "id": "C105",
+      "chapter": null,
+      "text": "Bây giờ, nếu bạn đang nghe điều này, hãy thử hít một hơi thật sâu.",
+      "file": null,
+      "start": 919.76,
+      "duration": 4.4
+    },
+    {
+      "id": "C106",
+      "chapter": null,
+      "text": "Không khí bạn vừa hít vào có hơi nước. Trong hơi nước có hydro. Và hydro đó không có tuổi nào khác ngoài tuổi của vũ trụ.",
+      "file": null,
+      "start": 924.16,
+      "duration": 8.07
+    },
+    {
+      "id": "C107",
+      "chapter": null,
+      "text": "Trong lồng ngực bạn, trong từng giọt nước dưới da bạn, có những hạt nhân đã ở đó từ trước khi bất kỳ ngôi sao nào phát sáng.",
+      "file": null,
+      "start": 932.23,
+      "duration": 8.27
+    },
+    {
+      "id": "C108",
+      "chapter": null,
+      "text": "Chúng sống sót qua hai mươi phút hỗn loạn nhất từng xảy ra, rồi trôi mười ba tỉ năm, để nằm yên trong một cơ thể biết hỏi về nguồn gốc của chính nó.",
+      "file": null,
+      "start": 940.5,
+      "duration": 9.87
+    },
+    {
+      "id": "C109",
+      "chapter": null,
+      "text": "Bạn không chỉ là tro tàn của những ngôi sao. Phần lớn bạn còn cũ hơn thế. Bạn là phần còn sót lại của hai mươi phút đầu tiên.",
+      "file": null,
+      "start": 952.37,
+      "duration": 8.33
+    }
+  ]
+}

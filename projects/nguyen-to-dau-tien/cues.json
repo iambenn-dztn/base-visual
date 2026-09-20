@@ -1,0 +1,1882 @@
+{
+  "total": 1045.96,
+  "count": 469,
+  "cues": [
+    {
+      "t": 0,
+      "s": "Tôi đang đứng ở giây thứ nhất của vũ trụ."
+    },
+    {
+      "t": 3.08,
+      "s": "Không phải năm thứ nhất."
+    },
+    {
+      "t": 4.39,
+      "s": "Không phải ngày thứ nhất."
+    },
+    {
+      "t": 5.9,
+      "s": "Giây thứ nhất."
+    },
+    {
+      "t": 7.13,
+      "s": "Một cái chớp mắt sau khoảnh khắc mọi thứ"
+    },
+    {
+      "t": 9.91,
+      "s": "bắt đầu."
+    },
+    {
+      "t": 10.47,
+      "s": "Và điều đầu tiên tôi nhận ra ở đây là:"
+    },
+    {
+      "t": 13.19,
+      "s": "không có gì cả."
+    },
+    {
+      "t": 14.26,
+      "s": "Không một ngôi sao."
+    },
+    {
+      "t": 15.64,
+      "s": "Không một hành tinh."
+    },
+    {
+      "t": 17.25,
+      "s": "Không một hạt bụi."
+    },
+    {
+      "t": 18.59,
+      "s": "Không cả một nguyên tử nào."
+    },
+    {
+      "t": 20.66,
+      "s": "Cái mà tôi quen gọi là vũ trụ, lúc này,"
+    },
+    {
+      "t": 23.81,
+      "s": "chỉ là một biển lửa."
+    },
+    {
+      "t": 25.43,
+      "s": "Đặc quánh."
+    },
+    {
+      "t": 26.58,
+      "s": "Đồng đều đến phát sợ."
+    },
+    {
+      "t": 28.24,
+      "s": "Và nóng khoảng mười tỉ độ."
+    },
+    {
+      "t": 30.76,
+      "s": "Mười tỉ độ."
+    },
+    {
+      "t": 31.83,
+      "s": "Con số đó lớn đến mức nó không còn nghĩa"
+    },
+    {
+      "t": 34.56,
+      "s": "gì với da thịt tôi."
+    },
+    {
+      "t": 35.85,
+      "s": "Đây không phải cái nóng làm bỏng."
+    },
+    {
+      "t": 37.99,
+      "s": "Đây là cái nóng làm tan rã."
+    },
+    {
+      "t": 42.23,
+      "s": "Thả một mẩu sắt vào đây, nó sẽ không chảy"
+    },
+    {
+      "t": 45.2,
+      "s": "ra, cũng không bốc hơi."
+    },
+    {
+      "t": 46.86,
+      "s": "Electron bị giật khỏi nguyên tử."
+    },
+    {
+      "t": 49.19,
+      "s": "Hạt nhân bị đấm vỡ thành từng mảnh, rồi"
+    },
+    {
+      "t": 52.28,
+      "s": "từng mảnh lại vỡ tiếp, cho tới khi chỉ còn"
+    },
+    {
+      "t": 55.61,
+      "s": "những viên gạch trần trụi nhất: proton và"
+    },
+    {
+      "t": 58.87,
+      "s": "neutron."
+    },
+    {
+      "t": 59.5,
+      "s": "Đó là luật ở nơi này."
+    },
+    {
+      "t": 62.06,
+      "s": "Ở mười tỉ độ, mọi thứ được lắp ráp đều bị"
+    },
+    {
+      "t": 65,
+      "s": "tháo tung ngay lập tức."
+    },
+    {
+      "t": 66.65,
+      "s": "Vũ trụ sơ khai không phải một cái lò rèn."
+    },
+    {
+      "t": 69.57,
+      "s": "Nó là một cái máy nghiền."
+    },
+    {
+      "t": 71.88,
+      "s": "Và vì chưa có nguyên tử, ánh sáng cũng"
+    },
+    {
+      "t": 74.42,
+      "s": "không đi được."
+    },
+    {
+      "t": 75.35,
+      "s": "Mỗi photon vừa lao đi một quãng cực ngắn"
+    },
+    {
+      "t": 78.01,
+      "s": "đã đâm vào một electron tự do và bị bắn"
+    },
+    {
+      "t": 80.6,
+      "s": "ngược lại."
+    },
+    {
+      "t": 81.27,
+      "s": "Không có bầu trời, không có khoảng cách."
+    },
+    {
+      "t": 84.13,
+      "s": "Chỉ có một màn sương phát sáng giam mọi"
+    },
+    {
+      "t": 87.14,
+      "s": "tia sáng tại chỗ."
+    },
+    {
+      "t": 88.45,
+      "s": "Xung quanh tôi là một đám đông không thể"
+    },
+    {
+      "t": 90.59,
+      "s": "tưởng tượng nổi."
+    },
+    {
+      "t": 91.44,
+      "s": "Proton."
+    },
+    {
+      "t": 92.69,
+      "s": "Neutron."
+    },
+    {
+      "t": 93.93,
+      "s": "Electron."
+    },
+    {
+      "t": 95.15,
+      "s": "Và nhiều nhất, áp đảo nhất, là photon,"
+    },
+    {
+      "t": 98.9,
+      "s": "những hạt ánh sáng."
+    },
+    {
+      "t": 100.78,
+      "s": "Cứ một proton hay một neutron thì có"
+    },
+    {
+      "t": 103.74,
+      "s": "khoảng một tỉ photon."
+    },
+    {
+      "t": 105.46,
+      "s": "Một tỉ."
+    },
+    {
+      "t": 106.66,
+      "s": "Tỉ lệ đó nghe như một chi tiết kỹ thuật"
+    },
+    {
+      "t": 109.07,
+      "s": "khô khan."
+    },
+    {
+      "t": 109.63,
+      "s": "Nhưng nó chính là nhân vật phản diện của"
+    },
+    {
+      "t": 112.42,
+      "s": "toàn bộ câu chuyện này."
+    },
+    {
+      "t": 115.52,
+      "s": "Tôi đến đây vì một câu hỏi rất đơn giản mà"
+    },
+    {
+      "t": 118.39,
+      "s": "tôi chưa từng dám hỏi tử tế: nguyên tử đầu"
+    },
+    {
+      "t": 121.25,
+      "s": "tiên của vũ trụ ra đời ở đâu?"
+    },
+    {
+      "t": 123.23,
+      "s": "Người ta vẫn nói các nguyên tố được nấu"
+    },
+    {
+      "t": 125.65,
+      "s": "trong lòng những ngôi sao."
+    },
+    {
+      "t": 127.26,
+      "s": "Rằng chúng ta là tro tàn của sao."
+    },
+    {
+      "t": 130.4,
+      "s": "Đó là một câu đẹp, và nó đúng một phần."
+    },
+    {
+      "t": 133.91,
+      "s": "Nhưng có một sự thật ít được kể hơn, và"
+    },
+    {
+      "t": 136.53,
+      "s": "tôi nghĩ nó còn choáng váng hơn nhiều."
+    },
+    {
+      "t": 139.09,
+      "s": "Nếu bạn đếm từng nguyên tử trong cơ thể"
+    },
+    {
+      "t": 141.71,
+      "s": "mình, thì thứ đông nhất, khoảng sáu trên"
+    },
+    {
+      "t": 144.4,
+      "s": "mười nguyên tử, không phải cacbon, không"
+    },
+    {
+      "t": 147.08,
+      "s": "phải oxy, không phải sắt."
+    },
+    {
+      "t": 148.76,
+      "s": "Đó là hydro."
+    },
+    {
+      "t": 150.52,
+      "s": "Tôi đang nói theo số lượng, không phải"
+    },
+    {
+      "t": 152.98,
+      "s": "theo cân nặng."
+    },
+    {
+      "t": 153.89,
+      "s": "Tính bằng cân, oxy và cacbon nặng hơn nên"
+    },
+    {
+      "t": 157.18,
+      "s": "chúng chiếm phần lớn khối lượng tôi."
+    },
+    {
+      "t": 160.07,
+      "s": "Nhưng nếu đếm đầu người, hydro áp đảo."
+    },
+    {
+      "t": 163.26,
+      "s": "Và hydro trong bạn không đến từ ngôi sao"
+    },
+    {
+      "t": 166.09,
+      "s": "nào cả."
+    },
+    {
+      "t": 166.58,
+      "s": "Không một ngôi sao nào từng chạm vào nó."
+    },
+    {
+      "t": 169.23,
+      "s": "Nó già hơn mọi ngôi sao từng tồn tại trong"
+    },
+    {
+      "t": 172.35,
+      "s": "lịch sử vũ trụ."
+    },
+    {
+      "t": 175.46,
+      "s": "Nó được làm xong ở đây."
+    },
+    {
+      "t": 177.07,
+      "s": "Trong khoảng thời gian ngắn đến mức phi"
+    },
+    {
+      "t": 180.03,
+      "s": "lý: chưa tới hai mươi phút."
+    },
+    {
+      "t": 182.08,
+      "s": "Hai mươi phút."
+    },
+    {
+      "t": 183.1,
+      "s": "Ngắn hơn một chuyến xe buýt đi làm."
+    },
+    {
+      "t": 185.7,
+      "s": "Trong hai mươi phút đó, vũ trụ quyết định"
+    },
+    {
+      "t": 188.59,
+      "s": "xong nó sẽ được làm bằng gì, và không bao"
+    },
+    {
+      "t": 191.47,
+      "s": "giờ sửa lại."
+    },
+    {
+      "t": 192.32,
+      "s": "Tôi ở lại để xem hai mươi phút ấy."
+    },
+    {
+      "t": 194.52,
+      "s": "Và tôi phát hiện ra nó không hề êm đềm."
+    },
+    {
+      "t": 197.54,
+      "s": "Nó là một cuộc chạy đua nghẹt thở, với một"
+    },
+    {
+      "t": 200.6,
+      "s": "cánh cửa khoá chặt và một đồng hồ đếm"
+    },
+    {
+      "t": 203.29,
+      "s": "ngược đang chạy."
+    },
+    {
+      "t": 204.46,
+      "s": "Để hiểu cuộc đua này, tôi phải nhìn kỹ hai"
+    },
+    {
+      "t": 207.29,
+      "s": "loại hạt trôi quanh mình."
+    },
+    {
+      "t": 208.97,
+      "s": "Proton, mang điện dương."
+    },
+    {
+      "t": 211.42,
+      "s": "Và neutron, trung hoà, không mang điện."
+    },
+    {
+      "t": 214.32,
+      "s": "Nếu muốn có bất kỳ nguyên tố nào nặng hơn"
+    },
+    {
+      "t": 217.16,
+      "s": "hydro, tôi bắt buộc phải có cả hai."
+    },
+    {
+      "t": 219.58,
+      "s": "Proton một mình chỉ cho ra hydro."
+    },
+    {
+      "t": 222.63,
+      "s": "Vấn đề là neutron rất hiếm."
+    },
+    {
+      "t": 224.64,
+      "s": "Và nó ngày càng hiếm hơn."
+    },
+    {
+      "t": 226.79,
+      "s": "Ở nhiệt độ cực cao, proton và neutron còn"
+    },
+    {
+      "t": 229.56,
+      "s": "liên tục hoán đổi cho nhau."
+    },
+    {
+      "t": 231.39,
+      "s": "Một neutron biến thành proton, rồi lại có"
+    },
+    {
+      "t": 234.59,
+      "s": "proton biến ngược thành neutron."
+    },
+    {
+      "t": 237.08,
+      "s": "Một cuộc trao đổi không dứt."
+    },
+    {
+      "t": 239.26,
+      "s": "Nhưng neutron nặng hơn proton một chút"
+    },
+    {
+      "t": 241.71,
+      "s": "xíu."
+    },
+    {
+      "t": 241.97,
+      "s": "Rất ít thôi, khoảng một phần nghìn khối"
+    },
+    {
+      "t": 245.08,
+      "s": "lượng của nó."
+    },
+    {
+      "t": 246.12,
+      "s": "Và trong tự nhiên, nặng hơn nghĩa là tốn"
+    },
+    {
+      "t": 249.58,
+      "s": "kém hơn."
+    },
+    {
+      "t": 250.27,
+      "s": "Vũ trụ luôn thích cái rẻ."
+    },
+    {
+      "t": 252.56,
+      "s": "Nên khi nhiệt độ tụt xuống, cán cân"
+    },
+    {
+      "t": 254.86,
+      "s": "nghiêng dần về phía proton."
+    },
+    {
+      "t": 256.64,
+      "s": "Càng nguội, việc tạo ra một neutron càng"
+    },
+    {
+      "t": 259.95,
+      "s": "đắt đỏ, càng ít xảy ra."
+    },
+    {
+      "t": 261.85,
+      "s": "Rồi ở khoảng giây thứ nhất, có một khoảnh"
+    },
+    {
+      "t": 264.91,
+      "s": "khắc mà tôi chỉ có thể gọi là đóng băng."
+    },
+    {
+      "t": 267.9,
+      "s": "Vũ trụ giãn nở nhanh đến mức các hạt không"
+    },
+    {
+      "t": 270.63,
+      "s": "còn kịp gặp nhau để trao đổi nữa."
+    },
+    {
+      "t": 272.78,
+      "s": "Cuộc mặc cả giữa proton và neutron ngừng"
+    },
+    {
+      "t": 275.7,
+      "s": "lại giữa chừng."
+    },
+    {
+      "t": 276.79,
+      "s": "Tỉ số bị khoá cứng ngay tại chỗ nó đang"
+    },
+    {
+      "t": 279.62,
+      "s": "đứng."
+    },
+    {
+      "t": 279.98,
+      "s": "Và tỉ số đó là: cứ khoảng sáu proton thì"
+    },
+    {
+      "t": 283.59,
+      "s": "có một neutron."
+    },
+    {
+      "t": 286.45,
+      "s": "Một trên sáu."
+    },
+    {
+      "t": 287.7,
+      "s": "Đó là toàn bộ ngân sách neutron mà vũ trụ"
+    },
+    {
+      "t": 291.06,
+      "s": "sẽ có."
+    },
+    {
+      "t": 291.55,
+      "s": "Không bao giờ được cấp thêm."
+    },
+    {
+      "t": 293.67,
+      "s": "Và đây là chỗ câu chuyện trở nên tàn nhẫn."
+    },
+    {
+      "t": 296.18,
+      "s": "Bởi vì neutron, khi trôi tự do một mình,"
+    },
+    {
+      "t": 299.37,
+      "s": "không sống được lâu."
+    },
+    {
+      "t": 300.97,
+      "s": "Một neutron nằm trong hạt nhân nguyên tử"
+    },
+    {
+      "t": 303.65,
+      "s": "thì bền vững gần như vĩnh viễn."
+    },
+    {
+      "t": 305.72,
+      "s": "Nhưng một neutron trôi trần trụi ngoài"
+    },
+    {
+      "t": 308.36,
+      "s": "không gian thì tự phân rã."
+    },
+    {
+      "t": 310.17,
+      "s": "Nó vỡ ra thành một proton, một electron,"
+    },
+    {
+      "t": 313.72,
+      "s": "và một hạt ma nhỏ xíu."
+    },
+    {
+      "t": 315.68,
+      "s": "Chu kỳ bán rã của nó là khoảng mười phút."
+    },
+    {
+      "t": 318.9,
+      "s": "Nghĩa là cứ mười phút trôi qua, một nửa số"
+    },
+    {
+      "t": 322.16,
+      "s": "neutron còn tự do sẽ biến mất."
+    },
+    {
+      "t": 324.49,
+      "s": "Hãy làm một phép tính cùng tôi."
+    },
+    {
+      "t": 326.34,
+      "s": "Cửa chỉ mở ở khoảng phút thứ ba."
+    },
+    {
+      "t": 329.04,
+      "s": "Nghĩa là gần ba phút chờ đợi, trong khi cứ"
+    },
+    {
+      "t": 331.66,
+      "s": "mười phút thì một nửa kho neutron biến"
+    },
+    {
+      "t": 334.02,
+      "s": "mất."
+    },
+    {
+      "t": 334.27,
+      "s": "Đến lúc cửa mở, tỉ số đã trượt từ khoảng"
+    },
+    {
+      "t": 337.35,
+      "s": "một trên sáu xuống còn khoảng một trên"
+    },
+    {
+      "t": 340.27,
+      "s": "bảy."
+    },
+    {
+      "t": 341.58,
+      "s": "Tôi đứng giữa biển lửa và nhận ra mình"
+    },
+    {
+      "t": 343.89,
+      "s": "đang chứng kiến một thứ nguyên liệu đang"
+    },
+    {
+      "t": 346.32,
+      "s": "chết dần."
+    },
+    {
+      "t": 346.87,
+      "s": "Từng giây trôi qua là từng viên gạch bốc"
+    },
+    {
+      "t": 350.14,
+      "s": "hơi khỏi kho."
+    },
+    {
+      "t": 351.2,
+      "s": "Vậy thì đơn giản thôi."
+    },
+    {
+      "t": 352.77,
+      "s": "Hãy dùng chúng ngay."
+    },
+    {
+      "t": 354.35,
+      "s": "Cứu lấy chúng bằng cách nhốt chúng vào"
+    },
+    {
+      "t": 356.98,
+      "s": "trong một hạt nhân, nơi chúng sẽ bền vững"
+    },
+    {
+      "t": 359.83,
+      "s": "mãi mãi."
+    },
+    {
+      "t": 360.38,
+      "s": "Và đó chính xác là điều vũ trụ đang cố"
+    },
+    {
+      "t": 363.57,
+      "s": "làm."
+    },
+    {
+      "t": 363.91,
+      "s": "Một proton và một neutron dính vào nhau"
+    },
+    {
+      "t": 366.77,
+      "s": "tạo ra hạt nhân đơn giản nhất sau hydro."
+    },
+    {
+      "t": 369.71,
+      "s": "Người ta gọi nó là deuterium, hydro nặng."
+    },
+    {
+      "t": 373.55,
+      "s": "Deuterium là bậc thang đầu tiên."
+    },
+    {
+      "t": 375.65,
+      "s": "Không có nó thì không có bậc thang nào"
+    },
+    {
+      "t": 378.14,
+      "s": "tiếp theo."
+    },
+    {
+      "t": 378.8,
+      "s": "Mọi con đường đi lên đều phải bước qua"
+    },
+    {
+      "t": 381.86,
+      "s": "deuterium."
+    },
+    {
+      "t": 382.66,
+      "s": "Nhưng mỗi lần một deuterium vừa hình"
+    },
+    {
+      "t": 384.88,
+      "s": "thành, nó lại bị xé toạc ra ngay tức khắc."
+    },
+    {
+      "t": 387.48,
+      "s": "Thủ phạm là đám đông tôi đã nhắc: photon."
+    },
+    {
+      "t": 390.35,
+      "s": "Một tỉ photon cho mỗi hạt vật chất."
+    },
+    {
+      "t": 393.3,
+      "s": "Tôi muốn bạn cảm được con số một tỉ ấy."
+    },
+    {
+      "t": 395.77,
+      "s": "Hãy tưởng tượng tôi cố dựng một ngôi nhà"
+    },
+    {
+      "t": 398.61,
+      "s": "bằng đúng hai viên gạch, giữa một sân vận"
+    },
+    {
+      "t": 401.51,
+      "s": "động có một tỉ người, và tất cả họ đều"
+    },
+    {
+      "t": 404.21,
+      "s": "đang ném đá."
+    },
+    {
+      "t": 405.06,
+      "s": "Mối liên kết giữ deuterium lại với nhau"
+    },
+    {
+      "t": 407.79,
+      "s": "rất yếu."
+    },
+    {
+      "t": 408.35,
+      "s": "Và trong một biển một tỉ photon, luôn có"
+    },
+    {
+      "t": 411.22,
+      "s": "đủ những hạt ánh sáng mang năng lượng cao"
+    },
+    {
+      "t": 414.16,
+      "s": "để đập vỡ nó."
+    },
+    {
+      "t": 415.09,
+      "s": "Không phải cú ném nào cũng trúng, cũng"
+    },
+    {
+      "t": 417.5,
+      "s": "không phải cú nào cũng đủ mạnh."
+    },
+    {
+      "t": 419.46,
+      "s": "Nhiệt độ chỉ cho biết mức năng lượng trung"
+    },
+    {
+      "t": 422.87,
+      "s": "bình."
+    },
+    {
+      "t": 423.28,
+      "s": "Nhưng khi đám đông lên tới một tỉ, chỉ một"
+    },
+    {
+      "t": 426.08,
+      "s": "phần cực nhỏ trong số chúng đủ dữ dội là"
+    },
+    {
+      "t": 428.75,
+      "s": "đã quá đủ."
+    },
+    {
+      "t": 429.42,
+      "s": "Ngay cả khi vũ trụ đã nguội xuống dưới mức"
+    },
+    {
+      "t": 432.4,
+      "s": "lẽ ra là đủ an toàn, chỉ cần một phần rất"
+    },
+    {
+      "t": 435.3,
+      "s": "nhỏ trong một tỉ photon còn đủ hung dữ là"
+    },
+    {
+      "t": 438.21,
+      "s": "deuterium vẫn không sống nổi."
+    },
+    {
+      "t": 441.76,
+      "s": "Đây là nghịch lý mà tôi thấy đẹp một cách"
+    },
+    {
+      "t": 444.08,
+      "s": "nghiệt ngã."
+    },
+    {
+      "t": 444.7,
+      "s": "Các nhà vật lý gọi nó là nút thắt cổ chai"
+    },
+    {
+      "t": 448.51,
+      "s": "deuterium."
+    },
+    {
+      "t": 449.44,
+      "s": "Vũ trụ có sẵn nguyên liệu."
+    },
+    {
+      "t": 451.08,
+      "s": "Vũ trụ có sẵn nhiệt độ đủ cao để phản ứng"
+    },
+    {
+      "t": 454.15,
+      "s": "chạy."
+    },
+    {
+      "t": 454.53,
+      "s": "Nhưng cánh cửa dẫn tới mọi nguyên tố nặng"
+    },
+    {
+      "t": 457.31,
+      "s": "hơn hydro thì bị khoá, khoá bởi chính ánh"
+    },
+    {
+      "t": 460.1,
+      "s": "sáng của nó."
+    },
+    {
+      "t": 460.91,
+      "s": "Và trong lúc cánh cửa còn khoá, đồng hồ"
+    },
+    {
+      "t": 463.59,
+      "s": "neutron vẫn chạy."
+    },
+    {
+      "t": 464.76,
+      "s": "Cứ mỗi mười phút, một nửa kho nguyên liệu"
+    },
+    {
+      "t": 468.17,
+      "s": "bốc hơi."
+    },
+    {
+      "t": 468.83,
+      "s": "Tôi nghe được cả hai thứ cùng lúc."
+    },
+    {
+      "t": 470.67,
+      "s": "Tiếng deuterium sinh ra rồi vỡ, sinh ra"
+    },
+    {
+      "t": 474.22,
+      "s": "rồi vỡ, hàng tỉ tỉ lần mỗi giây."
+    },
+    {
+      "t": 477.13,
+      "s": "Và tiếng đếm ngược lặng lẽ của những"
+    },
+    {
+      "t": 479.66,
+      "s": "neutron đang tự tan biến."
+    },
+    {
+      "t": 481.42,
+      "s": "Nếu vũ trụ nguội chậm thêm một chút, sẽ"
+    },
+    {
+      "t": 483.79,
+      "s": "chẳng còn neutron nào để dùng khi cửa mở."
+    },
+    {
+      "t": 486.28,
+      "s": "Vũ trụ sẽ vĩnh viễn chỉ là hydro trơn."
+    },
+    {
+      "t": 489.37,
+      "s": "Không heli."
+    },
+    {
+      "t": 490.67,
+      "s": "Có lẽ không có gì cả."
+    },
+    {
+      "t": 492.48,
+      "s": "Nhưng vũ trụ vẫn đang giãn nở."
+    },
+    {
+      "t": 494.48,
+      "s": "Và giãn nở nghĩa là nguội đi."
+    },
+    {
+      "t": 497.24,
+      "s": "Khoảng ba phút sau Big Bang, nhiệt độ tụt"
+    },
+    {
+      "t": 499.67,
+      "s": "xuống dưới một tỉ độ."
+    },
+    {
+      "t": 500.91,
+      "s": "Và cánh cửa mở."
+    },
+    {
+      "t": 502.77,
+      "s": "Không phải mở từ từ."
+    },
+    {
+      "t": 504.07,
+      "s": "Nó bật tung."
+    },
+    {
+      "t": 505.57,
+      "s": "Vì suốt thời gian bị khoá, các phản ứng"
+    },
+    {
+      "t": 508.24,
+      "s": "vẫn liên tục thử."
+    },
+    {
+      "t": 509.4,
+      "s": "Nguyên liệu đã xếp hàng sẵn, ép sát vào"
+    },
+    {
+      "t": 512.43,
+      "s": "cánh cửa."
+    },
+    {
+      "t": 513.13,
+      "s": "Khoảnh khắc photon không còn đủ sức phá"
+    },
+    {
+      "t": 515.77,
+      "s": "deuterium nữa, tất cả tràn qua cùng một"
+    },
+    {
+      "t": 518.41,
+      "s": "lúc."
+    },
+    {
+      "t": 518.68,
+      "s": "Và cái tôi chứng kiến tiếp theo là một"
+    },
+    {
+      "t": 521.07,
+      "s": "trong những phản ứng dây chuyền dữ dội"
+    },
+    {
+      "t": 523.46,
+      "s": "nhất từng xảy ra."
+    },
+    {
+      "t": 524.53,
+      "s": "Deuterium vừa sống sót được vài khoảnh"
+    },
+    {
+      "t": 527.11,
+      "s": "khắc đã lập tức bị hút vào phản ứng tiếp"
+    },
+    {
+      "t": 529.82,
+      "s": "theo."
+    },
+    {
+      "t": 530.16,
+      "s": "Deuterium bắt thêm một proton."
+    },
+    {
+      "t": 532.97,
+      "s": "Deuterium va vào deuterium."
+    },
+    {
+      "t": 535.79,
+      "s": "Các mảnh ghép lao vào nhau, dính lại, nhảy"
+    },
+    {
+      "t": 539.53,
+      "s": "bậc."
+    },
+    {
+      "t": 539.89,
+      "s": "Tất cả đều đổ dồn về một đích duy nhất:"
+    },
+    {
+      "t": 542.82,
+      "s": "heli-4."
+    },
+    {
+      "t": 543.35,
+      "s": "Hai proton và hai neutron, khoá chặt với"
+    },
+    {
+      "t": 547.3,
+      "s": "nhau."
+    },
+    {
+      "t": 547.79,
+      "s": "Heli-4 là một cấu trúc bền lạ thường."
+    },
+    {
+      "t": 550.15,
+      "s": "Nó giống một cái hố sâu trong địa hình"
+    },
+    {
+      "t": 553.17,
+      "s": "năng lượng: thứ gì rơi vào đó thì ở lại"
+    },
+    {
+      "t": 556.26,
+      "s": "đó."
+    },
+    {
+      "t": 556.5,
+      "s": "Mọi con đường đều dốc xuống phía nó."
+    },
+    {
+      "t": 559.47,
+      "s": "Nên gần như toàn bộ số neutron sống sót"
+    },
+    {
+      "t": 562.27,
+      "s": "đều bị nuốt vào heli-4."
+    },
+    {
+      "t": 563.92,
+      "s": "Từ chỗ đang chết dần với chu kỳ mười phút,"
+    },
+    {
+      "t": 566.9,
+      "s": "chúng bỗng trở nên bất tử, nhốt bên trong"
+    },
+    {
+      "t": 569.81,
+      "s": "một hạt nhân bền vững."
+    },
+    {
+      "t": 571.37,
+      "s": "Tiếng đồng hồ đếm ngược tắt."
+    },
+    {
+      "t": 573.15,
+      "s": "Cuộc đua kết thúc."
+    },
+    {
+      "t": 574.52,
+      "s": "Vũ trụ đã kịp."
+    },
+    {
+      "t": 578.07,
+      "s": "Và tôi chờ cái tiếp theo."
+    },
+    {
+      "t": 579.85,
+      "s": "Vì trong đầu tôi, một phản ứng dây chuyền"
+    },
+    {
+      "t": 582.59,
+      "s": "mạnh như thế phải đi tiếp chứ."
+    },
+    {
+      "t": 584.59,
+      "s": "Heli rồi tới cacbon, rồi oxy."
+    },
+    {
+      "t": 587.5,
+      "s": "Cứ thế leo lên bảng tuần hoàn."
+    },
+    {
+      "t": 590.04,
+      "s": "Nhưng không có gì tiếp theo cả."
+    },
+    {
+      "t": 591.95,
+      "s": "Chuỗi phản ứng đâm sầm vào một bức tường."
+    },
+    {
+      "t": 595.57,
+      "s": "Bức tường ấy là một trong những chi tiết"
+    },
+    {
+      "t": 598.06,
+      "s": "kỳ lạ nhất của tự nhiên."
+    },
+    {
+      "t": 599.55,
+      "s": "Hãy hình dung các hạt nhân được xếp thành"
+    },
+    {
+      "t": 602.07,
+      "s": "một cái thang, mỗi bậc là tổng số hạt bên"
+    },
+    {
+      "t": 604.59,
+      "s": "trong nó."
+    },
+    {
+      "t": 605.14,
+      "s": "Bậc một: hydro."
+    },
+    {
+      "t": 607.57,
+      "s": "Bậc hai: deuterium."
+    },
+    {
+      "t": 610.05,
+      "s": "Bậc ba, bậc bốn: heli."
+    },
+    {
+      "t": 613.17,
+      "s": "Rất tốt."
+    },
+    {
+      "t": 614.62,
+      "s": "Tôi thử leo lên cái thang đó."
+    },
+    {
+      "t": 617.05,
+      "s": "Bậc một, bậc hai, bậc ba, bậc bốn: chắc"
+    },
+    {
+      "t": 620.18,
+      "s": "chắn, đầy đặn, đặt chân lên được."
+    },
+    {
+      "t": 622.82,
+      "s": "Rồi tôi với tay lên bậc thứ năm."
+    },
+    {
+      "t": 625.5,
+      "s": "Nhưng bậc thứ năm không tồn tại."
+    },
+    {
+      "t": 627.68,
+      "s": "Không có hạt nhân bền nào gồm đúng năm"
+    },
+    {
+      "t": 629.99,
+      "s": "hạt."
+    },
+    {
+      "t": 630.23,
+      "s": "Ghép thêm một proton hay một neutron vào"
+    },
+    {
+      "t": 633.56,
+      "s": "heli-4, cái vừa tạo ra sẽ rã ra gần như"
+    },
+    {
+      "t": 636.8,
+      "s": "ngay lập tức."
+    },
+    {
+      "t": 637.88,
+      "s": "Không phải bậc thang ấy khó leo."
+    },
+    {
+      "t": 639.66,
+      "s": "Nó không có ở đó."
+    },
+    {
+      "t": 641.24,
+      "s": "Giống như bước lên một bậc được vẽ trên"
+    },
+    {
+      "t": 643.87,
+      "s": "không khí: chân tôi xuyên thẳng qua và rơi"
+    },
+    {
+      "t": 646.69,
+      "s": "trở lại bậc bốn."
+    },
+    {
+      "t": 647.77,
+      "s": "Được thôi, tôi nghĩ, vậy thì nhảy cóc."
+    },
+    {
+      "t": 650.63,
+      "s": "Cho hai hạt nhân heli-4 va vào nhau."
+    },
+    {
+      "t": 653.22,
+      "s": "Bốn cộng bốn là tám."
+    },
+    {
+      "t": 655.38,
+      "s": "Bỏ qua bậc năm."
+    },
+    {
+      "t": 657.27,
+      "s": "Nhưng bậc thứ tám cũng không tồn tại."
+    },
+    {
+      "t": 659.55,
+      "s": "Cái được tạo ra là beryllium-8, và nó tan"
+    },
+    {
+      "t": 662.58,
+      "s": "rã trở lại thành hai hạt heli trong một"
+    },
+    {
+      "t": 665.45,
+      "s": "khoảng thời gian ngắn tới mức không có từ"
+    },
+    {
+      "t": 668.48,
+      "s": "nào diễn tả nổi."
+    },
+    {
+      "t": 669.66,
+      "s": "Ngắn hơn một phần tỉ của một phần tỉ giây."
+    },
+    {
+      "t": 672.72,
+      "s": "Nó không kịp gặp bất cứ hạt nào khác."
+    },
+    {
+      "t": 675.16,
+      "s": "Nó sinh ra và chết đi trong cùng một cái"
+    },
+    {
+      "t": 678.04,
+      "s": "nháy mắt không tồn tại."
+    },
+    {
+      "t": 681.2,
+      "s": "Hai bậc thang bị rút mất."
+    },
+    {
+      "t": 682.89,
+      "s": "Số năm và số tám."
+    },
+    {
+      "t": 684.78,
+      "s": "Và chỉ vì hai chỗ trống đó, toàn bộ phần"
+    },
+    {
+      "t": 687.66,
+      "s": "còn lại của bảng tuần hoàn bị chặn lại."
+    },
+    {
+      "t": 690.47,
+      "s": "Không phải vì một định luật lớn lao nào"
+    },
+    {
+      "t": 692.87,
+      "s": "cấm đoán."
+    },
+    {
+      "t": 693.42,
+      "s": "Chỉ vì hai con số ấy tình cờ không có chỗ"
+    },
+    {
+      "t": 695.89,
+      "s": "đứng trong cách lực hạt nhân buộc các hạt"
+    },
+    {
+      "t": 698.37,
+      "s": "lại với nhau."
+    },
+    {
+      "t": 699.15,
+      "s": "Một tai nạn của tự nhiên."
+    },
+    {
+      "t": 701.57,
+      "s": "Tôi đứng đó và thấy sự bất lực của cả một"
+    },
+    {
+      "t": 705.15,
+      "s": "vũ trụ."
+    },
+    {
+      "t": 705.76,
+      "s": "Nó có đủ nguyên liệu."
+    },
+    {
+      "t": 707.39,
+      "s": "Nó có đủ nhiệt."
+    },
+    {
+      "t": 708.63,
+      "s": "Và nó không thể đi thêm một bước nào nữa."
+    },
+    {
+      "t": 711.58,
+      "s": "Vẫn có vài phản ứng hiếm hoi lách qua khe."
+    },
+    {
+      "t": 714.01,
+      "s": "Một chút lithium được tạo ra, mong manh,"
+    },
+    {
+      "t": 716.88,
+      "s": "ít đến mức gần như không đáng kể."
+    },
+    {
+      "t": 719.24,
+      "s": "Đó là biên giới cuối cùng."
+    },
+    {
+      "t": 721.13,
+      "s": "Vũ trụ dừng lại ở nguyên tố thứ ba."
+    },
+    {
+      "t": 723.83,
+      "s": "Và trong lúc đó, vũ trụ vẫn tiếp tục giãn"
+    },
+    {
+      "t": 726.77,
+      "s": "ra."
+    },
+    {
+      "t": 726.99,
+      "s": "Vẫn tiếp tục nguội."
+    },
+    {
+      "t": 728.44,
+      "s": "Vẫn tiếp tục loãng dần."
+    },
+    {
+      "t": 730.46,
+      "s": "Muốn hai hạt nhân dính vào nhau, chúng"
+    },
+    {
+      "t": 732.97,
+      "s": "phải va chạm đủ mạnh để vượt qua lực đẩy"
+    },
+    {
+      "t": 735.6,
+      "s": "điện giữa hai điện tích dương."
+    },
+    {
+      "t": 737.58,
+      "s": "Nguội hơn nghĩa là chậm hơn."
+    },
+    {
+      "t": 739.84,
+      "s": "Loãng hơn nghĩa là ít gặp nhau hơn."
+    },
+    {
+      "t": 742.65,
+      "s": "Khoảng phút thứ hai mươi, các cú va chạm"
+    },
+    {
+      "t": 745.29,
+      "s": "không còn đủ mạnh nữa."
+    },
+    {
+      "t": 746.74,
+      "s": "Không phải vì hết nguyên liệu."
+    },
+    {
+      "t": 748.64,
+      "s": "Chỉ vì lửa đã tàn."
+    },
+    {
+      "t": 750.74,
+      "s": "Cánh cửa đóng lại."
+    },
+    {
+      "t": 751.96,
+      "s": "Và nó không bao giờ mở lại nữa."
+    },
+    {
+      "t": 757.2,
+      "s": "Đó là điều làm tôi lạnh sống lưng."
+    },
+    {
+      "t": 760.92,
+      "s": "Trong lòng một ngôi sao, phản ứng hạt nhân"
+    },
+    {
+      "t": 763.58,
+      "s": "có thể chạy hàng tỉ năm."
+    },
+    {
+      "t": 765.1,
+      "s": "Nếu hỏng, còn ngôi sao khác."
+    },
+    {
+      "t": 767.54,
+      "s": "Còn lần sau."
+    },
+    {
+      "t": 769.25,
+      "s": "Nhưng chuyện xảy ra ở đây thì chỉ có một"
+    },
+    {
+      "t": 771.78,
+      "s": "lần."
+    },
+    {
+      "t": 772.03,
+      "s": "Toàn bộ vũ trụ, đồng loạt, trong cùng một"
+    },
+    {
+      "t": 775.05,
+      "s": "khoảng thời gian."
+    },
+    {
+      "t": 776.3,
+      "s": "Và vì vũ trụ chỉ giãn nở theo một chiều,"
+    },
+    {
+      "t": 779.06,
+      "s": "điều kiện ấy sẽ không bao giờ quay lại."
+    },
+    {
+      "t": 781.75,
+      "s": "Hai mươi phút."
+    },
+    {
+      "t": 782.72,
+      "s": "Xong."
+    },
+    {
+      "t": 783.63,
+      "s": "Vũ trụ khoá sổ."
+    },
+    {
+      "t": 785.49,
+      "s": "Khi khói tan, tôi kiểm kê lại xem vũ trụ"
+    },
+    {
+      "t": 788.63,
+      "s": "có gì trong tay."
+    },
+    {
+      "t": 789.89,
+      "s": "Tính theo khối lượng: khoảng ba phần tư là"
+    },
+    {
+      "t": 792.96,
+      "s": "hydro, khoảng một phần tư là heli."
+    },
+    {
+      "t": 795.44,
+      "s": "Và một chút xíu deuterium với lithium."
+    },
+    {
+      "t": 799.52,
+      "s": "Không cacbon."
+    },
+    {
+      "t": 800.77,
+      "s": "Không oxy."
+    },
+    {
+      "t": 802.01,
+      "s": "Không nitơ."
+    },
+    {
+      "t": 803.18,
+      "s": "Không canxi, không sắt, không vàng."
+    },
+    {
+      "t": 806.6,
+      "s": "Không gì làm nên đá hay máu."
+    },
+    {
+      "t": 810.75,
+      "s": "Rồi là một sự trống rỗng rất dài."
+    },
+    {
+      "t": 812.85,
+      "s": "Hàng trăm triệu năm chỉ có mây khí hydro"
+    },
+    {
+      "t": 815.48,
+      "s": "và heli, nguội dần, tối dần, cuộn lại dưới"
+    },
+    {
+      "t": 818.25,
+      "s": "sức hút của chính mình."
+    },
+    {
+      "t": 819.76,
+      "s": "Cho tới khi đám mây đầu tiên nén đủ chặt"
+    },
+    {
+      "t": 822.28,
+      "s": "để bốc cháy ở lõi."
+    },
+    {
+      "t": 823.41,
+      "s": "Ngôi sao đầu tiên."
+    },
+    {
+      "t": 825.15,
+      "s": "Chỉ trong lõi sao, với hàng triệu năm kiên"
+    },
+    {
+      "t": 827.91,
+      "s": "nhẫn, mới có cách vượt qua bậc thang số"
+    },
+    {
+      "t": 830.47,
+      "s": "tám."
+    },
+    {
+      "t": 830.73,
+      "s": "Vũ trụ trẻ quá vội vàng để làm được điều"
+    },
+    {
+      "t": 833.83,
+      "s": "đó."
+    },
+    {
+      "t": 834.06,
+      "s": "Cacbon ra đời ở đó."
+    },
+    {
+      "t": 835.8,
+      "s": "Rồi oxy."
+    },
+    {
+      "t": 837.43,
+      "s": "Rồi mọi thứ nặng hơn."
+    },
+    {
+      "t": 839.39,
+      "s": "Nhưng đó là chương hai, đến sau rất lâu."
+    },
+    {
+      "t": 844.28,
+      "s": "Bây giờ tôi mới hiểu điều mình đến đây để"
+    },
+    {
+      "t": 846.72,
+      "s": "tìm."
+    },
+    {
+      "t": 846.96,
+      "s": "Sắt trong máu tôi, cacbon trong xương tôi,"
+    },
+    {
+      "t": 849.64,
+      "s": "chúng đúng là được rèn trong những ngôi"
+    },
+    {
+      "t": 852.12,
+      "s": "sao đã chết."
+    },
+    {
+      "t": 852.89,
+      "s": "Nhưng nếu đếm theo số nguyên tử, phần lớn"
+    },
+    {
+      "t": 855.6,
+      "s": "con người tôi thì không."
+    },
+    {
+      "t": 857.18,
+      "s": "Cơ thể tôi phần lớn là nước."
+    },
+    {
+      "t": 859.93,
+      "s": "Mỗi phân tử nước gồm một oxy và hai hydro."
+    },
+    {
+      "t": 863.46,
+      "s": "Oxy thì đến từ sao."
+    },
+    {
+      "t": 866.13,
+      "s": "Nhưng hai nguyên tử hydro kia thì không."
+    },
+    {
+      "t": 869.06,
+      "s": "Hai nguyên tử hydro."
+    },
+    {
+      "t": 870.43,
+      "s": "Chúng nhỏ đến mức mỗi cái chỉ là một"
+    },
+    {
+      "t": 873.03,
+      "s": "proton duy nhất, với một electron quay"
+    },
+    {
+      "t": 875.77,
+      "s": "quanh."
+    },
+    {
+      "t": 876.2,
+      "s": "Đơn giản nhất trong mọi thứ có thể gọi là"
+    },
+    {
+      "t": 879.21,
+      "s": "nguyên tử."
+    },
+    {
+      "t": 879.94,
+      "s": "Chúng chưa bao giờ ở trong lòng một ngôi"
+    },
+    {
+      "t": 882.24,
+      "s": "sao."
+    },
+    {
+      "t": 882.47,
+      "s": "Chưa từng bị nung, bị nén, bị bắn ra bởi"
+    },
+    {
+      "t": 885.91,
+      "s": "một vụ nổ nào."
+    },
+    {
+      "t": 887.11,
+      "s": "Chúng được đúc xong trong hai mươi phút"
+    },
+    {
+      "t": 889.57,
+      "s": "đầu tiên của thời gian, rồi chỉ trôi."
+    },
+    {
+      "t": 891.9,
+      "s": "Trôi qua sự sinh và chết của vô số ngôi"
+    },
+    {
+      "t": 894.89,
+      "s": "sao mà chúng không tham gia."
+    },
+    {
+      "t": 897.03,
+      "s": "Trôi qua những đám mây lạnh giữa các vì"
+    },
+    {
+      "t": 899.77,
+      "s": "sao."
+    },
+    {
+      "t": 900.05,
+      "s": "Trôi vào một hành tinh, rồi vào biển, rồi"
+    },
+    {
+      "t": 903.71,
+      "s": "vào một cơn mưa."
+    },
+    {
+      "t": 905.14,
+      "s": "Đi qua vô số cơ thể sống trước tôi, và sẽ"
+    },
+    {
+      "t": 908.54,
+      "s": "đi tiếp sau khi tôi không còn."
+    },
+    {
+      "t": 911.02,
+      "s": "Mỗi ngụm nước tôi uống chứa những hạt nhân"
+    },
+    {
+      "t": 913.53,
+      "s": "già bằng chính vũ trụ."
+    },
+    {
+      "t": 914.84,
+      "s": "Cổ hơn bất kỳ ngôi sao nào từng phát sáng."
+    },
+    {
+      "t": 920.15,
+      "s": "Và có một điều nữa khiến tôi tin hai mươi"
+    },
+    {
+      "t": 922.68,
+      "s": "phút đó là thật, chứ không phải một câu"
+    },
+    {
+      "t": 925.09,
+      "s": "chuyện đẹp."
+    },
+    {
+      "t": 925.77,
+      "s": "Các nhà thiên văn tính trên giấy xem hai"
+    },
+    {
+      "t": 928.3,
+      "s": "mươi phút ấy phải cho ra bao nhiêu heli."
+    },
+    {
+      "t": 930.84,
+      "s": "Kết quả: khoảng một phần tư khối lượng."
+    },
+    {
+      "t": 934.47,
+      "s": "Rồi họ đi đo."
+    },
+    {
+      "t": 935.74,
+      "s": "Đo trong khí quyển Mặt Trời."
+    },
+    {
+      "t": 937.78,
+      "s": "Đo trong những đám mây khí gần như chưa bị"
+    },
+    {
+      "t": 940.9,
+      "s": "sao làm ô nhiễm."
+    },
+    {
+      "t": 942.09,
+      "s": "Ở đâu họ cũng gặp cùng một con số."
+    },
+    {
+      "t": 944.53,
+      "s": "Cứ như toàn bộ vũ trụ đã được nêm sẵn cùng"
+    },
+    {
+      "t": 947.3,
+      "s": "một công thức, trước khi ngôi sao đầu tiên"
+    },
+    {
+      "t": 950.06,
+      "s": "kịp thắp lên."
+    },
+    {
+      "t": 950.92,
+      "s": "Bởi vì nó đã được nêm sẵn thật."
+    },
+    {
+      "t": 953.11,
+      "s": "Bằng hai mươi phút mà không aai chứng"
+    },
+    {
+      "t": 956.06,
+      "s": "kiến."
+    },
+    {
+      "t": 956.46,
+      "s": "Vẫn còn một chỗ chưa khớp: lượng lithium"
+    },
+    {
+      "t": 959.61,
+      "s": "trong các ngôi sao rất già ít hơn tính"
+    },
+    {
+      "t": 962.6,
+      "s": "toán khoảng ba lần, và chưa aai biết vì"
+    },
+    {
+      "t": 965.67,
+      "s": "sao."
+    },
+    {
+      "t": 965.98,
+      "s": "Tôi thích vết xước đó."
+    },
+    {
+      "t": 970.06,
+      "s": "Tôi rời giây thứ nhất của vũ trụ và quay"
+    },
+    {
+      "t": 972.87,
+      "s": "về với hơi thở của mình."
+    },
+    {
+      "t": 974.55,
+      "s": "Tôi nghĩ về hai mươi phút ấy như một quyết"
+    },
+    {
+      "t": 977.13,
+      "s": "định mà không aai được biểu quyết."
+    },
+    {
+      "t": 979.21,
+      "s": "Không aai chọn để bậc thang số năm và số"
+    },
+    {
+      "t": 982.09,
+      "s": "tám bị khuyết."
+    },
+    {
+      "t": 983.1,
+      "s": "Nếu neutron sống lâu hơn một chút, vũ trụ"
+    },
+    {
+      "t": 986.09,
+      "s": "đã đầy heli đến mức các ngôi sao cháy hết"
+    },
+    {
+      "t": 989.09,
+      "s": "quá nhanh."
+    },
+    {
+      "t": 989.82,
+      "s": "Nếu nó chết nhanh hơn, có lẽ chỉ còn"
+    },
+    {
+      "t": 993.21,
+      "s": "hydro."
+    },
+    {
+      "t": 993.77,
+      "s": "Toàn bộ hoá học sau này, đá, biển, cây cỏ,"
+    },
+    {
+      "t": 997.1,
+      "s": "da thịt, đều mọc lên từ hai món ăn nghèo"
+    },
+    {
+      "t": 1000.27,
+      "s": "nàn nấu vội trong hai mươi phút đó."
+    },
+    {
+      "t": 1004.54,
+      "s": "Bây giờ, nếu bạn đang nghe điều này, hãy"
+    },
+    {
+      "t": 1007.22,
+      "s": "thử hít một hơi thật sâu."
+    },
+    {
+      "t": 1008.89,
+      "s": "Không khí bạn vừa hít vào có hơi nước."
+    },
+    {
+      "t": 1011.01,
+      "s": "Trong hơi nước có hydro."
+    },
+    {
+      "t": 1012.98,
+      "s": "Và hydro đó không có tuổi nào khác ngoài"
+    },
+    {
+      "t": 1016.04,
+      "s": "tuổi của vũ trụ."
+    },
+    {
+      "t": 1017.27,
+      "s": "Trong lồng ngực bạn, trong từng giọt nước"
+    },
+    {
+      "t": 1020.06,
+      "s": "dưới da bạn, có những hạt nhân đã ở đó từ"
+    },
+    {
+      "t": 1022.86,
+      "s": "trước khi bất kỳ ngôi sao nào phát sáng."
+    },
+    {
+      "t": 1025.58,
+      "s": "Chúng sống sót qua hai mươi phút hỗn loạn"
+    },
+    {
+      "t": 1028.29,
+      "s": "nhất từng xảy ra, rồi trôi mười ba tỉ năm,"
+    },
+    {
+      "t": 1031.06,
+      "s": "để nằm yên trong một cơ thể biết hỏi về"
+    },
+    {
+      "t": 1033.63,
+      "s": "nguồn gốc của chính nó."
+    },
+    {
+      "t": 1037.15,
+      "s": "Bạn không chỉ là tro tàn của những ngôi"
+    },
+    {
+      "t": 1039.66,
+      "s": "sao."
+    },
+    {
+      "t": 1039.92,
+      "s": "Phần lớn bạn còn cũ hơn thế."
+    },
+    {
+      "t": 1042.19,
+      "s": "Bạn là phần còn sót lại của hai mươi phút"
+    },
+    {
+      "t": 1045.28,
+      "s": "đầu tiên."
+    }
+  ]
+}

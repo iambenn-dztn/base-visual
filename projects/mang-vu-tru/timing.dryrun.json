@@ -1,0 +1,944 @@
+{
+  "slug": "mang-vu-tru",
+  "fps": 30,
+  "totalDuration": 1124.12,
+  "dryRun": true,
+  "narration": null,
+  "voice": {
+    "provider": "aimax-minimax",
+    "voice_id": "uv_5cee29af",
+    "voice_name": "uv_5cee29af",
+    "model": "speech-2.8-hd",
+    "speed": 0.96
+  },
+  "cues": [
+    {
+      "id": "C01",
+      "chapter": "CHƯƠNG 1 — BẦU TRỜI CÓ HÌNH DẠNG",
+      "text": "Tôi nằm ngửa trên mặt đất, và bầu trời phía trên tôi trông hoàn toàn ngẫu nhiên.",
+      "file": null,
+      "start": 0,
+      "duration": 5.33
+    },
+    {
+      "id": "C02",
+      "chapter": null,
+      "text": "Những chấm sáng rải khắp nơi. Chỗ dày, chỗ thưa, không theo một quy luật nào tôi nhìn ra được. Nếu ai đó bảo tôi rằng có người đã đổ một nắm cát lên tấm vải đen rồi chụp lại, tôi cũng tin.",
+      "file": null,
+      "start": 5.33,
+      "duration": 12.53
+    },
+    {
+      "id": "C03",
+      "chapter": null,
+      "text": "Con người đã nhìn cái nền đó suốt hàng chục nghìn năm và cố vẽ hình lên nó. Con gấu. Người thợ săn. Cái thìa. Chúng ta nối các chấm sáng bằng trí tưởng tượng, vì tự chúng không có hình.",
+      "file": null,
+      "start": 17.86,
+      "duration": 12.33
+    },
+    {
+      "id": "C04",
+      "chapter": null,
+      "text": "Hôm nay tôi muốn nói về chuyện ngược lại. Về việc bầu trời có hình thật. Một hình dạng cụ thể, đo được, vẽ được lên giấy.",
+      "file": null,
+      "start": 31.69,
+      "duration": 8.07
+    },
+    {
+      "id": "C05",
+      "chapter": null,
+      "text": "Chỉ là nó lớn quá nên không lọt vào mắt ai. Muốn thấy nó, người ta phải lùi ra xa hơn nhiều so với khoảng cách mà một con mắt được thiết kế để nhìn.",
+      "file": null,
+      "start": 39.76,
+      "duration": 9.87
+    },
+    {
+      "id": "C06",
+      "chapter": null,
+      "text": "Tôi sẽ lùi. Và tôi sẽ lùi cho tới khi không lùi thêm được nữa, vì phía sau đó không còn gì để lùi.",
+      "file": null,
+      "start": 49.63,
+      "duration": 6.53
+    },
+    {
+      "id": "C07",
+      "chapter": null,
+      "text": "Bắt đầu từ chỗ tôi đang nằm. Mặt đất dưới lưng tôi là Trái Đất, một quả cầu đá đường kính mười hai nghìn bảy trăm cây số.",
+      "file": null,
+      "start": 58.16,
+      "duration": 8.07
+    },
+    {
+      "id": "C08",
+      "chapter": null,
+      "text": "Tôi lùi ra. Trái Đất co lại thành một chấm xanh quay quanh một ngôi sao. Ngôi sao đó kéo theo tám hành tinh, vài trăm mặt trăng, và một đám băng đá lởm chởm ở rìa ngoài.",
+      "file": null,
+      "start": 66.23,
+      "duration": 11.27
+    },
+    {
+      "id": "C09",
+      "chapter": null,
+      "text": "Tôi lùi tiếp. Cả hệ Mặt Trời gom lại thành một điểm, và xung quanh điểm đó hiện ra những điểm khác. Hàng trăm tỉ điểm. Xếp thành một cái đĩa xoắn rộng khoảng một trăm nghìn năm ánh sáng. Ngân Hà.",
+      "file": null,
+      "start": 77.5,
+      "duration": 13
+    },
+    {
+      "id": "C10",
+      "chapter": null,
+      "text": "Đến đây thì hầu hết các câu chuyện về vũ trụ dừng lại, hoặc nhảy thẳng sang câu \"và có hàng tỉ thiên hà khác ngoài kia\". Tôi sẽ không nhảy. Vì khoảng giữa mới là nơi có thứ tôi muốn kể.",
+      "file": null,
+      "start": 90.5,
+      "duration": 12.33
+    },
+    {
+      "id": "C11",
+      "chapter": null,
+      "text": "Tôi lùi thêm. Ngân Hà thu nhỏ, và nó không đứng một mình. Cách nó hai triệu rưỡi năm ánh sáng có thiên hà Tiên Nữ, lớn hơn một chút. Hai cái đó, cộng thêm khoảng tám chục thiên hà lùn bám quanh, tạo thành một nhóm. Người ta gọi là Nhóm Địa Phương.",
+      "file": null,
+      "start": 104.33,
+      "duration": 16.47
+    },
+    {
+      "id": "C12",
+      "chapter": null,
+      "text": "Lùi nữa. Nhóm Địa Phương biến thành một hạt, và nó đang bị kéo về một hướng. Có một khối lượng khổng lồ ở đâu đó phía ấy đang hút cả nhóm của tôi đi với vận tốc hàng trăm cây số mỗi giây.",
+      "file": null,
+      "start": 120.8,
+      "duration": 12.47
+    },
+    {
+      "id": "C13",
+      "chapter": null,
+      "text": "Lùi nữa. Và bây giờ, lần đầu tiên, tôi thấy thứ không giống bất cứ thứ gì tôi vừa đi qua.",
+      "file": null,
+      "start": 133.27,
+      "duration": 5.93
+    },
+    {
+      "id": "C14",
+      "chapter": null,
+      "text": "Các thiên hà không rải đều.",
+      "file": null,
+      "start": 141.2,
+      "duration": 1.8
+    },
+    {
+      "id": "C15",
+      "chapter": null,
+      "text": "Chúng không trôi lơ lửng mỗi cái một nơi như bụi trong không khí. Chúng nằm trên những đường. Những sợi dài, mảnh, sáng, chằng chịt, kéo ngang không gian hàng trăm triệu năm ánh sáng một sợi.",
+      "file": null,
+      "start": 143,
+      "duration": 12.73
+    },
+    {
+      "id": "C16",
+      "chapter": null,
+      "text": "Các sợi gặp nhau ở những chỗ giao. Tại mỗi chỗ giao, thiên hà dồn lại thành cụm. Hàng trăm, hàng nghìn thiên hà quây trong một vùng, trôi quanh nhau như một đàn cá dày đặc.",
+      "file": null,
+      "start": 155.73,
+      "duration": 11.47
+    },
+    {
+      "id": "C17",
+      "chapter": null,
+      "text": "Và giữa các sợi, giữa các chỗ giao, là những khoang rỗng. Rỗng thật sự. Rỗng tới mức nếu tôi đứng ở giữa một khoang như thế, tôi có thể sẽ không thấy một thiên hà nào đủ gần để gọi là hàng xóm.",
+      "file": null,
+      "start": 167.2,
+      "duration": 12.87
+    },
+    {
+      "id": "C18",
+      "chapter": null,
+      "text": "Tôi tìm một chữ cho cái tôi đang thấy, và chữ đầu tiên nảy ra là mạng nhện. Nhưng mạng nhện thì phẳng, còn thứ này dày, có chiều sâu, quấn vào nhau theo cả ba hướng.",
+      "file": null,
+      "start": 181.57,
+      "duration": 11
+    },
+    {
+      "id": "C19",
+      "chapter": null,
+      "text": "Chữ thứ hai là bọt. Một khối bọt xà phòng khổng lồ, nơi thiên hà chỉ bám trên vách các bong bóng, còn ruột bong bóng thì trống không.",
+      "file": null,
+      "start": 192.57,
+      "duration": 8.87
+    },
+    {
+      "id": "C20",
+      "chapter": null,
+      "text": "Đó là hình dạng của vũ trụ. Sợi, nút, và lỗ hổng. Người ta gọi nó là mạng vũ trụ.",
+      "file": null,
+      "start": 201.44,
+      "duration": 5.4
+    },
+    {
+      "id": "C21",
+      "chapter": null,
+      "text": "Và điều tôi thấy khó tin nhất chưa phải là chuyện nó tồn tại. Mà là trong hơn hai mươi năm nay, chúng ta đã có bản đồ của nó. Vẽ từ mặt đất. Bằng tay.",
+      "file": null,
+      "start": 206.84,
+      "duration": 10
+    },
+    {
+      "id": "C22",
+      "chapter": "CHƯƠNG 2 — NHỮNG KHOANG RỖNG",
+      "text": "Tôi muốn dừng lại ở phần rỗng trước, vì đó là phần khó tin nhất và cũng là phần ít được kể nhất.",
+      "file": null,
+      "start": 218.84,
+      "duration": 6.4
+    },
+    {
+      "id": "C23",
+      "chapter": null,
+      "text": "Khi nói về vũ trụ, chúng ta hay nói về những thứ có mặt. Sao, thiên hà, tinh vân. Nhưng nếu đo theo thể tích, phần lớn vũ trụ là chỗ không có gì.",
+      "file": null,
+      "start": 225.24,
+      "duration": 9.67
+    },
+    {
+      "id": "C24",
+      "chapter": null,
+      "text": "Những khoang rỗng đó có đường kính điển hình từ vài chục tới vài trăm triệu năm ánh sáng. Bên trong, mật độ vật chất chỉ còn khoảng một phần mười so với trung bình.",
+      "file": null,
+      "start": 234.91,
+      "duration": 10.93
+    },
+    {
+      "id": "C25",
+      "chapter": null,
+      "text": "Có một khoang được đặt tên riêng, nằm về hướng chòm sao Mục Phu. Người ta quen gọi nó là khoảng trống Bô-ô-tét. Nó rộng chừng ba trăm triệu năm ánh sáng.",
+      "file": null,
+      "start": 245.84,
+      "duration": 10.2
+    },
+    {
+      "id": "C26",
+      "chapter": null,
+      "text": "Với thể tích đó, nếu mật độ thiên hà bên trong bằng mật độ ở khu vực quanh Ngân Hà, người ta đã phải đếm được khoảng vài nghìn thiên hà trong đó.",
+      "file": null,
+      "start": 256.04,
+      "duration": 9.67
+    },
+    {
+      "id": "C27",
+      "chapter": null,
+      "text": "Số đếm thực tế là vài chục.",
+      "file": null,
+      "start": 265.71,
+      "duration": 1.8
+    },
+    {
+      "id": "C28",
+      "chapter": null,
+      "text": "Tôi thử tưởng tượng mình sinh ra trên một hành tinh ở giữa khoang đó. Ban đêm tôi ngẩng lên, và tôi vẫn thấy sao. Những ngôi sao trong thiên hà của mình, cái thiên hà lẻ loi đó.",
+      "file": null,
+      "start": 269.51,
+      "duration": 11.8
+    },
+    {
+      "id": "C29",
+      "chapter": null,
+      "text": "Nhưng ngoài vành đĩa quen thuộc ấy, bầu trời gần như trống trơn. Không có Tiên Nữ treo lơ lửng làm vệt mờ. Không có cụm thiên hà nào để kính viễn vọng đầu tiên của tôi vô tình bắt được.",
+      "file": null,
+      "start": 281.31,
+      "duration": 12.33
+    },
+    {
+      "id": "C30",
+      "chapter": null,
+      "text": "Cả một nền văn minh có thể mọc lên ở đó, chế ra kính thiên văn, chĩa lên trời, và kết luận rằng vũ trụ chỉ gồm đúng một thiên hà. Thiên hà của họ, trôi trong đêm vô tận.",
+      "file": null,
+      "start": 293.64,
+      "duration": 11.27
+    },
+    {
+      "id": "C31",
+      "chapter": null,
+      "text": "Họ sẽ không sai vì kém. Họ sai vì chỗ họ đứng.",
+      "file": null,
+      "start": 304.91,
+      "duration": 3.07
+    },
+    {
+      "id": "C32",
+      "chapter": null,
+      "text": "Còn tôi thì may. Tôi không ở trong khoang rỗng. Tôi ở trên một sợi.",
+      "file": null,
+      "start": 309.98,
+      "duration": 4.47
+    },
+    {
+      "id": "C33",
+      "chapter": null,
+      "text": "Và bây giờ là câu hỏi mà mọi thứ xoay quanh. Tại sao lại có sợi? Tại sao vật chất trong vũ trụ không tản đều ra, như mực loang trong nước, mà lại tự gom thành những đường chỉ và những khoang trống?",
+      "file": null,
+      "start": 314.45,
+      "duration": 13.13
+    },
+    {
+      "id": "C34",
+      "chapter": null,
+      "text": "Câu trả lời bắt đầu từ một vũ trụ gần như hoàn toàn nhẵn.",
+      "file": null,
+      "start": 329.08,
+      "duration": 3.8
+    },
+    {
+      "id": "C35",
+      "chapter": null,
+      "text": "Rất sớm, khi tất cả còn là một biển khí nóng, vật chất trải ra gần như đồng đều khắp mọi nơi. Gần như. Không hoàn toàn.",
+      "file": null,
+      "start": 332.88,
+      "duration": 7.93
+    },
+    {
+      "id": "C36",
+      "chapter": null,
+      "text": "Có những chỗ đặc hơn trung bình một chút xíu. Mức chênh lệch vào cỡ một phần trăm nghìn. Nhỏ tới mức nếu vẽ lên đồ thị, mắt thường sẽ thấy một đường thẳng tắp.",
+      "file": null,
+      "start": 340.81,
+      "duration": 10.6
+    },
+    {
+      "id": "C37",
+      "chapter": null,
+      "text": "Nhưng hấp dẫn không đọc đồ thị bằng mắt thường. Hấp dẫn chỉ cần biết chỗ nào đặc hơn một chút.",
+      "file": null,
+      "start": 351.41,
+      "duration": 6.27
+    },
+    {
+      "id": "C38",
+      "chapter": null,
+      "text": "Chỗ đặc hơn hút mạnh hơn. Hút mạnh hơn thì kéo thêm vật chất về. Kéo thêm vật chất về thì lại đặc hơn nữa, rồi lại hút mạnh hơn nữa.",
+      "file": null,
+      "start": 359.18,
+      "duration": 8.8
+    },
+    {
+      "id": "C39",
+      "chapter": null,
+      "text": "Đó là một vòng lặp tự khuếch đại. Nó chạy không nghỉ suốt mười ba tỉ năm.",
+      "file": null,
+      "start": 367.98,
+      "duration": 4.87
+    },
+    {
+      "id": "C40",
+      "chapter": null,
+      "text": "Và điều ngược lại cũng xảy ra, đều đặn không kém. Chỗ nào thưa hơn một chút thì hút yếu hơn, mất vật chất vào tay hàng xóm, thành ra thưa hơn nữa.",
+      "file": null,
+      "start": 372.85,
+      "duration": 9.73
+    },
+    {
+      "id": "C41",
+      "chapter": null,
+      "text": "Cho nên khoang rỗng không phải là chỗ vật chất chưa kịp tới. Nó là chỗ vật chất đã bị hút đi mất. Nó từng có đầy đủ phần của mình, rồi bị tước dần trong suốt lịch sử vũ trụ.",
+      "file": null,
+      "start": 382.58,
+      "duration": 11.53
+    },
+    {
+      "id": "C42",
+      "chapter": null,
+      "text": "Một vết lõm cực nhỏ ban đầu, sau mười ba tỉ năm, trở thành một cụm thiên hà. Một vùng nhạt đi ban đầu trở thành một hố rỗng ba trăm triệu năm ánh sáng.",
+      "file": null,
+      "start": 395.61,
+      "duration": 10.07
+    },
+    {
+      "id": "C43",
+      "chapter": null,
+      "text": "Toàn bộ hình dạng của vũ trụ hôm nay là bản phóng to của những gợn sóng nhỏ hơn cả một phần nghìn phần trăm.",
+      "file": null,
+      "start": 405.68,
+      "duration": 7.2
+    },
+    {
+      "id": "C44",
+      "chapter": null,
+      "text": "Có một chi tiết tôi phải nói rõ ở đây, nếu không phần sau sẽ không khớp. Thứ làm phần lớn công việc kéo và gom đó không phải là vật chất tôi có thể nhìn thấy.",
+      "file": null,
+      "start": 414.88,
+      "duration": 10.53
+    },
+    {
+      "id": "C45",
+      "chapter": null,
+      "text": "Khí và sao chỉ chiếm một phần nhỏ khối lượng. Phần lớn là một dạng vật chất không phát sáng, không hấp thụ ánh sáng, chỉ có hấp dẫn. Người ta gọi nó là vật chất tối.",
+      "file": null,
+      "start": 425.41,
+      "duration": 11
+    },
+    {
+      "id": "C46",
+      "chapter": null,
+      "text": "Nó là thứ đắp nên bộ khung. Nó gom trước, tạo ra những rãnh hấp dẫn dài ngoằng ngoèo, rồi khí bình thường mới chảy theo rãnh đó mà rơi vào.",
+      "file": null,
+      "start": 436.41,
+      "duration": 9.27
+    },
+    {
+      "id": "C47",
+      "chapter": null,
+      "text": "Tôi sẽ không đi sâu vào việc nó là gì, vì đó là một câu chuyện khác dài bằng chừng này. Hôm nay tôi không quan tâm tới kiến trúc sư. Tôi quan tâm tới công trình.",
+      "file": null,
+      "start": 445.68,
+      "duration": 10.73
+    },
+    {
+      "id": "C48",
+      "chapter": null,
+      "text": "Và đây là chỗ công trình ấy thôi không còn là một bức tranh đẹp nữa.",
+      "file": null,
+      "start": 458.41,
+      "duration": 4.53
+    },
+    {
+      "id": "C49",
+      "chapter": null,
+      "text": "Những sợi đó không phải là giá đỡ. Chúng không đứng yên chờ thiên hà đậu lên. Chúng đang chảy.",
+      "file": null,
+      "start": 462.94,
+      "duration": 6.27
+    },
+    {
+      "id": "C50",
+      "chapter": null,
+      "text": "Dọc theo mỗi sợi có khí hydro loãng, lạnh, trôi chậm, và nó trôi về phía các nút. Trên đường đi, nó rót vào các thiên hà nằm dọc sợi.",
+      "file": null,
+      "start": 469.21,
+      "duration": 8.87
+    },
+    {
+      "id": "C51",
+      "chapter": null,
+      "text": "Một thiên hà nếu chỉ sống bằng lượng khí sẵn có trong mình thì đã đốt hết từ lâu và tắt ngấm. Nó còn đang sinh ra sao mới, hôm nay, ngay lúc này, là vì có thứ gì đó tiếp tục rót nhiên liệu vào.",
+      "file": null,
+      "start": 478.08,
+      "duration": 12.87
+    },
+    {
+      "id": "C52",
+      "chapter": null,
+      "text": "Sợi không phải là nơi thiên hà nằm. Sợi là đường ống nuôi chúng.",
+      "file": null,
+      "start": 490.95,
+      "duration": 4.27
+    },
+    {
+      "id": "C53",
+      "chapter": "CHƯƠNG 3 — TẤM BẢN ĐỒ",
+      "text": "Bây giờ tôi muốn hỏi một câu khó chịu, và tôi nghĩ ai nghe tới đây cũng nên hỏi.",
+      "file": null,
+      "start": 497.22,
+      "duration": 5.33
+    },
+    {
+      "id": "C54",
+      "chapter": null,
+      "text": "Làm sao mà biết? Tôi ngồi trên một hành tinh, bên trong một thiên hà, ở một chỗ duy nhất, không di chuyển đi đâu được cả. Sao lại có người dám vẽ ra sơ đồ của thứ rộng hàng tỉ năm ánh sáng?",
+      "file": null,
+      "start": 502.55,
+      "duration": 12.6
+    },
+    {
+      "id": "C55",
+      "chapter": null,
+      "text": "Bầu trời tôi nhìn thấy là một mặt phẳng. Nó không có chiều sâu. Hai chấm sáng cạnh nhau có thể cách nhau mười năm ánh sáng, hoặc mười tỉ. Mắt tôi không phân biệt được.",
+      "file": null,
+      "start": 515.15,
+      "duration": 11.13
+    },
+    {
+      "id": "C56",
+      "chapter": null,
+      "text": "Muốn có bản đồ, tôi cần chiều thứ ba. Tôi cần biết mỗi chấm sáng cách tôi bao xa.",
+      "file": null,
+      "start": 526.28,
+      "duration": 5.4
+    },
+    {
+      "id": "C57",
+      "chapter": null,
+      "text": "Và cách người ta lấy được chiều thứ ba, tôi thấy là một trong những mẹo gọn gàng nhất mà loài người từng nghĩ ra.",
+      "file": null,
+      "start": 533.18,
+      "duration": 7.53
+    },
+    {
+      "id": "C58",
+      "chapter": null,
+      "text": "Vũ trụ đang giãn ra. Không gian giữa các thiên hà mỗi lúc mỗi rộng thêm. Thiên hà càng xa thì tốc độ lùi khỏi tôi càng lớn.",
+      "file": null,
+      "start": 540.71,
+      "duration": 8.2
+    },
+    {
+      "id": "C59",
+      "chapter": null,
+      "text": "Khi một nguồn sáng lùi xa, ánh sáng của nó bị kéo dài bước sóng ra, ngả về phía đỏ. Giống tiếng còi xe trầm xuống khi xe chạy khỏi tôi, chỉ là bằng ánh sáng thay vì bằng âm thanh.",
+      "file": null,
+      "start": 548.91,
+      "duration": 11.93
+    },
+    {
+      "id": "C60",
+      "chapter": null,
+      "text": "Cho nên chỉ cần tách ánh sáng của một thiên hà ra thành quang phổ, rồi đo xem các vạch trong đó đã trượt về phía đỏ bao nhiêu, tôi biết nó lùi nhanh cỡ nào. Biết nó lùi nhanh cỡ nào, tôi biết nó ở xa cỡ nào.",
+      "file": null,
+      "start": 560.84,
+      "duration": 13.8
+    },
+    {
+      "id": "C61",
+      "chapter": null,
+      "text": "Một thiên hà, một phép đo, một tọa độ. Cắm được một cái đinh vào không gian ba chiều.",
+      "file": null,
+      "start": 574.64,
+      "duration": 5.67
+    },
+    {
+      "id": "C62",
+      "chapter": null,
+      "text": "Vấn đề là một cái đinh thì chẳng cho thấy hình gì. Muốn thấy sợi, phải có hàng trăm nghìn cái. Hàng triệu.",
+      "file": null,
+      "start": 581.81,
+      "duration": 7.07
+    },
+    {
+      "id": "C63",
+      "chapter": null,
+      "text": "Và đó chính xác là việc mà người ta đã ngồi làm.",
+      "file": null,
+      "start": 588.88,
+      "duration": 3.2
+    },
+    {
+      "id": "C64",
+      "chapter": null,
+      "text": "Cuối những năm chín mươi, hai nhóm lớn bắt tay vào cùng một công việc buồn tẻ đến kỳ lạ. Đo dịch đỏ của từng thiên hà một, đêm này qua đêm khác. Một nhóm ở Úc. Nhóm kia đặt một kính hai mét rưỡi ở bang Niu Mê-hi-cô, và gọi công việc của mình là khảo sát bầu trời Sờ-loan.",
+      "file": null,
+      "start": 592.08,
+      "duration": 18.07
+    },
+    {
+      "id": "C65",
+      "chapter": null,
+      "text": "Kỹ thuật của họ thô mà hiệu quả. Khoan lỗ lên một tấm nhôm tròn, mỗi lỗ đúng vào vị trí một thiên hà trên mảnh trời đêm hôm đó. Cắm sợi quang vào từng lỗ, mỗi sợi dẫn ánh sáng của một thiên hà xuống máy đo quang phổ.",
+      "file": null,
+      "start": 610.15,
+      "duration": 14.4
+    },
+    {
+      "id": "C66",
+      "chapter": null,
+      "text": "Một tấm nhôm, vài trăm thiên hà một lượt. Hết đêm thì thay tấm khác. Rồi lại một đêm nữa. Rồi mười lăm năm nữa.",
+      "file": null,
+      "start": 624.55,
+      "duration": 7.4
+    },
+    {
+      "id": "C67",
+      "chapter": null,
+      "text": "Không có khoảnh khắc nào gọi là phát hiện trong suốt quá trình đó. Chỉ có những tấm nhôm đầy lỗ, chồng dần lên nhau trong kho.",
+      "file": null,
+      "start": 631.95,
+      "duration": 8.4
+    },
+    {
+      "id": "C68",
+      "chapter": null,
+      "text": "Khi đủ số đinh, người ta đem chấm tất cả lên cùng một biểu đồ.",
+      "file": null,
+      "start": 641.85,
+      "duration": 4.13
+    },
+    {
+      "id": "C69",
+      "chapter": null,
+      "text": "Và hình hiện ra.",
+      "file": null,
+      "start": 645.98,
+      "duration": 1.07
+    },
+    {
+      "id": "C70",
+      "chapter": null,
+      "text": "Không phải một đám mây chấm mờ. Không phải sương. Những đường gân rõ ràng, tách bạch, chằng qua chằng lại, với những lỗ đen ngòm giữa chúng.",
+      "file": null,
+      "start": 649.05,
+      "duration": 9.33
+    },
+    {
+      "id": "C71",
+      "chapter": null,
+      "text": "Có những chỗ thiên hà xếp thành một vệt dài đến mức người ta phải đặt tên riêng cho nó. Bức tường lớn Sờ-loan, tìm ra năm hai nghìn lẻ ba, kéo dài khoảng một tỉ bốn trăm triệu năm ánh sáng.",
+      "file": null,
+      "start": 658.38,
+      "duration": 12.6
+    },
+    {
+      "id": "C72",
+      "chapter": null,
+      "text": "Không phải một vật thể theo nghĩa thông thường. Không có gì buộc nó lại với nhau thành một khối. Nó là một dải mà mật độ thiên hà cao hẳn lên, trải dài như vậy.",
+      "file": null,
+      "start": 670.98,
+      "duration": 10.67
+    },
+    {
+      "id": "C73",
+      "chapter": null,
+      "text": "Tôi để con số đó ngồi lại một chút. Một tỉ bốn trăm triệu năm ánh sáng. Ánh sáng đi hết chiều dài đó tốn nhiều thời gian hơn toàn bộ khoảng thời gian sự sống đa bào tồn tại trên Trái Đất.",
+      "file": null,
+      "start": 681.65,
+      "duration": 12.47
+    },
+    {
+      "id": "C74",
+      "chapter": null,
+      "text": "Và bây giờ là phần mà tôi nghĩ mới thật sự đáng kể. Bản đồ mới chỉ là mô tả. Mô tả thì chưa phải là hiểu.",
+      "file": null,
+      "start": 696.12,
+      "duration": 7
+    },
+    {
+      "id": "C75",
+      "chapter": null,
+      "text": "Có bản đồ rồi, tôi vẫn có thể hỏi: biết đâu vũ trụ chỉ tình cờ trông như vậy? Muốn trả lời, phải làm một việc táo tợn hơn nhiều. Phải thử dựng lại cả vũ trụ trong máy.",
+      "file": null,
+      "start": 703.12,
+      "duration": 11.13
+    },
+    {
+      "id": "C76",
+      "chapter": null,
+      "text": "Cách làm thế này. Lấy một khối không gian ảo. Rắc vào đó hàng tỉ hạt, mỗi hạt đại diện cho một cục vật chất khổng lồ. Đặt chúng nằm gần như đều nhau, chỉ thêm đúng những gợn lệch tí xíu đo được từ ánh sáng cổ nhất của vũ trụ.",
+      "file": null,
+      "start": 714.25,
+      "duration": 15
+    },
+    {
+      "id": "C77",
+      "chapter": null,
+      "text": "Rồi bật hấp dẫn lên. Và không can thiệp gì nữa.",
+      "file": null,
+      "start": 729.25,
+      "duration": 3.13
+    },
+    {
+      "id": "C78",
+      "chapter": null,
+      "text": "Máy tính chỉ làm đúng một việc. Với mỗi bước thời gian, tính lực hút giữa các hạt rồi dịch chúng đi. Lặp lại. Hàng triệu lần. Cho chạy tương đương mười ba tỉ năm.",
+      "file": null,
+      "start": 732.38,
+      "duration": 10.8
+    },
+    {
+      "id": "C79",
+      "chapter": null,
+      "text": "Cuộc chạy nổi tiếng đầu tiên mang tên Mi-len-ni-um, năm hai nghìn lẻ năm. Sau đó là cả một thế hệ mô phỏng lớn hơn, chi tiết hơn, trong đó có bộ mà giới thiên văn hay nhắc tên là I-lu-strít Ti En Ét.",
+      "file": null,
+      "start": 744.68,
+      "duration": 13.27
+    },
+    {
+      "id": "C80",
+      "chapter": null,
+      "text": "Không ai lập trình sẵn hình dạng nào vào đó cả. Không ai bảo máy tính vẽ sợi. Đầu vào chỉ có hai thứ. Một mớ hạt rải gần đều, và định luật hấp dẫn.",
+      "file": null,
+      "start": 757.95,
+      "duration": 9.8
+    },
+    {
+      "id": "C81",
+      "chapter": null,
+      "text": "Khi chạy xong, người ta nhìn vào khối không gian ảo đó và thấy sợi. Thấy nút. Thấy khoang rỗng.",
+      "file": null,
+      "start": 769.75,
+      "duration": 6.33
+    },
+    {
+      "id": "C82",
+      "chapter": null,
+      "text": "Đặt hai bức cạnh nhau. Một bên là bản đồ vẽ từ ánh sáng thật của hàng triệu thiên hà thật. Một bên là thứ mà một cỗ máy tự nặn ra từ vài dòng vật lý. Và chúng trông giống nhau.",
+      "file": null,
+      "start": 776.08,
+      "duration": 11.73
+    },
+    {
+      "id": "C83",
+      "chapter": null,
+      "text": "Không phải giống một cách mơ hồ theo kiểu hai bức tranh trừu tượng cùng gam màu. Giống ở những thứ đo được. Sợi dài cỡ nào. Khoang rỗng to cỡ nào. Bao nhiêu cụm thiên hà trên một đơn vị thể tích. Thiên hà bám quanh nhau chặt tới mức nào ở từng thang khoảng cách.",
+      "file": null,
+      "start": 787.81,
+      "duration": 17.47
+    },
+    {
+      "id": "C84",
+      "chapter": null,
+      "text": "Tôi muốn nói cho rõ điều này vì nó dễ bị lướt qua như một câu khen ngợi.",
+      "file": null,
+      "start": 806.78,
+      "duration": 4.8
+    },
+    {
+      "id": "C85",
+      "chapter": null,
+      "text": "Chúng ta đã lấy vài quy tắc viết vừa một trang giấy, gieo vào một trạng thái ban đầu gần như nhẵn, cho chạy mười ba tỉ năm trong máy, và thu về đúng cái cấu trúc mà mình quan sát thấy trên bầu trời.",
+      "file": null,
+      "start": 811.58,
+      "duration": 13.2
+    },
+    {
+      "id": "C86",
+      "chapter": null,
+      "text": "Nếu vật lý của chúng ta sai, hai bức đó đã phải khác nhau. Sợi sẽ ra mảnh hơn. Khoang rỗng sẽ ra nhỏ hơn. Cụm thiên hà sẽ ra ít hơn. Chúng có rất nhiều cách để lệch nhau, và chúng đã không lệch.",
+      "file": null,
+      "start": 824.78,
+      "duration": 12.93
+    },
+    {
+      "id": "C87",
+      "chapter": null,
+      "text": "Trong lịch sử khoa học, không có nhiều lần một dự đoán được đem ra kiểm tra ở quy mô như vậy và đi qua được.",
+      "file": null,
+      "start": 837.71,
+      "duration": 7.2
+    },
+    {
+      "id": "C88",
+      "chapter": null,
+      "text": "Còn một điều nữa về mạng vũ trụ, và nó là lý do tôi gọi đây là cấu trúc lớn nhất từng tồn tại.",
+      "file": null,
+      "start": 846.91,
+      "duration": 6.27
+    },
+    {
+      "id": "C89",
+      "chapter": null,
+      "text": "Mọi thứ trong vũ trụ đều xếp thành tầng. Hạt nhân trong nguyên tử. Nguyên tử trong phân tử. Phân tử trong đá. Đá trong hành tinh. Hành tinh quanh sao. Sao trong thiên hà. Thiên hà trong nhóm. Nhóm trong sợi.",
+      "file": null,
+      "start": 853.18,
+      "duration": 13.8
+    },
+    {
+      "id": "C90",
+      "chapter": null,
+      "text": "Mỗi bước, mọi thứ lại gộp vào một cấp lớn hơn. Cái thang đó đi lên đều đặn suốt hàng chục bậc, và ta quen tới mức mặc định rằng nó còn đi tiếp.",
+      "file": null,
+      "start": 866.98,
+      "duration": 9.53
+    },
+    {
+      "id": "C91",
+      "chapter": null,
+      "text": "Ở mạng vũ trụ, cái thang dừng.",
+      "file": null,
+      "start": 876.51,
+      "duration": 2
+    },
+    {
+      "id": "C92",
+      "chapter": null,
+      "text": "Không có cấp tiếp theo. Nhìn ở thang đủ lớn, mạng vũ trụ không gom vào một siêu mạng nào cả. Nó chỉ lặp lại chính mình, đều đều, cùng một kiểu hoa văn, về mọi hướng, xa hết tầm nhìn của chúng ta.",
+      "file": null,
+      "start": 878.51,
+      "duration": 13
+    },
+    {
+      "id": "C93",
+      "chapter": null,
+      "text": "Không phải bậc thang tiếp theo khó leo. Nó không có ở đó. Đây là cấp tổ chức cuối cùng của vật chất.",
+      "file": null,
+      "start": 891.51,
+      "duration": 6.67
+    },
+    {
+      "id": "C94",
+      "chapter": "CHƯƠNG 4 — ĐỊA CHỈ",
+      "text": "Có một chuyện hay xảy ra khi người ta cho ai đó xem ảnh mạng vũ trụ lần đầu.",
+      "file": null,
+      "start": 900.18,
+      "duration": 5.07
+    },
+    {
+      "id": "C95",
+      "chapter": null,
+      "text": "Gần như ai cũng nói cùng một câu. Trông giống nơ-ron trong não. Hoặc giống sợi nấm dưới đất. Hoặc giống bọt xà phòng trong bồn rửa.",
+      "file": null,
+      "start": 905.25,
+      "duration": 8.73
+    },
+    {
+      "id": "C96",
+      "chapter": null,
+      "text": "Ba thứ đó chẳng liên quan gì tới nhau và cũng chẳng liên quan gì tới thiên hà. Nhưng trông chúng giống nhau, vì chúng bị nặn bởi cùng một loại quy tắc. Cái gì mạnh hơn một chút thì lấy thêm, cái gì yếu hơn một chút thì mất dần, lặp đi lặp lại đủ lâu.",
+      "file": null,
+      "start": 913.98,
+      "duration": 16.67
+    },
+    {
+      "id": "C97",
+      "chapter": null,
+      "text": "Tôi thích phép so sánh đó. Nhưng tôi nghĩ dừng lại ở đó là bỏ phí mất phần hay nhất.",
+      "file": null,
+      "start": 930.65,
+      "duration": 5.6
+    },
+    {
+      "id": "C98",
+      "chapter": null,
+      "text": "Phần hay nhất, với tôi, không nằm ở chỗ vũ trụ trông giống bộ não. Nó nằm ở chỗ có một loài, sống trên một hòn đá, chưa từng rời khỏi khu phố của mình quá vài ngày đường, mà vẽ được cái bản đồ ấy.",
+      "file": null,
+      "start": 937.75,
+      "duration": 13.07
+    },
+    {
+      "id": "C99",
+      "chapter": null,
+      "text": "Chúng ta không bay tới đó. Chúng ta không chụp nó từ bên ngoài. Không ai từng, và sẽ không ai từng, đứng lùi ra đủ xa để nhìn mạng vũ trụ bằng mắt.",
+      "file": null,
+      "start": 950.82,
+      "duration": 9.8
+    },
+    {
+      "id": "C100",
+      "chapter": null,
+      "text": "Tất cả những gì chúng ta có là ánh sáng rơi xuống một mái kính ở giữa sa mạc. Và một cách đo màu của nó. Và sự kiên nhẫn để làm việc đó vài triệu lần.",
+      "file": null,
+      "start": 960.62,
+      "duration": 10
+    },
+    {
+      "id": "C101",
+      "chapter": null,
+      "text": "Từ chừng đó, chúng ta dựng lại được hình dạng của thứ lớn nhất tồn tại. Rồi kiểm tra lại bằng cách bắt một cỗ máy tự dựng ra nó từ đầu. Và hai bên khớp.",
+      "file": null,
+      "start": 970.62,
+      "duration": 10.13
+    },
+    {
+      "id": "C102",
+      "chapter": null,
+      "text": "Bây giờ tôi muốn quay lại. Đi ngược cái thang tôi vừa leo, từng bậc một, và về đúng chỗ tôi đang nằm.",
+      "file": null,
+      "start": 982.75,
+      "duration": 6.73
+    },
+    {
+      "id": "C103",
+      "chapter": null,
+      "text": "Hoa văn sợi và khoang rỗng, trải khắp mọi hướng. Trong đó, một vùng mà hấp dẫn kéo mọi thứ về cùng một chỗ. Người ta đặt cho nó một cái tên tiếng Ha-oai, La-ni-a-kê-a, nghĩa là bầu trời mênh mông.",
+      "file": null,
+      "start": 989.48,
+      "duration": 13.07
+    },
+    {
+      "id": "C104",
+      "chapter": null,
+      "text": "Rộng chừng năm trăm hai mươi triệu năm ánh sáng. Chứa khoảng một trăm nghìn thiên hà lớn. Và Ngân Hà của tôi không nằm giữa nó.",
+      "file": null,
+      "start": 1002.55,
+      "duration": 8.47
+    },
+    {
+      "id": "C105",
+      "chapter": null,
+      "text": "Nó nằm ngoài rìa. Ở một chỗ mà dòng chảy vật chất còn đang do dự, chưa dứt khoát ngả về bên nào.",
+      "file": null,
+      "start": 1011.02,
+      "duration": 6.4
+    },
+    {
+      "id": "C106",
+      "chapter": null,
+      "text": "Trong cái rìa đó, một nhóm nhỏ gồm mấy chục thiên hà. Trong nhóm đó, một đĩa xoắn. Ở lưng chừng một nhánh xoắn, cách tâm hai mươi sáu nghìn năm ánh sáng, một ngôi sao vàng cỡ trung bình.",
+      "file": null,
+      "start": 1017.42,
+      "duration": 12.4
+    },
+    {
+      "id": "C107",
+      "chapter": null,
+      "text": "Hành tinh thứ ba. Một lục địa. Một mái nhà. Và tôi, nằm ngửa, nhìn lên.",
+      "file": null,
+      "start": 1029.82,
+      "duration": 4.73
+    },
+    {
+      "id": "C108",
+      "chapter": null,
+      "text": "Người ta hay kết những câu chuyện thế này bằng cảm giác nhỏ bé. Vũ trụ thì bao la, còn ta thì chẳng là gì.",
+      "file": null,
+      "start": 1036.55,
+      "duration": 7.07
+    },
+    {
+      "id": "C109",
+      "chapter": null,
+      "text": "Tôi không thấy vậy. Nhỏ bé là cảm giác của người bị thả vào giữa nơi không có gì để bám. Còn tôi thì vừa được biết chính xác mình đang bám vào đâu.",
+      "file": null,
+      "start": 1043.62,
+      "duration": 9.8
+    },
+    {
+      "id": "C110",
+      "chapter": null,
+      "text": "Tôi không lơ lửng trong khoảng không. Tôi ở trên một sợi. Một sợi có khí đang chảy dọc theo nó, chảy về phía các nút, rót vào các thiên hà, làm ra những ngôi sao mới, hôm nay, trong lúc tôi nằm đây.",
+      "file": null,
+      "start": 1053.42,
+      "duration": 13.2
+    },
+    {
+      "id": "C111",
+      "chapter": null,
+      "text": "Và những nguyên tử làm nên bàn tay tôi đã đi tới đây theo đúng con đường đó. Chúng trôi dọc một sợi, rơi vào một thiên hà, đi qua bên trong một ngôi sao, rồi rơi xuống một hành tinh.",
+      "file": null,
+      "start": 1066.62,
+      "duration": 12.13
+    },
+    {
+      "id": "C112",
+      "chapter": null,
+      "text": "Tôi không phải khách trọ trong cấu trúc này. Tôi là một chỗ mà nó gom lại đủ dày để bắt đầu tự hỏi về chính mình.",
+      "file": null,
+      "start": 1078.75,
+      "duration": 7.53
+    },
+    {
+      "id": "C113",
+      "chapter": null,
+      "text": "Đêm nay nếu bạn ra ngoài và ngẩng lên, bầu trời vẫn sẽ trông ngẫu nhiên. Vẫn là những chấm sáng rải không theo quy luật nào.",
+      "file": null,
+      "start": 1088.28,
+      "duration": 8.27
+    },
+    {
+      "id": "C114",
+      "chapter": null,
+      "text": "Nhưng phía sau mấy nghìn chấm mà mắt thường nhìn thấy, ở một thang lớn hơn rất nhiều, có những đường gân chạy ngang không gian, gặp nhau ở những chỗ đông đúc, và ôm lấy những khoang tối rộng hàng trăm triệu năm ánh sáng.",
+      "file": null,
+      "start": 1096.55,
+      "duration": 14.67
+    },
+    {
+      "id": "C115",
+      "chapter": null,
+      "text": "Chúng có ở đó. Chúng đang chảy. Và một trong số chúng đi ngang qua đúng chỗ bạn đang đứng.",
+      "file": null,
+      "start": 1111.22,
+      "duration": 6
+    },
+    {
+      "id": "C116",
+      "chapter": null,
+      "text": "Bạn không ở giữa hư không. Bạn ở trên một sợi. Và tôi nghĩ đó là một địa chỉ đẹp.",
+      "file": null,
+      "start": 1118.72,
+      "duration": 5.4
+    }
+  ]
+}

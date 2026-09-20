@@ -1,0 +1,1040 @@
+{
+  "slug": "quasar",
+  "fps": 30,
+  "totalDuration": 1171.97,
+  "dryRun": false,
+  "narration": "voice/narration.mp3",
+  "voice": {
+    "provider": "aimax-minimax",
+    "voice_id": "uv_5cee29af",
+    "voice_name": "uv_5cee29af",
+    "model": "speech-2.8-hd",
+    "speed": 0.96
+  },
+  "cues": [
+    {
+      "id": "C01",
+      "chapter": "CHƯƠNG 1 — MỘT NGÔI SAO SAI CHỖ",
+      "text": "Tôi đang nhìn một chấm sáng. Nhỏ. Mờ. Nằm lẫn giữa vài nghìn chấm sáng khác trên nền trời.",
+      "file": "voice/seg-00.mp3",
+      "start": 0,
+      "duration": 7.67
+    },
+    {
+      "id": "C02",
+      "chapter": null,
+      "text": "Nếu tôi không biết trước nó ở đâu, tôi sẽ đi lướt qua nó cả đời mà không để ý. Nó không đẹp. Nó không nhấp nháy khác thường. Nó chỉ là một chấm.",
+      "file": "voice/seg-01.mp3",
+      "start": 7.67,
+      "duration": 9.96
+    },
+    {
+      "id": "C03",
+      "chapter": null,
+      "text": "Và chấm đó đang phát ra nhiều ánh sáng hơn bốn nghìn tỉ Mặt Trời cộng lại.",
+      "file": "voice/seg-02.mp3",
+      "start": 17.63,
+      "duration": 4.76
+    },
+    {
+      "id": "C04",
+      "chapter": null,
+      "text": "Tôi muốn nói rõ con số đó trước khi đi tiếp, vì nếu nghe lướt qua nó sẽ trôi mất như mọi con số thiên văn khác.",
+      "file": "voice/seg-04.mp3",
+      "start": 23.89,
+      "duration": 7.63
+    },
+    {
+      "id": "C05",
+      "chapter": null,
+      "text": "Thiên hà của chúng ta có khoảng hai đến bốn trăm tỉ ngôi sao. Toàn bộ. Mọi mặt trời, mọi bếp lò hạt nhân đang cháy trong dải Ngân Hà, gom hết ánh sáng của chúng lại thành một ngọn đèn duy nhất.",
+      "file": "voice/seg-05.mp3",
+      "start": 31.52,
+      "duration": 12.63
+    },
+    {
+      "id": "C06",
+      "chapter": null,
+      "text": "Chấm sáng tôi đang nhìn sáng hơn ngọn đèn đó. Không phải nhỉnh hơn. Gấp hàng chục lần, có những cái gấp hàng trăm lần.",
+      "file": "voice/seg-06.mp3",
+      "start": 44.15,
+      "duration": 8.48
+    },
+    {
+      "id": "C07",
+      "chapter": null,
+      "text": "Và nó làm được điều đó từ một vùng không gian hẹp hơn hệ Mặt Trời của tôi.",
+      "file": "voice/seg-07.mp3",
+      "start": 52.63,
+      "duration": 4.82
+    },
+    {
+      "id": "C08",
+      "chapter": null,
+      "text": "Hai trăm tỉ ngôi sao trải trên một cái đĩa rộng trăm nghìn năm ánh sáng, thua một thứ vừa lọt trong quỹ đạo Sao Hải Vương.",
+      "file": "voice/seg-09.mp3",
+      "start": 58.95,
+      "duration": 7.57
+    },
+    {
+      "id": "C09",
+      "chapter": null,
+      "text": "Tôi nói câu đó ra mà chính tôi thấy nó vô lý. Cả chương sau tôi sẽ dành để nói tại sao nó không vô lý.",
+      "file": "voice/seg-10.mp3",
+      "start": 66.52,
+      "duration": 6.81
+    },
+    {
+      "id": "C10",
+      "chapter": null,
+      "text": "Chuyện bắt đầu vào đầu những năm sáu mươi, khi các đài thiên văn vô tuyến bắt đầu quét bầu trời và ghi lại những nơi phát ra sóng radio mạnh.",
+      "file": "voice/seg-12.mp3",
+      "start": 75.33,
+      "duration": 8.55
+    },
+    {
+      "id": "C11",
+      "chapter": null,
+      "text": "Phần lớn các nguồn ấy là những đám mây khí lớn, hoặc là tàn tích của những vụ nổ, những thứ trải rộng trên bầu trời thành một vệt.",
+      "file": "voice/seg-13.mp3",
+      "start": 83.88,
+      "duration": 8.49
+    },
+    {
+      "id": "C12",
+      "chapter": null,
+      "text": "Nhưng có vài nguồn thì kỳ quặc. Chúng phát ra sóng radio dữ dội, và khi người ta chĩa kính quang học vào đúng tọa độ, cái hiện ra chỉ là một điểm. Một chấm sắc nét. Y hệt một ngôi sao.",
+      "file": "voice/seg-14.mp3",
+      "start": 92.37,
+      "duration": 13.62
+    },
+    {
+      "id": "C13",
+      "chapter": null,
+      "text": "Người ta đặt cho chúng cái tên tạm bợ nhất có thể: nguồn vô tuyến gần giống sao. Trong tiếng Anh là qua-di ste-la. Về sau rút ngắn lại thành quasar. Cái tên ấy, thật ra, là một lời thú nhận không biết.",
+      "file": "voice/seg-15.mp3",
+      "start": 105.99,
+      "duration": 15.15
+    },
+    {
+      "id": "C14",
+      "chapter": null,
+      "text": "Vì nếu là sao, tại sao quang phổ của chúng không đọc được?",
+      "file": "voice/seg-16.mp3",
+      "start": 121.14,
+      "duration": 3.76
+    },
+    {
+      "id": "C15",
+      "chapter": null,
+      "text": "Tôi cần dừng lại giải thích chỗ này, vì cả câu chuyện xoay quanh nó.",
+      "file": "voice/seg-18.mp3",
+      "start": 126.4,
+      "duration": 4.4
+    },
+    {
+      "id": "C16",
+      "chapter": null,
+      "text": "Khi tôi tách ánh sáng của một ngôi sao ra thành dải màu, tôi không thấy một dải liền mượt. Tôi thấy những vạch tối nằm ở những vị trí cố định. Mỗi nguyên tố để lại một bộ vạch riêng, như dấu vân tay. Hydro có bộ vạch của hydro, không lẫn với ai.",
+      "file": "voice/seg-19.mp3",
+      "start": 130.8,
+      "duration": 17.01
+    },
+    {
+      "id": "C17",
+      "chapter": null,
+      "text": "Bộ vạch ấy không thay đổi. Trong phòng thí nghiệm ở Trái Đất, trong lòng một ngôi sao cách đây nghìn năm ánh sáng, hydro vẫn là hydro.",
+      "file": "voice/seg-20.mp3",
+      "start": 147.81,
+      "duration": 9.75
+    },
+    {
+      "id": "C18",
+      "chapter": null,
+      "text": "Nhưng quang phổ của những chấm sáng kỳ quặc kia thì không khớp với bất cứ nguyên tố nào. Các vạch nằm ở những chỗ không nguyên tố nào được phép nằm.",
+      "file": "voice/seg-21.mp3",
+      "start": 157.56,
+      "duration": 8.84
+    },
+    {
+      "id": "C19",
+      "chapter": null,
+      "text": "Suốt mấy năm, người ta nghĩ mình vừa tìm ra một dạng vật chất chưa từng biết. Một loại sao mới, có hoá học riêng.",
+      "file": "voice/seg-22.mp3",
+      "start": 166.4,
+      "duration": 8.22
+    },
+    {
+      "id": "C20",
+      "chapter": null,
+      "text": "Rồi năm 1963, một nhà thiên văn người Hà Lan tên Mác-ten Sờ-mít ngồi nhìn tấm quang phổ của một nguồn mang số hiệu ba xê hai bảy ba, và ông nhận ra chuyện khác hẳn.",
+      "file": "voice/seg-23.mp3",
+      "start": 174.62,
+      "duration": 12.65
+    },
+    {
+      "id": "C21",
+      "chapter": null,
+      "text": "Các vạch ấy là hydro. Vẫn đúng bộ vạch quen thuộc, vẫn đúng khoảng cách giữa chúng, đúng tỉ lệ. Chỉ là toàn bộ bộ vạch đã bị trượt về phía đỏ. Trượt rất xa.",
+      "file": "voice/seg-24.mp3",
+      "start": 187.27,
+      "duration": 11.71
+    },
+    {
+      "id": "C22",
+      "chapter": null,
+      "text": "Mà trong một vũ trụ đang giãn ra, trượt về phía đỏ nghĩa là đang lùi xa. Trượt càng nhiều thì càng xa.",
+      "file": "voice/seg-25.mp3",
+      "start": 198.98,
+      "duration": 6.84
+    },
+    {
+      "id": "C23",
+      "chapter": null,
+      "text": "Con số Sờ-mít đọc ra hôm đó đặt cái chấm nhỏ ấy cách chúng ta hơn hai tỉ năm ánh sáng.",
+      "file": "voice/seg-26.mp3",
+      "start": 205.82,
+      "duration": 6.77
+    },
+    {
+      "id": "C24",
+      "chapter": null,
+      "text": "Và ngay khoảnh khắc đó, bài toán lật ngược.",
+      "file": "voice/seg-28.mp3",
+      "start": 214.59,
+      "duration": 3.13
+    },
+    {
+      "id": "C25",
+      "chapter": null,
+      "text": "Không phải vì nó lạ mà nó khó hiểu. Nó ở xa hơn gần như mọi thứ người ta từng đo. Ở khoảng cách đó, các thiên hà mờ tới mức phải phơi sáng rất lâu mới hiện lên.",
+      "file": "voice/seg-29.mp3",
+      "start": 217.72,
+      "duration": 11.36
+    },
+    {
+      "id": "C26",
+      "chapter": null,
+      "text": "Còn cái chấm này thì sáng tới mức một kính thiên văn cỡ nhỏ trong sân sau cũng bắt được nó.",
+      "file": "voice/seg-30.mp3",
+      "start": 229.08,
+      "duration": 5.44
+    },
+    {
+      "id": "C27",
+      "chapter": null,
+      "text": "Nghĩa là nó không phải một ngôi sao. Không ngôi sao nào cháy nổi như thế. Người ta vừa nhìn thấy một thứ hoàn toàn khác, và chưa ai biết thứ đó là gì.",
+      "file": "voice/seg-31.mp3",
+      "start": 234.52,
+      "duration": 9.81
+    },
+    {
+      "id": "C28",
+      "chapter": "CHƯƠNG 2 — ĐỘNG CƠ KHÔNG CHẠY BẰNG LỬA",
+      "text": "Câu hỏi đầu tiên mà ai cũng hỏi là: nó lấy năng lượng ở đâu?",
+      "file": "voice/seg-32.mp3",
+      "start": 244.33,
+      "duration": 4.25
+    },
+    {
+      "id": "C29",
+      "chapter": null,
+      "text": "Và câu trả lời quen thuộc nhất, phản ứng hạt nhân, không dùng được. Tôi muốn giải thích tại sao không dùng được, vì đó là chỗ trực giác của tôi bị bẻ gãy.",
+      "file": "voice/seg-33.mp3",
+      "start": 248.58,
+      "duration": 10.2
+    },
+    {
+      "id": "C30",
+      "chapter": null,
+      "text": "Một ngôi sao sống bằng cách ép các hạt nhân hydro dính vào nhau thành helium. Khi chúng dính lại, sản phẩm nhẹ hơn tổng các phần gộp lại một chút. Chút hụt đó thoát ra thành năng lượng.",
+      "file": "voice/seg-34.mp3",
+      "start": 258.78,
+      "duration": 13.23
+    },
+    {
+      "id": "C31",
+      "chapter": null,
+      "text": "Chút đó là bao nhiêu? Khoảng bảy phần nghìn. Không phẩy bảy phần trăm khối lượng.",
+      "file": "voice/seg-35.mp3",
+      "start": 272.01,
+      "duration": 5.38
+    },
+    {
+      "id": "C32",
+      "chapter": null,
+      "text": "Mặt Trời đốt bốn triệu tấn vật chất mỗi giây theo kiểu đó. Bảy phần nghìn nghe thì bé, nhưng nó đủ để thắp một ngôi sao trong mười tỉ năm.",
+      "file": "voice/seg-36.mp3",
+      "start": 277.39,
+      "duration": 9.31
+    },
+    {
+      "id": "C33",
+      "chapter": null,
+      "text": "Vấn đề là nó không đủ cho cái chấm sáng kia. Dù tôi có nhét bao nhiêu ngôi sao vào một vùng nhỏ cỡ hệ Mặt Trời, chúng cũng không cháy ra nổi từng ấy ánh sáng. Và nếu chen nhau tới mức đó, chúng sẽ va vào nhau trước khi kịp cháy.",
+      "file": "voice/seg-37.mp3",
+      "start": 286.7,
+      "duration": 15.28
+    },
+    {
+      "id": "C34",
+      "chapter": null,
+      "text": "Cái làm cho quasar sáng không phải lửa. Là độ cao.",
+      "file": "voice/seg-39.mp3",
+      "start": 303.48,
+      "duration": 4.65
+    },
+    {
+      "id": "C35",
+      "chapter": null,
+      "text": "Tôi biết nghe lạ, nên để tôi kéo nó về mặt đất trước.",
+      "file": "voice/seg-40.mp3",
+      "start": 308.13,
+      "duration": 3.71
+    },
+    {
+      "id": "C36",
+      "chapter": null,
+      "text": "Khi tôi thả một hòn đá từ trên cao xuống, nó rơi, nó đập vào sàn, và nó phát ra một tiếng động. Tiếng động đó là năng lượng. Năng lượng đó không do hòn đá tự chế ra. Nó đến từ việc hòn đá vừa mất độ cao.",
+      "file": "voice/seg-41.mp3",
+      "start": 311.84,
+      "duration": 14.44
+    },
+    {
+      "id": "C37",
+      "chapter": null,
+      "text": "Càng thả từ cao, tiếng đập càng lớn. Đơn giản vậy thôi. Hấp dẫn không chế tạo năng lượng. Nó thu thuế trên mỗi mét rơi xuống.",
+      "file": "voice/seg-42.mp3",
+      "start": 326.28,
+      "duration": 9.22
+    },
+    {
+      "id": "C38",
+      "chapter": null,
+      "text": "Bây giờ thay cái sàn nhà bằng một hố đen nặng bằng một tỉ Mặt Trời.",
+      "file": "voice/seg-43.mp3",
+      "start": 335.5,
+      "duration": 4.95
+    },
+    {
+      "id": "C39",
+      "chapter": null,
+      "text": "Cái giếng hấp dẫn quanh một vật như thế sâu tới mức vật chất rơi vào đó không rơi vài mét. Nó rơi qua một độ dốc mà tới cuối đường, tốc độ của nó đạt phần đáng kể của tốc độ ánh sáng.",
+      "file": "voice/seg-45.mp3",
+      "start": 341.45,
+      "duration": 12.51
+    },
+    {
+      "id": "C40",
+      "chapter": null,
+      "text": "Nhưng vật chất không rơi thẳng vào. Đó là chi tiết quan trọng nhất của cả tập này, và nó là lý do quasar tồn tại.",
+      "file": "voice/seg-46.mp3",
+      "start": 353.96,
+      "duration": 8.64
+    },
+    {
+      "id": "C41",
+      "chapter": null,
+      "text": "Mọi thứ trong vũ trụ đều đang quay quanh cái gì đó. Đám khí trôi về phía hố đen cũng mang theo chuyển động ngang của nó. Nên thay vì lao thẳng xuống, nó bị cuốn vòng quanh, và dẹt dần ra thành một cái đĩa.",
+      "file": "voice/seg-47.mp3",
+      "start": 362.6,
+      "duration": 14.91
+    },
+    {
+      "id": "C42",
+      "chapter": null,
+      "text": "Một cái đĩa khí khổng lồ, xoáy quanh một cái miệng không đáy.",
+      "file": "voice/seg-48.mp3",
+      "start": 377.51,
+      "duration": 3.89
+    },
+    {
+      "id": "C43",
+      "chapter": null,
+      "text": "Và trong cái đĩa đó, vòng khí phía trong quay nhanh hơn vòng phía ngoài. Chúng cọ vào nhau. Chúng kéo lê nhau. Ma sát.",
+      "file": "voice/seg-49.mp3",
+      "start": 381.4,
+      "duration": 9.45
+    },
+    {
+      "id": "C44",
+      "chapter": null,
+      "text": "Ma sát trên quy mô đó không làm ấm lên. Nó nung đĩa khí lên hàng triệu độ, và ở nhiệt độ ấy khí không còn phát ra ánh sáng nhìn thấy nữa. Nó phát tia cực tím. Nó phát tia X.",
+      "file": "voice/seg-50.mp3",
+      "start": 390.85,
+      "duration": 13.75
+    },
+    {
+      "id": "C45",
+      "chapter": null,
+      "text": "Cái đĩa ấy là thứ tôi thấy. Không phải hố đen. Hố đen thì đen, và nó luôn đen. Cái sáng rực là bữa ăn đang bị xé nhỏ ngay trước miệng nó.",
+      "file": "voice/seg-51.mp3",
+      "start": 404.6,
+      "duration": 11.04
+    },
+    {
+      "id": "C46",
+      "chapter": null,
+      "text": "Nhưng làm sao biết vùng phát sáng ấy nhỏ? Không kính thiên văn nào phóng to nổi một chấm ở cách hai tỉ năm ánh sáng thành hình.",
+      "file": "voice/seg-53.mp3",
+      "start": 417.14,
+      "duration": 7.71
+    },
+    {
+      "id": "C47",
+      "chapter": null,
+      "text": "Câu trả lời nằm ở chỗ tôi không ngờ tới. Nó nằm ở nhịp nhấp nháy.",
+      "file": "voice/seg-54.mp3",
+      "start": 424.85,
+      "duration": 5.58
+    },
+    {
+      "id": "C48",
+      "chapter": null,
+      "text": "Độ sáng của quasar không đứng yên. Có cái thay đổi rõ rệt trong vài tháng. Có cái đổi trong vài ngày. Có cái đổi trong vài giờ.",
+      "file": "voice/seg-55.mp3",
+      "start": 430.43,
+      "duration": 9.91
+    },
+    {
+      "id": "C49",
+      "chapter": null,
+      "text": "Và một vật không thể thay đổi độ sáng nhanh hơn thời gian ánh sáng cần để đi từ đầu này sang đầu kia của nó.",
+      "file": "voice/seg-56.mp3",
+      "start": 440.34,
+      "duration": 7.18
+    },
+    {
+      "id": "C50",
+      "chapter": null,
+      "text": "Lý do rất cơ học. Nếu toàn bộ vật sáng lên cùng một lúc, ánh sáng từ mép xa vẫn tới sau ánh sáng từ mép gần. Cú sáng bị nhoè ra, kéo dài đúng bằng bề ngang của vật tính theo thời gian ánh sáng.",
+      "file": "voice/seg-57.mp3",
+      "start": 447.52,
+      "duration": 13.85
+    },
+    {
+      "id": "C51",
+      "chapter": null,
+      "text": "Một vật rộng một năm ánh sáng thì không thể chớp trong một ngày. Nó sẽ chớp nhoè thành một năm.",
+      "file": "voice/seg-58.mp3",
+      "start": 461.37,
+      "duration": 6.99
+    },
+    {
+      "id": "C52",
+      "chapter": null,
+      "text": "Nên khi tôi thấy một quasar đổi độ sáng trong vòng vài giờ, tôi vừa đo được kích thước của nó mà không cần nhìn thấy nó. Vùng phát sáng đó không thể rộng hơn vài giờ ánh sáng.",
+      "file": "voice/seg-59.mp3",
+      "start": 468.36,
+      "duration": 12.13
+    },
+    {
+      "id": "C53",
+      "chapter": null,
+      "text": "Vài giờ ánh sáng. Ánh sáng đi từ Mặt Trời ra tới Sao Hải Vương mất khoảng bốn tiếng.",
+      "file": "voice/seg-60.mp3",
+      "start": 480.49,
+      "duration": 6.16
+    },
+    {
+      "id": "C54",
+      "chapter": null,
+      "text": "Cái máy phát ra nhiều ánh sáng hơn cả một thiên hà vừa lọt trong hệ Mặt Trời. Không phải phỏng đoán. Đó là hệ quả trực tiếp của việc đếm nhịp nhấp nháy.",
+      "file": "voice/seg-61.mp3",
+      "start": 486.65,
+      "duration": 9.92
+    },
+    {
+      "id": "C55",
+      "chapter": null,
+      "text": "Bây giờ đến con số làm tôi ngồi lặng khi lần đầu đọc được.",
+      "file": "voice/seg-63.mp3",
+      "start": 498.57,
+      "duration": 3.72
+    },
+    {
+      "id": "C56",
+      "chapter": null,
+      "text": "Một ngôi sao chuyển được không phẩy bảy phần trăm khối lượng thành năng lượng. Đó là mức tốt nhất mà phản ứng hạt nhân làm được.",
+      "file": "voice/seg-64.mp3",
+      "start": 502.29,
+      "duration": 8.14
+    },
+    {
+      "id": "C57",
+      "chapter": null,
+      "text": "Một cái đĩa bồi tụ quanh hố đen chuyển được từ sáu đến khoảng ba mươi phần trăm, tuỳ hố đen quay nhanh cỡ nào.",
+      "file": "voice/seg-65.mp3",
+      "start": 510.43,
+      "duration": 7.33
+    },
+    {
+      "id": "C58",
+      "chapter": null,
+      "text": "Hiệu suất gấp mười lần, có khi gấp bốn mươi lần, so với thứ đang thắp sáng mọi ngôi sao trên bầu trời.",
+      "file": "voice/seg-66.mp3",
+      "start": 517.76,
+      "duration": 7.45
+    },
+    {
+      "id": "C59",
+      "chapter": null,
+      "text": "Trong toàn bộ danh mục các cách vũ trụ biết biến vật chất thành ánh sáng, chỉ có một cách ăn đứt nó: vật chất gặp phản vật chất và cả hai cùng biến mất.",
+      "file": "voice/seg-67.mp3",
+      "start": 525.21,
+      "duration": 10.6
+    },
+    {
+      "id": "C60",
+      "chapter": null,
+      "text": "Nghĩa là một hố đen đang ăn là cỗ máy hiệu quả thứ hai trong vũ trụ. Và nó không kén nhiên liệu. Nó ăn bất cứ thứ gì rơi tới: khí hydro, bụi, hành tinh lạc, những ngôi sao đi quá gần.",
+      "file": "voice/seg-68.mp3",
+      "start": 535.81,
+      "duration": 14.73
+    },
+    {
+      "id": "C61",
+      "chapter": null,
+      "text": "Thứ mà một ngôi sao phải chắt chiu cả đời để rút ra được bảy phần nghìn, một hố đen rút gọn trong một vòng xoáy.",
+      "file": "voice/seg-69.mp3",
+      "start": 550.54,
+      "duration": 7.82
+    },
+    {
+      "id": "C62",
+      "chapter": null,
+      "text": "Và không phải tất cả vật chất đều rơi xuống được.",
+      "file": "voice/seg-71.mp3",
+      "start": 559.86,
+      "duration": 3.32
+    },
+    {
+      "id": "C63",
+      "chapter": null,
+      "text": "Cái đĩa quay quá nhanh, từ trường xoắn quanh nó quá chặt, nên một phần khí bị vắt ngược ra khỏi mặt phẳng đĩa và bắn đi theo hai hướng duy nhất còn trống: thẳng lên và thẳng xuống, dọc theo hai cực.",
+      "file": "voice/seg-72.mp3",
+      "start": 563.18,
+      "duration": 13.66
+    },
+    {
+      "id": "C64",
+      "chapter": null,
+      "text": "Kết quả là hai tia. Hai vòi vật chất phun ra ở tốc độ sát tốc độ ánh sáng.",
+      "file": "voice/seg-73.mp3",
+      "start": 576.84,
+      "duration": 5.74
+    },
+    {
+      "id": "C65",
+      "chapter": null,
+      "text": "Tia của ba xê hai bảy ba, cái chấm mà Sờ-mít đọc quang phổ năm 1963, dài khoảng hai trăm nghìn năm ánh sáng.",
+      "file": "voice/seg-74.mp3",
+      "start": 582.58,
+      "duration": 10.33
+    },
+    {
+      "id": "C66",
+      "chapter": null,
+      "text": "Tôi để con số đó đứng một mình một chút. Hai trăm nghìn năm ánh sáng. Dài hơn đường kính dải Ngân Hà.",
+      "file": "voice/seg-75.mp3",
+      "start": 592.91,
+      "duration": 7.12
+    },
+    {
+      "id": "C67",
+      "chapter": null,
+      "text": "Một vật thể nhỏ hơn hệ Mặt Trời đang nhổ ra một cái vòi dài hơn cả thiên hà của tôi.",
+      "file": "voice/seg-76.mp3",
+      "start": 600.03,
+      "duration": 5.6
+    },
+    {
+      "id": "C68",
+      "chapter": "CHƯƠNG 3 — ÁNH SÁNG CỦA MỘT THỨ ĐÃ TẮT",
+      "text": "Tới đây tôi tưởng mình đã hiểu quasar là gì. Rồi tôi nhìn vào chỗ chúng nằm, và mọi thứ đổi nghĩa.",
+      "file": "voice/seg-77.mp3",
+      "start": 605.63,
+      "duration": 6.69
+    },
+    {
+      "id": "C69",
+      "chapter": null,
+      "text": "Khi các nhà thiên văn vẽ bản đồ quasar, họ không tìm thấy chúng rải đều khắp vũ trụ. Chúng dồn về một phía. Phía xa.",
+      "file": "voice/seg-78.mp3",
+      "start": 612.32,
+      "duration": 8.59
+    },
+    {
+      "id": "C70",
+      "chapter": null,
+      "text": "Càng nhìn gần, quasar càng hiếm. Càng nhìn xa, chúng càng dày đặc. Rồi tới một khoảng cách nhất định, chúng đông nhất. Rồi xa hơn nữa, chúng lại thưa dần.",
+      "file": "voice/seg-79.mp3",
+      "start": 620.91,
+      "duration": 12.07
+    },
+    {
+      "id": "C71",
+      "chapter": null,
+      "text": "Cái bản đồ đó không phải bản đồ không gian. Nó là bản đồ thời gian.",
+      "file": "voice/seg-80.mp3",
+      "start": 632.98,
+      "duration": 4.88
+    },
+    {
+      "id": "C72",
+      "chapter": null,
+      "text": "Ánh sáng đi với tốc độ hữu hạn. Thứ tôi nhìn thấy ở khoảng cách mười tỉ năm ánh sáng không phải hiện trạng của nó. Đó là trạng thái nó có cách đây mười tỉ năm, vì ánh sáng đó mất đúng chừng ấy thời gian mới tới được mắt tôi.",
+      "file": "voice/seg-82.mp3",
+      "start": 639.36,
+      "duration": 15.07
+    },
+    {
+      "id": "C73",
+      "chapter": null,
+      "text": "Nên khi tôi thấy quasar dày đặc ở rất xa và gần như biến mất ở gần, tôi không đang thấy chúng phân bố lệch trong không gian. Tôi đang thấy một cái gì đó đã từng phổ biến, rồi ngừng xảy ra.",
+      "file": "voice/seg-83.mp3",
+      "start": 654.43,
+      "duration": 12.99
+    },
+    {
+      "id": "C74",
+      "chapter": null,
+      "text": "Quasar không phải một loại vật thể. Nó là một giai đoạn. Và giai đoạn ấy gần như đã kết thúc.",
+      "file": "voice/seg-84.mp3",
+      "start": 667.42,
+      "duration": 6.98
+    },
+    {
+      "id": "C75",
+      "chapter": null,
+      "text": "Đỉnh điểm rơi vào khoảng mười tỉ năm trước, khi vũ trụ mới chỉ được vài tỉ tuổi.",
+      "file": "voice/seg-86.mp3",
+      "start": 676.4,
+      "duration": 5.78
+    },
+    {
+      "id": "C76",
+      "chapter": null,
+      "text": "Lý do rất thô sơ, và tôi thích nó chính vì nó thô sơ: hồi đó còn nhiều đồ ăn.",
+      "file": "voice/seg-87.mp3",
+      "start": 682.18,
+      "duration": 6.62
+    },
+    {
+      "id": "C77",
+      "chapter": null,
+      "text": "Các thiên hà thời trẻ ngập trong khí. Chúng chưa kịp đúc khí thành sao. Chúng còn đang va vào nhau liên tục, và mỗi cú va làm khí mất thăng bằng, đổ ập về phía trung tâm.",
+      "file": "voice/seg-88.mp3",
+      "start": 688.8,
+      "duration": 11.3
+    },
+    {
+      "id": "C78",
+      "chapter": null,
+      "text": "Ở trung tâm có một hố đen. Và một hố đen được rót khí vào sẽ làm đúng cái nó phải làm. Nó bật sáng.",
+      "file": "voice/seg-89.mp3",
+      "start": 700.1,
+      "duration": 7.63
+    },
+    {
+      "id": "C79",
+      "chapter": null,
+      "text": "Cả vũ trụ hồi ấy lốm đốm những ngọn đèn như thế. Không phải một vài. Hàng triệu.",
+      "file": "voice/seg-90.mp3",
+      "start": 707.73,
+      "duration": 6.37
+    },
+    {
+      "id": "C80",
+      "chapter": null,
+      "text": "Rồi khí hết.",
+      "file": "voice/seg-92.mp3",
+      "start": 715.1,
+      "duration": 1.39
+    },
+    {
+      "id": "C81",
+      "chapter": null,
+      "text": "Một phần bị nuốt. Một phần đông lại thành sao. Một phần bị chính cái đĩa bồi tụ thổi văng ra khỏi thiên hà, vì bức xạ mạnh tới mức nó đẩy bay chính nguồn thức ăn của mình.",
+      "file": "voice/seg-93.mp3",
+      "start": 716.49,
+      "duration": 11.57
+    },
+    {
+      "id": "C82",
+      "chapter": null,
+      "text": "Và khi dòng khí rót vào ngừng lại, cái đĩa cạn dần. Ma sát không còn gì để nung. Ánh sáng tắt.",
+      "file": "voice/seg-94.mp3",
+      "start": 728.06,
+      "duration": 7.11
+    },
+    {
+      "id": "C83",
+      "chapter": null,
+      "text": "Hố đen vẫn ở đó. Nó không mất đi cái gì cả. Nó chỉ thôi ăn.",
+      "file": "voice/seg-95.mp3",
+      "start": 735.17,
+      "duration": 5.4
+    },
+    {
+      "id": "C84",
+      "chapter": null,
+      "text": "Và đây là chỗ tôi phải ngồi xuống một lúc mới tiêu hoá nổi.",
+      "file": "voice/seg-97.mp3",
+      "start": 742.57,
+      "duration": 3.94
+    },
+    {
+      "id": "C85",
+      "chapter": null,
+      "text": "Cái chấm sáng tôi nhìn thấy tối nay. Ánh sáng của nó rời khỏi đĩa bồi tụ từ mười tỉ năm trước.",
+      "file": "voice/seg-98.mp3",
+      "start": 746.51,
+      "duration": 6.32
+    },
+    {
+      "id": "C86",
+      "chapter": null,
+      "text": "Mười tỉ năm trước, Mặt Trời chưa có. Trái Đất chưa có. Đám mây khí sau này cô đặc lại thành hệ Mặt Trời còn chưa hình thành, còn đang là bụi trôi ở một góc khác của thiên hà.",
+      "file": "voice/seg-99.mp3",
+      "start": 752.83,
+      "duration": 12.36
+    },
+    {
+      "id": "C87",
+      "chapter": null,
+      "text": "Chùm ánh sáng ấy đã lên đường. Nó băng qua khoảng trống. Nó đi ngang những thiên hà chưa từng có ai nhìn thấy. Suốt thời gian đó nó không dừng, không nghỉ, không mất năng lượng vào đâu ngoài chính sự giãn ra của không gian.",
+      "file": "voice/seg-100.mp3",
+      "start": 765.19,
+      "duration": 15
+    },
+    {
+      "id": "C88",
+      "chapter": null,
+      "text": "Nó vẫn đang đi trong lúc Mặt Trời châm lửa. Nó vẫn đang đi trong lúc Trái Đất nguội lại thành đá. Trong lúc đại dương đầy lên. Trong lúc thứ gì đó trong nước bắt đầu tự sao chép.",
+      "file": "voice/seg-101.mp3",
+      "start": 780.19,
+      "duration": 11.26
+    },
+    {
+      "id": "C89",
+      "chapter": null,
+      "text": "Nó vẫn đang đi trong lúc loài người học dùng lửa, học viết, dựng thành phố, chế ra kính thiên văn.",
+      "file": "voice/seg-102.mp3",
+      "start": 791.45,
+      "duration": 6.7
+    },
+    {
+      "id": "C90",
+      "chapter": null,
+      "text": "Và rồi nó tới, đúng vào tối nay, và dừng lại ở một tấm cảm biến.",
+      "file": "voice/seg-103.mp3",
+      "start": 798.15,
+      "duration": 4.92
+    },
+    {
+      "id": "C91",
+      "chapter": null,
+      "text": "Trong suốt mười tỉ năm ấy, cái quasar đã tắt.",
+      "file": "voice/seg-105.mp3",
+      "start": 804.57,
+      "duration": 3.32
+    },
+    {
+      "id": "C92",
+      "chapter": null,
+      "text": "Gần như chắc chắn. Vì cơn đói kiểu đó chỉ kéo dài được vài chục triệu năm, có khi vài trăm triệu, cùng lắm là thế. Mười tỉ năm dài gấp hàng chục tới hàng trăm lần một đời quasar.",
+      "file": "voice/seg-106.mp3",
+      "start": 807.89,
+      "duration": 12.38
+    },
+    {
+      "id": "C93",
+      "chapter": null,
+      "text": "Thiên hà quanh nó bây giờ chắc đã già. Khí đã thành sao, những ngôi sao nặng đã đốt hết nhiên liệu, ánh sáng còn lại ngả về màu đỏ của tuổi. Ở giữa nó là một hố đen im lìm, tối, không phát ra gì.",
+      "file": "voice/seg-107.mp3",
+      "start": 820.27,
+      "duration": 13.86
+    },
+    {
+      "id": "C94",
+      "chapter": null,
+      "text": "Nơi đó bây giờ là một chỗ yên tĩnh. Và tôi không có cách nào nhìn thấy chỗ yên tĩnh ấy. Ánh sáng của nó phải mất thêm mười tỉ năm nữa mới tới đây.",
+      "file": "voice/seg-108.mp3",
+      "start": 834.13,
+      "duration": 9.31
+    },
+    {
+      "id": "C95",
+      "chapter": null,
+      "text": "Thứ tôi đang nhìn không phải một vật thể. Đó là một tấm ảnh chụp một vật thể không còn tồn tại, và tấm ảnh ấy vẫn đang được rửa, từng giây một, ngay trong mắt tôi.",
+      "file": "voice/seg-109.mp3",
+      "start": 843.44,
+      "duration": 10.16
+    },
+    {
+      "id": "C96",
+      "chapter": null,
+      "text": "Cái bầu trời đầy quasar mà tôi tưởng mình đang quan sát thật ra là một phòng chiếu. Mỗi chấm là một cuộn phim cũ, quay xong từ lâu, đang chạy tới những khung hình cuối.",
+      "file": "voice/seg-110.mp3",
+      "start": 853.6,
+      "duration": 10.92
+    },
+    {
+      "id": "C97",
+      "chapter": null,
+      "text": "Và không ai tắt được máy chiếu. Ánh sáng đã phát ra rồi thì nó cứ đi, dù cái phát ra nó đã tắt từ trước khi có Trái Đất.",
+      "file": "voice/seg-111.mp3",
+      "start": 864.52,
+      "duration": 8.71
+    },
+    {
+      "id": "C98",
+      "chapter": null,
+      "text": "Có một điều tôi muốn nói rõ, vì nó dễ bị hiểu thành chuyện buồn, mà tôi không thấy nó buồn.",
+      "file": "voice/seg-113.mp3",
+      "start": 874.73,
+      "duration": 6.5
+    },
+    {
+      "id": "C99",
+      "chapter": null,
+      "text": "Cái quasar ấy không biến mất. Không có gì trong nó bị xoá đi. Khí nó chưa kịp nuốt vẫn còn trong thiên hà đó, có lẽ đã thành sao. Năng lượng nó phun ra vẫn đang đi, đúng cái chùm tôi vừa nhận.",
+      "file": "voice/seg-114.mp3",
+      "start": 881.23,
+      "duration": 12.93
+    },
+    {
+      "id": "C100",
+      "chapter": null,
+      "text": "Thứ kết thúc chỉ là cái điều kiện. Một hố đen, một dòng khí đủ mạnh rót vào, và một thời kỳ mà các thiên hà còn đủ đầy để rót.",
+      "file": "voice/seg-115.mp3",
+      "start": 894.16,
+      "duration": 8.75
+    },
+    {
+      "id": "C101",
+      "chapter": null,
+      "text": "Điều kiện đó đã qua. Phần lớn khí tự do trong vũ trụ giờ đã bị khoá lại trong các ngôi sao, hoặc trôi quá loãng, quá xa, để rơi về đâu đó.",
+      "file": "voice/seg-116.mp3",
+      "start": 902.91,
+      "duration": 9.89
+    },
+    {
+      "id": "C102",
+      "chapter": null,
+      "text": "Nên khi tôi nói quasar là chuyện của vũ trụ trẻ, tôi không nói về tuổi của những cái máy. Tôi nói về tuổi của bữa tiệc.",
+      "file": "voice/seg-117.mp3",
+      "start": 912.8,
+      "duration": 7.64
+    },
+    {
+      "id": "C103",
+      "chapter": null,
+      "text": "Bữa tiệc đã tàn từ lâu. Ánh đèn thì vẫn đang trên đường tới.",
+      "file": "voice/seg-118.mp3",
+      "start": 920.44,
+      "duration": 4.71
+    },
+    {
+      "id": "C104",
+      "chapter": "CHƯƠNG 4 — CON THÚ ĐANG NGỦ Ở NHÀ",
+      "text": "Tôi rời mắt khỏi cái chấm ấy và nhìn về một hướng khác trên bầu trời. Hướng chòm Nhân Mã.",
+      "file": "voice/seg-119.mp3",
+      "start": 925.15,
+      "duration": 6.34
+    },
+    {
+      "id": "C105",
+      "chapter": null,
+      "text": "Ở đó, cách tôi hai mươi sáu nghìn năm ánh sáng, sau nhiều lớp bụi dày tới mức mắt thường không xuyên qua nổi, là trung tâm dải Ngân Hà.",
+      "file": "voice/seg-120.mp3",
+      "start": 931.49,
+      "duration": 9.76
+    },
+    {
+      "id": "C106",
+      "chapter": null,
+      "text": "Và ở chính giữa trung tâm đó có một hố đen nặng bằng bốn triệu Mặt Trời.",
+      "file": "voice/seg-121.mp3",
+      "start": 941.25,
+      "duration": 4.56
+    },
+    {
+      "id": "C107",
+      "chapter": null,
+      "text": "Nó rất yên. Đó là điều đầu tiên các nhà thiên văn nói về nó. So với những gì một hố đen cỡ ấy có thể làm, nó gần như không làm gì cả.",
+      "file": "voice/seg-123.mp3",
+      "start": 947.31,
+      "duration": 9.72
+    },
+    {
+      "id": "C108",
+      "chapter": null,
+      "text": "Nó nhặt nhạnh chút khí loãng trôi ngang qua. Lâu lâu có một đám nhỏ sa vào và nó loé lên một chút, rồi lại im.",
+      "file": "voice/seg-124.mp3",
+      "start": 957.03,
+      "duration": 8.84
+    },
+    {
+      "id": "C109",
+      "chapter": null,
+      "text": "Ánh sáng nó phát ra chưa bằng một phần rất nhỏ của những gì một quasar phát ra trong một giây.",
+      "file": "voice/seg-125.mp3",
+      "start": 965.87,
+      "duration": 5.85
+    },
+    {
+      "id": "C110",
+      "chapter": null,
+      "text": "Nhưng nó không hỏng. Không có gì trong nó bị gãy.",
+      "file": "voice/seg-126.mp3",
+      "start": 971.72,
+      "duration": 3.56
+    },
+    {
+      "id": "C111",
+      "chapter": null,
+      "text": "Cái giếng hấp dẫn vẫn sâu y như cũ. Cơ chế vẫn nguyên vẹn. Đổ khí vào, đĩa sẽ hình thành, ma sát sẽ nung nó lên hàng triệu độ, và trung tâm dải Ngân Hà sẽ sáng lên.",
+      "file": "voice/seg-127.mp3",
+      "start": 975.28,
+      "duration": 12.09
+    },
+    {
+      "id": "C112",
+      "chapter": null,
+      "text": "Nó không tắt vì hỏng. Nó im vì đói.",
+      "file": "voice/seg-128.mp3",
+      "start": 987.37,
+      "duration": 3.5
+    },
+    {
+      "id": "C113",
+      "chapter": null,
+      "text": "Có nhiều lý do để nghĩ rằng nó đã từng không im. Hai bong bóng khí nóng khổng lồ trải ra phía trên và phía dưới mặt phẳng thiên hà, mỗi cái cao hàng chục nghìn năm ánh sáng, vẫn còn ở đó, như tàn dư của một cơn gì đó rất lớn đã thổi qua.",
+      "file": "voice/seg-130.mp3",
+      "start": 992.87,
+      "duration": 17.1
+    },
+    {
+      "id": "C114",
+      "chapter": null,
+      "text": "Chúng đối xứng qua tâm thiên hà. Chúng phồng ra đúng theo hai hướng mà một cái đĩa bồi tụ sẽ thổi ra nếu nó từng hoạt động. Và chúng vẫn còn nóng, nghĩa là cái thổi ra chúng không quá cũ theo thang thiên văn.",
+      "file": "voice/seg-131.mp3",
+      "start": 1009.97,
+      "duration": 13.93
+    },
+    {
+      "id": "C115",
+      "chapter": null,
+      "text": "Có một dấu vết nữa, rộng hơn, và tôi thấy nó thuyết phục hơn cả.",
+      "file": "voice/seg-132.mp3",
+      "start": 1023.9,
+      "duration": 4.69
+    },
+    {
+      "id": "C116",
+      "chapter": null,
+      "text": "Khi các nhà thiên văn cân hố đen ở tâm nhiều thiên hà khác nhau, họ phát hiện khối lượng hố đen luôn giữ một tỉ lệ khá đều với khối lượng phần lõi thiên hà bao quanh nó. Thiên hà lớn thì hố đen lớn. Thiên hà nhỏ thì hố đen nhỏ.",
+      "file": "voice/seg-133.mp3",
+      "start": 1028.59,
+      "duration": 16.42
+    },
+    {
+      "id": "C117",
+      "chapter": null,
+      "text": "Điều đó không tự nhiên xảy ra. Một hố đen chiếm một phần rất nhỏ khối lượng thiên hà, và lực hấp dẫn của nó không với tới được những vùng ngoài xa. Nó không có lý do gì để biết thiên hà quanh nó to cỡ nào.",
+      "file": "voice/seg-134.mp3",
+      "start": 1045.01,
+      "duration": 13.75
+    },
+    {
+      "id": "C118",
+      "chapter": null,
+      "text": "Trừ khi cả hai đã lớn lên cùng nhau, và cùng dừng lại vì cùng một lý do. Khí nuôi sao cũng chính là khí nuôi hố đen. Khi hố đen ăn đủ mạnh, bức xạ của nó thổi khí bay đi, và cả hai cùng đứt bữa.",
+      "file": "voice/seg-135.mp3",
+      "start": 1058.76,
+      "duration": 13.57
+    },
+    {
+      "id": "C119",
+      "chapter": null,
+      "text": "Cái tỉ lệ ấy có mặt ở gần như mọi thiên hà lớn được đo. Kể cả thiên hà của tôi.",
+      "file": "voice/seg-136.mp3",
+      "start": 1072.33,
+      "duration": 5.58
+    },
+    {
+      "id": "C120",
+      "chapter": null,
+      "text": "Chúng ta không biết chắc hố đen của chúng ta có từng sáng bằng những ngọn hải đăng ở rìa thời gian kia hay không. Nó có thể chỉ từng là một ngọn đèn hạng xoàng. Nhưng cơ chế thì chỉ có một. Và bốn triệu Mặt Trời khối lượng ấy không tự có. Chúng đã được ăn vào, từng đợt một.",
+      "file": "voice/seg-137.mp3",
+      "start": 1077.91,
+      "duration": 18.96
+    },
+    {
+      "id": "C121",
+      "chapter": null,
+      "text": "Nếu ở đâu đó rất xa, cách đây mười tỉ năm ánh sáng, có ai đó đang nhìn về phía này tối nay, họ sẽ không thấy tôi. Họ sẽ không thấy Trái Đất, không thấy Mặt Trời, không thấy dải Ngân Hà như tôi biết nó.",
+      "file": "voice/seg-139.mp3",
+      "start": 1098.37,
+      "duration": 14.32
+    },
+    {
+      "id": "C122",
+      "chapter": null,
+      "text": "Ánh sáng tới được chỗ họ là ánh sáng của mười tỉ năm trước. Của một thiên hà còn đang lớn, còn đầy khí, còn đang va vào những thiên hà khác.",
+      "file": "voice/seg-140.mp3",
+      "start": 1112.69,
+      "duration": 8.82
+    },
+    {
+      "id": "C123",
+      "chapter": null,
+      "text": "Và có thể, ở chỗ này, trên tấm kính của họ, dải Ngân Hà là một chấm.",
+      "file": "voice/seg-141.mp3",
+      "start": 1121.51,
+      "duration": 5.85
+    },
+    {
+      "id": "C124",
+      "chapter": null,
+      "text": "Một chấm nhỏ, mờ, lẫn giữa vài nghìn chấm khác. Sáng hơn cả một thiên hà. Và họ sẽ không có cách nào biết rằng nó đã tắt.",
+      "file": "voice/seg-142.mp3",
+      "start": 1127.36,
+      "duration": 9.26
+    },
+    {
+      "id": "C125",
+      "chapter": null,
+      "text": "Tôi nghĩ về điều đó khá lâu. Về việc một ngọn hải đăng và cái xác của ngọn hải đăng trông giống hệt nhau, nếu đứng đủ xa.",
+      "file": "voice/seg-144.mp3",
+      "start": 1138.62,
+      "duration": 7.81
+    },
+    {
+      "id": "C126",
+      "chapter": null,
+      "text": "Về việc cái vũ trụ tôi ngước lên nhìn không phải cái vũ trụ đang có. Nó là cái vũ trụ đã có, xếp chồng lên nhau theo từng lớp khoảng cách, lớp càng xa thì càng cũ.",
+      "file": "voice/seg-145.mp3",
+      "start": 1146.43,
+      "duration": 11.39
+    },
+    {
+      "id": "C127",
+      "chapter": null,
+      "text": "Và về việc, ở tâm thiên hà của chính tôi, một cỗ máy nặng bốn triệu Mặt Trời đang nằm đó, nguyên vẹn, lạnh, quay chậm trong bóng tối.",
+      "file": "voice/seg-146.mp3",
+      "start": 1157.82,
+      "duration": 9.14
+    },
+    {
+      "id": "C128",
+      "chapter": null,
+      "text": "Không chết. Không hỏng. Chỉ là hết đồ ăn, và đang đợi.",
+      "file": "voice/seg-147.mp3",
+      "start": 1166.96,
+      "duration": 5.01
+    }
+  ]
+}

@@ -1,0 +1,904 @@
+{
+  "slug": "photon-khong-gia",
+  "fps": 30,
+  "totalDuration": 1010.87,
+  "dryRun": true,
+  "narration": null,
+  "voice": {
+    "provider": "aimax-minimax",
+    "voice_id": "uv_5cee29af",
+    "voice_name": "uv_5cee29af",
+    "model": "speech-2.8-hd",
+    "speed": 0.96
+  },
+  "cues": [
+    {
+      "id": "C01",
+      "chapter": "CHƯƠNG 1 — MỘT THỨ ĐANG ĐẬP VÀO MẮT TÔI",
+      "text": "Tôi đang ngồi trong một căn phòng tối. Mắt nhắm.",
+      "file": null,
+      "start": 0,
+      "duration": 3.2
+    },
+    {
+      "id": "C02",
+      "chapter": null,
+      "text": "Và bây giờ tôi mở mắt ra.",
+      "file": null,
+      "start": 3.2,
+      "duration": 1.67
+    },
+    {
+      "id": "C03",
+      "chapter": null,
+      "text": "Trong khoảnh khắc đó, khoảng một triệu tỉ vật thể vừa đâm vào mặt tôi và chết.",
+      "file": null,
+      "start": 6.37,
+      "duration": 5.2
+    },
+    {
+      "id": "C04",
+      "chapter": null,
+      "text": "Tôi nói chết theo đúng nghĩa đen. Chúng không bật ra. Không đi tiếp. Không để lại mảnh vỡ. Chúng biến mất hoàn toàn, và tất cả những gì chúng từng là chuyển thành một tín hiệu nhỏ xíu chạy dọc dây thần kinh của tôi.",
+      "file": null,
+      "start": 11.57,
+      "duration": 14.33
+    },
+    {
+      "id": "C05",
+      "chapter": null,
+      "text": "Chúng tên là photon. Hạt ánh sáng.",
+      "file": null,
+      "start": 25.9,
+      "duration": 2.27
+    },
+    {
+      "id": "C06",
+      "chapter": null,
+      "text": "Và tôi muốn nói rõ một điều ngay từ đầu. Photon không phải loại hạt bay xuyên qua bạn rồi đi mất. Nó không phải một bóng ma lướt qua da thịt.",
+      "file": null,
+      "start": 28.17,
+      "duration": 9.4
+    },
+    {
+      "id": "C07",
+      "chapter": null,
+      "text": "Photon là thứ đi cả nửa vũ trụ để đâm vào bạn và dừng lại ở đó. Bạn là điểm cuối của nó. Bạn là nơi nó kết thúc.",
+      "file": null,
+      "start": 37.57,
+      "duration": 7.47
+    },
+    {
+      "id": "C08",
+      "chapter": null,
+      "text": "Mỗi lần bạn nhìn thấy bất cứ thứ gì, bạn vừa chấm dứt hàng triệu tỉ hạt. Nhìn là một hành động bạo lực, chỉ là nó êm ái đến mức ta không để ý.",
+      "file": null,
+      "start": 45.04,
+      "duration": 9.47
+    },
+    {
+      "id": "C09",
+      "chapter": null,
+      "text": "Nhưng chuyện tôi thật sự muốn kể không phải là cái chết của chúng. Mà là chuyện này.",
+      "file": null,
+      "start": 56.51,
+      "duration": 5.6
+    },
+    {
+      "id": "C10",
+      "chapter": null,
+      "text": "Không một photon nào trong số đó từng già đi. Không một giây nào.",
+      "file": null,
+      "start": 62.11,
+      "duration": 4.33
+    },
+    {
+      "id": "C11",
+      "chapter": null,
+      "text": "Có những hạt ánh sáng bay mười ba tỉ năm trước khi chạm vào võng mạc một con người. Mười ba tỉ năm — gấp ba lần tuổi của Mặt Trời. Và dọc theo đường đi của chính nó, khoảng thời gian giữa lúc nó rời đi và lúc nó đâm vào mắt tôi là con số không.",
+      "file": null,
+      "start": 66.44,
+      "duration": 16.27
+    },
+    {
+      "id": "C12",
+      "chapter": null,
+      "text": "Không phải rất ngắn. Không phải gần bằng không. Bằng không.",
+      "file": null,
+      "start": 82.71,
+      "duration": 3.93
+    },
+    {
+      "id": "C13",
+      "chapter": null,
+      "text": "Tôi mất rất lâu mới hiểu câu đó không phải một cách nói cường điệu. Nó là kết quả của một phép tính. Và khi hiểu ra rồi, tôi không còn nhìn bầu trời đêm theo cách cũ được nữa.",
+      "file": null,
+      "start": 86.64,
+      "duration": 11.67
+    },
+    {
+      "id": "C14",
+      "chapter": null,
+      "text": "Bởi vì ta quen coi ánh sáng là thứ chiếu sáng những vật khác. Nó là cái đèn. Nó là phông nền. Nó là thứ giúp ta thấy những thứ quan trọng hơn nó.",
+      "file": null,
+      "start": 98.31,
+      "duration": 9.67
+    },
+    {
+      "id": "C15",
+      "chapter": null,
+      "text": "Không ai coi ánh sáng là một vật thể có tiểu sử. Có nơi sinh. Có tuổi đời tính bằng nghìn năm. Có một cái chết cụ thể ở một địa chỉ cụ thể.",
+      "file": null,
+      "start": 107.98,
+      "duration": 9.27
+    },
+    {
+      "id": "C16",
+      "chapter": null,
+      "text": "Nhưng nó có tất cả những thứ đó. Nên tôi sẽ đi theo một hạt. Một hạt thôi. Từ chỗ nó sinh ra cho tới chỗ nó chết.",
+      "file": null,
+      "start": 117.25,
+      "duration": 7.53
+    },
+    {
+      "id": "C17",
+      "chapter": null,
+      "text": "Và nơi nó sinh ra là chỗ tệ nhất trong cả vũ trụ để bắt đầu một chuyến đi.",
+      "file": null,
+      "start": 124.78,
+      "duration": 4.93
+    },
+    {
+      "id": "C18",
+      "chapter": null,
+      "text": "Tệ nhất, vì nó là nơi duy nhất trong vũ trụ mà ánh sáng không được phép đi thẳng.",
+      "file": null,
+      "start": 129.71,
+      "duration": 5.4
+    },
+    {
+      "id": "C19",
+      "chapter": "CHƯƠNG 2 — MỘT TRĂM BẢY MƯƠI NGHÌN NĂM ĐỂ ĐI BẢY TRĂM NGHÌN CÂY SỐ",
+      "text": "Tâm Mặt Trời. Mười lăm triệu độ. Áp suất bằng hai trăm năm mươi tỉ lần khí quyển đang đè lên vai bạn lúc này.",
+      "file": null,
+      "start": 136.61,
+      "duration": 7.27
+    },
+    {
+      "id": "C20",
+      "chapter": null,
+      "text": "Ở đây không có nguyên tử nguyên vẹn. Nhiệt độ đã xé toạc mọi nguyên tử thành hạt nhân trần và electron tự do. Thứ vật chất đó gọi là plasma, và ở tâm Mặt Trời nó đặc hơn chì nhiều lần.",
+      "file": null,
+      "start": 143.88,
+      "duration": 12.27
+    },
+    {
+      "id": "C21",
+      "chapter": null,
+      "text": "Không phải lửa. Không phải một đám cháy. Một khối đặc quánh, nghẹt cứng, chật tới mức không thứ gì đi thẳng nổi quá một centimet.",
+      "file": null,
+      "start": 156.15,
+      "duration": 8.6
+    },
+    {
+      "id": "C22",
+      "chapter": null,
+      "text": "Hai hạt nhân hydro vừa dính vào nhau. Và trong phản ứng dây chuyền tiếp theo, một hạt ánh sáng ra đời.",
+      "file": null,
+      "start": 164.75,
+      "duration": 6.8
+    },
+    {
+      "id": "C23",
+      "chapter": null,
+      "text": "Ngay giây đầu tiên, nó lao đi với tốc độ ba trăm nghìn cây số một giây. Đó là tốc độ duy nhất nó biết. Nó không có số vòng tua nào khác.",
+      "file": null,
+      "start": 171.55,
+      "duration": 9.07
+    },
+    {
+      "id": "C24",
+      "chapter": null,
+      "text": "Và sau khoảng một phần nghìn của một centimet, nó đâm vào một electron.",
+      "file": null,
+      "start": 180.62,
+      "duration": 4.73
+    },
+    {
+      "id": "C25",
+      "chapter": null,
+      "text": "Bị hấp thụ. Rồi bắn ra lại, theo một hướng hoàn toàn ngẫu nhiên. Có thể ra ngoài. Có thể vào trong. Có thể ngang. Plasma không quan tâm.",
+      "file": null,
+      "start": 185.35,
+      "duration": 9.07
+    },
+    {
+      "id": "C26",
+      "chapter": null,
+      "text": "Rồi đâm tiếp. Rồi bắn ra. Rồi đâm tiếp.",
+      "file": null,
+      "start": 194.42,
+      "duration": 2.6
+    },
+    {
+      "id": "C27",
+      "chapter": null,
+      "text": "Bên trong Mặt Trời, một hạt ánh sáng không bay. Nó bị nhồi. Mỗi bước tự do của nó dài chưa tới một centimet, rồi lại tông vào thứ gì đó.",
+      "file": null,
+      "start": 197.02,
+      "duration": 9.07
+    },
+    {
+      "id": "C28",
+      "chapter": null,
+      "text": "Mỗi lần va chạm, thứ bắn ra thường không còn là hạt cũ nữa. Nó bị nuốt, rồi thứ khác được nhả ra, mang theo phần năng lượng đó. Cái thoát khỏi bề mặt Mặt Trời là người thừa kế cuối cùng của một chuỗi dài không đếm xuể.",
+      "file": null,
+      "start": 206.09,
+      "duration": 14.53
+    },
+    {
+      "id": "C29",
+      "chapter": null,
+      "text": "Thứ được truyền tay qua chuỗi đó là năng lượng. Và năng lượng thì kiên nhẫn. Nó cứ bị chuyền, bị chuyền, và rất chậm, nó ngấm dần ra phía ngoài.",
+      "file": null,
+      "start": 220.62,
+      "duration": 9.6
+    },
+    {
+      "id": "C30",
+      "chapter": null,
+      "text": "Các nhà vật lý gọi kiểu di chuyển này là bước đi của người say. Mỗi bước đều đi rất nhanh và rất dứt khoát, nhưng hướng thì hoàn toàn hú họa. Người say đi cả đêm vẫn quanh quẩn cách cột đèn có vài mét.",
+      "file": null,
+      "start": 230.22,
+      "duration": 13.4
+    },
+    {
+      "id": "C31",
+      "chapter": null,
+      "text": "Có một quy luật lạnh lùng ở đây. Khi hướng đi là ngẫu nhiên, muốn tiến xa gấp mười lần thì phải đi gấp một trăm lần. Xa gấp một nghìn lần thì phải đi gấp một triệu.",
+      "file": null,
+      "start": 243.62,
+      "duration": 10.93
+    },
+    {
+      "id": "C32",
+      "chapter": null,
+      "text": "Nỗ lực không cộng lại. Nó bị chia cho sự lộn xộn.",
+      "file": null,
+      "start": 254.55,
+      "duration": 3.27
+    },
+    {
+      "id": "C33",
+      "chapter": null,
+      "text": "Từ tâm Mặt Trời ra tới bề mặt chỉ có bảy trăm nghìn cây số. Với tốc độ ánh sáng, đi thẳng thì mất hai giây rưỡi.",
+      "file": null,
+      "start": 257.82,
+      "duration": 7.47
+    },
+    {
+      "id": "C34",
+      "chapter": null,
+      "text": "Năng lượng ấy mất khoảng một trăm bảy mươi nghìn năm.",
+      "file": null,
+      "start": 266.79,
+      "duration": 3.53
+    },
+    {
+      "id": "C35",
+      "chapter": null,
+      "text": "Một trăm bảy mươi nghìn năm để đi bảy trăm nghìn cây số. Từng đoạn một, nó vẫn luôn chạy đúng tốc độ ánh sáng. Vấn đề là tổng quãng đường nó thật sự đi còn dài hơn cả dải Ngân Hà, chỉ để nhích ra khỏi một quả cầu.",
+      "file": null,
+      "start": 270.32,
+      "duration": 14.2
+    },
+    {
+      "id": "C36",
+      "chapter": null,
+      "text": "Tôi thích dừng lại ở con số đó. Một trăm bảy mươi nghìn năm trước, tổ tiên chúng ta vẫn còn ở châu Phi. Chưa có nông nghiệp, chưa có chữ viết, chưa có gì ta gọi là lịch sử.",
+      "file": null,
+      "start": 284.52,
+      "duration": 11.47
+    },
+    {
+      "id": "C37",
+      "chapter": null,
+      "text": "Cái nắng đang làm ấm mu bàn tay bạn hôm nay mang theo năng lượng đã được thắp lên từ trước khi loài người rời khỏi cái nôi của mình.",
+      "file": null,
+      "start": 295.99,
+      "duration": 8.8
+    },
+    {
+      "id": "C38",
+      "chapter": null,
+      "text": "Nếu ngay lúc này lõi Mặt Trời tắt ngóm, bề mặt của nó vẫn sẽ sáng thêm hàng chục nghìn năm nữa. Kho năng lượng đang trên đường đi đủ lớn để không một thế hệ nào kịp nhận ra có chuyện gì đã xảy ra.",
+      "file": null,
+      "start": 304.79,
+      "duration": 13.07
+    },
+    {
+      "id": "C39",
+      "chapter": null,
+      "text": "Rồi tới một độ sâu nhất định, plasma loãng ra. Nó không còn nhốt được ánh sáng nữa. Ở lớp cuối cùng, mật độ đã đủ thấp để một hạt ánh sáng có thể nhìn thấy đường ra.",
+      "file": null,
+      "start": 319.36,
+      "duration": 11
+    },
+    {
+      "id": "C40",
+      "chapter": null,
+      "text": "Cái lớp đó chính là thứ bạn thấy khi nhìn Mặt Trời. Không phải một bề mặt cứng. Chỉ là cái độ sâu mà ở đó ánh sáng cuối cùng cũng được buông tha.",
+      "file": null,
+      "start": 330.36,
+      "duration": 9.67
+    },
+    {
+      "id": "C41",
+      "chapter": null,
+      "text": "Và nó ra.",
+      "file": null,
+      "start": 340.03,
+      "duration": 0.8
+    },
+    {
+      "id": "C42",
+      "chapter": null,
+      "text": "Không có tiếng bung ra. Không có gì đánh dấu khoảnh khắc đó. Chỉ là lần đầu tiên sau một trăm bảy mươi nghìn năm, nó lao đi mà không có gì chặn lại.",
+      "file": null,
+      "start": 340.83,
+      "duration": 9.87
+    },
+    {
+      "id": "C43",
+      "chapter": null,
+      "text": "Phía trước là một trăm năm mươi triệu cây số trống rỗng.",
+      "file": null,
+      "start": 350.7,
+      "duration": 3.73
+    },
+    {
+      "id": "C44",
+      "chapter": null,
+      "text": "Nó vượt qua trong tám phút hai mươi giây.",
+      "file": null,
+      "start": 354.43,
+      "duration": 2.73
+    },
+    {
+      "id": "C45",
+      "chapter": null,
+      "text": "Phần dài nhất của chuyến đi nằm gọn trong bảy trăm nghìn cây số đầu tiên. Phần còn lại — cả cái khoảng cách mà ta vẫn gọi là xa vời vợi giữa Mặt Trời và Trái Đất — chỉ là tám phút cuối cùng.",
+      "file": null,
+      "start": 359.16,
+      "duration": 12.67
+    },
+    {
+      "id": "C46",
+      "chapter": null,
+      "text": "Gần như toàn bộ thời gian tồn tại của nó là bị kẹt trong phòng. Cái đoạn băng qua không gian mà ta vẫn tưởng tượng chỉ là một mẩu vụn ở cuối.",
+      "file": null,
+      "start": 371.83,
+      "duration": 9.4
+    },
+    {
+      "id": "C47",
+      "chapter": null,
+      "text": "Nhưng tất cả những con số đó đều là thời gian của tôi. Tôi đếm bằng đồng hồ của tôi, đứng ở đây. Một trăm bảy mươi nghìn năm là con số tôi đo được.",
+      "file": null,
+      "start": 381.23,
+      "duration": 9.8
+    },
+    {
+      "id": "C48",
+      "chapter": null,
+      "text": "Còn dọc theo chính đường đi của tám phút cuối cùng ấy, mọi con số vừa rồi đều không tồn tại.",
+      "file": null,
+      "start": 391.03,
+      "duration": 6.13
+    },
+    {
+      "id": "C49",
+      "chapter": "CHƯƠNG 3 — KHOẢNG CÁCH BẰNG KHÔNG",
+      "text": "Để hiểu tại sao, tôi phải nói về một thứ mà photon thiếu. Nó không có khối lượng.",
+      "file": null,
+      "start": 399.16,
+      "duration": 5.4
+    },
+    {
+      "id": "C50",
+      "chapter": null,
+      "text": "Mọi thứ có khối lượng đều có quyền chọn. Bạn có thể đứng yên, đi bộ, hay phóng phi thuyền. Bạn có thể tiến gần tốc độ ánh sáng, nhưng càng gần thì càng tốn năng lượng, và bạn sẽ không bao giờ chạm tới.",
+      "file": null,
+      "start": 404.56,
+      "duration": 13.4
+    },
+    {
+      "id": "C51",
+      "chapter": null,
+      "text": "Photon không có lựa chọn nào hết. Không khối lượng nghỉ nghĩa là không có trạng thái nghỉ. Không thể đi chậm hơn. Không thể đi nhanh hơn. Không thể dừng lại. Từ giây nó sinh ra tới giây nó bị nuốt, nó chỉ có đúng một tốc độ.",
+      "file": null,
+      "start": 417.96,
+      "duration": 14.93
+    },
+    {
+      "id": "C52",
+      "chapter": null,
+      "text": "Và đây là chỗ thuyết tương đối bước vào.",
+      "file": null,
+      "start": 432.89,
+      "duration": 2.67
+    },
+    {
+      "id": "C53",
+      "chapter": null,
+      "text": "Einstein chỉ ra rằng thời gian không phải một dòng chảy chung cho tất cả. Vật càng đi nhanh so với bạn, đồng hồ của nó chạy càng chậm dưới mắt bạn.",
+      "file": null,
+      "start": 435.56,
+      "duration": 9.8
+    },
+    {
+      "id": "C54",
+      "chapter": null,
+      "text": "Chuyện này đã được đo. Người ta mang đồng hồ nguyên tử bay vòng quanh Trái Đất, rồi đem xuống so với đồng hồ để ở mặt đất. Chúng lệch nhau, đúng bằng lượng mà phép tính dự đoán.",
+      "file": null,
+      "start": 445.36,
+      "duration": 11.8
+    },
+    {
+      "id": "C55",
+      "chapter": null,
+      "text": "Định vị vệ tinh trong điện thoại bạn cũng phải chỉnh theo hiệu ứng này mỗi ngày. Không chỉnh thì trong một ngày, bản đồ sẽ lệch khoảng mười cây số.",
+      "file": null,
+      "start": 457.16,
+      "duration": 9.8
+    },
+    {
+      "id": "C56",
+      "chapter": null,
+      "text": "Nên đây không phải triết học. Đây là kỹ thuật.",
+      "file": null,
+      "start": 466.96,
+      "duration": 3.07
+    },
+    {
+      "id": "C57",
+      "chapter": null,
+      "text": "Bây giờ đẩy nó tới cùng. Một con tàu đi bằng chín mươi chín phần trăm tốc độ ánh sáng, đồng hồ trên đó chạy chậm hơn đồng hồ của tôi khoảng bảy lần. Chín mươi chín phẩy chín chín phần trăm thì chậm hơn bảy mươi lần.",
+      "file": null,
+      "start": 471.53,
+      "duration": 14.33
+    },
+    {
+      "id": "C58",
+      "chapter": null,
+      "text": "Càng tiến sát tốc độ ánh sáng, con số đó càng lao lên. Và ngay tại đúng tốc độ ánh sáng, nó không lớn nữa. Nó rơi ra ngoài mọi giới hạn.",
+      "file": null,
+      "start": 485.86,
+      "duration": 9.07
+    },
+    {
+      "id": "C59",
+      "chapter": null,
+      "text": "Cái đại lượng mà vật lý dùng để đo quãng thời gian một vật thật sự trải qua dọc theo đường đi của nó, người ta gọi là thời gian riêng. Đồng hồ đeo tay của chính nó.",
+      "file": null,
+      "start": 494.93,
+      "duration": 10.93
+    },
+    {
+      "id": "C60",
+      "chapter": null,
+      "text": "Dọc theo đường đi của một hạt ánh sáng, thời gian riêng bằng không.",
+      "file": null,
+      "start": 505.86,
+      "duration": 4.47
+    },
+    {
+      "id": "C61",
+      "chapter": null,
+      "text": "Tôi cần cẩn thận ở đây, vì đây là chỗ dễ nói sai nhất. Vật lý không cho phép tôi ngồi lên lưng một photon và nhìn ra. Không tồn tại hệ quy chiếu gắn với ánh sáng — thử dựng một cái là các phương trình sụp ngay. Photon không phải một người quan sát.",
+      "file": null,
+      "start": 512.33,
+      "duration": 16.53
+    },
+    {
+      "id": "C62",
+      "chapter": null,
+      "text": "Nên khi tôi nói với nó thì không có thời gian, tôi không mô tả một trải nghiệm. Tôi mô tả một con số.",
+      "file": null,
+      "start": 528.86,
+      "duration": 6.73
+    },
+    {
+      "id": "C63",
+      "chapter": null,
+      "text": "Và con số ấy hoàn toàn xác định. Mọi người quan sát trong vũ trụ, dù bay theo hướng nào, đều tính ra cùng một giá trị. Đó là khoảng cách thời-không giữa hai đầu đường đi của nó.",
+      "file": null,
+      "start": 535.59,
+      "duration": 11.8
+    },
+    {
+      "id": "C64",
+      "chapter": null,
+      "text": "Giữa điểm ánh sáng được phát ra và điểm nó bị hấp thụ, khoảng cách ấy bằng không.",
+      "file": null,
+      "start": 547.39,
+      "duration": 5.4
+    },
+    {
+      "id": "C65",
+      "chapter": null,
+      "text": "Với mọi thứ khác, hai sự kiện đó cách nhau. Bằng không gian, bằng thời gian, hoặc cả hai. Với một đường đi của ánh sáng, chúng không cách nhau chút nào. Chúng chạm vào nhau.",
+      "file": null,
+      "start": 552.79,
+      "duration": 11.53
+    },
+    {
+      "id": "C66",
+      "chapter": null,
+      "text": "Nơi photon sinh ra và nơi photon chết là cùng một điểm trong cấu trúc của thời-không. Cái vòng cung mười ba tỉ năm nằm giữa — cái vòng cung mà tôi đo được, mà tôi thấy là dài khủng khiếp — trên chính sợi chỉ ấy có độ dài bằng không.",
+      "file": null,
+      "start": 564.32,
+      "duration": 15.47
+    },
+    {
+      "id": "C67",
+      "chapter": null,
+      "text": "Tôi thử hình dung nó thế này. Vũ trụ có một hệ thống bưu chính. Có những kiện hàng đi ba mươi nghìn năm, có kiện đi mười ba tỉ năm.",
+      "file": null,
+      "start": 581.79,
+      "duration": 8.73
+    },
+    {
+      "id": "C68",
+      "chapter": null,
+      "text": "Nhưng con tem nào cũng ghi đúng một ngày. Ngày gửi và ngày nhận trùng khít. Mọi bưu kiện ánh sáng trong lịch sử vũ trụ đều được giao ngay lập tức.",
+      "file": null,
+      "start": 590.52,
+      "duration": 9.73
+    },
+    {
+      "id": "C69",
+      "chapter": null,
+      "text": "Chỉ có người nhận là phải chờ.",
+      "file": null,
+      "start": 600.25,
+      "duration": 2
+    },
+    {
+      "id": "C70",
+      "chapter": null,
+      "text": "Và người nhận thì chờ rất lâu. Chuyện này xảy ra mỗi đêm, trên đầu chúng ta, và ta gọi nó bằng cái tên bình thường đến mức quên mất nó lạ thế nào.",
+      "file": null,
+      "start": 603.75,
+      "duration": 9.73
+    },
+    {
+      "id": "C71",
+      "chapter": null,
+      "text": "Khi tôi nhìn Mặt Trời, tôi không nhìn thấy Mặt Trời. Tôi thấy Mặt Trời của tám phút hai mươi giây trước. Nếu ngay lúc này nó tắt, tôi sẽ không hay biết gì suốt tám phút. Vẫn thấy nắng. Vẫn thấy trời xanh.",
+      "file": null,
+      "start": 613.48,
+      "duration": 13.6
+    },
+    {
+      "id": "C72",
+      "chapter": null,
+      "text": "Ngôi sao gần nhất ngoài Mặt Trời là Proxima Centauri. Ánh sáng của nó mất hơn bốn năm để tới đây. Nhìn nó là nhìn một đêm cách đây bốn năm.",
+      "file": null,
+      "start": 627.08,
+      "duration": 9.27
+    },
+    {
+      "id": "C73",
+      "chapter": null,
+      "text": "Sao Bắc Đẩu mà bao thế hệ thủy thủ dùng để tìm đường — ánh sáng của nó rời khỏi đó từ nhiều thế kỷ trước, trước cả khi ông tổ năm đời của bạn ra đời.",
+      "file": null,
+      "start": 636.35,
+      "duration": 9.93
+    },
+    {
+      "id": "C74",
+      "chapter": null,
+      "text": "Thiên hà Tiên Nữ, cái vệt mờ mắt thường vẫn thấy được ở nơi trời thật tối: hai triệu rưỡi năm. Ánh sáng đó lên đường khi trên Trái Đất chưa ai biết dùng lửa.",
+      "file": null,
+      "start": 646.28,
+      "duration": 10.47
+    },
+    {
+      "id": "C75",
+      "chapter": null,
+      "text": "Bầu trời đêm không phải một bức ảnh chụp. Nó là một tấm ghép của hàng nghìn thời điểm khác nhau, dán cạnh nhau, và mắt bạn nhìn tất cả cùng một lúc.",
+      "file": null,
+      "start": 656.75,
+      "duration": 9.87
+    },
+    {
+      "id": "C76",
+      "chapter": null,
+      "text": "Ngôi sao bên trái là của năm ngoái. Ngôi bên phải là của thời trung cổ. Cái chấm mờ ở giữa là của thời chưa có con người. Và không có gì báo cho bạn biết chúng cách nhau bao lâu.",
+      "file": null,
+      "start": 666.62,
+      "duration": 11.87
+    },
+    {
+      "id": "C77",
+      "chapter": null,
+      "text": "Không có cái gọi là bầu trời ngay bây giờ. Chưa bao giờ có. Nhìn xa luôn luôn là nhìn về quá khứ, và không cách nào tránh được, bởi vì không có tin tức nào chạy nhanh hơn ánh sáng.",
+      "file": null,
+      "start": 678.49,
+      "duration": 12
+    },
+    {
+      "id": "C78",
+      "chapter": null,
+      "text": "Và nếu tôi đi tới tận cùng của trò này, tới thứ ánh sáng cũ nhất còn có thể bắt được, tôi tới một thứ đang bao quanh chúng ta ngay lúc này mà ta không thấy.",
+      "file": null,
+      "start": 692.49,
+      "duration": 10.4
+    },
+    {
+      "id": "C79",
+      "chapter": null,
+      "text": "Trong gần bốn trăm nghìn năm đầu, vũ trụ nóng tới mức toàn bộ nó là một khối plasma mờ đục. Ánh sáng không đi được đâu cả. Nó bị nhồi y hệt trong lõi Mặt Trời, chỉ khác là bị nhồi ở khắp mọi nơi cùng lúc.",
+      "file": null,
+      "start": 702.89,
+      "duration": 13.6
+    },
+    {
+      "id": "C80",
+      "chapter": null,
+      "text": "Rồi vũ trụ nguội xuống đủ để các electron bám vào hạt nhân. Sương mù tan. Và toàn bộ ánh sáng bị giam giữ suốt bốn trăm nghìn năm ấy được thả ra cùng một lúc, ở mọi điểm trong không gian.",
+      "file": null,
+      "start": 716.49,
+      "duration": 12.47
+    },
+    {
+      "id": "C81",
+      "chapter": null,
+      "text": "Ánh sáng đó chưa bao giờ dừng. Nó vẫn đang bay. Không gian giãn ra và kéo giãn nó theo, từ chói lòa thành vi sóng lạnh chỉ còn cách độ không tuyệt đối chưa tới ba độ.",
+      "file": null,
+      "start": 728.96,
+      "duration": 11.07
+    },
+    {
+      "id": "C82",
+      "chapter": null,
+      "text": "Nó đang đi qua căn phòng bạn ngồi, ngay lúc này, từ mọi hướng. Cái tivi analog ngày xưa mất sóng và hiện ra màn hình đầy hạt nhiễu — một phần nhỏ của đám lấm tấm đó chính là thứ ánh sáng ấy, tới đích sau mười ba tỉ năm và chết trong cái ăng-ten.",
+      "file": null,
+      "start": 740.03,
+      "duration": 16.33
+    },
+    {
+      "id": "C83",
+      "chapter": null,
+      "text": "Người ta tìm ra nó vì hai kỹ sư không sao dọn sạch được tiếng rè trong một cái ăng-ten khổng lồ. Họ đuổi cả chim bồ câu làm tổ trong đó. Tiếng rè vẫn còn, đều nhau ở mọi hướng. Vì nó không đến từ hướng nào cả.",
+      "file": null,
+      "start": 756.36,
+      "duration": 13.93
+    },
+    {
+      "id": "C84",
+      "chapter": null,
+      "text": "Với chúng, khoảng thời gian giữa buổi bình minh đó và cái ăng-ten cũ kỹ kia cũng bằng không.",
+      "file": null,
+      "start": 770.29,
+      "duration": 6.13
+    },
+    {
+      "id": "C85",
+      "chapter": "CHƯƠNG 4 — THỨ KHÔNG BAO GIỜ GIÀ",
+      "text": "Tôi quay lại căn phòng tối lúc đầu.",
+      "file": null,
+      "start": 778.42,
+      "duration": 2.33
+    },
+    {
+      "id": "C86",
+      "chapter": null,
+      "text": "Tôi đã nghĩ suốt một thời gian dài rằng vũ trụ rất rộng, và đó là lý do khiến nó buồn. Rộng nghĩa là xa. Xa nghĩa là không chạm tới được. Mười ba tỉ năm ánh sáng là một bản án.",
+      "file": null,
+      "start": 780.75,
+      "duration": 11.73
+    },
+    {
+      "id": "C87",
+      "chapter": null,
+      "text": "Nhưng cái khoảng cách đó chỉ tồn tại với những thứ có khối lượng. Với chúng tôi, những thứ nặng nề, bị buộc phải đi chậm hơn ánh sáng — với chúng tôi thì vũ trụ mới mênh mông.",
+      "file": null,
+      "start": 792.48,
+      "duration": 11.67
+    },
+    {
+      "id": "C88",
+      "chapter": null,
+      "text": "Với ánh sáng thì không có khoảng cách nào cả. Không có mười ba tỉ năm. Không có một trăm bảy mươi nghìn năm trong lòng Mặt Trời. Không có tám phút hai mươi giây.",
+      "file": null,
+      "start": 804.15,
+      "duration": 10.73
+    },
+    {
+      "id": "C89",
+      "chapter": null,
+      "text": "Cái vũ trụ mà chúng ta thấy là bao la, với ánh sáng thì nó là một điểm.",
+      "file": null,
+      "start": 814.88,
+      "duration": 4.73
+    },
+    {
+      "id": "C90",
+      "chapter": null,
+      "text": "Có một hệ quả nhỏ mà tôi mãi mới nhận ra. Photon không già đi, cho nên nó cũng không có tuổi. Nó không mòn. Không phân rã. Không rệu rã theo năm tháng.",
+      "file": null,
+      "start": 821.61,
+      "duration": 10.07
+    },
+    {
+      "id": "C91",
+      "chapter": null,
+      "text": "Mọi thứ khác đều có một cách để hỏng dần. Sắt gỉ. Sao cạn nhiên liệu. Nguyên tử phóng xạ rã ra. Còn ánh sáng, theo mọi phép đo ta có, thì không.",
+      "file": null,
+      "start": 831.68,
+      "duration": 9.6
+    },
+    {
+      "id": "C92",
+      "chapter": null,
+      "text": "Một hạt ánh sáng có thể bay tới tận cùng thời gian mà vẫn nguyên vẹn như giây nó sinh ra.",
+      "file": null,
+      "start": 841.28,
+      "duration": 5.93
+    },
+    {
+      "id": "C93",
+      "chapter": null,
+      "text": "Chỉ có một cách để nó kết thúc. Nó phải đâm vào thứ gì đó.",
+      "file": null,
+      "start": 847.21,
+      "duration": 3.87
+    },
+    {
+      "id": "C94",
+      "chapter": null,
+      "text": "Nó phải gặp một nguyên tử, và bị nuốt trọn. Không có cái chết vì tuổi già cho ánh sáng. Chỉ có va chạm.",
+      "file": null,
+      "start": 851.08,
+      "duration": 6.87
+    },
+    {
+      "id": "C95",
+      "chapter": null,
+      "text": "Và điều đó biến mắt bạn thành một thứ rất lạ. Mắt bạn là nơi các cuộc đời kết thúc.",
+      "file": null,
+      "start": 857.95,
+      "duration": 5.53
+    },
+    {
+      "id": "C96",
+      "chapter": null,
+      "text": "Không phải nơi chúng đi ngang qua. Nơi chúng dừng.",
+      "file": null,
+      "start": 863.48,
+      "duration": 3.33
+    },
+    {
+      "id": "C97",
+      "chapter": null,
+      "text": "Một hạt ánh sáng đi mười ba tỉ năm, băng qua những khoảng trống mà không gì khác từng đi qua, không va vào một hạt bụi nào, không lệch một lần nào. Rồi nó tới đây, và dừng lại ở một tế bào ẩm ướt sau con ngươi của một sinh vật trên một hành tinh đá.",
+      "file": null,
+      "start": 866.81,
+      "duration": 16.6
+    },
+    {
+      "id": "C98",
+      "chapter": null,
+      "text": "Cả chuyến đi đó chỉ để làm một việc duy nhất: bẻ cong một phân tử. Một phân tử nhỏ xíu trong võng mạc đổi hình dạng. Chỉ vậy thôi. Rồi tế bào phát ra một xung điện, và bạn thấy một chấm sáng.",
+      "file": null,
+      "start": 883.41,
+      "duration": 12.73
+    },
+    {
+      "id": "C99",
+      "chapter": null,
+      "text": "Một phân tử đổi hình. Đó là toàn bộ cái giá mà vũ trụ trả để bạn biết rằng ngoài kia có gì.",
+      "file": null,
+      "start": 896.14,
+      "duration": 6.07
+    },
+    {
+      "id": "C100",
+      "chapter": null,
+      "text": "Tôi nghĩ đây là chỗ duy nhất trong vật lý mà chữ gặp gỡ dùng đúng nghĩa đen.",
+      "file": null,
+      "start": 903.71,
+      "duration": 5.07
+    },
+    {
+      "id": "C101",
+      "chapter": null,
+      "text": "Bởi vì với phía bên kia, không hề có chuyến đi nào. Ngôi sao phát ra nó và mắt bạn nhận nó là cùng một khoảnh khắc, trên cùng một sợi chỉ. Cái khoảng giữa là chuyện của chúng ta, không phải chuyện của nó.",
+      "file": null,
+      "start": 908.78,
+      "duration": 13.6
+    },
+    {
+      "id": "C102",
+      "chapter": null,
+      "text": "Ngôi sao có thể đã tắt từ lâu. Đã nổ, đã co lại, đã nguội thành một cục than không ai thấy nữa. Điều đó không thay đổi được gì. Trên sợi chỉ đó, ngôi sao vẫn đang cháy ở đúng cái đầu kia, ngay lúc đầu này chạm vào bạn.",
+      "file": null,
+      "start": 922.38,
+      "duration": 14.53
+    },
+    {
+      "id": "C103",
+      "chapter": null,
+      "text": "Nên tối nay, nếu bạn ra ngoài, hãy làm một việc rất nhỏ.",
+      "file": null,
+      "start": 938.91,
+      "duration": 3.73
+    },
+    {
+      "id": "C104",
+      "chapter": null,
+      "text": "Nhắm mắt lại mười giây. Đứng yên. Rồi mở mắt và chọn một ngôi sao. Đừng chọn ngôi sáng nhất, chọn một ngôi mờ, loại phải nhìn hơi lệch đi mới thấy rõ.",
+      "file": null,
+      "start": 942.64,
+      "duration": 10
+    },
+    {
+      "id": "C105",
+      "chapter": null,
+      "text": "Ngôi sao đó có thể cách bạn vài trăm năm ánh sáng. Vài trăm năm trước, trên bề mặt một quả cầu plasma, một hạt sáng thoát ra khỏi lớp vỏ cuối cùng và lao vào bóng tối.",
+      "file": null,
+      "start": 952.64,
+      "duration": 11.13
+    },
+    {
+      "id": "C106",
+      "chapter": null,
+      "text": "Trước đó nó đã mất hàng chục nghìn năm chỉ để ra được tới bề mặt ấy. Phần khó nhất của chuyến đi, nó đã đi xong từ trước khi bất kỳ ai trong dòng họ bạn có tên.",
+      "file": null,
+      "start": 963.77,
+      "duration": 10.67
+    },
+    {
+      "id": "C107",
+      "chapter": null,
+      "text": "Suốt vài trăm năm sau đó, các đế chế dựng lên rồi sập xuống. Các cuộc chiến bắt đầu và kết thúc. Tổ tiên bạn sinh ra, sống, chết, và sinh ra bạn.",
+      "file": null,
+      "start": 974.44,
+      "duration": 9.67
+    },
+    {
+      "id": "C108",
+      "chapter": null,
+      "text": "Và suốt chừng ấy, nó bay thẳng, không nghỉ, không chậm lại một phần triệu giây, không già đi một khắc nào, cho tới lúc nó tìm thấy hai centimet vuông ẩm ướt trên khuôn mặt bạn và dừng lại ở đó mãi mãi.",
+      "file": null,
+      "start": 984.11,
+      "duration": 13.4
+    },
+    {
+      "id": "C109",
+      "chapter": null,
+      "text": "Bạn không nhìn thấy ngôi sao. Bạn chạm vào nó. Một mảnh của nó đang ở trong mắt bạn, và đó là chỗ nó dừng lại.",
+      "file": null,
+      "start": 999.01,
+      "duration": 7.33
+    },
+    {
+      "id": "C110",
+      "chapter": null,
+      "text": "Với bạn, nó đã đi vài trăm năm để tới đây.",
+      "file": null,
+      "start": 1006.34,
+      "duration": 2.8
+    },
+    {
+      "id": "C111",
+      "chapter": null,
+      "text": "Với nó, nó vừa mới rời đi.",
+      "file": null,
+      "start": 1009.14,
+      "duration": 1.73
+    }
+  ]
+}

@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, height=1080">
+<title>Nguyên tử rỗng — vì sao tôi chưa bao giờ thật sự chạm vào gì — HyperFrames</title>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{width:1920px;height:1080px;overflow:hidden;background:#08080a;font-family:"Segoe UI",-apple-system,Roboto,sans-serif;}
+  #root{position:relative;width:1920px;height:1080px;}
+  #c{position:absolute;inset:0;display:block;z-index:0;}
+  #vig{position:absolute;inset:0;pointer-events:none;z-index:6;background:radial-gradient(ellipse at center,rgba(0,0,0,0) 44%,rgba(8,8,10,.78) 100%);}
+  #chap{position:absolute;left:50%;top:6.4%;transform:translateX(-50%);z-index:18;color:#9fc0ff;font-size:26px;font-weight:600;letter-spacing:6px;text-transform:uppercase;opacity:0;text-shadow:0 2px 18px rgba(0,0,0,.95);white-space:nowrap;}
+  #sub{position:absolute;left:50%;bottom:8.5%;transform:translateX(-50%);z-index:20;width:min(1400px,86%);text-align:center;color:#f2f4f8;font-size:40px;font-weight:600;line-height:1.4;text-shadow:0 2px 18px rgba(0,0,0,.96),0 0 3px rgba(0,0,0,.96);}
+  #err{position:absolute;left:12px;top:12px;z-index:99;color:#ff9090;background:rgba(0,0,0,.8);padding:8px 10px;font:12px/1.5 monospace;max-width:90%;white-space:pre-wrap;border-radius:8px;display:none;}
+</style>
+</head>
+<body>
+<div data-hf-id="hf-root" id="root" data-composition-id="nguyen-tu-rong" data-start="0" data-duration="745.49" data-width="1920" data-height="1080">
+  <canvas data-hf-id="hf-c" id="c" class="clip" data-start="0.01" data-duration="745.49" data-track-index="0"></canvas>
+  <audio data-hf-id="hf-narr" id="narr" class="clip" data-start="0" data-duration="745.49" data-track-index="1" src="projects/nguyen-tu-rong/voice/narration_mixed.mp3"></audio>
+  <div data-hf-id="hf-vig" id="vig"></div>
+  <div data-hf-id="hf-chap" id="chap" data-layout-allow-occlusion></div>
+  <div data-hf-id="hf-sub" id="sub" data-layout-allow-occlusion></div>
+  <div data-hf-id="hf-err" id="err"></div>
+</div>
+
+<script>
+window.addEventListener('error',function(e){var d=document.getElementById('err');if(!d)return;d.style.display='block';
+  d.textContent='LỖI: '+(e.message||e.type)+(e.filename?('\n@ '+e.filename.split('/').pop()+':'+e.lineno):'');});
+
+/* ============================================================
+   "NGUYÊN TỬ RỖNG — vì sao tôi chưa bao giờ thật sự chạm vào gì" — nguyen-tu-rong
+   Composition TẤT ĐỊNH theo t. Nhiều CẢNH khác biệt, cắt theo cue.
+   Timeline khớp timing.json THẬT (t hình = t tiếng, KHÔNG remap).
+   Palette: đen graphite nền · da ấm nâu-hồng (#C99A7A) · HẠT NHÂN cam
+            ấm (#FF6A2B) · ĐÁM MÂY electron lam-lơ (#5FC8E8) · TRƯỜNG ĐẨY
+            lam-trắng (#BFD9FF) · lá vàng/alpha vàng kim (#FFD65A) · sao
+            neutron trắng-lam (#BFD9FF) · TRƯỜNG LƯỢNG TỬ tím-lam (#7B4BFF).
+
+   SCENE (bật/tắt theo t, cắt dứt khoát) — biên = cue.start (timing.json):
+    A hand    (C01-C03  0      – 39.77 ) Bàn tay trên bàn · gõ ngón tay · bí mật
+    B zoom    (C04-C07  39.77  – 95.27 ) Cú lật rỗng · chuỗi vật · ZOOM THANG BẬC vào 1 nguyên tử
+    C stadium (C08-C10  95.27  – 138.97) Nguyên tử = SÂN VẬN ĐỘNG · hạt nhân = hạt đậu
+    D cloud   (C11-C14  138.97 – 206.87) Bác mô hình bi · ĐÁM MÂY XÁC SUẤT · sương tận khán đài
+    E scale   (C15-C19  206.87 – 298.89) Tỉ lệ 1/100.000 · thể tích 1/10^15 · nén nhân loại → viên đường/sao neutron
+    F force   (C20-C21  298.89 – 323.21) Câu hỏi bóng ma · từ khoá LỰC bừng lên
+    G gold    (C22-C26  323.21 – 414.99) Thí nghiệm LÁ VÀNG Rutherford · alpha xuyên · vài hạt nảy ngược
+    H repel   (C27-C30  414.99 – 479.22) Hai đám mây electron ĐẨY nhau · trường điện từ qua khe hở
+    I pauli   (C31-C34  479.22 – 556.19) Nguyên lý Pauli · mức năng lượng · chống đỡ sao neutron
+    J field   (C35-C39  556.19 – 641.07) Lắng lại · TRƯỜNG LƯỢNG TỬ lấp đầy · trật tự làm nên tôi
+    K hug     (C40-C45  641.07 – 745.49) Cái ÔM · khe hở · đúc kết · fade đen
+   ============================================================ */
+
+const TOTAL=745.49;
+
+const CUES=[
+ {t:0,ch:"CHƯƠNG 1",s:"Tôi đang đặt bàn tay mình lên mặt bàn."},
+ {t:2.55,s:"Tôi cảm thấy nó."},
+ {t:4.38,s:"Cứng, mát, đặc, có thật."},
+ {t:8.94,s:"Tôi gõ nhẹ ngón tay xuống."},
+ {t:11.01,s:"Có tiếng vang."},
+ {t:12.75,s:"Có lực cản."},
+ {t:14.44,s:"Mặt bàn đẩy lại tay tôi, chắc chắn và thật"},
+ {t:17.64,s:"thà."},
+ {t:17.94,s:"Không đời nào tay tôi lún xuyên qua nó cả."},
+ {t:21.29,s:"Cả đời, tôi tin vào cái cảm giác ấy."},
+ {t:24.72,s:"Vật rắn thì đặc."},
+ {t:26.6,s:"Đặc nghĩa là bên trong nó chật kín vật"},
+ {t:29.61,s:"chất."},
+ {t:30.01,s:"Nhưng tối nay, tôi muốn kể cho bạn nghe"},
+ {t:32.69,s:"một bí mật khiến chính tôi phải nhìn lại"},
+ {t:35.45,s:"bàn tay mình bằng đôi mắt hoàn toàn khác."},
+ {t:39.77,s:"Sự thật là, mặt bàn này gần như trống"},
+ {t:43.32,s:"rỗng."},
+ {t:43.8,s:"Bàn tay tôi cũng gần như trống rỗng."},
+ {t:47.5,s:"Và ngay lúc này, tôi chưa hề chạm vào mặt"},
+ {t:50.6,s:"bàn."},
+ {t:51.2,s:"Tôi chưa bao giờ thật sự chạm vào bất cứ"},
+ {t:54.1,s:"thứ gì trong đời."},
+ {t:54.56,s:"Mọi vật rắn quanh tôi, chiếc ghế, sàn nhà,"},
+ {t:57.9,s:"cơ thể tôi, cả Trái Đất dưới chân,"},
+ {t:60.9,s:"hơn chín mươi chín phẩy chín chín chín"},
+ {t:63.9,s:"chín phần trăm của chúng, là khoảng không."},
+ {t:66.9,s:"Là hư vô được sắp đặt."},
+ {t:69.24,s:"Nghe thật vô lý."},
+ {t:71.2,s:"Nếu vật chất rỗng đến thế, vì sao tôi"},
+ {t:74.2,s:"không rơi xuyên qua sàn?"},
+ {t:76.6,s:"Vì sao mặt bàn vẫn đẩy lại tay tôi?"},
+ {t:79.6,s:"Để trả lời, trước hết tôi phải dẫn bạn đi"},
+ {t:82.6,s:"vào bên trong một hạt nhỏ nhất của thế"},
+ {t:85.6,s:"giới. Đi vào một nguyên tử."},
+ {t:87.39,s:"Và những gì chúng ta thấy bên trong đó,"},
+ {t:90.4,s:"tin tôi đi, sẽ lớn hơn, trống hơn, và kỳ"},
+ {t:93.4,s:"lạ hơn tất cả những gì bạn từng hình dung."},
+ {t:95.27,ch:"CHƯƠNG 2",s:"Bạn thử tưởng tượng cùng tôi."},
+ {t:97.4,s:"Tôi cầm lên một nguyên tử duy nhất,"},
+ {t:100.4,s:"và phóng to nó lên khổng lồ, cho tới khi"},
+ {t:103.4,s:"nó lớn bằng cả một sân vận động."},
+ {t:105.9,s:"Cả một sân bóng đá với khán đài vòng"},
+ {t:108.0,s:"quanh."},
+ {t:108.27,s:"Ở chính giữa sân, ngay chấm phạt đền,"},
+ {t:111.3,s:"có một thứ chứa gần như toàn bộ trọng"},
+ {t:114.3,s:"lượng của nguyên tử này."},
+ {t:116.4,s:"Đó là hạt nhân. Trái tim của nó."},
+ {t:119.4,s:"Và bạn có biết nó to cỡ nào không, khi cả"},
+ {t:122.4,s:"nguyên tử đã lớn bằng một sân vận động?"},
+ {t:124.99,s:"Nó chỉ nhỏ bằng một hạt đậu."},
+ {t:127.9,s:"Một hạt đậu lẻ loi nằm giữa sân."},
+ {t:130.9,s:"Còn lại, toàn bộ mặt sân, toàn bộ không"},
+ {t:133.9,s:"gian mênh mông chạy tới tận hàng ghế xa"},
+ {t:136.9,s:"nhất trên khán đài, gần như là trống trơn."},
+ {t:138.97,s:"Vậy còn electron thì sao?"},
+ {t:141.4,s:"Bạn có thể đã hình dung chúng như những"},
+ {t:144.4,s:"viên bi tí hon quay vòng quanh hạt nhân,"},
+ {t:147.4,s:"gọn gàng như các hành tinh quay quanh Mặt"},
+ {t:150.4,s:"Trời."},
+ {t:150.9,s:"Đó là bức tranh mà tôi cũng từng tin."},
+ {t:153.6,s:"Nhưng nó sai."},
+ {t:154.85,s:"Electron không phải là những viên bi chạy"},
+ {t:157.85,s:"trên quỹ đạo cố định."},
+ {t:159.9,s:"Chúng không đi theo một đường tròn nào cả."},
+ {t:162.9,s:"Thật ra, tôi không thể chỉ đích xác cho"},
+ {t:165.9,s:"bạn một electron đang ở đâu, vào lúc nào."},
+ {t:167.88,s:"Cái tôi có, chỉ là một đám mây xác suất."},
+ {t:170.9,s:"Một làn sương mờ trải quanh hạt nhân,"},
+ {t:173.9,s:"dày hơn ở chỗ này, loãng hơn ở chỗ kia."},
+ {t:176.9,s:"Đám mây ấy cho biết khả năng electron xuất"},
+ {t:179.9,s:"hiện ở mỗi nơi."},
+ {t:181.9,s:"Nó ở khắp nơi và không ở đâu cả, cho tới"},
+ {t:184.9,s:"đúng khoảnh khắc ta cố nhìn nó."},
+ {t:188.93,s:"Nên trong cái sân vận động của chúng ta,"},
+ {t:191.9,s:"electron không phải mấy viên bi lăn quanh."},
+ {t:194.9,s:"Nó là một làn sương mỏng tang, mờ ảo,"},
+ {t:197.9,s:"phảng phất tận ngoài khán đài xa xôi."},
+ {t:200.9,s:"Và giữa làn sương ấy với hạt đậu ở giữa"},
+ {t:203.9,s:"sân, không có gì hết. Chỉ có khoảng không."},
+ {t:206.87,s:"Hãy để tôi cho bạn một con số để thấy cái"},
+ {t:209.9,s:"trống rỗng ấy khủng khiếp đến đâu."},
+ {t:212.9,s:"Hạt nhân nhỏ hơn cả nguyên tử khoảng một"},
+ {t:215.5,s:"trăm nghìn lần. Một trăm nghìn."},
+ {t:217.15,s:"Mà kích thước chỉ là một chiều."},
+ {t:219.9,s:"Khi tính tới cả thể tích, cái khoảng trống"},
+ {t:222.9,s:"ấy phình lên thành con số gần như không"},
+ {t:225.9,s:"thể tin nổi."},
+ {t:226.9,s:"Thể tích của hạt nhân so với thể tích của"},
+ {t:229.9,s:"cả nguyên tử, chỉ vào cỡ một phần của một"},
+ {t:232.9,s:"triệu tỉ."},
+ {t:233.9,s:"Phần vật chất đặc, chỉ chiếm ngần ấy."},
+ {t:236.4,s:"Tất cả phần còn lại là hư không."},
+ {t:237.87,s:"Và đây mới là điều làm tôi rùng mình."},
+ {t:240.9,s:"Cái nguyên tử rỗng tuếch đó không phải"},
+ {t:243.9,s:"trường hợp hiếm. Nó là mọi thứ."},
+ {t:246.9,s:"Mọi nguyên tử trong cơ thể tôi đều rỗng"},
+ {t:249.9,s:"như thế."},
+ {t:250.6,s:"Nên nếu gộp lại, cơ thể tôi, mặt bàn này,"},
+ {t:253.9,s:"cả Trái Đất, tất cả đều là những lâu đài"},
+ {t:256.9,s:"dựng lên gần như hoàn toàn từ khoảng trống."},
+ {t:260.7,s:"Hãy thử làm một thí nghiệm trong tưởng"},
+ {t:263.7,s:"tượng."},
+ {t:264.3,s:"Nếu tôi có thể ép hết khoảng trống trong"},
+ {t:267.3,s:"mọi nguyên tử ra ngoài, dồn tất cả các hạt"},
+ {t:270.3,s:"nhân lại sát nhau,"},
+ {t:271.6,s:"thì toàn bộ nhân loại, gần tám tỉ con"},
+ {t:274.3,s:"người, sẽ nén lại nhỏ đến mức nào?"},
+ {t:276.08,s:"Nhỏ cỡ một viên đường."},
+ {t:278.4,s:"Cả loài người, mọi giấc mơ, mọi cơ thể,"},
+ {t:281.4,s:"dồn vừa vặn trong một khối lập phương bé"},
+ {t:284.4,s:"xíu bạn có thể đặt gọn trong lòng bàn tay."},
+ {t:287.4,s:"Đó chính xác là thứ vật chất tạo nên một"},
+ {t:290.4,s:"ngôi sao neutron, nơi khoảng trống đã bị"},
+ {t:293.4,s:"trọng lực nghiền nát hết."},
+ {t:295.0,s:"Đặc đến mức một thìa nhỏ nặng bằng cả một"},
+ {t:297.5,s:"ngọn núi."},
+ {t:298.89,s:"Nhưng khoan đã."},
+ {t:300.6,s:"Nếu tôi rỗng đến thế, nếu mặt bàn cũng"},
+ {t:303.6,s:"rỗng đến thế, thì tại sao hai cái rỗng ấy"},
+ {t:306.6,s:"không xuyên thẳng qua nhau?"},
+ {t:308.9,s:"Tại sao tay tôi không lọt qua bàn như một"},
+ {t:311.6,s:"bóng ma đi xuyên tường?"},
+ {t:312.34,s:"Câu hỏi này dẫn tôi tới điều bất ngờ nhất"},
+ {t:315.34,s:"của cả câu chuyện."},
+ {t:317.3,s:"Bởi vì câu trả lời không phải là vì vật"},
+ {t:320.3,s:"chất đầy. Câu trả lời là lực."},
+ {t:323.21,ch:"CHƯƠNG 3",s:"Trước hết, để tôi kể cho bạn nghe làm sao"},
+ {t:326.2,s:"con người biết được rằng nguyên tử rỗng"},
+ {t:329.2,s:"đến vậy."},
+ {t:329.9,s:"Nó bắt đầu từ hơn một trăm năm trước, với"},
+ {t:332.6,s:"một thí nghiệm trông rất đơn giản."},
+ {t:334.83,s:"Người ta lấy một lá vàng, dát mỏng đến mức"},
+ {t:337.83,s:"gần như trong suốt, chỉ dày vài nghìn"},
+ {t:340.83,s:"nguyên tử."},
+ {t:341.6,s:"Rồi họ bắn vào nó một chùm hạt tí hon, gọi"},
+ {t:344.6,s:"là hạt alpha, nhanh và nặng."},
+ {t:347.6,s:"Ý tưởng là xem chùm hạt ấy xuyên qua lá"},
+ {t:350.4,s:"vàng thế nào."},
+ {t:351.1,s:"Nếu nguyên tử là những khối đặc, chùm hạt"},
+ {t:354.1,s:"hẳn sẽ khựng lại, bật ra tứ tung."},
+ {t:357.1,s:"Nhưng gần như toàn bộ số hạt alpha bay"},
+ {t:360.1,s:"xuyên thẳng qua lá vàng, như thể nó chẳng"},
+ {t:363.1,s:"hề tồn tại. Như thể chúng bay qua một"},
+ {t:365.4,s:"khoảng không."},
+ {t:365.71,s:"Nhưng thi thoảng, rất hiếm khi, một hạt"},
+ {t:368.71,s:"alpha lại nảy bật ngược trở lại."},
+ {t:371.6,s:"Bật hẳn về phía sau, như vừa đâm vào một"},
+ {t:374.6,s:"bức tường vô hình."},
+ {t:376.6,s:"Nhà khoa học chỉ huy thí nghiệm, Ernest"},
+ {t:379.6,s:"Rutherford, sau này nói rằng đó là điều"},
+ {t:382.6,s:"khó tin nhất đời ông."},
+ {t:384.6,s:"Như thể bắn một viên đại bác vào một tờ"},
+ {t:387.6,s:"giấy mỏng, và viên đạn dội ngược lại trúng"},
+ {t:389.4,s:"mình."},
+ {t:389.53,s:"Và từ đó, ông hiểu ra sự thật."},
+ {t:392.5,s:"Toàn bộ khối lượng, toàn bộ điện tích"},
+ {t:395.5,s:"dương của nguyên tử, phải dồn hết vào một"},
+ {t:398.5,s:"điểm cực nhỏ ở trung tâm. Một hạt nhân."},
+ {t:401.5,s:"Các hạt bay qua khoảng trống thì lọt tuột,"},
+ {t:404.5,s:"còn hạt nào tình cờ nhắm trúng cái nhân bé"},
+ {t:407.5,s:"xíu ấy thì mới bị đẩy bật ngược."},
+ {t:410.5,s:"Đó là khoảnh khắc con người phát hiện ra"},
+ {t:413.0,s:"rằng nguyên tử gần như hoàn toàn là khoảng"},
+ {t:414.5,s:"không."},
+ {t:414.99,s:"Vậy thì, quay lại câu hỏi day dứt của tôi."},
+ {t:418.0,s:"Nếu nguyên tử rỗng thế, sao tay tôi không"},
+ {t:421.0,s:"xuyên qua bàn?"},
+ {t:422.9,s:"Tại sao hai đám mây trống rỗng lại đẩy"},
+ {t:425.9,s:"nhau chắc nịch như hai khối đặc?"},
+ {t:427.89,s:"Điều giữ tay tôi lại không phải vật chất"},
+ {t:430.89,s:"đâm vào vật chất."},
+ {t:432.9,s:"Không hề có va chạm giữa các viên bi cứng."},
+ {t:435.9,s:"Cái giữ tay tôi lại là lực."},
+ {t:438.4,s:"Cụ thể là lực đẩy điện từ giữa các"},
+ {t:440.9,s:"electron."},
+ {t:441.04,s:"Lớp ngoài cùng của mọi nguyên tử là đám"},
+ {t:444.04,s:"mây electron, mang điện tích âm."},
+ {t:447.0,s:"Khi tôi ấn tay xuống bàn, đám mây electron"},
+ {t:450.0,s:"ở đầu ngón tay tôi tiến lại gần đám mây"},
+ {t:453.0,s:"electron trên mặt bàn."},
+ {t:455.4,s:"Và hai điện tích âm thì luôn đẩy nhau."},
+ {t:458.4,s:"Càng ép sát, lực đẩy càng mạnh, mạnh đến"},
+ {t:461.4,s:"vô cùng."},
+ {t:462.15,s:"Nên cái cảm giác cứng, cái lực cản chắc"},
+ {t:465.15,s:"chắn khi tôi gõ ngón tay xuống bàn,"},
+ {t:468.1,s:"không phải là tôi chạm vào gỗ."},
+ {t:470.9,s:"Đó là hai trường điện từ đang xô đẩy nhau,"},
+ {t:473.9,s:"cách nhau một khoảng cực nhỏ."},
+ {t:476.4,s:"Hai đám mây electron không bao giờ để mình"},
+ {t:478.4,s:"chạm vào nhau."},
+ {t:479.22,s:"Nhưng còn một lực thứ hai, kỳ lạ hơn"},
+ {t:482.22,s:"nhiều, cũng đang giữ tôi lại."},
+ {t:484.9,s:"Nó không phải lực đẩy điện thông thường."},
+ {t:487.9,s:"Nó là một luật lệ sâu thẳm của thế giới"},
+ {t:490.5,s:"lượng tử, mang tên nguyên lý loại trừ"},
+ {t:492.5,s:"Pauli."},
+ {t:492.87,s:"Nguyên lý này nói rằng, không có hai"},
+ {t:495.87,s:"electron nào được phép cùng ở chung một"},
+ {t:498.87,s:"trạng thái, cùng một chỗ, với cùng một mức"},
+ {t:501.87,s:"năng lượng."},
+ {t:502.9,s:"Mỗi electron đòi cho riêng mình một ô"},
+ {t:505.9,s:"riêng. Chúng từ chối chồng lên nhau."},
+ {t:508.9,s:"Chúng khước từ việc bị nhồi vào cùng một"},
+ {t:510.9,s:"không gian."},
+ {t:511.26,s:"Nên khi tôi cố ép đám mây electron của tay"},
+ {t:514.26,s:"mình vào đám mây electron của mặt bàn,"},
+ {t:517.26,s:"tôi không chỉ đối đầu với lực đẩy điện."},
+ {t:520.26,s:"Tôi còn đâm vào một sự chống cự tuyệt đối."},
+ {t:523.26,s:"Các electron thà đẩy ngược lại còn hơn"},
+ {t:526.26,s:"phải chen chúc chung một trạng thái."},
+ {t:529.0,s:"Cái đẩy ấy cứng đến mức chính nó chống đỡ"},
+ {t:531.5,s:"cho cả những ngôi sao khỏi sụp đổ."},
+ {t:532.34,s:"Vậy nên, sự thật là thế này."},
+ {t:534.9,s:"Tôi chưa bao giờ thật sự chạm vào mặt bàn."},
+ {t:537.9,s:"Chưa bao giờ trong đời tôi chạm vào bất cứ"},
+ {t:540.9,s:"thứ gì theo đúng nghĩa hai bề mặt kề sát"},
+ {t:543.9,s:"nhau."},
+ {t:544.6,s:"Luôn có một khe hở tí hon, và trong khe hở"},
+ {t:547.6,s:"ấy, chỉ có lực."},
+ {t:549.9,s:"Cái mà tôi gọi là chạm, thật ra là hai"},
+ {t:552.9,s:"trường đang đẩy nhau, mãi mãi không cho"},
+ {t:555.4,s:"phép sự tiếp xúc xảy ra."},
+ {t:556.19,ch:"CHƯƠNG 4",s:"Tôi ngồi lặng đi một lúc sau khi hiểu ra"},
+ {t:559.19,s:"tất cả những điều này."},
+ {t:561.9,s:"Và tôi bắt đầu nhìn mọi thứ quanh mình"},
+ {t:564.4,s:"bằng một đôi mắt khác hẳn."},
+ {t:565.19,s:"Có một điều tôi muốn nói cho rõ, để bạn"},
+ {t:568.19,s:"không hiểu lầm."},
+ {t:570.0,s:"Cái khoảng trống trong nguyên tử không"},
+ {t:573.0,s:"phải là hư vô tuyệt đối."},
+ {t:575.9,s:"Nó không phải là con số không lạnh lẽo,"},
+ {t:578.4,s:"không có gì cả."},
+ {t:578.8,s:"Vì cái khoảng trống ấy tràn ngập trường."},
+ {t:581.9,s:"Trường điện từ, và những trường lượng tử"},
+ {t:584.9,s:"khác, chăng khắp không gian ấy như một tấm"},
+ {t:587.9,s:"lưới vô hình đang rung."},
+ {t:590.4,s:"Đám mây electron chính là những gợn sóng"},
+ {t:593.4,s:"của một trong các trường đó."},
+ {t:595.9,s:"Nên nguyên tử không rỗng như một căn phòng"},
+ {t:598.4,s:"trống."},
+ {t:598.9,s:"Nó rỗng như một cây đàn đang ngân, đầy ắp"},
+ {t:601.03,s:"những rung động mà mắt ta không thấy."},
+ {t:601.4,s:"Và cái làm nên tôi, cái giữ cho tôi có"},
+ {t:604.4,s:"hình hài, không phải là vật chất đặc."},
+ {t:607.4,s:"Đó là những lực này."},
+ {t:609.4,s:"Là các trường ghì lấy nhau, đẩy nhau, cân"},
+ {t:612.4,s:"bằng nhau, dệt nên cái cảm giác vững chắc"},
+ {t:615.4,s:"mà tôi vẫn tin là cơ thể mình."},
+ {t:617.51,s:"Bàn tay tôi gần như trọn vẹn là khoảng"},
+ {t:620.51,s:"không."},
+ {t:621.0,s:"Nhưng khoảng không ấy được sắp đặt tinh vi"},
+ {t:624.0,s:"đến khó tin."},
+ {t:625.4,s:"Từng hạt nhân, từng đám mây electron, từng"},
+ {t:628.4,s:"trường, được giữ ở đúng vị trí của nó"},
+ {t:631.4,s:"bằng một sự cân bằng lực chính xác đến"},
+ {t:634.4,s:"tuyệt đối."},
+ {t:635.4,s:"Và chính cái trật tự của khoảng trống ấy,"},
+ {t:638.4,s:"chứ không phải sự đặc, mới là thứ làm nên"},
+ {t:640.6,s:"tôi."},
+ {t:641.07,s:"Nên bây giờ, hãy tưởng tượng cùng tôi một"},
+ {t:644.07,s:"điều rất đỗi con người."},
+ {t:646.4,s:"Một cái ôm. Hai người ôm lấy nhau thật"},
+ {t:649.0,s:"chặt."},
+ {t:649.81,s:"Trong khoảnh khắc ấy, ta cảm thấy mình"},
+ {t:652.81,s:"đang chạm vào nhau, gần gũi nhất có thể."},
+ {t:655.81,s:"Nhưng ở tầng sâu nhất của thế giới, hai"},
+ {t:658.81,s:"vòng tay đó chưa từng thật sự chạm."},
+ {t:661.81,s:"Đó là hai đám mây trường mênh mông, đang"},
+ {t:664.81,s:"đẩy nhẹ vào nhau, giữ một khoảng cách vô"},
+ {t:667.81,s:"cùng nhỏ mà không bao giờ khép lại được."},
+ {t:668.72,s:"Hai con người gần như hoàn toàn trống"},
+ {t:671.72,s:"rỗng, ôm lấy nhau bằng lực."},
+ {t:674.72,s:"Nghe thì có vẻ cô đơn."},
+ {t:676.9,s:"Nhưng tôi lại thấy điều ngược lại."},
+ {t:679.4,s:"Tôi thấy nó đẹp đến nghẹn ngào."},
+ {t:680.44,s:"Bởi vì cái khoảng trống ấy không hề là sự"},
+ {t:683.44,s:"thiếu vắng."},
+ {t:684.4,s:"Nó là cái cho phép mọi thứ tồn tại."},
+ {t:687.4,s:"Nếu không có khoảng trống trong nguyên tử,"},
+ {t:690.4,s:"sẽ không có hóa học, không có ánh sáng"},
+ {t:693.4,s:"luồn qua, không có sự mềm mại, không có cả"},
+ {t:696.4,s:"sự sống."},
+ {t:697.0,s:"Chính cái rỗng được sắp đặt tinh vi ấy mới"},
+ {t:700.0,s:"là nơi tôi trú ngụ."},
+ {t:701.63,s:"Tôi từng nghĩ mình là một khối vật chất"},
+ {t:704.63,s:"đặc, chắc nịch, có thật."},
+ {t:707.4,s:"Giờ tôi biết mình gần như trọn vẹn là"},
+ {t:710.4,s:"khoảng không, được giữ thành hình hài bằng"},
+ {t:713.4,s:"những lực vô hình."},
+ {t:715.4,s:"Và bằng cách nào đó, sự thật ấy không làm"},
+ {t:718.4,s:"tôi thấy mình mong manh hơn."},
+ {t:720.9,s:"Nó làm tôi thấy mình kỳ diệu hơn."},
+ {t:721.24,s:"Nên lần tới, khi bạn đặt tay lên một mặt"},
+ {t:724.24,s:"bàn, hay nắm lấy tay một người mình"},
+ {t:727.24,s:"thương, hãy khẽ nhớ điều này."},
+ {t:729.9,s:"Bạn chưa bao giờ thật sự chạm vào nó."},
+ {t:732.4,s:"Đó là hai vùng khoảng không mênh mông,"},
+ {t:733.89,s:"đang thì thầm với nhau bằng lực."},
+ {t:736.12,s:"Và chính cái khoảng trống được sắp đặt"},
+ {t:739.15,s:"tinh vi ấy, ngay lúc này, đang làm nên"},
+ {t:742.17,s:"bạn."}
+];
+
+// ---- seeded PRNG (mulberry32) ----
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+
+// ---- scene boundaries (real time = cue.start) ----
+const SC={
+  A:[0,39.77], B:[39.77,95.27], C:[95.27,138.97], D:[138.97,206.87],
+  E:[206.87,298.89], F:[298.89,323.21], G:[323.21,414.99], H:[414.99,479.22],
+  I:[479.22,556.19], J:[556.19,641.07], K:[641.07,745.49]
+};
+function loc(t,k){const w=SC[k];return Math.min(1,Math.max(0,(t-w[0])/(w[1]-w[0])));}
+function inSc(t,k){const w=SC[k];return t>=w[0]&&t<w[1];}
+const clamp=(x,a,b)=>Math.min(b,Math.max(a,x));
+const smooth=(x)=>{x=clamp(x,0,1);return x*x*(3-2*x);};
+function band(t,a,b,f){f=f||0.8;if(t<a-f||t>b+f)return 0;let up=smooth((t-(a-f))/(2*f));let dn=smooth(((b+f)-t)/(2*f));return Math.min(1,Math.min(up,dn));}
+
+// ============ THREE core ============
+const W=1920,H=1080;
+const renderer=new THREE.WebGLRenderer({canvas:document.getElementById('c'),antialias:true,alpha:false});
+renderer.setPixelRatio(1);renderer.setSize(W,H);
+renderer.setClearColor(0x08080a,1);
+renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.02;
+renderer.outputEncoding=THREE.sRGBEncoding;
+
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(46,W/H,0.05,60000);
+camera.position.set(0,0,60);
+
+const amb=new THREE.AmbientLight(0x232838,0.85);scene.add(amb);
+const key=new THREE.DirectionalLight(0xffe8d2,1.05);key.position.set(6,4,8);scene.add(key);
+const rim=new THREE.DirectionalLight(0x6f9cff,0.4);rim.position.set(-8,-3,-6);scene.add(rim);
+
+// texture loader (local assets)
+const texLoader=new THREE.TextureLoader();texLoader.setCrossOrigin('anonymous');
+function loadTex(p,enc){const tx=texLoader.load(p);if(enc)tx.encoding=enc;tx.anisotropy=renderer.capabilities.getMaxAnisotropy();return tx;}
+const TEX={
+  earth:loadTex('assets/tex/2_no_clouds_4k.jpg',THREE.sRGBEncoding),
+  earthBump:loadTex('assets/tex/elev_bump_4k.jpg'),
+  earthSpec:loadTex('assets/tex/water_4k.png')
+};
+
+// ---------- postprocessing ----------
+const composer=new THREE.EffectComposer(renderer);
+composer.addPass(new THREE.RenderPass(scene,camera));
+const bloom=new THREE.UnrealBloomPass(new THREE.Vector2(W,H),0.78,0.7,0.62);
+composer.addPass(bloom);
+const LensShader={
+  uniforms:{tDiffuse:{value:null},uT:{value:0},uVig:{value:0.34},uCA:{value:0.0015},uGrain:{value:0.045},uFade:{value:1.0},uFlash:{value:0.0}},
+  vertexShader:`varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
+  fragmentShader:`
+   varying vec2 vUv;uniform sampler2D tDiffuse;uniform float uT,uVig,uCA,uGrain,uFade,uFlash;
+   float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+   void main(){
+     vec2 d=vUv-0.5;float r=dot(d,d);
+     vec2 off=d*uCA*(1.0+r*2.2);
+     vec3 col;
+     col.r=texture2D(tDiffuse,vUv+off).r;
+     col.g=texture2D(tDiffuse,vUv).g;
+     col.b=texture2D(tDiffuse,vUv-off).b;
+     float vig=smoothstep(1.02,uVig,r*2.0);
+     col*=mix(1.0,vig,0.85);
+     float g=h(vUv*vec2(1920.0,1080.0)+fract(uT)*97.3)-0.5;
+     col+=g*uGrain;
+     col=mix(col,vec3(1.0,0.98,0.94),uFlash);
+     col*=uFade;
+     gl_FragColor=vec4(col,1.0);
+   }`
+};
+const lens=new THREE.ShaderPass(LensShader);lens.renderToScreen=true;composer.addPass(lens);
+
+// ============================================================
+//  Reusable soft particle sprite textures
+// ============================================================
+function dotTex(rr,gg,bb){
+  const cv=document.createElement('canvas');cv.width=cv.height=64;const cx=cv.getContext('2d');
+  const gr=cx.createRadialGradient(32,32,0,32,32,32);
+  gr.addColorStop(0,`rgba(${rr},${gg},${bb},1)`);gr.addColorStop(0.4,`rgba(${rr},${gg},${bb},0.55)`);gr.addColorStop(1,'rgba(0,0,0,0)');
+  cx.fillStyle=gr;cx.fillRect(0,0,64,64);const tx=new THREE.CanvasTexture(cv);tx.encoding=THREE.sRGBEncoding;return tx;
+}
+const TDOT={nuc:dotTex(255,150,70),elec:dotTex(95,200,232),field:dotTex(191,217,255),gold:dotTex(255,214,90),cold:dotTex(191,217,255),violet:dotTex(140,90,255),white:dotTex(255,250,235),skin:dotTex(201,154,122)};
+
+function softDisc(inner,outer,r,g,b){
+  const cv=document.createElement('canvas');cv.width=cv.height=256;const cx=cv.getContext('2d');
+  const gr=cx.createRadialGradient(128,128,inner,128,128,outer);
+  gr.addColorStop(0,`rgba(${r},${g},${b},0.9)`);gr.addColorStop(0.5,`rgba(${r},${g},${b},0.28)`);gr.addColorStop(1,'rgba(0,0,0,0)');
+  cx.fillStyle=gr;cx.fillRect(0,0,256,256);
+  const tx=new THREE.CanvasTexture(cv);tx.encoding=THREE.sRGBEncoding;return tx;
+}
+
+// ============================================================
+//  starfield (dim, temperature-colored) — background depth
+//  STAR_R must exceed max camera distance across timeline (cameras stay <120)
+// ============================================================
+const STAR_R=9000;
+function buildStars(){
+  const N=3600,pr=mulberry32(20260808);
+  const pos=new Float32Array(N*3),col=new Float32Array(N*3),siz=new Float32Array(N);
+  const tmp=new THREE.Vector3();
+  for(let i=0;i<N;i++){
+    let u=pr(),v=pr();
+    let theta=Math.acos(2*u-1),phi=2*Math.PI*v;
+    tmp.set(Math.sin(theta)*Math.cos(phi),Math.cos(theta)*0.8,Math.sin(theta)*Math.sin(phi)).normalize().multiplyScalar(STAR_R);
+    pos[i*3]=tmp.x;pos[i*3+1]=tmp.y;pos[i*3+2]=tmp.z;
+    let tt=pr();let c=new THREE.Color();
+    if(tt<0.14)c.setRGB(0.6,0.72,1.0);
+    else if(tt<0.5)c.setRGB(0.85,0.9,1.0);
+    else if(tt<0.8)c.setRGB(0.9,0.92,1.0);
+    else c.setRGB(0.8,0.82,0.95);
+    let br=0.3+pr()*0.5;c.multiplyScalar(br);
+    col[i*3]=c.r;col[i*3+1]=c.g;col[i*3+2]=c.b;
+    siz[i]=(pr()<0.05?2.6:1.0)*(0.8+pr()*1.4);
+  }
+  const g=new THREE.BufferGeometry();
+  g.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  g.setAttribute('color',new THREE.BufferAttribute(col,3));
+  g.setAttribute('aS',new THREE.BufferAttribute(siz,1));
+  const m=new THREE.ShaderMaterial({
+    uniforms:{uOp:{value:1}},transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,
+    vertexShader:`attribute float aS;attribute vec3 color;varying vec3 vC;
+      void main(){vC=color;vec4 mv=modelViewMatrix*vec4(position,1.0);
+      gl_PointSize=aS*(${STAR_R.toFixed(1)}/-mv.z);gl_Position=projectionMatrix*mv;}`,
+    fragmentShader:`varying vec3 vC;uniform float uOp;
+      void main(){vec2 d=gl_PointCoord-0.5;float r=length(d);
+      float a=smoothstep(0.5,0.0,r);gl_FragColor=vec4(vC,a*uOp);}`
+  });
+  return new THREE.Points(g,m);
+}
+const stars=buildStars();scene.add(stars);
+
+// ============================================================
+//  Nucleus (warm orange, cinematic — clustered nucleons + glow)
+// ============================================================
+function makeNucleus(radius){
+  const grp=new THREE.Group();
+  const pr=mulberry32(707);
+  const nGeo=new THREE.SphereGeometry(radius*0.22,14,14);
+  const pMat=new THREE.MeshStandardMaterial({color:0xff6a2b,emissive:0xd23a00,emissiveIntensity:1.1,roughness:0.4,metalness:0.2});
+  const nMat=new THREE.MeshStandardMaterial({color:0xffb070,emissive:0xa04000,emissiveIntensity:0.8,roughness:0.5,metalness:0.2});
+  const nucleons=[];
+  for(let i=0;i<30;i++){const a=pr()*6.283,b=Math.acos(2*pr()-1),rr=radius*0.75*Math.pow(pr(),0.4);
+    const m=new THREE.Mesh(nGeo,i%2===0?pMat:nMat);
+    m.userData={a,b,rr};m.position.set(rr*Math.sin(b)*Math.cos(a),rr*Math.sin(b)*Math.sin(a),rr*Math.cos(b));
+    grp.add(m);nucleons.push(m);}
+  const glow=new THREE.Sprite(new THREE.SpriteMaterial({map:softDisc(0,128,255,140,70),color:0xff8a3a,transparent:true,opacity:0.85,depthWrite:false,blending:THREE.AdditiveBlending}));
+  glow.scale.setScalar(radius*5.0);grp.add(glow);
+  return {grp,nucleons,glow,radius};
+}
+
+// ============================================================
+//  Electron probability CLOUD — deterministic point cloud
+//  dense near nucleus, thinning outward. NO orbits, NO balls.
+// ============================================================
+function makeCloud(N,rInner,rOuter,seed,color){
+  const pr=mulberry32(seed||55);
+  const base=new Float32Array(N*3),ph=new Float32Array(N),rad=new Float32Array(N);
+  for(let i=0;i<N;i++){
+    const a=pr()*6.283,b=Math.acos(2*pr()-1);
+    const r=rInner+(rOuter-rInner)*Math.pow(pr(),1.7);
+    base[i*3]=r*Math.sin(b)*Math.cos(a);base[i*3+1]=r*Math.sin(b)*Math.sin(a);base[i*3+2]=r*Math.cos(b);
+    ph[i]=pr()*6.283;rad[i]=r;
+  }
+  const pos=new Float32Array(base);
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  const pts=new THREE.Points(g,new THREE.PointsMaterial({map:TDOT.elec,size:0.34,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,color:color||0x5fc8e8,opacity:0.5}));
+  return {pts,base,ph,rad,N};
+}
+function animCloud(cl,t,swirl,jitter){
+  const arr=cl.pts.geometry.attributes.position.array,base=cl.base,ph=cl.ph;
+  for(let i=0;i<cl.N;i++){
+    const x0=base[i*3],y0=base[i*3+1],z0=base[i*3+2];
+    const ang=t*swirl*(0.3+0.7/(1+cl.rad[i]*0.2));
+    const ca=Math.cos(ang),sa=Math.sin(ang);
+    arr[i*3]=x0*ca-z0*sa+Math.sin(t*0.6+ph[i])*jitter;
+    arr[i*3+1]=y0+Math.cos(t*0.5+ph[i])*jitter;
+    arr[i*3+2]=x0*sa+z0*ca+Math.sin(t*0.55+ph[i]*1.3)*jitter;
+  }
+  cl.pts.geometry.attributes.position.needsUpdate=true;
+}
+
+// ============================================================
+//  Neutron star (hot blue photosphere) — reused E/I
+// ============================================================
+function makeNeutronStar(radius){
+  const grp=new THREE.Group();
+  const mat=new THREE.ShaderMaterial({
+    uniforms:{uT:{value:0},uBright:{value:2.1}},
+    vertexShader:`varying vec3 vP;varying vec3 vN;void main(){vP=normalize(position);vN=normalize(normalMatrix*normal);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
+    fragmentShader:`
+      varying vec3 vP;varying vec3 vN;uniform float uT,uBright;
+      vec3 hash3(vec3 p){p=vec3(dot(p,vec3(127.1,311.7,74.7)),dot(p,vec3(269.5,183.3,246.1)),dot(p,vec3(113.5,271.9,124.6)));return -1.0+2.0*fract(sin(p)*43758.5453);}
+      float snoise(vec3 p){vec3 i=floor(p);vec3 f=fract(p);vec3 u=f*f*(3.0-2.0*f);
+        return mix(mix(mix(dot(hash3(i+vec3(0,0,0)),f-vec3(0,0,0)),dot(hash3(i+vec3(1,0,0)),f-vec3(1,0,0)),u.x),
+                       mix(dot(hash3(i+vec3(0,1,0)),f-vec3(0,1,0)),dot(hash3(i+vec3(1,1,0)),f-vec3(1,1,0)),u.x),u.y),
+                   mix(mix(dot(hash3(i+vec3(0,0,1)),f-vec3(0,0,1)),dot(hash3(i+vec3(1,0,1)),f-vec3(1,0,1)),u.x),
+                       mix(dot(hash3(i+vec3(0,1,1)),f-vec3(0,1,1)),dot(hash3(i+vec3(1,1,1)),f-vec3(1,1,1)),u.x),u.y),u.z);}
+      float fbm(vec3 p){float s=0.0,a=0.5;for(int i=0;i<4;i++){s+=a*snoise(p);p*=2.02;a*=0.5;}return s;}
+      void main(){
+        vec3 d=normalize(vP);
+        float n=fbm(d*10.0+vec3(0.0,0.0,uT*0.4));
+        vec3 c1=vec3(0.30,0.55,1.0);vec3 c2=vec3(0.75,0.9,1.0);vec3 c3=vec3(1.0,1.0,1.0);
+        vec3 col=mix(c1,c2,smoothstep(-0.2,0.4,n));
+        col=mix(col,c3,smoothstep(0.4,0.9,n));
+        float mu=clamp(dot(normalize(vN),vec3(0.0,0.0,1.0)),0.0,1.0);
+        col*=0.5+0.5*pow(mu,0.5);
+        gl_FragColor=vec4(col*uBright,1.0);
+      }`});
+  const core=new THREE.Mesh(new THREE.SphereGeometry(radius,48,48),mat);grp.add(core);
+  const halo=new THREE.Mesh(new THREE.SphereGeometry(radius*1.5,32,32),new THREE.ShaderMaterial({
+    transparent:true,depthWrite:false,side:THREE.BackSide,blending:THREE.AdditiveBlending,
+    vertexShader:`varying vec3 vN;varying vec3 vP;void main(){vN=normalize(normalMatrix*normal);vec4 mv=modelViewMatrix*vec4(position,1.0);vP=mv.xyz;gl_Position=projectionMatrix*mv;}`,
+    fragmentShader:`varying vec3 vN;varying vec3 vP;void main(){float f=pow(1.0-abs(dot(normalize(vN),normalize(-vP))),2.6);gl_FragColor=vec4(vec3(0.55,0.75,1.0)*f,f*0.9);}`}));
+  grp.add(halo);
+  return {grp,core,mat,halo,radius};
+}
+
+// ============================================================
+//  Text/label sprite
+// ============================================================
+function labelSprite(txt,color,px){
+  const cv=document.createElement('canvas');cv.width=512;cv.height=256;const cx=cv.getContext('2d');
+  cx.fillStyle=color;cx.font='bold '+(px||120)+'px Segoe UI, sans-serif';cx.textAlign='center';cx.textBaseline='middle';
+  cx.shadowColor=color;cx.shadowBlur=24;cx.fillText(txt,256,128);
+  const tx=new THREE.CanvasTexture(cv);tx.encoding=THREE.sRGBEncoding;
+  const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tx,transparent:true,depthWrite:false}));
+  sp.scale.set(2,1,1);
+  return sp;
+}
+
+// ============================================================
+//  Field grid (quantum field — vibrating net) reused J
+// ============================================================
+function makeFieldGrid(size,segs,color){
+  return new THREE.Mesh(new THREE.PlaneGeometry(size,size,segs,segs),new THREE.ShaderMaterial({
+    uniforms:{uT:{value:0},uAmp:{value:1},uCol:{value:new THREE.Color(color||0x7b4bff)}},
+    transparent:true,depthWrite:false,wireframe:true,blending:THREE.AdditiveBlending,
+    vertexShader:`uniform float uT,uAmp;varying float vE;
+      void main(){vec3 p=position;
+        float w=sin(p.x*0.7+uT*1.4)*cos(p.y*0.7-uT*1.1)*0.6
+               +sin(length(p.xy)*0.5-uT*2.0)*0.4;
+        w*=uAmp;p.z+=w;vE=w;
+        gl_Position=projectionMatrix*modelViewMatrix*vec4(p,1.0);}`,
+    fragmentShader:`varying float vE;uniform vec3 uCol;
+      void main(){float e=clamp(abs(vE)*1.2,0.0,1.0);
+        vec3 c=mix(uCol*0.5,vec3(0.75,0.85,1.0),e);gl_FragColor=vec4(c,0.34+e*0.3);}`
+  }));
+}
+
+// ============================================================
+//  Hand + table surface (warm) — reused A/F/K
+// ============================================================
+function makeHand(){
+  const grp=new THREE.Group();
+  const table=new THREE.Mesh(new THREE.PlaneGeometry(40,24),new THREE.MeshStandardMaterial({color:0x171410,roughness:0.85,metalness:0.05}));
+  table.position.set(0,-2.6,0);table.rotation.x=-Math.PI*0.5*0.62;grp.add(table);
+  const skinMat=new THREE.MeshStandardMaterial({color:0xc99a7a,emissive:0x2a1810,emissiveIntensity:0.25,roughness:0.65,metalness:0.02});
+  const hand=new THREE.Group();
+  const palm=new THREE.Mesh(new THREE.SphereGeometry(1.5,32,24),skinMat);palm.scale.set(1.5,0.55,1.0);hand.add(palm);
+  const fingers=[];
+  for(let i=0;i<4;i++){
+    const fg=new THREE.Group();
+    const len=2.0+(i===1||i===2?0.4:0);
+    const cyl=new THREE.Mesh(new THREE.CylinderGeometry(0.32,0.36,len,16),skinMat);
+    cyl.rotation.z=Math.PI/2;cyl.position.x=len*0.5;fg.add(cyl);
+    const tip=new THREE.Mesh(new THREE.SphereGeometry(0.32,16,16),skinMat);tip.position.x=len;fg.add(tip);
+    fg.position.set(1.2,0.1,-0.9+i*0.6);fg.rotation.z=-0.08*(i-1.5);
+    hand.add(fg);fingers.push(fg);
+  }
+  const thumb=new THREE.Group();
+  const tcyl=new THREE.Mesh(new THREE.CylinderGeometry(0.34,0.38,1.5,16),skinMat);tcyl.rotation.z=Math.PI/2;tcyl.position.x=0.75;thumb.add(tcyl);
+  const ttip=new THREE.Mesh(new THREE.SphereGeometry(0.34,16,16),skinMat);ttip.position.x=1.5;thumb.add(ttip);
+  thumb.position.set(0.4,0.0,1.4);thumb.rotation.y=-0.7;hand.add(thumb);
+  hand.position.set(-1.3,-1.9,0.2);hand.rotation.x=0.12;
+  grp.add(hand);
+  return {grp,hand,fingers,table};
+}
+
+// ============================================================
+//  GROUPS
+// ============================================================
+function G(){const g=new THREE.Group();g.visible=false;scene.add(g);return g;}
+
+// ---------- A: hand on table / finger tap / secret ----------
+const gA=G();
+(function(){
+  const hh=makeHand();gA.add(hh.grp);
+  const ripple=new THREE.Mesh(new THREE.RingGeometry(0.1,0.16,48),new THREE.MeshBasicMaterial({color:0xbfd9ff,transparent:true,opacity:0,side:THREE.DoubleSide,depthWrite:false,blending:THREE.AdditiveBlending}));
+  ripple.rotation.x=-Math.PI*0.5*0.62;ripple.position.set(0.4,-1.55,-0.6);gA.add(ripple);
+  const N=180,pr=mulberry32(3);
+  const base=new Float32Array(N*3),ph=new Float32Array(N);
+  for(let i=0;i<N;i++){base[i*3]=(pr()-0.5)*14;base[i*3+1]=(pr()-0.5)*7;base[i*3+2]=(pr()-0.5)*8;ph[i]=pr()*6.283;}
+  const pos=new Float32Array(base);
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  const dust=new THREE.Points(g,new THREE.PointsMaterial({map:TDOT.skin,size:0.14,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,color:0xd8b090,opacity:0}));
+  gA.add(dust);
+  gA.userData={hh,ripple,dust,base,ph,N};
+})();
+
+// ---------- B: reveal empty / object chain / zoom ladder into 1 atom ----------
+const gB=G();
+(function(){
+  const gapGrp=new THREE.Group();gB.add(gapGrp);
+  const cloudTop=makeCloud(300,0.2,1.4,201,0x5fc8e8);cloudTop.pts.position.set(0,0.8,0);gapGrp.add(cloudTop.pts);
+  const cloudBot=makeCloud(300,0.2,1.4,202,0x5fc8e8);cloudBot.pts.position.set(0,-0.8,0);gapGrp.add(cloudBot.pts);
+  const earth=new THREE.Mesh(new THREE.SphereGeometry(2.4,48,48),new THREE.MeshPhongMaterial({
+    map:TEX.earth,bumpMap:TEX.earthBump,bumpScale:0.05,specularMap:TEX.earthSpec,specular:new THREE.Color(0x2a3550),shininess:10,transparent:true,opacity:1}));
+  earth.visible=false;gB.add(earth);
+  const ladder=new THREE.Group();ladder.visible=false;gB.add(ladder);
+  const nucleus=makeNucleus(0.6);nucleus.grp.scale.setScalar(0.001);ladder.add(nucleus.grp);
+  const cloud=makeCloud(600,1.2,7.0,203,0x5fc8e8);cloud.pts.material.opacity=0;ladder.add(cloud.pts);
+  const cells=new THREE.Group();gB.add(cells);
+  const cpr=mulberry32(210);const cellMat=new THREE.MeshStandardMaterial({color:0xc99a7a,emissive:0x3a1c10,emissiveIntensity:0.4,roughness:0.7,transparent:true,opacity:0});
+  for(let i=0;i<24;i++){const m=new THREE.Mesh(new THREE.SphereGeometry(0.6+cpr()*0.5,20,20),cellMat);
+    m.position.set((cpr()-0.5)*10,(cpr()-0.5)*6,(cpr()-0.5)*4);m.userData={ph:cpr()*6.283};cells.add(m);}
+  const mols=new THREE.Group();gB.add(mols);
+  const mMat=new THREE.MeshStandardMaterial({color:0x8fb8d8,emissive:0x122436,emissiveIntensity:0.5,roughness:0.5,transparent:true,opacity:0});
+  const mpr=mulberry32(211);
+  for(let i=0;i<10;i++){const cx=(mpr()-0.5)*8,cy=(mpr()-0.5)*5,cz=(mpr()-0.5)*3;
+    for(let j=0;j<3;j++){const m=new THREE.Mesh(new THREE.SphereGeometry(0.35,16,16),mMat);
+      m.position.set(cx+(mpr()-0.5)*1.2,cy+(mpr()-0.5)*1.2,cz+(mpr()-0.5)*1.2);mols.add(m);}}
+  gB.userData={gapGrp,cloudTop,cloudBot,earth,ladder,nucleus,cloud,cells,cellMat,mols,mMat};
+})();
+
+// ---------- C: stadium (atom = stadium, nucleus = bean) ----------
+const gC=G();
+(function(){
+  const field=new THREE.Mesh(new THREE.CircleGeometry(20,64),new THREE.MeshStandardMaterial({color:0x16321c,roughness:0.9,emissive:0x040a06,emissiveIntensity:0.3}));
+  field.rotation.x=-Math.PI/2;gC.add(field);
+  const spot=new THREE.Mesh(new THREE.RingGeometry(1.4,1.5,48),new THREE.MeshBasicMaterial({color:0x88aa88,transparent:true,opacity:0.5,side:THREE.DoubleSide}));
+  spot.rotation.x=-Math.PI/2;spot.position.y=0.02;gC.add(spot);
+  const stands=new THREE.Mesh(new THREE.CylinderGeometry(22,20,6,64,1,true),new THREE.MeshStandardMaterial({color:0x1a1d24,roughness:0.9,side:THREE.DoubleSide,emissive:0x090b12,emissiveIntensity:0.4}));
+  stands.position.y=3;gC.add(stands);
+  const nucleus=makeNucleus(0.55);nucleus.grp.position.set(0,0.4,0);gC.add(nucleus.grp);
+  const mist=makeCloud(700,14,20,205,0x5fc8e8);mist.pts.material.opacity=0;mist.pts.position.y=1.5;gC.add(mist.pts);
+  gC.userData={field,spot,stands,nucleus,mist};
+})();
+
+// ---------- D: reject planet model / probability cloud ----------
+const gD=G();
+(function(){
+  const nucleus=makeNucleus(0.7);gD.add(nucleus.grp);
+  const wrong=new THREE.Group();gD.add(wrong);
+  const orbits=[],balls=[];
+  for(let i=0;i<3;i++){
+    const R=2.2+i*1.3;
+    const og=new THREE.Mesh(new THREE.RingGeometry(R-0.02,R+0.02,80),new THREE.MeshBasicMaterial({color:0x5fc8e8,transparent:true,opacity:0.5,side:THREE.DoubleSide}));
+    og.rotation.x=Math.PI*0.5-0.3;og.rotation.z=i*0.5;wrong.add(og);orbits.push(og);
+    const b=new THREE.Mesh(new THREE.SphereGeometry(0.28,20,20),new THREE.MeshStandardMaterial({color:0x9fe0ff,emissive:0x2a6a90,emissiveIntensity:1.0,roughness:0.4}));
+    b.userData={R,ph:i*2.1,tilt:i*0.5};wrong.add(b);balls.push(b);
+  }
+  const crossX=labelSprite('✕','#ff6a6a',200);crossX.scale.set(6,3,1);crossX.material.opacity=0;gD.add(crossX);
+  const cloud=makeCloud(1500,0.9,7.5,206,0x5fc8e8);cloud.pts.material.opacity=0;gD.add(cloud.pts);
+  const pointer=new THREE.Mesh(new THREE.ConeGeometry(0.2,0.6,12),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:0}));
+  gD.add(pointer);
+  gD.userData={nucleus,wrong,orbits,balls,crossX,cloud,pointer};
+})();
+
+// ---------- E: scale numbers / compress humanity / neutron star ----------
+const gE=G();
+(function(){
+  const ratio=new THREE.Group();gE.add(ratio);
+  const atomRing=new THREE.Mesh(new THREE.RingGeometry(6,6.08,96),new THREE.MeshBasicMaterial({color:0x5fc8e8,transparent:true,opacity:0.6,side:THREE.DoubleSide}));
+  ratio.add(atomRing);
+  const nucDot=makeNucleus(0.16);ratio.add(nucDot.grp);
+  const numBig=labelSprite('100.000×','#bfd9ff',88);numBig.scale.set(6,3,1);numBig.position.set(0,-4.5,0);numBig.material.opacity=0;ratio.add(numBig);
+  const vol=new THREE.Group();vol.visible=false;gE.add(vol);
+  const cube=new THREE.Mesh(new THREE.BoxGeometry(7,7,7),new THREE.MeshBasicMaterial({color:0x5fc8e8,wireframe:true,transparent:true,opacity:0.45}));
+  vol.add(cube);
+  const solidDot=makeNucleus(0.1);vol.add(solidDot.grp);
+  const numVol=labelSprite('1 / 10¹⁵','#bfd9ff',80);numVol.scale.set(6,3,1);numVol.position.set(0,-5,0);numVol.material.opacity=0;vol.add(numVol);
+  const crowd=new THREE.Group();crowd.visible=false;gE.add(crowd);
+  const cpr=mulberry32(220);const pMat=new THREE.MeshStandardMaterial({color:0x6b7a95,emissive:0x0a1020,emissiveIntensity:0.4,roughness:0.7});
+  const people=[];const pGeo=(typeof THREE.CapsuleGeometry==='function')?new THREE.CapsuleGeometry(0.12,0.4,4,8):new THREE.CylinderGeometry(0.12,0.12,0.6,8);
+  for(let i=0;i<300;i++){const m=new THREE.Mesh(pGeo,pMat);const a=cpr()*6.283,rr=Math.pow(cpr(),0.5)*9;
+    m.userData={x0:Math.cos(a)*rr,z0:Math.sin(a)*rr,y0:(cpr()-0.5)*2};
+    m.position.set(m.userData.x0,m.userData.y0,m.userData.z0);crowd.add(m);people.push(m);}
+  const sugar=new THREE.Mesh(new THREE.BoxGeometry(1,1,1),new THREE.MeshStandardMaterial({color:0xf2f4f8,emissive:0x6688aa,emissiveIntensity:0.6,roughness:0.5}));
+  sugar.visible=false;gE.add(sugar);
+  const ns=makeNeutronStar(0.9);ns.grp.visible=false;gE.add(ns.grp);
+  gE.userData={ratio,atomRing,nucDot,numBig,vol,cube,solidDot,numVol,crowd,people,sugar,ns};
+})();
+
+// ---------- F: ghost question / word LỰC ----------
+const gF=G();
+(function(){
+  const hh=makeHand();hh.grp.scale.setScalar(0.7);gF.add(hh.grp);
+  const ghost=new THREE.Mesh(new THREE.SphereGeometry(1.2,24,24),new THREE.MeshBasicMaterial({color:0x9fc0ff,transparent:true,opacity:0,wireframe:true}));
+  ghost.scale.set(1.4,0.5,1);gF.add(ghost);
+  const wordForce=labelSprite('LỰC','#bfd9ff',150);wordForce.scale.set(6,3,1);wordForce.material.opacity=0;gF.add(wordForce);
+  const wrongLabel=labelSprite('ĐẦY?','#ff6a6a',110);wrongLabel.scale.set(5,2.5,1);wrongLabel.position.set(0,2.4,0);wrongLabel.material.opacity=0;gF.add(wrongLabel);
+  const fieldRip=new THREE.Mesh(new THREE.RingGeometry(0.5,0.6,64),new THREE.MeshBasicMaterial({color:0xbfd9ff,transparent:true,opacity:0,side:THREE.DoubleSide,depthWrite:false,blending:THREE.AdditiveBlending}));
+  gF.add(fieldRip);
+  gF.userData={hh,ghost,wordForce,wrongLabel,fieldRip};
+})();
+
+// ---------- G: gold foil experiment ----------
+const gG=G();
+(function(){
+  const foil=new THREE.Mesh(new THREE.PlaneGeometry(1.0,9),new THREE.MeshStandardMaterial({color:0xffd65a,emissive:0x6a5010,emissiveIntensity:0.6,roughness:0.3,metalness:0.9,transparent:true,opacity:0.5,side:THREE.DoubleSide}));
+  gG.add(foil);
+  const nucleus=makeNucleus(0.3);nucleus.grp.position.set(0,0.4,0);nucleus.grp.visible=false;gG.add(nucleus.grp);
+  const NA=140,pr=mulberry32(230);
+  const lane=new Float32Array(NA),phase=new Float32Array(NA),bounce=new Float32Array(NA),bt=new Float32Array(NA);
+  for(let i=0;i<NA;i++){lane[i]=(pr()-0.5)*8;phase[i]=pr();bounce[i]=pr()<0.02?1:0;bt[i]=0.3+pr()*0.4;}
+  const pos=new Float32Array(NA*3);
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  const alpha=new THREE.Points(g,new THREE.PointsMaterial({map:TDOT.gold,size:0.4,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,color:0xffd65a,opacity:0.9}));
+  gG.add(alpha);
+  const src=new THREE.Mesh(new THREE.BoxGeometry(0.8,2.5,0.8),new THREE.MeshStandardMaterial({color:0x2a2c34,emissive:0x1a1000,emissiveIntensity:0.4,roughness:0.7}));
+  src.position.set(-9,0,0);gG.add(src);
+  const foilLabel=labelSprite('LÁ VÀNG','#ffd65a',70);foilLabel.scale.set(4,2,1);foilLabel.position.set(0,-5,0);foilLabel.material.opacity=0;gG.add(foilLabel);
+  const flash=new THREE.Sprite(new THREE.SpriteMaterial({map:softDisc(0,128,255,214,120),color:0xffd65a,transparent:true,opacity:0,depthWrite:false,blending:THREE.AdditiveBlending}));
+  flash.scale.set(4,4,1);flash.position.set(0,0.4,0);gG.add(flash);
+  gG.userData={foil,nucleus,alpha,lane,phase,bounce,bt,NA,src,foilLabel,flash};
+})();
+
+// ---------- H: two electron clouds repel / EM field / gap ----------
+const gH=G();
+(function(){
+  const cloudL=makeCloud(700,0.4,3.2,240,0x5fc8e8);cloudL.pts.position.set(-3,0,0);gH.add(cloudL.pts);
+  const cloudR=makeCloud(700,0.4,3.2,241,0x5fc8e8);cloudR.pts.position.set(3,0,0);gH.add(cloudR.pts);
+  const field=new THREE.Sprite(new THREE.SpriteMaterial({map:softDisc(0,128,191,217,255),color:0xbfd9ff,transparent:true,opacity:0,depthWrite:false,blending:THREE.AdditiveBlending}));
+  field.scale.set(3,6,1);gH.add(field);
+  const arcs=new THREE.Group();gH.add(arcs);
+  for(let i=0;i<7;i++){const y=-2.4+i*0.8;
+    const geo=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-1.6,y,0),new THREE.Vector3(0,y*0.5,0.5),new THREE.Vector3(1.6,y,0)]);
+    const ln=new THREE.Line(geo,new THREE.LineBasicMaterial({color:0xbfd9ff,transparent:true,opacity:0}));arcs.add(ln);}
+  const wrongLabel=labelSprite('BI CỨNG?','#ff6a6a',90);wrongLabel.scale.set(6,3,1);wrongLabel.position.set(0,3.4,0);wrongLabel.material.opacity=0;gH.add(wrongLabel);
+  const minusL=labelSprite('−','#5fc8e8',150);minusL.scale.set(2,1,1);minusL.position.set(-3,0,2);minusL.material.opacity=0;gH.add(minusL);
+  const minusR=labelSprite('−','#5fc8e8',150);minusR.scale.set(2,1,1);minusR.position.set(3,0,2);minusR.material.opacity=0;gH.add(minusR);
+  gH.userData={cloudL,cloudR,field,arcs,wrongLabel,minusL,minusR};
+})();
+
+// ---------- I: Pauli exclusion / energy levels / neutron star support ----------
+const gI=G();
+(function(){
+  const ladder=new THREE.Group();gI.add(ladder);
+  const shelves=[],slots=[];
+  for(let L=0;L<4;L++){
+    const y=-2.4+L*1.6;
+    const shelf=new THREE.Mesh(new THREE.BoxGeometry(8,0.08,0.4),new THREE.MeshBasicMaterial({color:0xbfd9ff,transparent:true,opacity:0.5}));
+    shelf.position.set(0,y,0);ladder.add(shelf);shelves.push(shelf);
+    const nSlots=2+L*2;
+    for(let s=0;s<nSlots;s++){const b=new THREE.Mesh(new THREE.SphereGeometry(0.22,16,16),new THREE.MeshStandardMaterial({color:0x5fc8e8,emissive:0x1a5a72,emissiveIntensity:0.9,roughness:0.4}));
+      b.position.set(-3.2+s*(6.4/(nSlots-1||1)),y+0.35,0);b.userData={L,s};ladder.add(b);slots.push(b);}
+  }
+  const intruder=new THREE.Mesh(new THREE.SphereGeometry(0.24,16,16),new THREE.MeshStandardMaterial({color:0xff6a6a,emissive:0x8a2020,emissiveIntensity:1.1,roughness:0.4}));
+  intruder.material.transparent=true;intruder.material.opacity=0;gI.add(intruder);
+  const pauliLabel=labelSprite('PAULI','#bfd9ff',110);pauliLabel.scale.set(5,2.5,1);pauliLabel.position.set(0,3.4,0);pauliLabel.material.opacity=0;gI.add(pauliLabel);
+  const ns=makeNeutronStar(1.1);ns.grp.visible=false;ns.grp.position.set(0,0,0);gI.add(ns.grp);
+  gI.userData={ladder,shelves,slots,intruder,pauliLabel,ns};
+})();
+
+// ---------- J: settle / quantum field fills / order makes me ----------
+const gJ=G();
+(function(){
+  const grid1=makeFieldGrid(30,50,0x7b4bff);grid1.rotation.x=-1.0;grid1.position.set(0,-1,0);grid1.material.uniforms.uAmp.value=0;gJ.add(grid1);
+  const grid2=makeFieldGrid(30,50,0x5f8bff);grid2.rotation.x=-1.0;grid2.position.set(0,-1,-4);grid2.material.uniforms.uAmp.value=0;gJ.add(grid2);
+  const cloud=makeCloud(900,1.0,7.0,250,0x5fc8e8);cloud.pts.material.opacity=0;gJ.add(cloud.pts);
+  const nucleus=makeNucleus(0.4);nucleus.grp.visible=false;gJ.add(nucleus.grp);
+  const wrongLabel=labelSprite('= 0 ?','#ff6a6a',110);wrongLabel.scale.set(5,2.5,1);wrongLabel.position.set(0,2.6,0);wrongLabel.material.opacity=0;gJ.add(wrongLabel);
+  const order=new THREE.Group();order.visible=false;gJ.add(order);
+  const smallNuc=[];
+  for(let i=0;i<5;i++)for(let j=0;j<3;j++){
+    const nn=makeNucleus(0.14);nn.grp.position.set(-6+i*3,-2+j*2,-1);order.add(nn.grp);
+    const cl=makeCloud(120,0.4,1.4,260+i*3+j,0x5fc8e8);cl.pts.position.copy(nn.grp.position);cl.pts.material.opacity=0.35;order.add(cl.pts);smallNuc.push({nn,cl});
+  }
+  gJ.userData={grid1,grid2,cloud,nucleus,wrongLabel,order,smallNuc};
+})();
+
+// ---------- K: hug / gap / conclusion / fade ----------
+const gK=G();
+(function(){
+  const figs=new THREE.Group();gK.add(figs);
+  const figMat=new THREE.MeshStandardMaterial({color:0xc99a7a,emissive:0x2a1810,emissiveIntensity:0.3,roughness:0.7,transparent:true,opacity:0.92});
+  function fig(sx){
+    const g=new THREE.Group();
+    const body=new THREE.Mesh((typeof THREE.CapsuleGeometry==='function')?new THREE.CapsuleGeometry(0.7,1.8,6,16):new THREE.CylinderGeometry(0.7,0.7,2.6,16),figMat);
+    body.position.y=0.2;g.add(body);
+    const head=new THREE.Mesh(new THREE.SphereGeometry(0.6,24,24),figMat);head.position.y=1.7;g.add(head);
+    g.position.x=sx;g.rotation.z=sx>0?0.12:-0.12;return g;
+  }
+  const fL=fig(-0.85),fR=fig(0.85);figs.add(fL);figs.add(fR);
+  const macro=new THREE.Group();macro.visible=false;gK.add(macro);
+  const cloudA=makeCloud(600,0.3,3.0,270,0xbfd9ff);cloudA.pts.position.set(-1.6,0,0);macro.add(cloudA.pts);
+  const cloudB=makeCloud(600,0.3,3.0,271,0xbfd9ff);cloudB.pts.position.set(1.6,0,0);macro.add(cloudB.pts);
+  const gapGlow=new THREE.Sprite(new THREE.SpriteMaterial({map:softDisc(0,128,191,217,255),color:0xbfd9ff,transparent:true,opacity:0,depthWrite:false,blending:THREE.AdditiveBlending}));
+  gapGlow.scale.set(1.6,5,1);macro.add(gapGlow);
+  const warm=new THREE.Sprite(new THREE.SpriteMaterial({map:softDisc(0,128,255,200,140),color:0xffc890,transparent:true,opacity:0,depthWrite:false,blending:THREE.AdditiveBlending}));
+  warm.scale.set(20,20,1);warm.position.set(0,0.5,-6);gK.add(warm);
+  const hh=makeHand();hh.grp.visible=false;hh.grp.scale.setScalar(0.9);gK.add(hh.grp);
+  gK.userData={figs,fL,fR,figMat,macro,cloudA,cloudB,gapGlow,warm,hh};
+})();
+
+// ============================================================
+//  camera helper
+// ============================================================
+function setCam(px,py,pz,lx,ly,lz,fov){camera.position.set(px,py,pz);camera.lookAt(lx||0,ly||0,lz||0);if(fov){camera.fov=fov;camera.updateProjectionMatrix();}}
+
+// ============================================================
+//  MAIN renderAtTime(t) — deterministic
+// ============================================================
+function renderAtTime(t){
+  gA.visible=inSc(t,'A');gB.visible=inSc(t,'B');gC.visible=inSc(t,'C');gD.visible=inSc(t,'D');
+  gE.visible=inSc(t,'E');gF.visible=inSc(t,'F');gG.visible=inSc(t,'G');gH.visible=inSc(t,'H');
+  gI.visible=inSc(t,'I');gJ.visible=inSc(t,'J');gK.visible=inSc(t,'K');
+
+  stars.rotation.y=t*0.0012;
+  const starOp=(inSc(t,'C')||inSc(t,'G'))?0.28:0.5;
+  stars.material.uniforms.uOp.value=starOp;
+
+  let flash=0.0;
+  key.intensity=1.05;
+
+  try{
+  // ---------------- A: hand on table / tap / secret ----------------
+  if(gA.visible){
+    const d=gA.userData;
+    const p=loc(t,'A');
+    const arr=d.dust.geometry.attributes.position.array,base=d.base;
+    for(let i=0;i<d.N;i++){arr[i*3]=base[i*3]+Math.sin(t*0.2+d.ph[i])*0.5;arr[i*3+1]=base[i*3+1]+Math.cos(t*0.16+d.ph[i])*0.4;arr[i*3+2]=base[i*3+2]+Math.sin(t*0.14+d.ph[i])*0.4;}
+    d.dust.geometry.attributes.position.needsUpdate=true;
+    d.dust.material.opacity=0.25*smooth((t-30)/6);
+    let tapPhase=0;
+    if(t>=8.94&&t<21.29){tapPhase=Math.max(0,Math.sin((t-8.94)*3.2));}
+    d.hh.fingers[1].position.y=0.1-tapPhase*0.18;
+    d.ripple.material.opacity=0.7*tapPhase;
+    d.ripple.scale.setScalar(1+tapPhase*3.5);
+    const lift=smooth((t-30)/8);
+    d.hh.hand.rotation.z=lift*0.5;
+    d.hh.hand.position.y=-1.9+lift*0.6;
+    key.intensity=0.85;
+    setCam(Math.sin(t*0.04)*1.2,1.6-p*0.4,7.5-p*0.5,0,-1.2,0,42);
+  }
+
+  // ---------------- B: reveal empty / chain / zoom ladder ----------------
+  if(gB.visible){
+    const d=gB.userData;
+    const gapP=t<54.56;
+    const chainP=t>=54.56&&t<69.24;
+    const zoomP=t>=69.24;
+    d.gapGrp.visible=gapP;d.earth.visible=chainP;d.cells.visible=zoomP;d.mols.visible=zoomP;d.ladder.visible=zoomP;
+    if(gapP){
+      const gp=smooth((t-39.77)/6);
+      animCloud(d.cloudTop,t,0.4,0.05);animCloud(d.cloudBot,t,-0.4,0.05);
+      d.cloudTop.pts.material.opacity=0.5*gp;d.cloudBot.pts.material.opacity=0.5*gp;
+      const gap=0.5+gp*0.9;d.cloudTop.pts.position.y=gap;d.cloudBot.pts.position.y=-gap;
+      key.intensity=0.75;
+      setCam(0,0,7-gp*1.5,0,0,0,40);
+    }
+    if(chainP){
+      d.earth.rotation.y=t*0.05;
+      const cp=smooth((t-54.56)/5);
+      d.earth.material.opacity=0.55+0.3*Math.sin(t*0.8);
+      d.earth.scale.setScalar(0.8+cp*0.4);
+      key.intensity=0.6;
+      setCam(Math.sin(t*0.1)*2,0.5,9-cp*1,0,0,0,44);
+    }
+    if(zoomP){
+      const cellsA=band(t,69.24,77,2.0);
+      const molsA=band(t,76,85,2.0);
+      const atomA=smooth((t-84)/8);
+      d.cells.children.forEach((m)=>{m.material.opacity=0.6*cellsA;m.rotation.y=t*0.2;});
+      d.cellMat.opacity=0.6*cellsA;
+      d.mMat.opacity=0.7*molsA;
+      d.mols.rotation.y=t*0.15;
+      d.nucleus.grp.scale.setScalar(0.001+atomA*1.0);
+      d.nucleus.nucleons.forEach(m=>{m.rotation.y=t*0.5;});
+      d.nucleus.grp.rotation.y=t*0.1;
+      animCloud(d.cloud,t,0.25,0.08);
+      d.cloud.pts.material.opacity=0.45*atomA;
+      const z=10 - band(t,69.24,77,2.0)*3 - band(t,76,85,2.0)*3 - smooth((t-84)/8)*2;
+      key.intensity=0.55;
+      setCam(Math.sin(t*0.05)*1.5,0.4,Math.max(3.2,z),0,0,0,46);
+    }
+  }
+
+  // ---------------- C: stadium ----------------
+  if(gC.visible){
+    const d=gC.userData;
+    d.nucleus.nucleons.forEach(m=>{m.rotation.y=t*0.4;});
+    d.nucleus.grp.rotation.y=t*0.08;
+    animCloud(d.mist,t,0.08,0.2);
+    d.mist.pts.material.opacity=0.35*smooth((t-108)/8);
+    d.nucleus.glow.material.opacity=0.85*smooth((t-105)/6);
+    let cz,cy,fov;
+    if(t<108.27){const s=smooth((t-95.27)/13);cz=6+s*24;cy=4+s*8;fov=52;}
+    else if(t<124.99){const s=smooth((t-108.27)/16.7);cz=30-s*24;cy=12-s*9.5;fov=52-s*10;}
+    else{const s=smooth((t-124.99)/14);cz=6+s*30;cy=2.5+s*13;fov=42+s*14;}
+    setCam(Math.sin(t*0.05)*3,cy,cz,0,0.4,0,fov);
+    key.intensity=0.7;
+  }
+
+  // ---------------- D: reject planet model / probability cloud ----------------
+  if(gD.visible){
+    const d=gD.userData;
+    d.nucleus.nucleons.forEach(m=>{m.rotation.y=t*0.4;});
+    d.nucleus.grp.rotation.y=t*0.1;
+    const wrongA=band(t,138.97,152,2.0);
+    d.wrong.visible=wrongA>0.01;
+    d.orbits.forEach(o=>{o.material.opacity=0.5*wrongA;});
+    d.balls.forEach(b=>{const ang=t*0.7+b.userData.ph;b.position.set(Math.cos(ang)*b.userData.R,Math.sin(ang)*b.userData.R*0.3,Math.sin(ang+b.userData.tilt)*b.userData.R*0.8);b.material.opacity=wrongA;b.visible=wrongA>0.01;});
+    d.crossX.material.opacity=0.9*band(t,150,154.85,1.0);
+    const cloudA=smooth((t-155)/8);
+    animCloud(d.cloud,t,0.2,0.1);
+    d.cloud.pts.material.opacity=0.5*cloudA;
+    const ptA=band(t,155,167,1.5);
+    d.pointer.material.opacity=ptA*0.8;
+    const pang=t*2.3;d.pointer.position.set(Math.cos(pang)*(2+Math.sin(t*1.3)*1.5),Math.sin(pang*1.4)*2,0.5);
+    const orb=t>155?(t-155)*0.06:0;
+    const cz=8-smooth((t-138.97)/20)*1.5;
+    setCam(Math.sin(orb)*cz,1.2,Math.cos(orb)*cz,0,0,0,46);
+    key.intensity=0.7;
+  }
+
+  // ---------------- E: scale / compress / neutron star ----------------
+  if(gE.visible){
+    const d=gE.userData;
+    const ratioP=t<217.15;
+    const volP=t>=217.15&&t<237.87;
+    const bodyP=t>=237.87&&t<260.7;
+    const crowdP=t>=260.7&&t<276.08;
+    const sugarP=t>=276.08;
+    d.ratio.visible=ratioP||bodyP;d.vol.visible=volP;d.crowd.visible=crowdP;
+    d.sugar.visible=sugarP&&t<288;d.ns.grp.visible=sugarP&&t>=286;
+    if(ratioP||bodyP){
+      d.nucDot.nucleons.forEach(m=>{m.rotation.y=t*0.4;});
+      d.ratio.rotation.z=t*0.05;
+      d.atomRing.material.opacity=0.6;
+      d.numBig.material.opacity=0.95*band(t,209,237,1.5)*(bodyP?0.4:1);
+      setCam(0,0,ratioP?12:14,0,0,0,46);
+    }
+    if(volP){
+      d.cube.rotation.y=t*0.2;d.cube.rotation.x=0.3;
+      d.numVol.material.opacity=0.95*band(t,222,237,1.5);
+      setCam(Math.sin(t*0.1)*3,1,13,0,0,0,46);
+    }
+    if(crowdP){
+      const cp=smooth((t-264)/10);
+      d.people.forEach(m=>{const f=1-cp*0.95;m.position.set(m.userData.x0*f,m.userData.y0*f,m.userData.z0*f);});
+      key.intensity=0.7;
+      setCam(0,2,16-cp*4,0,0,0,50);
+    }
+    if(sugarP){
+      const morph=smooth((t-283)/5);
+      if(t<288){d.sugar.scale.setScalar(1);d.sugar.rotation.y=t*0.4;d.sugar.rotation.x=0.3;}
+      d.ns.mat.uniforms.uT.value=t;d.ns.core.rotation.y=t*0.1;
+      const nsSc=0.6+morph*0.8;d.ns.grp.scale.setScalar(nsSc);
+      key.intensity=0.9;
+      setCam(Math.sin(t*0.06)*1.5,0.5,10,0,0,0,46);
+    }
+  }
+
+  // ---------------- F: ghost question / word LỰC ----------------
+  if(gF.visible){
+    const d=gF.userData;
+    const ghostP=t<312.34;
+    d.hh.grp.visible=ghostP;d.ghost.visible=ghostP;
+    if(ghostP){
+      const push=Math.max(0,Math.sin((t-299)*0.8));
+      d.hh.grp.position.set(-1.5+push*1.0,0,0);
+      d.ghost.material.opacity=0.4*push;
+      d.ghost.position.set(0.6+push*0.4,0,0);
+      d.wordForce.material.opacity=0;d.wrongLabel.material.opacity=0;d.fieldRip.material.opacity=0;
+      key.intensity=0.7;
+      setCam(0,0.5,8,0,0,0,46);
+    }else{
+      const burst=smooth((t-314)/6);
+      d.hh.grp.visible=false;d.ghost.visible=false;
+      d.wrongLabel.material.opacity=0.9*band(t,313,318,1.0);
+      d.wordForce.material.opacity=burst;
+      d.wordForce.scale.set(6+burst*1.5,3+burst*0.7,1);
+      d.fieldRip.material.opacity=0.6*Math.abs(Math.sin(t*1.5));
+      d.fieldRip.scale.setScalar(1+((t-314)%3)*2);
+      setCam(0,0,9,0,0,0,46);
+    }
+  }
+
+  // ---------------- G: gold foil experiment ----------------
+  if(gG.visible){
+    const d=gG.userData;
+    d.nucleus.nucleons.forEach(m=>{m.rotation.y=t*0.4;});
+    d.foilLabel.material.opacity=0.9*band(t,335,351,2.0);
+    d.foil.material.opacity=0.4+0.15*Math.sin(t*0.5);
+    const beamOn=t>=334.83;
+    const flow=t*3.0;
+    const arr=d.alpha.geometry.attributes.position.array;
+    let hitFlash=0;
+    for(let i=0;i<d.NA;i++){
+      let x=((flow*d.bt[i]+d.phase[i]*18)%18)-9;
+      const y=d.lane[i];
+      if(d.bounce[i]>0.5 && Math.abs(y)<0.7){
+        if(x>0){x=-x*0.9;hitFlash=Math.max(hitFlash,1-Math.min(1,x*x*0.3));}
+      }
+      arr[i*3]=beamOn?x:-9;arr[i*3+1]=y;arr[i*3+2]=Math.sin(d.phase[i]*6.283)*0.3;
+    }
+    d.alpha.geometry.attributes.position.needsUpdate=true;
+    d.alpha.material.opacity=beamOn?0.9:0;
+    const bounceScene=t>=365.71&&t<389.53;
+    d.flash.material.opacity=bounceScene?(0.7*hitFlash):0;
+    const revealNuc=t>=389.53;
+    d.nucleus.grp.visible=revealNuc;
+    d.nucleus.grp.scale.setScalar(revealNuc?smooth((t-389.53)/6)*1.0:0.001);
+    d.nucleus.grp.rotation.y=t*0.1;
+    if(bounceScene){flash=0.10*hitFlash;}
+    let cz,cx0;
+    if(t<351.1){cz=13;cx0=Math.sin(t*0.04)*2;}
+    else if(t<365.71){cz=11;cx0=Math.sin(t*0.05)*2;}
+    else if(t<389.53){cz=7;cx0=1;}
+    else{cz=7+smooth((t-389.53)/16)*8;cx0=Math.sin(t*0.05)*2;}
+    setCam(cx0,0.5,cz,0,0.4,0,46);
+    key.intensity=0.8;
+  }
+
+  // ---------------- H: two clouds repel / EM field ----------------
+  if(gH.visible){
+    const d=gH.userData;
+    animCloud(d.cloudL,t,0.25,0.08);animCloud(d.cloudR,t,-0.25,0.08);
+    d.cloudL.pts.material.opacity=0.5;d.cloudR.pts.material.opacity=0.5;
+    let sep;
+    if(t<427.89){sep=3.0-smooth((t-414.99)/13)*0.8;}
+    else if(t<441.04){sep=2.2;}
+    else if(t<462.15){const s=smooth((t-441.04)/21);sep=2.2-s*0.9;}
+    else{sep=1.3+0.1*Math.sin(t*2.0);}
+    d.cloudL.pts.position.x=-sep;d.cloudR.pts.position.x=sep;
+    const fieldStr=(sep<2.2)?smooth((2.2-sep)/1.0):0.2;
+    d.field.material.opacity=0.35+0.5*fieldStr+0.1*Math.sin(t*3.0);
+    d.field.scale.set(1.5+fieldStr*1.5,6,1);
+    d.arcs.children.forEach((ln,i)=>{ln.material.opacity=(0.3+0.6*fieldStr)*(0.6+0.4*Math.sin(t*2.5+i));});
+    d.wrongLabel.material.opacity=0.9*band(t,429,440,1.0);
+    d.minusL.material.opacity=0.8*band(t,441,461,2.0);d.minusR.material.opacity=0.8*band(t,441,461,2.0);
+    key.intensity=0.75;
+    setCam(Math.sin(t*0.05)*1.5,0.3,8-smooth((t-441.04)/20)*2,0,0,0,46);
+  }
+
+  // ---------------- I: Pauli / energy levels / neutron star ----------------
+  if(gI.visible){
+    const d=gI.userData;
+    const ladderP=t<511.26;
+    const nsP=t>=511.26&&t<545;
+    d.slots.forEach((b,i)=>{b.material.emissiveIntensity=0.9+0.3*Math.sin(t*1.5+i*0.4);});
+    d.pauliLabel.material.opacity=ladderP?0.9*band(t,483,510,2.0):0;
+    const cyc=(t-482)%4;
+    if(t>=482&&ladderP){
+      d.intruder.material.opacity=0.9;
+      const targetY=-2.4+1*1.6+0.35;
+      const push=cyc<2?smooth(cyc/2):0;const reject=cyc>=2?smooth((cyc-2)/2):0;
+      const startY=4;
+      d.intruder.position.set(0.5, startY-(startY-targetY-0.6)*push + reject*3.0, 0.3+reject*1.5);
+    }else{d.intruder.material.opacity=0;}
+    d.ladder.visible=ladderP;
+    d.ns.grp.visible=nsP;
+    if(nsP){d.ns.mat.uniforms.uT.value=t;d.ns.core.rotation.y=t*0.1;
+      const s=smooth((t-511.26)/5);d.ns.grp.scale.setScalar(0.6+s*0.7);d.ns.grp.position.set(0,0.5,0);
+      key.intensity=0.9;
+      setCam(Math.sin(t*0.05)*1.5,0.5,9,0,0.5,0,46);
+    }else if(t>=545){
+      key.intensity=0.7;
+      setCam(0,0,8,0,0,0,46);
+    }else{
+      setCam(Math.sin(t*0.04)*1.5,0.3,9.5,0,0.2,0,46);
+      key.intensity=0.75;
+    }
+  }
+
+  // ---------------- J: settle / quantum field / order ----------------
+  if(gJ.visible){
+    const d=gJ.userData;
+    d.grid1.material.uniforms.uT.value=t;d.grid2.material.uniforms.uT.value=t;
+    const fieldA=smooth((t-578.8)/8);
+    const orderP=t>=617.51;
+    d.grid1.material.uniforms.uAmp.value=orderP?0.5:fieldA*0.9;d.grid2.material.uniforms.uAmp.value=orderP?0.4:fieldA*0.7;
+    d.wrongLabel.material.opacity=0.9*band(t,567,578,1.5);
+    animCloud(d.cloud,t,0.15,0.06);
+    d.cloud.pts.material.opacity=0.45*smooth((t-585)/8)*(t<617.51?1:(1-smooth((t-617.51)/6)));
+    d.nucleus.grp.visible=t>=585&&t<617.51;
+    d.nucleus.nucleons.forEach(m=>{m.rotation.y=t*0.3;});
+    d.order.visible=orderP;
+    if(orderP){
+      const oa=smooth((t-617.51)/6);
+      d.smallNuc.forEach((o)=>{o.nn.grp.rotation.y=t*0.2;animCloud(o.cl,t,0.15,0.04);o.cl.pts.material.opacity=0.35*oa;});
+      setCam(Math.sin(t*0.04)*2,0.5,11,0,0,0,48);
+    }else{
+      setCam(Math.sin(t*0.04)*2,1.0,10-fieldA*1.5,0,-0.5,0,48);
+    }
+    key.intensity=0.65;
+  }
+
+  // ---------------- K: hug / gap / conclusion / fade ----------------
+  if(gK.visible){
+    const d=gK.userData;
+    const handP=t>=721.24;
+    const macroP=t>=649.81&&t<668.72;
+    const hugP=!handP&&!macroP;
+    d.figs.visible=hugP;d.macro.visible=macroP;d.hh.grp.visible=handP;
+    const breath=Math.sin(t*0.6)*0.03;
+    d.fL.scale.setScalar(1+breath);d.fR.scale.setScalar(1+breath);
+    d.fL.rotation.z=-0.12+Math.sin(t*0.5)*0.02;d.fR.rotation.z=0.12-Math.sin(t*0.5)*0.02;
+    if(macroP){
+      animCloud(d.cloudA,t,0.2,0.06);animCloud(d.cloudB,t,-0.2,0.06);
+      d.cloudA.pts.material.opacity=0.55;d.cloudB.pts.material.opacity=0.55;
+      const sep=1.4+0.08*Math.sin(t*2.2);d.cloudA.pts.position.x=-sep;d.cloudB.pts.position.x=sep;
+      d.gapGlow.material.opacity=0.4+0.2*Math.sin(t*2.2);
+      key.intensity=0.7;
+      setCam(0,0,7,0,0,0,44);
+    }else if(handP){
+      key.intensity=0.8;
+      setCam(0,1.2,7-((t-721.24)/24)*1.0,0,-1.2,0,42);
+    }else{
+      const warmA=smooth((t-668.72)/6)*(t<701.63?1:0.6)+smooth((t-701.63)/6)*0.4;
+      d.warm.material.opacity=0.35*Math.min(1,warmA);
+      key.intensity=0.75+0.15*Math.min(1,warmA);
+      const cz=9-smooth((t-641.07)/8)*0.5;
+      setCam(Math.sin(t*0.03)*1.5,0.6,cz,0,0.3,0,46);
+    }
+  }
+
+  }catch(err){var eb=document.getElementById('err');if(eb){eb.style.display='block';eb.textContent='renderAtTime@'+t.toFixed(2)+': '+err.message;}}
+
+  // ---- subtitles ----
+  let s='';
+  for(let i=0;i<CUES.length;i++){if(CUES[i].t<=t+0.001){s=CUES[i].s;}else break;}
+  const subEl=document.getElementById('sub');if(subEl.textContent!==s)subEl.textContent=s;
+
+  // ---- chapter overlay (5s after each chapter cue) ----
+  const chEl=document.getElementById('chap');
+  let chShow=0,chTxt='';
+  const chMarks=[{t:0,x:'CHƯƠNG 1'},{t:95.27,x:'CHƯƠNG 2'},{t:323.21,x:'CHƯƠNG 3'},{t:556.19,x:'CHƯƠNG 4'}];
+  for(const m of chMarks){if(t>=m.t&&t<m.t+5.5){chShow=band(t,m.t+0.3,m.t+4.8,0.6);chTxt=m.x;}}
+  if(chEl.textContent!==chTxt)chEl.textContent=chTxt;
+  chEl.style.opacity=chShow.toFixed(3);
+
+  // ---- global fade in/out ----
+  let fade=1.0;
+  fade*=smooth(t/1.5);
+  fade*=smooth((TOTAL-t)/3.0);
+  lens.uniforms.uFade.value=fade;
+  lens.uniforms.uFlash.value=flash;
+  lens.uniforms.uT.value=t;
+
+  composer.render();
+}
+
+// ============================================================
+//  Timeline (paused, registered)
+// ============================================================
+window.__timelines=window.__timelines||{};
+const tl=gsap.timeline({paused:true});
+const clk={t:0};
+tl.to(clk,{t:TOTAL,duration:TOTAL,ease:"none",onUpdate:()=>renderAtTime(clk.t)},0);
+window.__timelines["nguyen-tu-rong"]=tl;
+
+// initial paint
+renderAtTime(0);
+</script>
+</body>
+</html>

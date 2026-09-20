@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, height=1080">
+<title>Tập 2 — Còn Ai Ngoài Kia Không — HyperFrames</title>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{width:1920px;height:1080px;overflow:hidden;background:#04060e;font-family:"Segoe UI",-apple-system,Roboto,sans-serif;}
+  #root{position:relative;width:1920px;height:1080px;}
+  #c{position:absolute;inset:0;display:block;z-index:0;}
+  #fx{position:absolute;inset:0;display:block;z-index:4;}
+  #vig{position:absolute;inset:0;pointer-events:none;z-index:6;background:radial-gradient(ellipse at center,rgba(0,0,0,0) 55%,rgba(1,2,7,.55) 100%);}
+  #chap{position:absolute;left:50%;top:6.2%;transform:translateX(-50%);z-index:18;color:#bcd0ff;font-size:26px;font-weight:600;letter-spacing:5px;text-transform:uppercase;opacity:0;text-shadow:0 2px 16px rgba(0,0,0,.95);white-space:nowrap;}
+  #sub{position:absolute;left:50%;bottom:8.5%;transform:translateX(-50%);z-index:20;width:min(1400px,86%);text-align:center;color:#f4f1ff;font-size:40px;font-weight:600;line-height:1.4;text-shadow:0 2px 18px rgba(0,0,0,.95),0 0 3px rgba(0,0,0,.95);}
+  #err{position:absolute;left:12px;top:12px;z-index:99;color:#ff9090;background:rgba(0,0,0,.8);padding:8px 10px;font:12px/1.5 monospace;max-width:90%;white-space:pre-wrap;border-radius:8px;display:none;}
+</style>
+</head>
+<body>
+<div data-hf-id="hf-root" id="root" data-composition-id="tap-02-con-ai-ngoai-kia" data-start="0" data-duration="970.76" data-width="1920" data-height="1080">
+  <canvas data-hf-id="hf-c" id="c" class="clip" data-start="0" data-duration="970.76" data-track-index="0"></canvas>
+  <canvas data-hf-id="hf-fx" id="fx" class="clip" data-start="0" data-duration="970.76" data-track-index="1"></canvas>
+  <div data-hf-id="hf-vig" id="vig"></div>
+  <div data-hf-id="hf-chap" id="chap" data-layout-allow-occlusion></div>
+  <div data-hf-id="hf-sub" id="sub" data-layout-allow-occlusion></div>
+  <div data-hf-id="hf-err" id="err"></div>
+  <audio data-hf-id="hf-narr" id="narr" class="clip" data-start="0" data-duration="970.76" data-track-index="2" src="../projects/con-ai-ngoai-kia-khong/voice/narration_mixed.mp3"></audio>
+</div>
+
+<script>
+window.addEventListener('error',function(e){var d=document.getElementById('err');if(!d)return;d.style.display='block';
+  d.textContent='LỖI: '+(e.message||e.type)+(e.filename?('\n@ '+e.filename.split('/').pop()+':'+e.lineno):'');});
+
+/* ============================================================
+   "CÒN AI NGOÀI KIA KHÔNG? — Nghịch lý Fermi"
+   Composition TẤT ĐỊNH theo t. 10 chương = 10 cảnh KHÁC BIỆT,
+   cắt dứt khoát, hình bám sát lời thoại. Xen kẽ 3D scene /
+   kinetic type / sơ đồ / ẩn dụ trừu tượng. KHÔNG oneshot.
+   ============================================================ */
+const TOTAL=970.76, DTOTAL=937.25, W=1920, H=1080;
+const SB=[0, 78.64, 174, 257.01, 367.16, 468.59, 548.25, 630.08, 720.54, 834.68, 937.25];
+/* ---- REMAP hình↔tiếng: CẢNH dựng trên timeline DRY-RUN (0..937.25);
+   giọng thật dài 970.76 với mốc cue khác → realToDry(t) ánh xạ thời-gian-thật → thời-gian-dry ---- */
+const _NEWT=[0,16.73,29.02,44.71,57.22,66.2,85.85,94.82,109.07,125.58,135.42,150.85,164.51,184.63,198.83,214.95,227.9,244.38,257.61,270.26,281.76,297.48,311.29,325.74,341.32,355.28,368.26,388.04,395.68,410.32,423.87,439.23,449.94,458.52,473.19,489.66,501.45,514.72,537.98,556.29,579.48,589.65,604.82,618.31,631.14,647.87,660.63,673.87,688.18,700.77,715.99,732.29,752.24,767.13,784.8,803.95,826.7,849.24,866.92,884.3,899.23,918.01,930.56,950.02,970.76],_OLDT=[0,11.8,25.47,38.67,51.27,60.27,78.64,87.77,100.7,117.9,127.63,142.63,155.63,174,185.8,200.67,214.4,231.47,244.34,257.01,268.08,283.75,296.55,310.82,326.69,340.36,350.83,367.16,373.89,389.56,402.49,416.42,427.82,436.29,451.96,468.59,479.79,491.92,510.39,528.52,548.25,558.65,573.85,588.25,602.38,617.71,630.08,642.01,657.14,671.47,684.74,700.54,720.54,735.94,753.21,772.88,795.75,816.75,834.68,851.68,866.41,884.08,895.48,916.18,937.25];
+function realToDry(tr){if(tr<=_NEWT[0])return _OLDT[0];const n=_NEWT.length;if(tr>=_NEWT[n-1])return _OLDT[n-1];
+  for(let i=0;i<n-1;i++){if(tr>=_NEWT[i]&&tr<=_NEWT[i+1]){const f=(tr-_NEWT[i])/((_NEWT[i+1]-_NEWT[i])||1e-6);return _OLDT[i]+(_OLDT[i+1]-_OLDT[i])*f;}}return _OLDT[n-1];}
+const CHAP=["","BỮA TRƯA NĂM 1950","NHỮNG CON SỐ CHOÁNG VÁNG","PHƯƠNG TRÌNH DRAKE",
+  "SỰ IM LẶNG LỚN","BỘ LỌC LỚN","GIẢ THUYẾT · SỰ SỐNG CỰC HIẾM","GIẢ THUYẾT · NỀN VĂN MINH TỰ HỦY",
+  "GIẢ THUYẾT · KHU RỪNG TỐI","QUÁ SỚM · QUÁ XA · SỞ THÚ VŨ TRỤ","SỰ IM LẶNG NÓI GÌ VỀ CHÚNG TA"];
+
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return ((t^t>>>14)>>>0)/4294967296;};}
+const rnd=mulberry32(20260705), rndc=mulberry32(4242), L=mulberry32(777);
+
+function clamp(x,a,b){return Math.max(a,Math.min(b,x));}
+function lerp(a,b,x){return a+(b-a)*x;}
+function smooth(a){a=clamp(a,0,1);return a*a*a*(a*(a*6-15)+10);}
+function ss(e0,e1,x){let t=clamp((x-e0)/((e1-e0)||1e-6),0,1);return t*t*(3-2*t);}
+function win(t,a,b,fi,fo){return Math.max(0,Math.min(ss(a,a+fi,t),1-ss(b-fo,b,t)));}
+function track(t,k){if(t<=k[0].t)return k[0].v;if(t>=k[k.length-1].t)return k[k.length-1].v;
+  for(let i=0;i<k.length-1;i++){if(t>=k[i].t&&t<=k[i+1].t){const a=smooth((t-k[i].t)/(k[i+1].t-k[i].t)),v0=k[i].v,v1=k[i+1].v;
+    if(Array.isArray(v0))return v0.map((x,j)=>x+(v1[j]-x)*a);return v0+(v1-v0)*a;}}return k[k.length-1].v;}
+
+/* ---------------- Three.js: renderer / scene ---------------- */
+const renderer=new THREE.WebGLRenderer({canvas:document.getElementById('c'),antialias:true});
+renderer.setPixelRatio(1); renderer.setSize(W,H);
+renderer.outputEncoding=THREE.sRGBEncoding; renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.1;
+renderer.setClearColor(0x04060e,1);
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(50,W/H,0.1,20000);
+
+/* ---------------- textures NASA thật (local assets/tex — tất định, không phụ thuộc mạng) ---------------- */
+const maxAniso=renderer.capabilities.getMaxAnisotropy();
+const TXB='../assets/tex/';
+const loader=new THREE.TextureLoader();
+function tex(u,s){const t=loader.load(u);if(s)t.encoding=THREE.sRGBEncoding;t.anisotropy=maxAniso;return t;}
+const earthDay=tex(TXB+'2_no_clouds_4k.jpg',true), earthWater=tex(TXB+'water_4k.png',false),
+  earthBump=tex(TXB+'elev_bump_4k.jpg',false), earthCloud=tex(TXB+'earthcloudmap.jpg',false),
+  mercTex=tex(TXB+'mercurymap.jpg',true), marsTex=tex(TXB+'marsmap1k.jpg',true), moonTex=tex(TXB+'moonmap1k.jpg',true);
+
+/* ---------------- textures (canvas — không phụ thuộc mạng) ---------------- */
+function softDot(size,r,g,b){const cv=document.createElement('canvas');cv.width=cv.height=size;const x=cv.getContext('2d');const c=size/2;
+  const gr=x.createRadialGradient(c,c,0,c,c,c);gr.addColorStop(0,'rgba('+r+','+g+','+b+',1)');gr.addColorStop(.28,'rgba('+r+','+g+','+b+',.45)');gr.addColorStop(.6,'rgba('+r+','+g+','+b+',.09)');gr.addColorStop(1,'rgba('+r+','+g+','+b+',0)');
+  x.fillStyle=gr;x.fillRect(0,0,size,size);const t=new THREE.Texture(cv);t.needsUpdate=true;return t;}
+const GALDOT=softDot(128,210,225,255);
+function coronaTex(size,rays,rng){const cv=document.createElement('canvas');cv.width=cv.height=size;const g=cv.getContext('2d');const c=size/2;
+  const gr=g.createRadialGradient(c,c,0,c,c,c);gr.addColorStop(0,'rgba(255,248,228,1)');gr.addColorStop(.06,'rgba(255,240,198,.95)');gr.addColorStop(.18,'rgba(210,225,255,.5)');gr.addColorStop(.4,'rgba(150,180,255,.14)');gr.addColorStop(1,'rgba(0,0,0,0)');
+  g.fillStyle=gr;g.fillRect(0,0,size,size);g.globalCompositeOperation='lighter';
+  for(let i=0;i<rays;i++){const a=rng()*Math.PI*2,len=c*(0.5+rng()*0.5),wid=(1.2+rng()*2.4)*(size/256);
+    g.save();g.translate(c,c);g.rotate(a);const rg=g.createLinearGradient(0,0,len,0);rg.addColorStop(0,'rgba(220,232,255,0.16)');rg.addColorStop(1,'rgba(150,180,255,0)');
+    g.fillStyle=rg;g.beginPath();g.moveTo(0,-wid);g.lineTo(len,0);g.lineTo(0,wid);g.closePath();g.fill();g.restore();}
+  const t=new THREE.Texture(cv);t.needsUpdate=true;return t;}
+const STARGLOW=coronaTex(512,40,rndc);
+
+/* ---------------- starfield THẬT (r=11000 > khoảng cách camera xa nhất) ----------------
+   màu theo nhiệt độ sao (lam→trắng→vàng→cam→đỏ), độ sáng đa dạng (ít sao rất sáng + nhiều sao mờ) */
+function starColor(rng){const u=rng();
+  // phân bố hợp lý theo lớp phổ: nhiều sao vàng/trắng/cam, ít sao lam & đỏ rực
+  if(u<0.06)      return [0.62,0.74,1.00];   // O/B lam
+  else if(u<0.20) return [0.80,0.87,1.00];   // A trắng-lam
+  else if(u<0.46) return [1.00,0.98,0.94];   // F/G trắng
+  else if(u<0.72) return [1.00,0.93,0.72];   // G/K vàng
+  else if(u<0.90) return [1.00,0.78,0.50];   // K cam
+  else            return [1.00,0.60,0.42];   // M đỏ
+}
+const starVS=`attribute float aS;varying vec3 vC;void main(){vC=color;vec4 mv=modelViewMatrix*vec4(position,1.0);gl_PointSize=aS*(11000.0/-mv.z);gl_Position=projectionMatrix*mv;}`;
+const starFS=`varying vec3 vC;void main(){vec2 c=gl_PointCoord-0.5;float d=length(c);float a=smoothstep(0.5,0.0,d);float core=smoothstep(0.16,0.0,d);gl_FragColor=vec4(vC*(a+core*0.8),a);}`;
+const stars=(function(){const N=4200,P=new Float32Array(N*3),S=new Float32Array(N),C=new Float32Array(N*3);
+  for(let i=0;i<N;i++){const u=rnd(),v=rnd(),th=2*Math.PI*u,ph=Math.acos(2*v-1),sp=Math.sin(ph),r=11000;
+    P[i*3]=sp*Math.cos(th)*r;P[i*3+1]=Math.cos(ph)*r;P[i*3+2]=sp*Math.sin(th)*r;
+    // ít sao rất sáng (đuôi mũ cao), nhiều sao mờ
+    const bright=rnd()<0.04?(16+rnd()*16):(Math.pow(rnd(),2.8)*10+2.2);
+    S[i]=bright; const col=starColor(rnd),lum=0.6+0.4*Math.min(1,bright/14);
+    C[i*3]=col[0]*lum;C[i*3+1]=col[1]*lum;C[i*3+2]=col[2]*lum;}
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(P,3));g.setAttribute('aS',new THREE.BufferAttribute(S,1));g.setAttribute('color',new THREE.BufferAttribute(C,3));
+  const pts=new THREE.Points(g,new THREE.ShaderMaterial({vertexColors:true,vertexShader:starVS,fragmentShader:starFS,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));
+  scene.add(pts);return pts;})();
+/* dải Ngân Hà mờ vắt ngang nền — dải điểm dày tập trung quanh một mặt phẳng nghiêng */
+const milkyBand=(function(){const N=5200,P=new Float32Array(N*3),S=new Float32Array(N),C=new Float32Array(N*3);
+  const tilt=0.5,ct=Math.cos(tilt),stt=Math.sin(tilt);
+  for(let i=0;i<N;i++){const th=rnd()*Math.PI*2;
+    // vĩ độ tập trung gần mặt phẳng dải (băng hẹp)
+    const lat=(rnd()-0.5)*(rnd()-0.5)*1.7; const cl=Math.cos(lat),sl=Math.sin(lat),r=10650;
+    let x=cl*Math.cos(th)*r, y=sl*r, z=cl*Math.sin(th)*r;
+    const y2=y*ct-z*stt, z2=y*stt+z*ct; // nghiêng dải
+    P[i*3]=x;P[i*3+1]=y2;P[i*3+2]=z2;
+    S[i]=Math.pow(rnd(),3.0)*4.5+1.2;
+    const w=(0.5+rnd()*0.4)*(0.55+0.45*Math.exp(-Math.abs(lat)*3.0));
+    C[i*3]=w*0.86;C[i*3+1]=w*0.9;C[i*3+2]=w;}
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(P,3));g.setAttribute('aS',new THREE.BufferAttribute(S,1));g.setAttribute('color',new THREE.BufferAttribute(C,3));
+  const pts=new THREE.Points(g,new THREE.ShaderMaterial({vertexColors:true,vertexShader:starVS,fragmentShader:starFS,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,opacity:0.5}));
+  scene.add(pts);return pts;})();
+/* nebulosity mờ cho chiều sâu — vài đám khí lớn additive rất mờ dọc dải Ngân Hà */
+const nebGroup=new THREE.Group(); scene.add(nebGroup);
+(function(){const cols=[[120,150,255],[180,130,220],[110,190,230],[200,140,180]];
+  for(let i=0;i<5;i++){const u=rnd(),th=2*Math.PI*u,lat=(rnd()-0.5)*0.9,cl=Math.cos(lat),r=10500;
+    const tilt=0.5,ct=Math.cos(tilt),stt=Math.sin(tilt);
+    let x=cl*Math.cos(th)*r,y=Math.sin(lat)*r,z=cl*Math.sin(th)*r;const y2=y*ct-z*stt,z2=y*stt+z*ct;
+    const c=cols[(rnd()*cols.length)|0];const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:softDot(256,c[0],c[1],c[2]),blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:0.10+rnd()*0.08}));
+    sp.position.set(x,y2,z2);const sc=2600+rnd()*2600;sp.scale.set(sc,sc,1);nebGroup.add(sp);}})();
+
+/* ---------------- CH2: ĐĨA NGÂN HÀ + trường thiên hà xa (zoom-out) ---------------- */
+const galaxy=new THREE.Group(); scene.add(galaxy); galaxy.visible=false;
+const GR=1500;
+function armPoint(rng,rmin,rmax){const r=rmin+(rmax-rmin)*Math.sqrt(rng());const arm=(rng()*2)|0;
+  const base=arm*Math.PI+r*0.0055+(rng()-0.5)*0.55;const x=Math.cos(base)*r,z=Math.sin(base)*r;
+  const y=(rng()-0.5)*(16+70*Math.exp(-r/280));return [x,y,z,r];}
+/* đĩa xoắn photoreal: lõi phình VÀNG ẤM → nhánh XANH-TRẮNG, có DẢI BỤI TỐI (dust lanes) cắt ngang */
+(function(){const N=62000,P=new Float32Array(N*3),C=new Float32Array(N*3),S=new Float32Array(N);
+  for(let i=0;i<N;i++){const r=50+(GR-50)*Math.sqrt(rnd());const arm=(rnd()*2)|0;
+    const dev=(rnd()-0.5)*0.55;const base=arm*Math.PI+r*0.0055+dev;
+    P[i*3]=Math.cos(base)*r;P[i*3+1]=(rnd()-0.5)*(16+70*Math.exp(-r/280));P[i*3+2]=Math.sin(base)*r;
+    const tt=Math.min(1,r/GR);
+    // dust lane: một băng hẹp ở cạnh trong nhánh bị tối đi → đọc như dải bụi
+    const laneMod=0.5+0.5*Math.sin(r*0.028+arm*1.7);
+    const dust=1.0-0.82*laneMod*Math.exp(-Math.pow((dev+0.14)/0.07,2));
+    const warm=Math.exp(-r/300); // độ ấm lõi
+    const cr=(1.0-0.34*tt)*(0.7+0.5*warm);
+    const cg=(0.82-0.10*tt)*(0.75+0.35*warm);
+    const cb=(0.72+0.30*tt)*(0.95-0.35*warm);
+    const br=(0.45+0.55*(1.0-tt))*dust;
+    C[i*3]=cr*br;C[i*3+1]=cg*br;C[i*3+2]=cb*br; S[i]=(1.0-0.5*tt)*(1.3+rnd()*1.7);}
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(P,3));g.setAttribute('color',new THREE.BufferAttribute(C,3));g.setAttribute('aS',new THREE.BufferAttribute(S,1));
+  galaxy.add(new THREE.Points(g,new THREE.ShaderMaterial({vertexColors:true,
+    vertexShader:`attribute float aS;varying vec3 vC;void main(){vC=color;vec4 mv=modelViewMatrix*vec4(position,1.0);gl_PointSize=aS*(220.0/-mv.z)+0.6;gl_Position=projectionMatrix*mv;}`,
+    fragmentShader:`varying vec3 vC;void main(){vec2 c=gl_PointCoord-0.5;float a=smoothstep(0.5,0.0,length(c));gl_FragColor=vec4(vC*a,a);}`,
+    transparent:true,blending:THREE.AdditiveBlending,depthWrite:false})));})();
+/* quầng đĩa mờ + lõi phình vàng ấm nhiều lớp */
+const bulge=new THREE.Sprite(new THREE.SpriteMaterial({map:STARGLOW,color:0xffe9c8,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:0.95}));
+bulge.scale.set(560,560,1); galaxy.add(bulge);
+const bulge2=new THREE.Sprite(new THREE.SpriteMaterial({map:softDot(256,255,225,170),blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:0.5}));
+bulge2.scale.set(260,260,1); galaxy.add(bulge2);
+const diskHalo=new THREE.Sprite(new THREE.SpriteMaterial({map:softDot(256,150,180,255),blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:0.14}));
+diskHalo.scale.set(3200,3200,1); galaxy.add(diskHalo);
+/* vùng tạo sao HII — vài đốm NEBULA HỒNG additive rải theo nhánh */
+(function(){for(let i=0;i<9;i++){const r=260+rnd()*(GR-260);const arm=(rnd()*2)|0;
+    const base=arm*Math.PI+r*0.0055+(rnd()-0.5)*0.28;const x=Math.cos(base)*r,z=Math.sin(base)*r,y=(rnd()-0.5)*30;
+    const pink=rnd()<0.5?softDot(128,255,120,175):softDot(128,255,150,120);
+    const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:pink,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:0.26+rnd()*0.16}));
+    sp.position.set(x,y,z);const sc=90+rnd()*130;sp.scale.set(sc,sc,1);galaxy.add(sp);}})();
+(function(){const N=650,P=new Float32Array(N*3),C=new Float32Array(N*3),g=new THREE.BufferGeometry();
+  const pal=[[0.85,0.9,1.0],[0.75,0.82,1.0],[1.0,0.9,0.78],[0.9,0.85,1.0]];
+  for(let i=0;i<N;i++){const u=rnd(),v=rnd(),th=2*Math.PI*u,ph=Math.acos(2*v-1),sp=Math.sin(ph),r=3200+rnd()*6000;
+    P[i*3]=sp*Math.cos(th)*r;P[i*3+1]=Math.cos(ph)*r*0.75;P[i*3+2]=sp*Math.sin(th)*r;
+    const col=pal[(rnd()*pal.length)|0],b=0.5+rnd()*0.5;C[i*3]=col[0]*b;C[i*3+1]=col[1]*b;C[i*3+2]=col[2]*b;}
+  g.setAttribute('position',new THREE.BufferAttribute(P,3));g.setAttribute('color',new THREE.BufferAttribute(C,3));
+  galaxy.add(new THREE.Points(g,new THREE.PointsMaterial({map:GALDOT,size:120,sizeAttenuation:true,transparent:true,opacity:0.9,depthWrite:false,blending:THREE.AdditiveBlending,vertexColors:true})));})();
+/* ---------------- noise GLSL cho Trái Đất + sao cận cảnh ---------------- */
+const SN=`
+vec3 mod289(vec3 x){return x-floor(x*(1.0/289.0))*289.0;}
+vec4 mod289(vec4 x){return x-floor(x*(1.0/289.0))*289.0;}
+vec4 permute(vec4 x){return mod289(((x*34.0)+1.0)*x);}
+vec4 taylorInvSqrt(vec4 r){return 1.79284291400159-0.85373472095314*r;}
+float snoise(vec3 v){const vec2 C=vec2(1.0/6.0,1.0/3.0);const vec4 D=vec4(0.0,0.5,1.0,2.0);
+ vec3 i=floor(v+dot(v,C.yyy));vec3 x0=v-i+dot(i,C.xxx);
+ vec3 g=step(x0.yzx,x0.xyz);vec3 l=1.0-g;vec3 i1=min(g.xyz,l.zxy);vec3 i2=max(g.xyz,l.zxy);
+ vec3 x1=x0-i1+C.xxx;vec3 x2=x0-i2+C.yyy;vec3 x3=x0-D.yyy;i=mod289(i);
+ vec4 p=permute(permute(permute(i.z+vec4(0.0,i1.z,i2.z,1.0))+i.y+vec4(0.0,i1.y,i2.y,1.0))+i.x+vec4(0.0,i1.x,i2.x,1.0));
+ float n_=0.142857142857;vec3 ns=n_*D.wyz-D.xzx;vec4 j=p-49.0*floor(p*ns.z*ns.z);
+ vec4 x_=floor(j*ns.z);vec4 y_=floor(j-7.0*x_);vec4 x=x_*ns.x+ns.yyyy;vec4 y=y_*ns.x+ns.yyyy;vec4 h=1.0-abs(x)-abs(y);
+ vec4 b0=vec4(x.xy,y.xy);vec4 b1=vec4(x.zw,y.zw);vec4 s0=floor(b0)*2.0+1.0;vec4 s1=floor(b1)*2.0+1.0;vec4 sh=-step(h,vec4(0.0));
+ vec4 a0=b0.xzyw+s0.xzyw*sh.xxyy;vec4 a1=b1.xzyw+s1.xzyw*sh.zzww;
+ vec3 p0=vec3(a0.xy,h.x);vec3 p1=vec3(a0.zw,h.y);vec3 p2=vec3(a1.xy,h.z);vec3 p3=vec3(a1.zw,h.w);
+ vec4 norm=taylorInvSqrt(vec4(dot(p0,p0),dot(p1,p1),dot(p2,p2),dot(p3,p3)));p0*=norm.x;p1*=norm.y;p2*=norm.z;p3*=norm.w;
+ vec4 m=max(0.6-vec4(dot(x0,x0),dot(x1,x1),dot(x2,x2),dot(x3,x3)),0.0);m=m*m;
+ return 42.0*dot(m*m,vec4(dot(p0,x0),dot(p1,x1),dot(p2,x2),dot(p3,x3)));}
+float fbm(vec3 p){float f=0.0,a=0.5;for(int i=0;i<4;i++){f+=a*snoise(p);p=p*2.05+3.3;a*=0.5;}return f;}
+`;
+
+/* ---------------- SAO CẬN CẢNH (CH2): quang cầu photosphere + nhật hoa (thay sprite phẳng) ---------------- */
+const homeSun=new THREE.Group(); scene.add(homeSun); homeSun.visible=false;
+const sunMat=new THREE.ShaderMaterial({transparent:true,depthWrite:false,uniforms:{uT:{value:0},uOp:{value:1}},
+  vertexShader:`varying vec3 vDir;varying vec3 vN;varying vec3 vV;void main(){vDir=normalize(position);vN=normalize(normalMatrix*normal);vec4 mv=modelViewMatrix*vec4(position,1.0);vV=-mv.xyz;gl_Position=projectionMatrix*mv;}`,
+  fragmentShader:`precision highp float;varying vec3 vDir;varying vec3 vN;varying vec3 vV;uniform float uT;uniform float uOp;`+SN+`
+   void main(){vec3 d=normalize(vDir);
+    vec3 q=d*7.0+vec3(uT*0.02,uT*0.015,-uT*0.02);
+    float gran=fbm(q);float fine=fbm(d*22.0+uT*0.05);
+    float cells=gran*0.72+fine*0.28;float bri=smoothstep(-0.5,0.7,cells);
+    float sp=fbm(d*1.7+3.3);float spot=smoothstep(0.56,0.76,sp);
+    vec3 cDark=vec3(0.72,0.20,0.02),cMid=vec3(1.0,0.60,0.16),cHot=vec3(1.0,0.93,0.72);
+    vec3 col=mix(cDark,cMid,smoothstep(0.15,0.6,bri));col=mix(col,cHot,smoothstep(0.62,1.0,bri));
+    col=mix(col,vec3(0.26,0.07,0.02),spot*0.92);
+    float mu=clamp(dot(normalize(vN),normalize(vV)),0.0,1.0);
+    col*=(0.30+0.70*pow(mu,0.6));col+=cHot*pow(1.0-mu,3.0)*bri*0.35;col*=1.4;
+    gl_FragColor=vec4(col,uOp);}`});
+const sunPhoto=new THREE.Mesh(new THREE.SphereGeometry(40,72,72),sunMat); homeSun.add(sunPhoto);
+const sunChromo=new THREE.Mesh(new THREE.SphereGeometry(41.2,48,48),new THREE.ShaderMaterial({transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,uniforms:{uOp:{value:1}},
+  vertexShader:`varying vec3 vN;varying vec3 vV;void main(){vN=normalize(normalMatrix*normal);vec4 mv=modelViewMatrix*vec4(position,1.0);vV=-mv.xyz;gl_Position=projectionMatrix*mv;}`,
+  fragmentShader:`precision highp float;varying vec3 vN;varying vec3 vV;uniform float uOp;void main(){float f=pow(1.0-max(dot(normalize(vN),normalize(vV)),0.0),3.2);gl_FragColor=vec4(vec3(1.0,0.42,0.16)*f*1.7,uOp);}`})); homeSun.add(sunChromo);
+const sunCorona=new THREE.Sprite(new THREE.SpriteMaterial({map:STARGLOW,color:0xfff2d6,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:1})); sunCorona.scale.set(280,280,1); homeSun.add(sunCorona);
+
+/* ---------------- Trái Đất THẬT (texture NASA — CH6 & CH10) ---------------- */
+const earthUSun={value:new THREE.Vector3(-260,120,220).normalize()};
+const earthTilt=new THREE.Group(); earthTilt.rotation.z=0.409; scene.add(earthTilt); earthTilt.visible=false; const earth=earthTilt;
+const earthMesh=new THREE.Mesh(new THREE.SphereGeometry(1,96,96),new THREE.MeshPhongMaterial({map:earthDay,specularMap:earthWater,bumpMap:earthBump,bumpScale:0.018,specular:new THREE.Color(0x2a4d68),shininess:18})); earthTilt.add(earthMesh);
+const cloudMesh=new THREE.Mesh(new THREE.SphereGeometry(1.015,64,64),new THREE.MeshPhongMaterial({map:earthCloud,alphaMap:earthCloud,color:0xffffff,transparent:true,opacity:0.9,depthWrite:false})); earthTilt.add(cloudMesh);
+const earthAtmMat=new THREE.ShaderMaterial({uniforms:{uSun:earthUSun},transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,
+  vertexShader:`varying vec3 vVN;varying vec3 vNW;void main(){vVN=normalize(normalMatrix*normal);vNW=normalize(mat3(modelMatrix)*normal);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
+  fragmentShader:`precision highp float;varying vec3 vVN;varying vec3 vNW;uniform vec3 uSun;void main(){float rim=pow(clamp(1.0-vVN.z,0.0,1.0),3.0);float day=smoothstep(-0.25,0.55,dot(normalize(vNW),normalize(uSun)));gl_FragColor=vec4(vec3(0.32,0.56,1.0)*rim*(0.25+0.85*day),1.0);}`});
+const earthAtm=new THREE.Mesh(new THREE.SphereGeometry(1.06,48,48),earthAtmMat); earthTilt.add(earthAtm);
+
+/* ---------------- CH6: trường THẾ GIỚI CHẾT có texture đá thật (khử bão hoà, tối) ---------------- */
+const worldsGroup=new THREE.Group(); scene.add(worldsGroup); worldsGroup.visible=false;
+const wspd=[];
+(function(){const rockGeo=new THREE.SphereGeometry(1,32,32),rockTex=[mercTex,marsTex,moonTex];
+  for(let i=0;i<34;i++){const tx=rockTex[(rnd()*3)|0];
+    const mat=new THREE.MeshPhongMaterial({map:tx,bumpMap:tx,bumpScale:0.03,color:new THREE.Color().setHSL(0.58+rnd()*0.05,0.05+rnd()*0.05,0.34+rnd()*0.12),shininess:2});
+    const m=new THREE.Mesh(rockGeo,mat);const ang=rnd()*Math.PI*2,rad=58+rnd()*150,el=(rnd()-0.5)*95;
+    m.position.set(Math.cos(ang)*rad,el,Math.sin(ang)*rad);m.scale.setScalar(5+rnd()*9);m.rotation.y=rnd()*6.28;m.rotation.z=(rnd()-0.5)*0.6;
+    wspd.push(0.02+rnd()*0.05);worldsGroup.add(m);}})();
+const dir=new THREE.DirectionalLight(0xfff2e0,1.5); scene.add(dir);
+scene.add(new THREE.AmbientLight(0x1a2740,0.5));
+function setSun(){earthUSun.value.copy(dir.position).normalize();}
+
+/* ---------------- hậu kỳ: bloom + lens ---------------- */
+const composer=new THREE.EffectComposer(renderer);composer.addPass(new THREE.RenderPass(scene,camera));
+const bloom=new THREE.UnrealBloomPass(new THREE.Vector2(W,H),0.6,0.7,0.55);composer.addPass(bloom);
+const lensPass=new THREE.ShaderPass({uniforms:{tDiffuse:{value:null},uRes:{value:new THREE.Vector2(W,H)},uT:{value:0}},
+  vertexShader:`varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
+  fragmentShader:`uniform sampler2D tDiffuse;uniform vec2 uRes;uniform float uT;varying vec2 vUv;
+    float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+    void main(){vec2 uv=vUv,c=uv-0.5;float r2=dot(c,c),ca=0.0006+r2*0.0022;vec3 col;
+      col.r=texture2D(tDiffuse,uv+c*ca).r;col.g=texture2D(tDiffuse,uv).g;col.b=texture2D(tDiffuse,uv-c*ca).b;
+      float vig=1.0-smoothstep(0.32,0.98,r2*1.85);col*=mix(0.6,1.0,vig);col+=(h(uv*uRes+floor(uT*30.0))-0.5)*0.026;gl_FragColor=vec4(col,1.0);}`});
+lensPass.renderToScreen=true;composer.addPass(lensPass);
+
+/* ============================================================
+   #fx — canvas 2D overlay (kinetic type / sơ đồ / ẩn dụ)
+   ============================================================ */
+const fx=document.getElementById('fx'); fx.width=W; fx.height=H; const X=fx.getContext('2d');
+function clearFx(){X.setTransform(1,0,0,1,0,0);X.clearRect(0,0,W,H);X.textAlign='center';X.textBaseline='middle';X.globalAlpha=1;X.shadowBlur=0;}
+function backdrop(a){if(a<=0)return;X.fillStyle="rgba(4,6,14,"+Math.min(1,a)+")";X.fillRect(0,0,W,H);}
+function F(w,s){return w+' '+s+'px "Segoe UI",Roboto,Arial,sans-serif';}
+function txt(s,x,y,size,weight,col,a,glow,align){if(a<=0.004)return;X.save();X.globalAlpha=Math.min(1,a);X.font=F(weight,size);X.fillStyle=col;X.textAlign=align||'center';X.textBaseline='middle';if(glow){X.shadowColor=glow;X.shadowBlur=size*0.45;}X.fillText(s,x,y);X.restore();}
+function glow2d(x,y,r,cr,cg,cb,a){if(a<=0.004||r<=0)return;X.save();X.globalAlpha=Math.min(1,a);const g=X.createRadialGradient(x,y,0,x,y,r);g.addColorStop(0,`rgba(${cr},${cg},${cb},1)`);g.addColorStop(.35,`rgba(${cr},${cg},${cb},.5)`);g.addColorStop(1,`rgba(${cr},${cg},${cb},0)`);X.fillStyle=g;X.beginPath();X.arc(x,y,r,0,7);X.fill();X.restore();}
+function dot2d(x,y,r,col,a){if(a<=0.004)return;X.save();X.globalAlpha=Math.min(1,a);X.fillStyle=col;X.beginPath();X.arc(x,y,r,0,7);X.fill();X.restore();}
+function hsh(n){const x=Math.sin(n*127.1)*43758.5453;return x-Math.floor(x);}
+function sceneOp(i,t){return win(t,SB[i-1],SB[i],0.45,0.45);}
+
+/* ---- precompute (tất định, seed L) ---- */
+const GDOTS=[]; for(let i=0;i<300;i++){const rr=Math.sqrt(L());const arm=(L()*2|0);const ang=rr*7+arm*Math.PI+(L()-0.5)*0.6;GDOTS.push({x:Math.cos(ang)*rr,y:Math.sin(ang)*rr*0.42,rn:rr});}
+const SP=[]; const STEPS=["Vật chất","Tế bào sống","Đa bào","Trí tuệ","Công nghệ","Liên sao"];
+for(let i=0;i<6;i++){SP.push([250+i*270, H*0.70-i*80]);}
+const PART=[]; for(let i=0;i<120;i++){PART.push({off:L(),seed:L(),spd:0.026+L()*0.02});}
+const GRAVE=[]; for(let i=0;i<95;i++){GRAVE.push({x:L(),y:L(),birth:560+L()*56,life:1.2+L()*2.3});}
+const FOREST=[]; for(let i=0;i<15;i++){FOREST.push({x:L(),w:26+L()*40,d:0.3+L()*0.7,h:0.55+L()*0.35});}
+const HUNT=[]; for(let i=0;i<60;i++){HUNT.push({x:L(),y:L(),s:L(),d:0.3+L()*0.7});}
+
+function polyP(u){let seg=clamp(u,0,1)*(SP.length-1);let i=Math.floor(seg);if(i>=SP.length-1)i=SP.length-2;const f=seg-i;return [SP[i][0]+(SP[i+1][0]-SP[i][0])*f, SP[i][1]+(SP[i+1][1]-SP[i][1])*f];}
+
+/* ============================================================
+   CẢNH 1 — MỞ ĐẦU / BỮA TRƯA 1950 (kinetic type, trống trải)
+   ============================================================ */
+function fxScene1(t,op){
+  const qa=win(t,2,26,3,4)*op;
+  if(qa>0.01){const y=H*0.46+Math.sin(t*0.5)*10;
+    txt("?",W/2,y,340,"200","rgba(150,180,240,1)",0.28*qa,"rgba(80,120,220,0.55)");
+    txt("một dấu hỏi treo lơ lửng trong bóng tối",W/2,H*0.72,30,"400","rgba(160,178,214,1)",0.75*qa);}
+  const la=win(t,27,52,2,3)*op;
+  if(la>0.01){txt("LOS ALAMOS · NEW MEXICO",W/2,H*0.44,46,"600","rgba(206,220,248,1)",la,"rgba(0,0,0,0.8)");
+    txt("MÙA HÈ, 1950",W/2,H*0.525,30,"400","rgba(150,170,205,1)",la);}
+  const fa=win(t,51.5,78.5,1.5,3)*op;
+  if(fa>0.01){const words=["Thế","mọi","người","đâu","cả","rồi?"];
+    const prog=clamp((t-52)/6,0,1);const shown=prog*words.length;
+    X.save();X.font=F("700",96);X.textAlign='left';X.textBaseline='middle';
+    const full=words.join(" ");const tw=X.measureText(full).width;let x=W/2-tw/2;let acc=0;
+    for(let i=0;i<words.length;i++){const wtxt=(i?" ":"")+words[i];
+      const wa=clamp(shown-i,0,1);X.globalAlpha=fa*(0.12+0.88*wa);
+      X.fillStyle="rgba(240,244,255,1)";X.shadowColor="rgba(90,130,230,0.7)";X.shadowBlur=42;
+      X.fillText(wtxt,x+acc,H*0.47);acc+=X.measureText(wtxt).width;}
+    X.restore();}
+}
+
+/* ============================================================
+   CẢNH 2 — NHỮNG CON SỐ (3D zoom-out + bộ đếm số khổng lồ)
+   ============================================================ */
+function grp(v){v=Math.round(v);let s=String(v),o='';for(let i=0;i<s.length;i++){if(i>0&&(s.length-i)%3===0)o+='.';o+=s[i];}return o;}
+function bigNum(a,b,w){txt(a,W/2,H*0.155,116,"800","rgba(236,242,255,1)",w,"rgba(120,170,255,0.55)");txt(b,W/2,H*0.24,34,"500","rgba(166,190,228,1)",w);}
+function fxScene2(t,op){
+  let w=win(t,88,100.7,1.2,1.2)*op; if(w>0.01){const v=Math.round(lerp(100,400,clamp((t-88)/7,0,1)));bigNum("≈ "+v+" TỶ","ngôi sao trong dải Ngân Hà",w);}
+  w=win(t,100.7,117.9,1.2,1.2)*op; if(w>0.01)bigNum("HÀNG TRĂM TỶ","hành tinh — nhiều nơi có nước lỏng",w);
+  w=win(t,117.9,127.63,1.2,1.2)*op; if(w>0.01){const v=Math.round(lerp(0,2000,clamp((t-118)/6,0,1)));bigNum("≈ "+grp(v)+" TỶ","thiên hà trong vũ trụ quan sát được",w);}
+  w=win(t,127.63,142.63,1.2,1.2)*op; if(w>0.01)bigNum("10²⁴","hành tinh — hơn mọi hạt cát trên Trái Đất",w);
+  w=win(t,142.63,155.63,1.2,1.2)*op; if(w>0.01){const v=lerp(0,13.8,clamp((t-143)/6,0,1)).toFixed(1).replace('.',',');bigNum(v+" TỶ NĂM","tuổi của vũ trụ",w);}
+  w=win(t,155.63,174,1.5,2)*op; if(w>0.01)bigNum("TRIỆU → TỶ NĂM","nhiều nền văn minh có thể đã đi trước ta",w);
+}
+
+/* ============================================================
+   CẢNH 3 — PHƯƠNG TRÌNH DRAKE (kinetic type + phễu lọc)
+   ============================================================ */
+const DK=[{m:"N"},{m:"=",o:1},
+ {m:"R",s:"★",ft:200.67,lb:"số sao sinh ra mỗi năm"},{m:"·",o:1},
+ {m:"f",s:"p",ft:203.4,lb:"tỉ lệ sao có hành tinh"},{m:"·",o:1},
+ {m:"n",s:"e",ft:206.16,lb:"hành tinh trong vùng ở được"},{m:"·",o:1},
+ {m:"f",s:"l",ft:208.9,lb:"nơi sự sống khởi phát"},{m:"·",o:1},
+ {m:"f",s:"i",ft:214.4,lb:"tiến hoá thành trí tuệ"},{m:"·",o:1},
+ {m:"f",s:"c",ft:219.28,lb:"phát được tín hiệu ra vũ trụ"},{m:"·",o:1},
+ {m:"L",ft:224.15,lb:"tồn tại được bao lâu?"}];
+function fxScene3(t,op){
+  backdrop(clamp(op*1.7,0,0.92));
+  txt("PHƯƠNG TRÌNH DRAKE · 1961",W/2,H*0.17,36,"600","rgba(150,190,240,1)",win(t,175,257,2,3)*op);
+  const ea=win(t,180,256,2,3)*op;
+  if(ea>0.01){
+    X.save();X.font=F("700",84);X.textBaseline='alphabetic';const widths=[];let total=0;
+    for(const tok of DK){let wd=X.measureText(tok.m).width;if(tok.s){X.font=F("700",46);wd+=X.measureText(tok.s).width+2;X.font=F("700",84);}wd+=18;widths.push(wd);total+=wd;}
+    let x=W/2-total/2;const y=H*0.36;
+    for(let i=0;i<DK.length;i++){const tok=DK[i];const lit=tok.ft?clamp((t-tok.ft)/0.6,0,1):0;
+      X.globalAlpha=Math.min(1,ea*(tok.o?0.5:(tok.ft?0.35+0.65*lit:0.6)));
+      X.fillStyle=lit>0.5?'rgba(150,210,255,1)':'rgba(222,232,250,1)';
+      X.shadowColor='rgba(120,180,255,0.85)';X.shadowBlur=32*lit;
+      X.font=F("700",84);X.fillText(tok.m,x,y);const mw=X.measureText(tok.m).width;
+      if(tok.s){X.font=F("700",46);X.fillText(tok.s,x+mw+2,y+18);}
+      x+=widths[i];}
+    X.restore();
+    let cf=null;for(const tok of DK){if(tok.ft&&tok.lb&&t>=tok.ft)cf=tok;}
+    if(cf)txt(cf.lb,W/2,H*0.46,42,"600","rgba(158,208,255,1)",ea,"rgba(60,120,220,0.4)");
+  }
+  const fa=win(t,231,257,2,3)*op;
+  if(fa>0.01){const topY=H*0.55,botY=H*0.73,cx=W/2,tw=520,bw=70;
+    X.save();X.globalAlpha=fa*0.55;X.strokeStyle="rgba(140,170,230,1)";X.lineWidth=3;
+    X.beginPath();X.moveTo(cx-tw,topY);X.lineTo(cx-bw,botY);X.moveTo(cx+tw,topY);X.lineTo(cx+bw,botY);X.stroke();X.restore();
+    txt("hàng tỷ ngôi sao",cx,topY-26,30,"500","rgba(159,182,221,1)",fa);
+    txt(t>=244.34?"từ HÀNG TRIỆU… xuống chỉ còn 1":"N = ?",cx,botY+48,40,"700","rgba(236,242,255,1)",fa);
+    if(t>=252)txt("Chúng ta.",cx,botY+108,46,"700","rgba(255,217,168,1)",win(t,252.3,257,1,2)*op,"rgba(255,170,90,0.4)");}
+}
+
+/* ============================================================
+   CẢNH 4 — NGHỊCH LÝ / SỰ IM LẶNG LỚN
+   Sub-A: tàu tự nhân bản phủ kín Ngân Hà · Sub-B: sóng radio → flatline
+   ============================================================ */
+function fxScene4(t,op){
+  backdrop(clamp(op*1.7,0,0.9));
+  const sa=win(t,257,326,2,2)*op;
+  if(sa>0.01){
+    txt("NẾU CHỈ MỘT NỀN VĂN MINH ĐI TRƯỚC…",W/2,H*0.15,36,"600","rgba(190,210,244,1)",sa);
+    const cx=W/2,cy=H*0.52,rx=560,ry=210;
+    X.save();X.globalAlpha=sa*0.22;X.strokeStyle="rgba(120,150,220,1)";X.lineWidth=2;X.beginPath();X.ellipse(cx,cy,rx,ry,0,0,7);X.stroke();X.restore();
+    const wf=clamp((t-268)/40,0,1);
+    for(const g of GDOTS){const dx=cx+g.x*rx,dy=cy+g.y*ry,reached=g.rn<=wf;
+      dot2d(dx,dy,reached?2.5:1.6,reached?"rgba(150,220,255,1)":"rgba(120,140,180,1)",sa*(reached?0.95:0.22));}
+    if(wf>0.02&&wf<0.99){X.save();X.globalAlpha=sa*0.5;X.strokeStyle="rgba(150,220,255,1)";X.lineWidth=2;X.beginPath();X.ellipse(cx,cy,rx*wf,ry*wf,0,0,7);X.stroke();X.restore();}
+    glow2d(cx,cy,12,150,220,255,sa);
+    txt("tàu tự nhân bản — vài triệu năm là đủ phủ kín cả Ngân Hà",W/2,H*0.83,32,"500","rgba(150,200,240,1)",win(t,283,326,1.5,1.5)*op);
+  }
+  const sb=win(t,325,367,2,3)*op;
+  if(sb>0.01){
+    txt("ĐANG LẮNG NGHE BẦU TRỜI — HƠN 60 NĂM",W/2,H*0.19,34,"600","rgba(190,210,244,1)",win(t,326,342,1.5,1)*op);
+    const flat=clamp((t-340)/2.5,0,1),amp=(1-flat)*sb;const y0=H*0.52;
+    X.save();X.globalAlpha=Math.min(1,0.4+0.6*sb);X.strokeStyle="rgba(120,210,255,1)";X.lineWidth=2.4;X.shadowColor="rgba(90,180,255,0.7)";X.shadowBlur=12;X.beginPath();
+    for(let px=W*0.08;px<=W*0.92;px+=3){const n=amp*(Math.sin(px*0.02+t*3.0)*36+Math.sin(px*0.011+t*1.7)*20+(hsh(Math.floor(px)+Math.floor(t*8))-0.5)*40*amp);
+      const yy=y0-n;if(px<=W*0.08+0.1)X.moveTo(px,yy);else X.lineTo(px,yy);}
+    X.stroke();X.restore();
+    txt("SỰ IM LẶNG LỚN",W/2,H*0.31,98,"800","rgba(223,232,255,1)",win(t,342,367,1.5,3)*op,"rgba(90,130,220,0.5)");
+  }
+}
+
+/* ============================================================
+   CẢNH 5 — BỘ LỌC LỚN (bậc thang tiến hoá + bức tường lọc)
+   ============================================================ */
+function fxScene5(t,op){
+  backdrop(clamp(op*1.7,0,0.92));
+  txt("BỘ LỌC LỚN",W/2,H*0.13,60,"800","rgba(236,240,255,1)",win(t,367.2,468,1.2,2)*op,"rgba(150,110,255,0.45)");
+  for(let i=0;i<SP.length;i++){const rev=win(t,374+i*4.2,468,1.4,3)*op;if(rev<0.01)continue;
+    const p=SP[i];X.save();X.globalAlpha=rev*0.9;X.fillStyle="rgba(70,86,140,0.55)";X.strokeStyle="rgba(150,180,240,0.9)";X.lineWidth=2;
+    X.beginPath();X.rect(p[0]-78,p[1]-10,156,20);X.fill();X.stroke();X.restore();
+    txt(STEPS[i],p[0],p[1]-34,26,"600","rgba(200,214,244,1)",rev);}
+  const wallU=0.8,base=win(t,378,468,2,3)*op;
+  if(base>0.01){for(const q of PART){let u=(q.off+(t-378)*q.spd)%1;if(u<0)u+=1;let a,col;
+    if(u<wallU){a=1;col="rgba(150,220,255,1)";}else{if(q.seed>0.9){a=1;col="rgba(150,255,200,1)";}else{a=clamp(1-(u-wallU)/0.045,0,1);col="rgba(255,110,90,1)";}}
+    if(a>0.02){const P=polyP(u);dot2d(P[0],P[1]-16,2.6,col,base*a);}}}
+  const wa=win(t,402,468,1.5,2)*op;
+  if(wa>0.01){const wx=SP[4][0],ahead=t>=452;
+    X.save();X.globalAlpha=wa*(0.5+0.4*Math.sin(t*3));X.strokeStyle=ahead?"rgba(255,90,80,1)":"rgba(180,150,255,1)";X.lineWidth=5;X.shadowColor=X.strokeStyle;X.shadowBlur=24;
+    X.beginPath();X.moveTo(wx,H*0.30);X.lineTo(wx,H*0.80);X.stroke();X.restore();
+    txt("NÚT THẮT CỔ CHAI",wx,H*0.27,24,"600",ahead?"rgba(255,140,120,1)":"rgba(190,170,255,1)",wa);}
+  txt("Bộ lọc nằm SAU LƯNG ta? — ta là kẻ sống sót hiếm hoi",W/2,H*0.87,34,"600","rgba(170,255,210,1)",win(t,436.3,452,1.5,1.5)*op);
+  txt("Hay nằm PHÍA TRƯỚC? — một lời cảnh báo",W/2,H*0.87,34,"600","rgba(255,150,130,1)",win(t,452,468,1.5,1.5)*op);
+}
+
+/* ============================================================
+   CẢNH 6 — SỰ SỐNG CỰC HIẾM (overlay trên 3D thế giới xám + Trái Đất)
+   ============================================================ */
+function fxScene6(t,op){
+  txt("LỜI GIẢI 1",W/2,H*0.145,28,"600","rgba(143,180,230,1)",win(t,468.6,492,1,2)*op*0.9);
+  txt("SỰ SỐNG CỰC HIẾM",W/2,H*0.205,58,"800","rgba(238,243,255,1)",win(t,469,492,1.2,2)*op,"rgba(90,130,220,0.5)");
+  const f=win(t,493,512,1.5,2)*op;
+  if(f>0.01){const fs=["một Mặt Trăng lớn bất thường","tấm khiên từ trường","kiến tạo mảng — bộ điều nhiệt"];
+    txt("chuỗi trùng hợp hoàn hảo:",W/2,H*0.28,30,"500","rgba(180,200,235,1)",f);
+    for(let i=0;i<3;i++)txt(fs[i],W/2,H*0.32+i*44,32,"600","rgba(206,224,246,1)",f);}
+  txt("mắc kẹt 2 tỷ năm ở dạng vi khuẩn đơn bào",W/2,H*0.30,36,"600","rgba(216,230,255,1)",win(t,510.4,528,1.5,1.5)*op);
+  txt("bước nhảy lên tế bào phức tạp — có lẽ chỉ 1 lần",W/2,H*0.30,36,"600","rgba(216,230,255,1)",win(t,528.5,548,1.5,1.5)*op);
+}
+
+/* ============================================================
+   CẢNH 7 — NỀN VĂN MINH TỰ HỦY (bùng loé rồi vụt tắt + nghĩa địa)
+   ============================================================ */
+function fxScene7(t,op){
+  backdrop(clamp(op*1.7,0,0.92));
+  txt("LỜI GIẢI 2 · NỀN VĂN MINH TỰ HỦY",W/2,H*0.15,42,"700","rgba(255,224,206,1)",win(t,548.3,562,1.2,2)*op,"rgba(255,140,80,0.35)");
+  for(const g of GRAVE){const b=(t>=g.birth&&t<=g.birth+g.life)?Math.sin((t-g.birth)/g.life*Math.PI):0;
+    if(b>0.02){const x=W*(0.07+0.86*g.x),y=H*(0.24+0.54*g.y);glow2d(x,y,10+18*b,255,190+40*b,120,op*b*0.9);}}
+  let g=clamp((t-558)/40,0,1),base=(26+120*g);
+  const danger=(t>588)?(0.5+0.5*Math.sin(t*8))*clamp((t-588)/4,0,1):0;
+  let burst=0;if(t>=602&&t<=610){const bp=(t-602)/8;burst=Math.sin(clamp(bp*3,0,1)*Math.PI/2)*(1-clamp((t-604)/5,0,1));}
+  if(t>608)base*=clamp(1-(t-608)/2.5,0,1);
+  const R=base*(1+burst*1.9);
+  if(R>1&&op>0.01){const cg=Math.round(220-90*danger+35*burst),cb=Math.round(170-120*danger);glow2d(W/2,H*0.52,R,255,clamp(cg,120,255),clamp(cb,40,210),op*0.9);}
+  txt("cùng trí tuệ tạo ra kính viễn vọng — và cả bom hạt nhân",W/2,H*0.82,34,"600","rgba(255,206,180,1)",win(t,562,588,1.5,1.5)*op);
+  txt("bùng lên rực rỡ trong khoảnh khắc — rồi vụt tắt",W/2,H*0.82,34,"600","rgba(255,180,150,1)",win(t,602,618,1.5,1.5)*op);
+  txt("một nghĩa địa của những nền văn minh đã tự kết liễu mình",W/2,H*0.82,34,"600","rgba(255,160,140,1)",win(t,618,630,1.2,1.2)*op);
+}
+
+/* ============================================================
+   CẢNH 8 — KHU RỪNG TỐI (đốm sáng nín lặng, một kẻ ngây thơ bị xoá)
+   ============================================================ */
+function fxScene8(t,op){
+  X.save();X.globalAlpha=Math.min(1,op);const gr=X.createLinearGradient(0,0,0,H);gr.addColorStop(0,"rgba(3,5,11,0.99)");gr.addColorStop(0.55,"rgba(5,8,16,0.97)");gr.addColorStop(1,"rgba(8,10,20,0.99)");X.fillStyle=gr;X.fillRect(0,0,W,H);X.restore();
+  for(const tr of FOREST){const x=W*(0.02+0.96*tr.x),bw=tr.w*(0.6+tr.d);const a=op*(0.5+0.4*tr.d);
+    X.save();X.globalAlpha=a;const tgr=X.createLinearGradient(x,0,x,H);tgr.addColorStop(0,"rgba(10,14,26,0)");tgr.addColorStop(0.25,`rgba(14,18,32,${0.7*tr.d})`);tgr.addColorStop(1,`rgba(6,9,18,${0.9*tr.d})`);
+    X.fillStyle=tgr;X.beginPath();X.moveTo(x-bw/2,H);X.lineTo(x-bw*0.28,H*(1-tr.h));X.lineTo(x+bw*0.28,H*(1-tr.h));X.lineTo(x+bw/2,H);X.closePath();X.fill();X.restore();}
+  for(const hDot of HUNT){const x=W*(0.05+0.9*hDot.x),y=H*(0.2+0.62*hDot.y);const tw=0.35+0.35*Math.sin(t*(0.5+hDot.s)+hDot.s*30);
+    dot2d(x,y,1.4+1.6*hDot.d,"rgba(150,180,220,1)",op*tw*0.5*hDot.d);}
+  const cx=W*0.63,cy=H*0.44;const callA=win(t,690,700,1.5,0.6)*op;
+  if(callA>0.01){glow2d(cx,cy,14+8*Math.sin(t*6),150,220,255,callA);
+    const rr=((t-690)%1.6)/1.6;X.save();X.globalAlpha=callA*(1-rr)*0.5;X.strokeStyle="rgba(150,220,255,1)";X.lineWidth=2;X.beginPath();X.arc(cx,cy,10+rr*70,0,7);X.stroke();X.restore();}
+  if(t>=699&&t<=701){const fa=1-Math.abs(t-699.5)/1;X.save();X.globalAlpha=clamp(fa,0,1)*op;X.strokeStyle="rgba(255,80,70,1)";X.lineWidth=3;X.shadowColor="rgba(255,80,70,1)";X.shadowBlur=18;X.beginPath();X.moveTo(cx-260,cy-120);X.lineTo(cx,cy);X.stroke();X.restore();}
+  txt("KHU RỪNG TỐI",W/2,H*0.14,58,"800","rgba(210,220,240,1)",win(t,630.1,648,1.2,2)*op,"rgba(30,60,120,0.5)");
+  txt("mỗi nền văn minh — một người thợ săn nín thở trong đêm",W/2,H*0.86,34,"600","rgba(180,196,224,1)",win(t,648,690,1.5,1.5)*op);
+  txt("im lặng chính là sống sót — kẻ cất tiếng gọi sẽ bị xoá sổ",W/2,H*0.86,34,"600","rgba(210,180,180,1)",win(t,690,720,1.5,1.5)*op);
+}
+
+/* ============================================================
+   CẢNH 9 — QUÁ SỚM / QUÁ XA / SỞ THÚ (4 ẩn dụ nối tiếp)
+   ============================================================ */
+function fxScene9(t,op){
+  backdrop(clamp(op*1.7,0,0.92));
+  const ia=win(t,720.6,736,1.2,1.5)*op;
+  if(ia>0.01){txt("CÓ LẼ TA VÀ HỌ CHỈ… LỠ NHỊP NHAU",W/2,H*0.4,48,"700","rgba(224,232,252,1)",ia,"rgba(80,120,210,0.4)");
+    txt("THỜI GIAN   ·   KHÔNG GIAN   ·   CÁCH NHÌN",W/2,H*0.5,34,"500","rgba(160,186,226,1)",ia);}
+  const a1=win(t,736,753,1.4,1.4)*op;
+  if(a1>0.01){const x0=W*0.12,x1=W*0.88,y=H*0.5;
+    X.save();X.globalAlpha=a1;const gr=X.createLinearGradient(x0,0,x1,0);gr.addColorStop(0,"rgba(120,170,255,0.9)");gr.addColorStop(1,"rgba(120,170,255,0.12)");X.strokeStyle=gr;X.lineWidth=6;X.beginPath();X.moveTo(x0,y);X.lineTo(x1,y);X.stroke();X.restore();
+    const mx=x0+(x1-x0)*0.05;glow2d(mx,y,16,150,210,255,a1);
+    txt("TA Ở ĐÂY",mx,y-40,28,"700","rgba(210,230,255,1)",a1);
+    txt("QUÁ SỚM",W/2,H*0.28,54,"800","rgba(224,232,252,1)",a1,"rgba(80,120,210,0.4)");
+    txt("vũ trụ còn sinh sao thêm hàng nghìn tỷ năm — bạn ta phần lớn chưa ra đời",W/2,H*0.66,32,"500","rgba(168,192,230,1)",a1);}
+  const a2=win(t,753,772,1.4,1.4)*op;
+  if(a2>0.01){const lx=W*0.24,rx=W*0.78,y=H*0.52;glow2d(lx,y,20,255,236,200,a2);glow2d(rx,y,16,180,210,255,a2);
+    const grow=clamp((t-755)/14,0,1);X.save();X.globalAlpha=a2*0.55;X.strokeStyle="rgba(255,220,160,0.9)";X.lineWidth=2;X.setLineDash([10,10]);X.beginPath();X.arc(lx,y,grow*(rx-lx)*0.82,0,7);X.stroke();X.restore();
+    txt("QUÁ XA",W/2,H*0.26,54,"800","rgba(224,232,252,1)",a2,"rgba(80,120,210,0.4)");
+    txt("tín hiệu vẫn đang trên đường — hàng nghìn, hàng triệu năm ánh sáng",W/2,H*0.72,32,"500","rgba(168,192,230,1)",a2);}
+  const a3=win(t,772,795,1.4,1.4)*op;
+  if(a3>0.01){const lx=W*0.3,rx=W*0.7,y=H*0.5;
+    X.save();X.globalAlpha=a3*0.8;X.strokeStyle="rgba(150,210,255,1)";X.lineWidth=3;for(let k=1;k<=3;k++){X.beginPath();X.arc(lx,y,k*26,-0.9,0.9);X.stroke();}X.restore();
+    txt("ta: SÓNG VÔ TUYẾN",lx,y+90,30,"600","rgba(180,214,246,1)",a3);
+    txt("?",rx,y-4,120,"300","rgba(200,220,255,1)",a3*0.8,"rgba(80,130,230,0.5)");txt("họ: thứ ta chưa hình dung",rx,y+90,30,"600","rgba(180,214,246,1)",a3);
+    txt("KHÁC NGÔN NGỮ",W/2,H*0.24,52,"800","rgba(224,232,252,1)",a3,"rgba(80,120,210,0.4)");
+    txt("như căng tai nghe tiếng trống, khi thế giới đã chuyển sang ánh sáng",W/2,H*0.74,32,"500","rgba(168,192,230,1)",a3);}
+  const a4=win(t,795,816,1.4,1.4)*op;
+  if(a4>0.01){const cx=W/2,cy=H*0.52;glow2d(cx,cy,34,90,150,235,a4);dot2d(cx,cy,26,"rgba(70,120,200,1)",a4*0.9);
+    X.save();X.globalAlpha=a4*0.6;X.strokeStyle="rgba(160,220,255,1)";X.lineWidth=2;X.strokeRect(cx-260,cy-150,520,300);for(let gx=-3;gx<=3;gx++){X.globalAlpha=a4*0.18;X.beginPath();X.moveTo(cx+gx*74,cy-150);X.lineTo(cx+gx*74,cy+150);X.stroke();}X.restore();
+    txt("SỞ THÚ VŨ TRỤ",W/2,H*0.24,52,"800","rgba(224,232,252,1)",a4,"rgba(80,120,210,0.4)");
+    txt("có lẽ ta đang bị lặng lẽ quan sát — sau một bức tường kính",W/2,H*0.78,32,"500","rgba(168,192,230,1)",a4);}
+  const a5=win(t,816,834.5,1.4,1.5)*op;
+  if(a5>0.01){txt("MỖI LỜI GIẢI — MỘT CÁNH CỬA",W/2,H*0.42,50,"700","rgba(224,232,252,1)",a5,"rgba(80,120,210,0.4)");
+    txt("ta vẫn chưa biết cánh cửa nào mới là sự thật",W/2,H*0.52,34,"500","rgba(164,188,226,1)",a5);}
+}
+
+/* ============================================================
+   CẢNH 10 — KẾT (overlay trên 3D Trái Đất cô đơn, lắng đọng)
+   ============================================================ */
+function fxScene10(t,op){
+  txt("MỘT NGỌN NẾN ĐƠN ĐỘC",W/2,H*0.24,54,"700","rgba(234,240,255,1)",win(t,851.7,866,1.5,2)*op,"rgba(90,130,220,0.4)");
+  txt("trong một căn phòng tối mênh mông",W/2,H*0.315,32,"500","rgba(168,190,226,1)",win(t,853,866,1.5,2)*op);
+  txt("MỘT TIẾNG NÓI DUY NHẤT — CỦA CHÍNH CHÚNG TA",W/2,H*0.26,46,"700","rgba(234,240,255,1)",win(t,884.1,908,1.5,2)*op,"rgba(90,130,220,0.4)");
+  txt("gìn giữ ngọn nến mong manh của ý thức",W/2,H*0.27,40,"600","rgba(226,234,255,1)",win(t,916.2,937,1.5,2.5)*op,"rgba(90,130,220,0.35)");
+}
+
+const FX=[null,fxScene1,fxScene2,fxScene3,fxScene4,fxScene5,fxScene6,fxScene7,fxScene8,fxScene9,fxScene10];
+
+/* ---------------- phụ đề (nhúng 362 CUES từ cues.json) ---------------- */
+const subEl=document.getElementById('sub'), chapEl=document.getElementById('chap');
+const CUES=[{t:0,s:"Trong một vũ trụ rộng đến mức gần như vô"},{t:2.78,s:"tận, có một dấu hỏi cứ treo lơ lửng trong"},{t:5.64,s:"bóng tối, ám ảnh bất cứ aai từng ngước"},{t:8.28,s:"nhìn lên các vì sao: liệu những thế giới"},{t:11.07,s:"có sự sống như Trái Đất là cực kỳ hiếm,"},{t:13.78,s:"hay chỉ đơn giản là ta chưa tìm ra?"},{t:16.73,s:"Bây giờ, hãy để tôi kể cho bạn nghe về cái"},{t:19.05,s:"ngày mà một con người đã biến dấu hỏi ấy"},{t:21.26,s:"thành câu hỏi ám ảnh nhất trong lịch sử"},{t:23.41,s:"khoa học."},{t:24.41,s:"Chỉ bằng một câu nói buột miệng, giữa một"},{t:26.83,s:"bữa trưa rất đỗi bình thường."},{t:29.02,s:"Mùa hè năm 1950, tại phòng thí nghiệm Los"},{t:32.91,s:"Alamos ở New Mexico."},{t:35.31,s:"Bốn nhà vật lý bước dọc hành lang đến nhà"},{t:38.07,s:"ăn, vừa đi vừa trò chuyện rôm rả về những"},{t:40.83,s:"tin đồn đĩa bay đang tràn ngập mặt báo lúc"},{t:43.66,s:"bấy giờ."},{t:44.71,s:"Một trong bốn người là Enrico Fermi — bộ"},{t:47.15,s:"óc đã dựng nên lò phản ứng hạt nhân đầu"},{t:49.52,s:"tiên của nhân loại."},{t:51.18,s:"Câu chuyện chuyển sang những chủ đề khác,"},{t:53.82,s:"họ ngồi xuống bàn ăn, tiếng dao dĩa lách"},{t:56.4,s:"cách."},{t:57.22,s:"Và rồi, giữa chừng bữa ăn, gần như chẳng"},{t:59.79,s:"ăn nhập gì với những gì đang nói, Fermi"},{t:62.29,s:"bất chợt ngẩng lên và hỏi: \"Thế mọi người"},{t:64.93,s:"đâu cả rồi?\""},{t:66.2,s:"Không aai cần ông giải thích."},{t:68.18,s:"Tất cả đều hiểu ngay ông đang hỏi điều gì."},{t:71.3,s:"Nếu vũ trụ rộng lớn và già nua đến thế,"},{t:73.85,s:"nếu các vì sao nhiều đến thế — thì tại sao"},{t:76.59,s:"bầu trời lại trống rỗng đến vậy?"},{t:79.18,s:"Người ngoài hành tinh, nếu họ tồn tại,"},{t:82.03,s:"đang ở đâu?"},{t:85.85,s:"Để hiểu vì sao câu hỏi ấy lại đáng sợ đến"},{t:88.44,s:"thế, trước tiên tôi phải kéo bạn lùi lại"},{t:90.97,s:"thật xa, đủ xa để thấy được quy mô mà ta"},{t:93.51,s:"đang nói tới."},{t:94.82,s:"Hãy bắt đầu từ ngôi nhà của chúng ta: dải"},{t:97.74,s:"Ngân Hà."},{t:98.8,s:"Trong thiên hà này thôi, đã có khoảng từ"},{t:101.41,s:"một trăm đến bốn trăm tỷ ngôi sao."},{t:104.12,s:"Từng ấy Mặt Trời, cháy sáng, trải dài"},{t:106.6,s:"trong một vòng xoáy khổng lồ."},{t:109.07,s:"Và các nhà thiên văn giờ đã biết rằng gần"},{t:111.35,s:"như mỗi ngôi sao đều có ít nhất một hành"},{t:113.58,s:"tinh quay quanh."},{t:114.97,s:"Nghĩa là chỉ riêng Ngân Hà đã chứa hàng"},{t:117.19,s:"trăm tỷ hành tinh."},{t:118.72,s:"Nhiều trong số đó là những hành tinh đá,"},{t:121.34,s:"nằm trong vùng ở được, nơi nước có thể tồn"},{t:124.08,s:"tại ở thể lỏng."},{t:125.58,s:"Nhưng Ngân Hà chỉ là một."},{t:127.48,s:"Vũ trụ mà ta quan sát được chứa tới hàng"},{t:129.66,s:"nghìn tỷ thiên hà khác."},{t:131.42,s:"Mỗi thiên hà lại có hàng trăm tỷ ngôi sao"},{t:134.1,s:"của riêng nó."},{t:135.42,s:"Khi nhân tất cả lại, con số hiện ra lớn"},{t:138.07,s:"đến mức trí óc gần như từ chối tiếp nhận."},{t:141.35,s:"Số hành tinh trong vũ trụ nhiều hơn cả số"},{t:143.73,s:"hạt cát trên mọi bãi biển của Trái Đất"},{t:145.94,s:"cộng lại."},{t:146.96,s:"Nhiều đến mức không một ngôn ngữ nào đủ"},{t:149.56,s:"sức diễn tả."},{t:150.85,s:"Và vũ trụ không chỉ rộng."},{t:152.92,s:"Nó còn già."},{t:154.22,s:"Đã mười ba tỷ tám trăm triệu năm trôi qua"},{t:156.91,s:"kể từ khoảnh khắc khởi đầu."},{t:159.18,s:"Nhiều ngôi sao và hành tinh đã ra đời từ"},{t:161.46,s:"trước khi Mặt Trời của ta tồn tại hàng tỷ"},{t:163.8,s:"năm."},{t:164.51,s:"Nghĩa là nếu sự sống, và trí tuệ, có thể"},{t:167.4,s:"nảy sinh ở bất cứ đâu ngoài Trái Đất — thì"},{t:170.43,s:"chúng đã có vô số nơi để nảy sinh, và vô"},{t:173.31,s:"số thời gian để làm điều đó."},{t:175.83,s:"Rất nhiều nền văn minh, nếu có, hẳn đã đi"},{t:178.69,s:"trước ta hàng triệu, thậm chí hàng tỷ năm."},{t:184.63,s:"Năm 1961, một nhà thiên văn tên Frank"},{t:187.86,s:"Drake đã cố gắng biến nỗi choáng ngợp mơ"},{t:191.36,s:"hồ ấy thành một thứ ta có thể tính toán."},{t:195.35,s:"Ông viết ra một phương trình — thứ ngày"},{t:197.44,s:"nay mang tên ông."},{t:198.83,s:"Phương trình Drake không cho ta một đáp số"},{t:201.17,s:"chắc chắn."},{t:202.23,s:"Nó làm một việc khác, khiêm tốn hơn nhưng"},{t:205.25,s:"sâu sắc hơn: nó chia câu hỏi khổng lồ \"có"},{t:208.27,s:"bao nhiêu nền văn minh có thể liên lạc với"},{t:211.36,s:"ta\" thành một chuỗi những câu hỏi nhỏ hơn."},{t:214.95,s:"Mỗi năm có bao nhiêu ngôi sao ra đời?"},{t:217.59,s:"Bao nhiêu phần trong số đó có hành tinh?"},{t:220.28,s:"Trung bình mỗi hệ sao có bao nhiêu hành"},{t:222.1,s:"tinh nằm trong vùng ở được?"},{t:223.86,s:"Trên bao nhiêu phần trong số đó, sự sống"},{t:226.3,s:"thực sự khởi phát?"},{t:227.9,s:"Rồi trong số những nơi có sự sống, bao"},{t:230.25,s:"nhiêu tiến hóa được thành trí tuệ?"},{t:232.86,s:"Bao nhiêu nền trí tuệ ấy phát triển được"},{t:235.18,s:"công nghệ để phát tín hiệu ra vũ trụ?"},{t:237.83,s:"Và cuối cùng, câu hỏi lạnh người nhất: một"},{t:240.34,s:"nền văn minh như thế tồn tại được bao lâu"},{t:242.79,s:"trước khi tắt lịm?"},{t:244.38,s:"Nhân tất cả những con số ấy với nhau, ta"},{t:246.76,s:"sẽ có ước lượng số nền văn minh ngoài kia"},{t:249.19,s:"mà ta có thể nghe thấy."},{t:251.06,s:"Vấn đề là, với hầu hết các mắt xích, ta"},{t:253.64,s:"vẫn chưa biết con số thật."},{t:255.85,s:"Ta chỉ có thể đoán."},{t:257.61,s:"Và tùy vào việc bạn lạc quan hay bi quan ở"},{t:260.14,s:"mỗi mắt xích, đáp số nhảy vọt từ hàng"},{t:262.38,s:"triệu nền văn minh đang rực rỡ khắp thiên"},{t:264.85,s:"hà, xuống chỉ còn đúng một."},{t:266.98,s:"Chúng ta."},{t:270.26,s:"Và đây là nơi câu hỏi của Fermi cắm sâu"},{t:272.8,s:"như một cái gai."},{t:274.34,s:"Bởi ngay cả khi ta chọn những con số dè"},{t:276.86,s:"dặt nhất, thận trọng nhất, thiên hà lẽ ra"},{t:279.51,s:"vẫn phải nhộn nhịp sự sống."},{t:281.76,s:"Hãy thử làm một phép tính đơn giản."},{t:285.23,s:"Giả sử một nền văn minh muốn khám phá cả"},{t:287.64,s:"thiên hà, không phải bằng những con tàu"},{t:289.99,s:"nhanh hơn ánh sáng trong phim ảnh, mà chỉ"},{t:292.46,s:"bằng những phi thuyền chậm chạp mà ngay cả"},{t:294.99,s:"ta hôm nay cũng gần chế tạo được."},{t:297.48,s:"Họ gửi tàu tới vài ngôi sao gần nhất."},{t:300.37,s:"Ở đó, tàu tự nhân bản, dựng nên những bản"},{t:302.98,s:"sao của chính mình, rồi những bản sao ấy"},{t:305.52,s:"lại bay tiếp tới các ngôi sao xa hơn."},{t:308.38,s:"Cứ thế, như một hạt giống lan ra."},{t:311.29,s:"Ngay cả với tốc độ rùa bò ấy, các nhà khoa"},{t:313.87,s:"học tính rằng chỉ cần vài triệu năm là đủ"},{t:316.39,s:"để phủ kín toàn bộ Ngân Hà."},{t:318.55,s:"Vài triệu năm nghe thì dài, nhưng so với"},{t:321.26,s:"tuổi mười ba tỷ năm của vũ trụ, nó chỉ như"},{t:324.09,s:"một cái chớp mắt."},{t:325.74,s:"Nói cách khác: nếu chỉ cần một nền văn"},{t:328.01,s:"minh xuất hiện trước ta vài triệu năm —"},{t:330.35,s:"một khoảnh khắc ngắn ngủi trong lịch sử vũ"},{t:332.86,s:"trụ — thì đáng lẽ dấu vết của họ đã phải"},{t:335.25,s:"hiện diện ở khắp nơi."},{t:337.01,s:"Trên các vì sao."},{t:338.64,s:"Có lẽ ngay trong Hệ Mặt Trời của ta."},{t:341.32,s:"Vậy mà ta nhìn lên, và không thấy gì."},{t:344.2,s:"Ta lắng nghe bầu trời suốt hơn sáu mươi"},{t:346.73,s:"năm bằng những chiếc kính thiên văn vô"},{t:349.2,s:"tuyến khổng lồ, dò tìm dù chỉ một tín"},{t:351.6,s:"hiệu, một tiếng thì thầm nhân tạo giữa"},{t:354.06,s:"biển nhiễu."},{t:355.28,s:"Và cho đến hôm nay, ta chỉ nghe thấy sự"},{t:357.89,s:"yim lặng."},{t:358.99,s:"Một sự yim lặng mênh mông, tuyệt đối, đến"},{t:361.95,s:"rợn người."},{t:363.17,s:"Các nhà khoa học đặt cho nó một cái tên:"},{t:366.44,s:"Sự yim Lặng Lớn."},{t:368.26,s:"Đó chính là nghịch lý Fermi."},{t:371.31,s:"Một bên là mọi lý lẽ nói rằng vũ trụ phải"},{t:374.49,s:"tràn ngập sự sống."},{t:376.39,s:"Bên kia là một bầu trời câm lặng không một"},{t:379.21,s:"lời đáp."},{t:380.25,s:"Hai điều ấy không thể cùng đúng."},{t:382.9,s:"Vậy ta đã hiểu sai ở đâu?"},{t:388.04,s:"Có một cách suy nghĩ khiến sự yim lặng ấy"},{t:390.8,s:"vừa sáng tỏ hơn, vừa đáng sợ hơn."},{t:393.52,s:"Nó được gọi là Bộ Lọc Lớn."},{t:395.68,s:"Hãy hình dung con đường từ vật chất chết"},{t:397.95,s:"đến một nền văn minh biết du hành giữa các"},{t:400.33,s:"vì sao như một chặng đường dài với nhiều"},{t:402.6,s:"cánh cửa nối tiếp."},{t:404.12,s:"Vật chất vô tri phải trở thành tế bào"},{t:406.43,s:"sống."},{t:407.24,s:"Tế bào đơn giản phải trở thành tế bào phức"},{t:409.6,s:"tạp."},{t:410.32,s:"Sự sống đơn bào phải trở thành sinh vật đa"},{t:413.01,s:"bào."},{t:413.76,s:"Rồi đến trí tuệ, đến công nghệ, và cuối"},{t:416.09,s:"cùng là khả năng vươn ra ngoài hành tinh"},{t:418.48,s:"mẹ mà không tự diệt vong."},{t:420.47,s:"Mỗi bước là một cánh cửa phải vượt qua."},{t:423.87,s:"Bộ Lọc Lớn là ý tưởng cho rằng, ở đâu đó"},{t:426.53,s:"trên chặng đường ấy, có ít nhất một cánh"},{t:429.18,s:"cửa cực kỳ khó vượt."},{t:431.01,s:"Khó đến mức gần như mọi ứng viên đều gục"},{t:433.54,s:"ngã tại đó."},{t:434.74,s:"Một nút thắt cổ chai mà rất, rất hiếm aai"},{t:437.83,s:"đi qua được."},{t:439.23,s:"Nếu một bộ lọc như thế tồn tại, nó giải"},{t:441.54,s:"thích gọn gàng sự yim lặng của bầu trời."},{t:444.4,s:"Vũ trụ không nhộn nhịp, đơn giản vì gần"},{t:446.62,s:"như tất cả đều bị chặn lại trước khi kịp"},{t:448.89,s:"lên tiếng."},{t:449.94,s:"Nhưng ở đây có một câu hỏi khiến tôi lạnh"},{t:452.2,s:"sống lưng mỗi lần nghĩ tới."},{t:454.18,s:"Cái bộ lọc ấy — nó nằm sau lưng ta, hay"},{t:456.87,s:"còn ở phía trước?"},{t:458.52,s:"Nếu nó nằm sau lưng — nếu bước khó nhất"},{t:460.71,s:"chính là việc sự sống khởi phát, hay tế"},{t:462.9,s:"bào đơn giản tiến hóa thành phức tạp — thì"},{t:465.26,s:"ta đã vượt qua rồi."},{t:466.83,s:"Ta là kẻ sống sót hiếm hoi."},{t:469.04,s:"Con đường phía trước quang đãng, và tương"},{t:471.41,s:"lai thuộc về chúng ta."},{t:473.19,s:"Nhưng nếu nó nằm phía trước — nếu cánh cửa"},{t:475.77,s:"tử thần là một thứ mà mọi nền văn minh đều"},{t:478.35,s:"đâm sầm vào ngay khi đạt tới trình độ như"},{t:480.86,s:"ta bây giờ — thì sự yim lặng ngoài kia"},{t:483.19,s:"không phải điều an ủi."},{t:485.05,s:"Nó là một lời cảnh báo."},{t:489.66,s:"Giờ hãy cùng tôi đi qua những lời giải khả"},{t:492.39,s:"dĩ, từng cái một, như mở từng cánh cửa để"},{t:495.05,s:"nhìn vào bóng tối bên trong."},{t:497.37,s:"Lời giải đầu tiên đơn giản nhất, và có lẽ"},{t:500.14,s:"cô đơn nhất."},{t:501.45,s:"Có thể ta không nghe thấy aai, chỉ vì"},{t:503.93,s:"ngoài kia thực sự chẳng có aai."},{t:506.51,s:"Có thể sự sống, hoặc ít nhất là sự sống"},{t:509.19,s:"phức tạp và thông minh, hiếm đến mức gần"},{t:511.94,s:"như là một điều kỳ diệu độc nhất."},{t:514.72,s:"Hãy nghĩ mà xem — có cả một chuỗi dài"},{t:517.05,s:"những trùng hợp gần như hoàn hảo đã tạo"},{t:519.51,s:"nên Trái Đất."},{t:520.83,s:"Vị trí đúng chỗ trong thiên hà, một Mặt"},{t:523.47,s:"Trăng lớn bất thường giữ cho trục quay ổn"},{t:526.24,s:"định, tấm khiên từ trường chắn bức xạ,"},{t:528.81,s:"kiến tạo mảng làm bộ điều nhiệt cho khí"},{t:531.45,s:"hậu."},{t:532.22,s:"Có thể cần tất cả những điều ấy cùng xảy"},{t:534.78,s:"ra thì sự sống phức tạp mới có một cơ hội."},{t:537.98,s:"Trên Trái Đất, sự sống đơn giản xuất hiện"},{t:540.38,s:"gần như ngay khi hành tinh vừa đủ nguội."},{t:543.21,s:"Nhưng rồi nó mắc kẹt ở dạng vi khuẩn đơn"},{t:545.53,s:"bào suốt gần hai tỷ năm, trước khi có một"},{t:547.9,s:"bước nhảy vọt tạo ra tế bào phức tạp."},{t:550.55,s:"Bước ấy có lẽ chỉ xảy ra đúng một lần"},{t:553.45,s:"trong toàn bộ lịch sử sự sống."},{t:556.29,s:"Nếu bước nhảy hiếm hoi ấy chính là Bộ Lọc"},{t:559.43,s:"Lớn — nếu hầu hết các hành tinh có sự sống"},{t:562.66,s:"đều mãi mãi chỉ là những đại dương vi"},{t:565.49,s:"khuẩn lặng lẽ — thì bầu trời yim lặng đơn"},{t:568.64,s:"giản vì trí tuệ là thứ cực kỳ khan hiếm."},{t:572.2,s:"Và nếu vậy, tin tốt là: phần khó nhất, ta"},{t:575.47,s:"đã bỏ lại sau lưng."},{t:579.48,s:"Nhưng có một lời giải khác, tối tăm hơn"},{t:582.01,s:"nhiều."},{t:582.9,s:"Có thể các nền văn minh không hề hiếm."},{t:585.51,s:"Có thể chúng vẫn nảy sinh khắp nơi — chỉ"},{t:587.62,s:"là chúng không sống được lâu."},{t:589.65,s:"Hãy nghĩ mà xem."},{t:591.21,s:"Cùng một trí tuệ giúp một loài chế tạo"},{t:593.43,s:"được kính viễn vọng và tên lửa, cũng chính"},{t:595.88,s:"là trí tuệ chế tạo được bom hạt nhân."},{t:598.54,s:"Sức mạnh vươn tới các vì sao và sức mạnh"},{t:601.13,s:"tự hủy diệt lớn lên song song, từ cùng một"},{t:603.86,s:"gốc rễ."},{t:604.82,s:"Chính chúng ta, chỉ trong vòng một thế kỷ"},{t:607.34,s:"ngắn ngủi, đã học được cách tách hạt nhân"},{t:609.86,s:"nguyên tử, đã tích trữ đủ vũ khí để xóa sổ"},{t:612.45,s:"nền văn minh của mình nhiều lần, và đang"},{t:614.91,s:"làm thay đổi cả khí hậu của hành tinh mình"},{t:617.49,s:"sống."},{t:618.31,s:"Có thể đây chính là cánh cửa tử thần nằm"},{t:620.46,s:"phía trước."},{t:621.54,s:"Có thể mọi nền văn minh, khi đạt tới sức"},{t:623.88,s:"mạnh công nghệ, đều bước vào một giai đoạn"},{t:626.33,s:"nguy hiểm — nơi khả năng tự hủy chạy đua"},{t:628.67,s:"với sự khôn ngoan để kiểm soát nó."},{t:631.14,s:"Và có thể, gần như tất cả đều thua cuộc"},{t:634.08,s:"đua ấy."},{t:635.11,s:"Bùng lên rực rỡ trong khoảnh khắc, rồi vụt"},{t:638.03,s:"tắt, trước khi kịp lan ra các vì sao."},{t:641.1,s:"Nếu vậy, sự yim lặng của vũ trụ chính là"},{t:643.61,s:"một nghĩa địa của những nền văn minh đã tự"},{t:646.24,s:"tay kết liễu mình."},{t:647.87,s:"Đó là một ý nghĩ khiến người ta rùng mình."},{t:650.52,s:"Bởi nếu đúng, thì sự yim lặng ta nghe thấy"},{t:653.2,s:"không phải là câu chuyện về họ."},{t:655.67,s:"Nó là lời tiên tri về chúng ta."},{t:660.63,s:"Lời giải tiếp theo còn lạnh gáy theo một"},{t:662.74,s:"cách khác."},{t:663.76,s:"Nó không cho rằng họ đã chết."},{t:665.91,s:"Nó cho rằng họ vẫn ở đó — và họ đang cố"},{t:668.96,s:"tình yim lặng."},{t:670.55,s:"Người ta gọi nó là giả thuyết Khu Rừng"},{t:673.1,s:"Tối."},{t:673.87,s:"Hãy tưởng tượng vũ trụ như một khu rừng"},{t:675.9,s:"mênh mông trong đêm đen."},{t:677.64,s:"Mỗi nền văn minh là một người thợ săn lặng"},{t:680.5,s:"lẽ len lỏi giữa những hàng cây."},{t:683.11,s:"Trong khu rừng ấy, mọi người thợ săn đều"},{t:685.25,s:"đối mặt với cùng một nỗi bất định khủng"},{t:687.35,s:"khiếp."},{t:688.18,s:"Nếu bạn nghe thấy tiếng động của một người"},{t:690.36,s:"khác, bạn không có cách nào biết chắc họ"},{t:692.43,s:"là bạn hay thù."},{t:693.71,s:"Bạn không biết ý định của họ, và bạn không"},{t:696.15,s:"biết công nghệ của họ có thể vượt xa bạn"},{t:698.47,s:"đến mức nào chỉ sau vài thế kỷ."},{t:700.77,s:"Trong nỗi bất định ấy, lựa chọn an toàn"},{t:703.82,s:"nhất, tàn nhẫn thay, lại là: đừng bao giờ"},{t:707.03,s:"để lộ vị trí của mình."},{t:709.26,s:"Và nếu phát hiện ra aai đó khác, hãy ra"},{t:711.86,s:"tay trước, trước khi họ kịp lớn mạnh và ra"},{t:714.66,s:"tay với bạn."},{t:715.99,s:"Nếu vũ trụ vận hành theo logic lạnh lùng"},{t:718.65,s:"ấy, thì yim lặng chính là sống sót."},{t:721.48,s:"Những nền văn minh biết điều sẽ tắt hết"},{t:723.84,s:"đèn, nín thở, và không bao giờ phát tín"},{t:726.2,s:"hiệu."},{t:727,s:"Còn những kẻ ngây thơ cất tiếng gọi giữa"},{t:729.58,s:"rừng đêm — có lẽ đã sớm bị xóa sổ."},{t:732.29,s:"Theo cách nhìn này, sự yim lặng không phải"},{t:734.86,s:"là vắng mặt."},{t:736.09,s:"Nó là sự yên lặng căng thẳng của một khu"},{t:738.37,s:"rừng đầy những kẻ săn mồi đang nín thở."},{t:741.1,s:"Và điều đó đặt ra một câu hỏi nhức nhối:"},{t:743.72,s:"liệu việc ta đang phát sóng ra vũ trụ suốt"},{t:746.47,s:"bao năm qua có phải là một sai lầm?"},{t:752.24,s:"Nhưng không phải mọi lời giải đều u ám như"},{t:754.77,s:"thế."},{t:755.51,s:"Có những khả năng nhẹ nhàng hơn, và cũng"},{t:758.07,s:"kỳ lạ hơn."},{t:759.21,s:"Có lẽ vấn đề không phải là họ không tồn"},{t:761.47,s:"tại, mà là ta và họ lỡ nhịp nhau — trong"},{t:763.8,s:"thời gian, trong không gian, hoặc trong"},{t:766.06,s:"cách nhìn."},{t:767.13,s:"Khả năng thứ nhất: có lẽ ta đến quá sớm."},{t:770.5,s:"Vũ trụ hãy còn rất trẻ."},{t:773,s:"Nó sẽ tiếp tục sinh ra các ngôi sao trong"},{t:775.44,s:"hàng nghìn tỷ năm nữa."},{t:777.25,s:"Có thể chúng ta nằm trong số những nền văn"},{t:779.6,s:"minh đầu tiên bừng nở, và phần lớn những"},{t:781.84,s:"người bạn của ta đơn giản là còn chưa ra"},{t:784.08,s:"đời."},{t:784.8,s:"Khả năng thứ hai: khoảng cách."},{t:787.56,s:"Vũ trụ rộng đến mức tàn nhẫn."},{t:789.78,s:"Ngay cả với tốc độ ánh sáng, tín hiệu cũng"},{t:792.19,s:"phải mất hàng nghìn, hàng triệu năm mới đi"},{t:794.6,s:"hết những khoảng cách giữa các vì sao."},{t:797.28,s:"Có thể aai đó đang lên tiếng ngay lúc này"},{t:799.62,s:"— nhưng tiếng nói ấy còn phải bay hàng"},{t:801.79,s:"triệu năm nữa mới tới tai ta."},{t:803.95,s:"Cũng có thể họ vẫn nói chuyện, nhưng không"},{t:806.52,s:"bằng thứ ngôn ngữ ta biết nghe."},{t:808.92,s:"Ta dò tìm sóng vô tuyến, thứ công nghệ của"},{t:811.67,s:"chính ta."},{t:812.76,s:"Một nền văn minh đi trước hàng triệu năm"},{t:815.33,s:"có lẽ đã bỏ lại sóng vô tuyến từ lâu, dùng"},{t:818.04,s:"những phương thức mà ta thậm chí chưa hình"},{t:820.74,s:"dung nổi."},{t:821.82,s:"Như đang căng tai nghe tiếng trống trong"},{t:824.09,s:"một thế giới đã chuyển sang ánh sáng."},{t:826.7,s:"Và khả năng cuối cùng, kỳ lạ nhất: có thể"},{t:829.9,s:"họ biết ta ở đây, và cố tình để ta yên."},{t:833.44,s:"Giống như ta lập những khu bảo tồn, khoanh"},{t:836.06,s:"vùng để quan sát mà không can thiệp."},{t:838.8,s:"Có lẽ Trái Đất là một khu vực được lặng lẽ"},{t:841.55,s:"theo dõi, và sự yim lặng chỉ là bức tường"},{t:844.24,s:"kính của một sở thú vũ trụ mà ta không hề"},{t:846.93,s:"hay biết mình đang ở trong."},{t:849.24,s:"Không lời giải nào trong số này có thể"},{t:851.48,s:"được chứng minh, ít nhất là lúc này."},{t:854.1,s:"Mỗi cái là một cánh cửa mở ra một vũ trụ"},{t:856.38,s:"khác nhau."},{t:857.45,s:"Và điều khiến nghịch lý Fermi ám ảnh đến"},{t:860.01,s:"vậy chính là: ta chưa biết cánh cửa nào"},{t:862.5,s:"mới là sự thật."},{t:866.92,s:"Vậy nên hãy quay lại câu hỏi buột miệng"},{t:869.36,s:"của Fermi giữa bữa trưa năm ấy."},{t:871.8,s:"\"Thế mọi người đâu cả rồi?\" Sau tất cả, ta"},{t:874.8,s:"vẫn chưa có câu trả lời."},{t:877.01,s:"Nhưng có lẽ, điều quan trọng nhất không"},{t:879.36,s:"nằm ở câu trả lời — mà ở cách câu hỏi này"},{t:881.82,s:"buộc ta phải nhìn lại chính mình."},{t:884.3,s:"Bởi mỗi lời giải cho sự yim lặng đều là"},{t:886.78,s:"một tấm gương."},{t:888.17,s:"Nếu sự sống thông minh cực kỳ hiếm, thì ta"},{t:890.73,s:"là một điều quý giá gần như không thể tin"},{t:893.23,s:"nổi trong toàn cõi vũ trụ."},{t:895.31,s:"Một ngọn nến đơn độc trong một căn phòng"},{t:897.84,s:"tối mênh mông."},{t:899.23,s:"Còn nếu Bộ Lọc Lớn vẫn nằm ở phía trước —"},{t:902.11,s:"nếu sự yim lặng là dấu vết của những nền"},{t:904.92,s:"văn minh đã tự hủy diệt — thì đó là lời"},{t:907.66,s:"nhắc nghiêm khắc nhất mà vũ trụ có thể gửi"},{t:910.61,s:"tới ta: rằng sống sót không phải điều hiển"},{t:913.56,s:"nhiên, và ta phải khôn ngoan hơn chính sức"},{t:916.52,s:"mạnh của mình."},{t:918.01,s:"Dù đáp án là gì, kết luận vẫn dẫn về một"},{t:920.64,s:"chỗ."},{t:921.4,s:"Cho đến giây phút này, trong toàn bộ vũ"},{t:924.07,s:"trụ mà ta lắng nghe được, ta chỉ biết đến"},{t:926.88,s:"một tiếng nói duy nhất."},{t:928.95,s:"Của chính chúng ta."},{t:930.56,s:"Và một tiếng nói duy nhất, giữa sự yim"},{t:932.96,s:"lặng bao la ấy, mang một sức nặng khủng"},{t:935.42,s:"khiếp."},{t:936.3,s:"Nó có nghĩa là mọi câu chuyện, mọi bản"},{t:938.29,s:"nhạc, mọi ký ức của loài người — có thể là"},{t:940.48,s:"những câu chuyện, bản nhạc và ký ức duy"},{t:942.52,s:"nhất từng tồn tại."},{t:943.96,s:"Đánh mất chúng, là vũ trụ lại chìm về câm"},{t:946.71,s:"lặng."},{t:950.02,s:"Có lẽ ngoài kia thật sự có aai đó, đang"},{t:952.65,s:"lắng nghe như ta."},{t:954.29,s:"Có lẽ không."},{t:955.45,s:"Nhưng chừng nào ta còn chưa nghe thấy"},{t:957.52,s:"tiếng đáp, thì trách nhiệm gìn giữ tiếng"},{t:959.77,s:"nói này — ngọn nến mong manh của ý thức"},{t:961.95,s:"trong đêm tối vũ trụ — hoàn toàn thuộc về"},{t:964.25,s:"chúng ta."},{t:965.25,s:"Và có lẽ, đó mới là điều mà sự yim lặng"},{t:967.84,s:"đang cố nói với ta suốt bao lâu nay."}];
+function subAt(t){let idx=0;for(let i=0;i<CUES.length;i++){if(CUES[i].t<=t+1e-6)idx=i;else break;}return CUES[idx].s;}
+
+/* ============================================================
+   renderAtTime(t) — hàm thuần, mọi chuyển động là hàm của t
+   ============================================================ */
+const CAM2=[{t:78.64,v:70},{t:88,v:150},{t:96,v:520},{t:106,v:1150},{t:118,v:2200},{t:128,v:3300},{t:174,v:4300}];
+function renderAtTime(tReal){
+  tReal=clamp(tReal,0,TOTAL);
+  const t=realToDry(tReal);   /* cảnh dựng trên timeline dry-run → dùng t(dry); phụ đề dùng tReal */
+  stars.rotation.y=t*0.0009;
+  let A=1;for(let i=1;i<=10;i++){if(t>=SB[i-1])A=i;}
+  galaxy.visible=false;worldsGroup.visible=false;earth.visible=false;earthAtm.visible=false;homeSun.visible=false;
+  camera.fov=50;camera.position.set(0,0,600);camera.lookAt(0,0,0);
+  if(A===2){
+    galaxy.visible=true;homeSun.visible=true;
+    const d=track(t,CAM2);
+    galaxy.rotation.x=0.52;galaxy.rotation.y=(t-78.64)*0.012;
+    homeSun.position.set(0,0,0);sunMat.uniforms.uT.value=t;
+    const so=clamp(1-(d-300)/240,0,1);sunMat.uniforms.uOp.value=so;sunChromo.material.uniforms.uOp.value=so;sunCorona.material.opacity=so;
+    camera.position.set(0,d*0.16,d);camera.lookAt(0,0,0);
+  }else if(A===6){
+    worldsGroup.visible=true;earth.visible=true;earthAtm.visible=true;
+    for(let i=0;i<worldsGroup.children.length;i++)worldsGroup.children[i].rotation.y=t*wspd[i];
+    earth.position.set(0,0,0);earth.scale.setScalar(20);earth.rotation.y=t*0.03;
+    earthAtm.position.set(0,0,0);earthAtm.scale.setScalar(20);
+    dir.position.set(-260,120,220);setSun();
+    const a=(t-468.59)*0.045;camera.position.set(Math.sin(a)*150,34,Math.cos(a)*150);camera.lookAt(0,0,0);
+  }else if(A===10){
+    earth.visible=true;earthAtm.visible=true;
+    earth.position.set(0,0,0);earth.scale.setScalar(24);earth.rotation.y=t*0.03;
+    earthAtm.position.set(0,0,0);earthAtm.scale.setScalar(24);
+    dir.position.set(300,90,220);setSun();
+    const p=clamp((t-834.68)/(TOTAL-834.68),0,1),d=lerp(95,540,smooth(p)),a=(t-834.68)*0.02;
+    camera.position.set(Math.sin(a)*d*0.16,18,d);camera.lookAt(0,0,0);
+  }
+  camera.updateProjectionMatrix();
+  lensPass.uniforms.uT.value=t;
+  composer.render();
+
+  // ---- 2D overlay ----
+  clearFx();
+  for(let i=1;i<=10;i++){const o=sceneOp(i,t);if(o>0.004)FX[i](t,o);}
+  const fb=(t<1.3?(1-t/1.3):0)+(t>935.4?clamp((t-935.4)/1.85,0,1):0);
+  if(fb>0){X.fillStyle="rgba(2,3,8,"+clamp(fb,0,1)+")";X.fillRect(0,0,W,H);}
+
+  // ---- tiêu đề chương + phụ đề ----
+  const chapO=win(t,SB[A-1],SB[A-1]+6.5,0.8,1.5);
+  chapEl.textContent=CHAP[A];chapEl.style.opacity=(chapO*clamp(1-fb,0,1)).toFixed(3);
+  subEl.textContent=subAt(tReal);subEl.style.opacity=clamp(1-fb,0,1).toFixed(3);
+}
+
+/* ---------------- timeline TẤT ĐỊNH ---------------- */
+window.__timelines=window.__timelines||{};
+const tl=gsap.timeline({paused:true});
+const clk={t:0};
+tl.to(clk,{t:TOTAL,duration:TOTAL,ease:"none",onUpdate:()=>renderAtTime(clk.t)},0);
+window.__timelines["tap-02-con-ai-ngoai-kia"]=tl;
+renderAtTime(0);
+</script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+{
+  "slug": "_sample",
+  "fps": 30,
+  "totalDuration": 13,
+  "dryRun": true,
+  "narration": null,
+  "voice": {
+    "provider": "aimax-minimax",
+    "voice_id": "uv_5cee29af",
+    "voice_name": "uv_5cee29af",
+    "model": "speech-2.8-hd",
+    "speed": 0.96
+  },
+  "cues": [
+    {
+      "id": "C01",
+      "chapter": "GIỚI THIỆU",
+      "text": "Trên những con đường mòn vắng lặng của núi rừng Tây Bắc, có một người đàn ông đã dành cả cuộc đời để đi — không phải vì không có chỗ dừng, mà vì ông hiểu rằng, đứng yên cũng là một cách chết dần.",
+      "file": null,
+      "start": 0,
+      "duration": 13
+    }
+  ]
+}

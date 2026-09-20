@@ -1,0 +1,408 @@
+{
+  "slug": "nguyen-to-vang",
+  "fps": 30,
+  "totalDuration": 715.4,
+  "dryRun": false,
+  "narration": "voice/narration.mp3",
+  "voice": {
+    "provider": "aimax-minimax",
+    "voice_id": "uv_5cee29af",
+    "voice_name": "uv_5cee29af",
+    "model": "speech-2.8-hd",
+    "speed": 0.96
+  },
+  "cues": [
+    {
+      "id": "C01",
+      "chapter": "CHƯƠNG 1 — Thứ kim loại không thuộc về Trái Đất",
+      "text": "Tôi đang cầm trên tay một thứ nhỏ bé và lấp lánh. Một chiếc nhẫn vàng.",
+      "file": "voice/seg-00.mp3",
+      "start": 0,
+      "duration": 5.3
+    },
+    {
+      "id": "C02",
+      "chapter": null,
+      "text": "Nó ấm lên trong lòng bàn tay tôi. Nó nặng một cách kỳ lạ so với kích thước bé xíu của nó. Và nó không hề gỉ, không hề phai, dù đã bao nhiêu năm tháng trôi qua.",
+      "file": "voice/seg-01.mp3",
+      "start": 5.3,
+      "duration": 12.74
+    },
+    {
+      "id": "C03",
+      "chapter": null,
+      "text": "Con người đã yêu thứ kim loại này suốt hàng ngàn năm. Ta đúc nó thành vương miện, thành đồng tiền, thành lời thề đeo trên ngón tay người mình yêu. Nhưng tối nay, tôi muốn kể cho bạn nghe một bí mật mà chiếc nhẫn này chưa từng nói ra.",
+      "file": "voice/seg-02.mp3",
+      "start": 18.04,
+      "duration": 16.89
+    },
+    {
+      "id": "C04",
+      "chapter": null,
+      "text": "Vàng không được sinh ra ở đây. Không một nguyên tử vàng nào ra đời trên Trái Đất.",
+      "file": "voice/seg-04.mp3",
+      "start": 36.43,
+      "duration": 5.69
+    },
+    {
+      "id": "C05",
+      "chapter": null,
+      "text": "Và nó cũng không được rèn trong lòng một ngôi sao bình thường, như phần lớn những nguyên tố khác trong cơ thể tôi. Vàng cần một thứ lò dữ dội hơn thế rất nhiều. Dữ dội đến mức gần như không tưởng.",
+      "file": "voice/seg-05.mp3",
+      "start": 42.12,
+      "duration": 12.54
+    },
+    {
+      "id": "C06",
+      "chapter": null,
+      "text": "Mỗi nguyên tử vàng trong chiếc nhẫn này được tạo ra trong sự kiện bạo liệt nhất mà vũ trụ từng biết, kể từ sau chính khoảnh khắc Big Bang.",
+      "file": "voice/seg-06.mp3",
+      "start": 54.66,
+      "duration": 8.92
+    },
+    {
+      "id": "C07",
+      "chapter": null,
+      "text": "Và điều khiến tôi lặng người là thế này. Không chỉ chiếc nhẫn. Trong máu tôi, ngay lúc này, cũng có một lượng vàng cực nhỏ đang trôi. Trong máu bạn cũng vậy. Một chút bụi vàng, mang trong mình câu chuyện của một tai họa vũ trụ.",
+      "file": "voice/seg-07.mp3",
+      "start": 63.58,
+      "duration": 16.21
+    },
+    {
+      "id": "C08",
+      "chapter": null,
+      "text": "Tôi muốn dẫn bạn đi tìm cái lò đã rèn ra nó. Nhưng để hiểu vì sao vàng khó sinh ra đến thế, trước hết tôi phải kể cho bạn nghe về giới hạn của những ngôi sao.",
+      "file": "voice/seg-08.mp3",
+      "start": 79.79,
+      "duration": 11.41
+    },
+    {
+      "id": "C09",
+      "chapter": "CHƯƠNG 2 — Bức tường mà các vì sao không vượt qua nổi",
+      "text": "Bạn có thể đã từng nghe một câu nói rất đẹp. Rằng chúng ta là tàn tro của các vì sao.",
+      "file": "voice/seg-09.mp3",
+      "start": 91.2,
+      "duration": 6.47
+    },
+    {
+      "id": "C10",
+      "chapter": null,
+      "text": "Câu đó là sự thật. Cacbon trong xương tôi, oxy tôi thở, sắt trong máu tôi, tất cả đều được nung trong lò lửa của những ngôi sao đã chết trước cả Mặt Trời. Ngôi sao là một cỗ máy luyện kim khổng lồ, ép các nguyên tử nhẹ hợp lại thành nguyên tử nặng hơn.",
+      "file": "voice/seg-10.mp3",
+      "start": 97.67,
+      "duration": 18.27
+    },
+    {
+      "id": "C11",
+      "chapter": null,
+      "text": "Nhưng cỗ máy ấy có một bức tường nó không tài nào vượt qua. Và bức tường đó có tên. Nó là sắt.",
+      "file": "voice/seg-11.mp3",
+      "start": 115.94,
+      "duration": 8.54
+    },
+    {
+      "id": "C12",
+      "chapter": null,
+      "text": "Suốt cả cuộc đời, một ngôi sao đốt nhiên liệu và thu về năng lượng. Hydro thành heli, heli thành cacbon, rồi oxy, rồi silic, cứ thế nặng dần. Mỗi bước, ngôi sao đều được lời. Nó nhả ra ánh sáng, ra hơi ấm.",
+      "file": "voice/seg-12.mp3",
+      "start": 124.48,
+      "duration": 18.24
+    },
+    {
+      "id": "C13",
+      "chapter": null,
+      "text": "Nhưng khi chạm tới sắt, cuộc mua bán đảo ngược. Để rèn ra thứ gì nặng hơn sắt, ngôi sao không những không được lời, mà còn phải trả giá. Nó phải tiêu tốn năng lượng, chứ không sinh ra năng lượng.",
+      "file": "voice/seg-13.mp3",
+      "start": 142.72,
+      "duration": 15.06
+    },
+    {
+      "id": "C14",
+      "chapter": null,
+      "text": "Với một ngôi sao, sắt là một cái ngõ cụt. Là dấu chấm hết. Một lõi sắt lớn dần lên chính là bản án tử cho ngôi sao. Nó không thể tự tay đúc ra vàng, bởi vàng nặng hơn sắt rất nhiều.",
+      "file": "voice/seg-14.mp3",
+      "start": 157.78,
+      "duration": 16.06
+    },
+    {
+      "id": "C15",
+      "chapter": null,
+      "text": "Vậy thì vàng, bạch kim, uranium, tất cả những nguyên tố nặng trịch xếp cuối bảng tuần hoàn, chúng đến từ đâu? Nếu ngay cả trái tim rực lửa của một ngôi sao cũng không rèn nổi chúng?",
+      "file": "voice/seg-15.mp3",
+      "start": 173.84,
+      "duration": 13.19
+    },
+    {
+      "id": "C16",
+      "chapter": null,
+      "text": "Câu trả lời là, để tạo ra vàng, bạn không thể làm nó một cách từ tốn. Bạn cần một trận cuồng nộ. Bạn cần nhồi neutron vào một hạt nhân nhanh đến mức điên rồ.",
+      "file": "voice/seg-16.mp3",
+      "start": 187.03,
+      "duration": 12.26
+    },
+    {
+      "id": "C17",
+      "chapter": null,
+      "text": "Các nhà khoa học gọi cái công thức bạo liệt ấy là quá trình r. Chữ r là viết tắt của nhanh. Hãy hình dung một hạt nhân nguyên tử bị dội bom bằng neutron, nuốt lấy hết hạt này đến hạt khác, dồn dập, tới tấp, chỉ trong một cái chớp mắt.",
+      "file": "voice/seg-17.mp3",
+      "start": 199.29,
+      "duration": 17.94
+    },
+    {
+      "id": "C18",
+      "chapter": null,
+      "text": "Nó nuốt neutron nhanh đến mức chưa kịp tiêu hóa, chưa kịp phân rã, thì đã có hạt tiếp theo lao vào. Cứ thế, nó phình lên, nặng lên, vượt qua sắt, leo lên tận những nguyên tố nặng nhất. Và khi cơn bão neutron lắng xuống, một số hạt nhân ấy ổn định lại thành vàng.",
+      "file": "voice/seg-18.mp3",
+      "start": 217.23,
+      "duration": 20.28
+    },
+    {
+      "id": "C19",
+      "chapter": null,
+      "text": "Nhưng ở đâu trong vũ trụ mới có một cơn mưa neutron dày đặc và dữ dội đến thế? Trong hàng chục năm, đây là một trong những câu hỏi ám ảnh nhất của thiên văn học. Người ta ngờ rằng những vụ nổ siêu tân tinh có thể làm được. Nhưng tính đi tính lại, chúng vẫn không đủ.",
+      "file": "voice/seg-19.mp3",
+      "start": 237.51,
+      "duration": 19.19
+    },
+    {
+      "id": "C20",
+      "chapter": null,
+      "text": "Siêu tân tinh, cái chết chói lòa của một ngôi sao lớn, đủ để gieo sắt và nhiều nguyên tố khác khắp thiên hà. Nhưng để làm ra cả kho vàng của vũ trụ, ta cần một thứ còn cực đoan hơn. Ta cần chính những gì còn sót lại sau khi một ngôi sao chết.",
+      "file": "voice/seg-20.mp3",
+      "start": 256.7,
+      "duration": 17.3
+    },
+    {
+      "id": "C21",
+      "chapter": "CHƯƠNG 3 — Cú va chạm dữ dội nhất vũ trụ",
+      "text": "Để tôi kể cho bạn nghe về thứ đáng sợ nhất mà một ngôi sao có thể để lại sau khi chết. Nó tên là sao neutron.",
+      "file": "voice/seg-21.mp3",
+      "start": 274,
+      "duration": 8.76
+    },
+    {
+      "id": "C22",
+      "chapter": null,
+      "text": "Khi một ngôi sao khổng lồ nổ tung, cái lõi của nó bị trọng lực nghiến ép lại một cách tàn bạo. Nghiến đến mức các nguyên tử vỡ nát, electron bị ép vào proton, và tất cả biến thành một khối neutron đặc quánh.",
+      "file": "voice/seg-22.mp3",
+      "start": 282.76,
+      "duration": 14.71
+    },
+    {
+      "id": "C23",
+      "chapter": null,
+      "text": "Hãy hình dung cả khối lượng của một mặt trời bị nén lại vừa vặn trong một thành phố nhỏ. Một thìa cà phê vật chất của nó nặng bằng cả một ngọn núi. Đó là một quả cầu neutron khổng lồ, gần như là một hạt nhân nguyên tử to bằng cả một đô thị.",
+      "file": "voice/seg-23.mp3",
+      "start": 297.47,
+      "duration": 17.93
+    },
+    {
+      "id": "C24",
+      "chapter": null,
+      "text": "Giờ hãy tưởng tượng không phải một, mà là hai quả cầu như thế. Hai sao neutron, tàn dư của hai ngôi sao đã chết, bị trọng lực trói vào nhau, xoáy quanh nhau trong một điệu vũ tử thần kéo dài hàng triệu năm.",
+      "file": "voice/seg-24.mp3",
+      "start": 315.4,
+      "duration": 15.5
+    },
+    {
+      "id": "C25",
+      "chapter": null,
+      "text": "Chúng xoáy ngày một gần hơn. Nhanh hơn. Ở những giây cuối cùng, chúng quay quanh nhau hàng trăm, hàng nghìn vòng mỗi giây, quét không gian thành một cơn lốc. Rồi hai quả cầu neutron ấy đâm sầm vào nhau.",
+      "file": "voice/seg-25.mp3",
+      "start": 330.9,
+      "duration": 15.55
+    },
+    {
+      "id": "C26",
+      "chapter": null,
+      "text": "Và trong khoảnh khắc va chạm đó, vũ trụ giải phóng một cơn cuồng nộ không thể diễn tả. Đây chính là cái lò tôi đã tìm suốt câu chuyện này.",
+      "file": "voice/seg-26.mp3",
+      "start": 346.45,
+      "duration": 10.24
+    },
+    {
+      "id": "C27",
+      "chapter": null,
+      "text": "Cú đâm xé toạc cả hai sao neutron, bắn ra không gian một cơn hồng thủy neutron. Chính xác là thứ mà quá trình r khát khao. Neutron dày đặc đến mức gần như đặc quánh, phun ra với vận tốc kinh hoàng.",
+      "file": "voice/seg-27.mp3",
+      "start": 356.69,
+      "duration": 14.86
+    },
+    {
+      "id": "C28",
+      "chapter": null,
+      "text": "Và trong cơn hồng thủy ấy, chỉ trong một hai giây ngắn ngủi, vàng được rèn ra. Không phải vài hạt. Mà cả một khối lượng vàng có thể nặng gấp nhiều lần cả Trái Đất, được sinh ra trong một cái chớp mắt của vũ trụ.",
+      "file": "voice/seg-28.mp3",
+      "start": 371.55,
+      "duration": 15.07
+    },
+    {
+      "id": "C29",
+      "chapter": null,
+      "text": "Người ta gọi vụ nổ hậu va chạm này là kilonova. Một quả cầu lửa phát sáng bằng cả trăm triệu mặt trời, rực lên rồi tàn đi chỉ trong ít ngày, gieo vàng và bạch kim, uranium và cả kho báu nặng của bảng tuần hoàn, vào bóng tối liên sao.",
+      "file": "voice/seg-29.mp3",
+      "start": 386.62,
+      "duration": 17.73
+    },
+    {
+      "id": "C30",
+      "chapter": null,
+      "text": "Nhưng trong nhiều thập kỷ, đây vẫn chỉ là một giả thuyết đẹp. Chưa ai từng thấy hai sao neutron va vào nhau. Cho đến một đêm mùa hè, khi vũ trụ gửi cho chúng ta một tin nhắn.",
+      "file": "voice/seg-30.mp3",
+      "start": 404.35,
+      "duration": 13.18
+    },
+    {
+      "id": "C31",
+      "chapter": null,
+      "text": "Tháng Tám năm hai nghìn mười bảy, những cỗ máy dò sóng hấp dẫn tinh vi nhất loài người từng chế tạo bỗng rung lên. Chúng cảm nhận được một gợn sóng chạy qua chính cấu trúc của không gian và thời gian.",
+      "file": "voice/seg-32.mp3",
+      "start": 419.03,
+      "duration": 13.22
+    },
+    {
+      "id": "C32",
+      "chapter": null,
+      "text": "Cái gợn sóng ấy là tiếng thét cuối cùng của hai sao neutron xoáy vào nhau, cách chúng ta một trăm ba mươi triệu năm ánh sáng. Một tín hiệu đã lên đường từ khi khủng long còn thống trị Trái Đất, và vừa mới chạm tới ta.",
+      "file": "voice/seg-33.mp3",
+      "start": 432.25,
+      "duration": 14.38
+    },
+    {
+      "id": "C33",
+      "chapter": null,
+      "text": "Chỉ vài giây sau tiếng sóng ấy, một chớp tia gamma lóe lên. Rồi hàng chục kính viễn vọng khắp hành tinh quay về đúng một điểm trên bầu trời. Và họ nhìn thấy nó. Một kilonova, rực sáng, rồi phai dần đúng như lý thuyết đã tiên đoán.",
+      "file": "voice/seg-34.mp3",
+      "start": 446.63,
+      "duration": 17.93
+    },
+    {
+      "id": "C34",
+      "chapter": null,
+      "text": "Lần đầu tiên trong lịch sử, con người tận mắt chứng kiến vàng đang được đúc ra. Không phải trong phương trình. Không phải trong tưởng tượng. Mà thật sự, ngay trước những chiếc kính của chúng ta. Vụ va chạm ấy đã tạo ra một lượng vàng nặng gấp nhiều lần khối lượng Trái Đất.",
+      "file": "voice/seg-35.mp3",
+      "start": 464.56,
+      "duration": 18.17
+    },
+    {
+      "id": "C35",
+      "chapter": null,
+      "text": "Tôi vẫn nhớ cảm giác khi biết tin đó. Một câu hỏi ám ảnh cả thế kỷ, cuối cùng có lời đáp. Chiếc nhẫn trên tay tôi, hóa ra, là con của một tai họa xa xôi đến vậy.",
+      "file": "voice/seg-36.mp3",
+      "start": 482.73,
+      "duration": 13.06
+    },
+    {
+      "id": "C36",
+      "chapter": "CHƯƠNG 4 — Kho báu chôn dưới chân ta",
+      "text": "Nhưng câu chuyện vẫn còn một đoạn kỳ lạ mà tôi muốn kể nốt cho bạn. Đó là hành trình vàng đã đi để đến được ngón tay tôi.",
+      "file": "voice/seg-37.mp3",
+      "start": 495.79,
+      "duration": 8.66
+    },
+    {
+      "id": "C37",
+      "chapter": null,
+      "text": "Hãy tưởng tượng cơn mưa vàng từ một kilonova cổ xưa, trôi lững lờ hàng tỉ năm trong bóng tối liên sao, hòa vào một đám mây bụi khổng lồ. Rồi đám mây ấy co lại. Ở trung tâm nó, Mặt Trời của chúng ta bừng sáng. Và quanh đó, Trái Đất ngưng tụ lại từ chính đám bụi có lẫn vàng ấy.",
+      "file": "voice/seg-38.mp3",
+      "start": 504.45,
+      "duration": 21.66
+    },
+    {
+      "id": "C38",
+      "chapter": null,
+      "text": "Nhưng đây mới là điều trớ trêu. Khi Trái Đất còn non trẻ, nó nóng chảy, mềm như một biển dung nham. Và vàng, bạn còn nhớ không, rất nặng. Nó nặng nên nó chìm.",
+      "file": "voice/seg-39.mp3",
+      "start": 526.11,
+      "duration": 14.4
+    },
+    {
+      "id": "C39",
+      "chapter": null,
+      "text": "Gần như toàn bộ số vàng có trong Trái Đất thuở ban đầu đã chìm nghỉm xuống tận lõi. Xuống trung tâm hành tinh, cách chúng ta hàng ngàn cây số, nơi không một mũi khoan nào với tới. Người ta ước tính, số vàng chôn trong lõi Trái Đất đủ để phủ lên toàn bộ bề mặt hành tinh một lớp dày cả nửa mét.",
+      "file": "voice/seg-40.mp3",
+      "start": 540.51,
+      "duration": 19.78
+    },
+    {
+      "id": "C40",
+      "chapter": null,
+      "text": "Vậy thì số vàng mà con người đào lên được, số vàng trong chiếc nhẫn này, từ đâu ra? Nếu tất cả đã chìm xuống lõi từ hàng tỉ năm trước?",
+      "file": "voice/seg-41.mp3",
+      "start": 560.29,
+      "duration": 10.03
+    },
+    {
+      "id": "C41",
+      "chapter": null,
+      "text": "Câu trả lời đến từ trên trời. Sau khi Trái Đất đã nguội và đông cứng lớp vỏ, nó tiếp tục bị bắn phá suốt hàng trăm triệu năm bởi một trận mưa thiên thạch dữ dội. Những mảnh vỡ ấy cũng mang trong mình vàng, cũng là con cháu của những kilonova xa xưa.",
+      "file": "voice/seg-42.mp3",
+      "start": 570.32,
+      "duration": 17.28
+    },
+    {
+      "id": "C42",
+      "chapter": null,
+      "text": "Lần này, vàng rơi xuống một lớp vỏ đã đông cứng. Nó nằm lại gần bề mặt. Người ta gọi lớp vàng muộn màng ấy bằng một cái tên đẹp, lớp phủ đến sau. Toàn bộ vàng mà loài người từng chạm tay vào, đều đến từ trận mưa muộn đó.",
+      "file": "voice/seg-43.mp3",
+      "start": 587.6,
+      "duration": 17.2
+    },
+    {
+      "id": "C43",
+      "chapter": null,
+      "text": "Nên mỗi mỏ vàng trên hành tinh này thật ra là một dấu vết va chạm. Nơi những mảnh trời rơi xuống và để lại chút kho báu của mình. Và toàn bộ số vàng ấy, gộp lại, cũng chỉ vừa đủ để lấp đầy vài bể bơi. Ít ỏi đến thế, vì nó đắt giá theo đúng nghĩa vũ trụ.",
+      "file": "voice/seg-44.mp3",
+      "start": 604.8,
+      "duration": 20.72
+    },
+    {
+      "id": "C44",
+      "chapter": null,
+      "text": "Vậy nên bây giờ, tôi lại nâng chiếc nhẫn lên trước ánh sáng. Và tôi nhìn nó bằng một đôi mắt hoàn toàn khác.",
+      "file": "voice/seg-46.mp3",
+      "start": 627.52,
+      "duration": 7.87
+    },
+    {
+      "id": "C45",
+      "chapter": null,
+      "text": "Cái ánh vàng ấm áp này không phải màu của tiền bạc. Nó là màu còn sót lại của một cú va chạm dữ dội nhất vũ trụ. Là ánh sáng nguội của hai mặt trời đã chết, đâm vào nhau ở một nơi xa đến mức tôi không thể hình dung nổi.",
+      "file": "voice/seg-47.mp3",
+      "start": 635.39,
+      "duration": 14.46
+    },
+    {
+      "id": "C46",
+      "chapter": null,
+      "text": "Chiếc nhẫn cưới mà người ta trao nhau như một lời hứa vĩnh cửu, hóa ra được sinh ra từ một cái chết. Từ hai ngôi sao đã tan vỡ để một thứ bền bỉ hơn có thể ra đời. Tôi thấy trong đó một sự trùng hợp đẹp đến nao lòng.",
+      "file": "voice/seg-48.mp3",
+      "start": 649.85,
+      "duration": 15.51
+    },
+    {
+      "id": "C47",
+      "chapter": null,
+      "text": "Và cả chút vàng li ti đang trôi trong máu tôi, trong máu bạn. Nó cũng là mảnh vụn của cùng một tai họa. Chúng ta không chỉ là tàn tro của những vì sao đã cháy. Chúng ta còn mang trong mình mảnh vỡ của những vì sao đã va vào nhau.",
+      "file": "voice/seg-49.mp3",
+      "start": 665.36,
+      "duration": 15.62
+    },
+    {
+      "id": "C48",
+      "chapter": null,
+      "text": "Tôi thấy mình bé nhỏ, và cùng lúc, thấy mình được kết nối với những điều lớn lao khủng khiếp. Trên ngón tay tôi là một mảnh của thảm họa cổ xưa nhất, được thuần hóa thành một biểu tượng của tình yêu.",
+      "file": "voice/seg-50.mp3",
+      "start": 680.98,
+      "duration": 12.88
+    },
+    {
+      "id": "C49",
+      "chapter": null,
+      "text": "Nên lần tới, khi bạn nhìn thấy một tia vàng lấp lánh, hãy khẽ nhớ điều này. Bạn đang cầm trong tay tàn dư của vụ va chạm dữ dội nhất mà vũ trụ từng biết. Một chút cái chết của các vì sao, đã đi hàng tỉ năm, chỉ để lấp lánh trên bàn tay bạn, ngay lúc này.",
+      "file": "voice/seg-51.mp3",
+      "start": 693.86,
+      "duration": 18.54
+    }
+  ]
+}

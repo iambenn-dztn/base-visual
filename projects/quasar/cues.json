@@ -1,0 +1,2086 @@
+{
+  "total": 1171.97,
+  "count": 520,
+  "cues": [
+    {
+      "t": 0,
+      "s": "Tôi đang nhìn một chấm sáng."
+    },
+    {
+      "t": 1.88,
+      "s": "Nhỏ."
+    },
+    {
+      "t": 2.83,
+      "s": "Mờ."
+    },
+    {
+      "t": 3.9,
+      "s": "Nằm lẫn giữa vài nghìn chấm sáng khác trên"
+    },
+    {
+      "t": 7,
+      "s": "nền trời."
+    },
+    {
+      "t": 7.67,
+      "s": "Nếu tôi không biết trước nó ở đâu, tôi sẽ"
+    },
+    {
+      "t": 10.2,
+      "s": "đi lướt qua nó cả đời mà không để ý."
+    },
+    {
+      "t": 12.43,
+      "s": "Nó không đẹp."
+    },
+    {
+      "t": 13.73,
+      "s": "Nó không nhấp nháy khác thường."
+    },
+    {
+      "t": 15.77,
+      "s": "Nó chỉ là một chấm."
+    },
+    {
+      "t": 17.63,
+      "s": "Và chấm đó đang phát ra nhiều ánh sáng hơn"
+    },
+    {
+      "t": 20.37,
+      "s": "bốn nghìn tỉ Mặt Trời cộng lại."
+    },
+    {
+      "t": 23.89,
+      "s": "Tôi muốn nói rõ con số đó trước khi đi"
+    },
+    {
+      "t": 26.55,
+      "s": "tiếp, vì nếu nghe lướt qua nó sẽ trôi mất"
+    },
+    {
+      "t": 29.42,
+      "s": "như mọi con số thiên văn khác."
+    },
+    {
+      "t": 31.52,
+      "s": "Thiên hà của chúng ta có khoảng hai đến"
+    },
+    {
+      "t": 33.81,
+      "s": "bốn trăm tỉ ngôi sao."
+    },
+    {
+      "t": 35.04,
+      "s": "Toàn bộ."
+    },
+    {
+      "t": 36.25,
+      "s": "Mọi mặt trời, mọi bếp lò hạt nhân đang"
+    },
+    {
+      "t": 38.75,
+      "s": "cháy trong dải Ngân Hà, gom hết ánh sáng"
+    },
+    {
+      "t": 41.38,
+      "s": "của chúng lại thành một ngọn đèn duy nhất."
+    },
+    {
+      "t": 44.15,
+      "s": "Chấm sáng tôi đang nhìn sáng hơn ngọn đèn"
+    },
+    {
+      "t": 46.65,
+      "s": "đó."
+    },
+    {
+      "t": 46.83,
+      "s": "Không phải nhỉnh hơn."
+    },
+    {
+      "t": 48.44,
+      "s": "Gấp hàng chục lần, có những cái gấp hàng"
+    },
+    {
+      "t": 51.86,
+      "s": "trăm lần."
+    },
+    {
+      "t": 52.63,
+      "s": "Và nó làm được điều đó từ một vùng không"
+    },
+    {
+      "t": 55.27,
+      "s": "gian hẹp hơn hệ Mặt Trời của tôi."
+    },
+    {
+      "t": 58.95,
+      "s": "Hai trăm tỉ ngôi sao trải trên một cái đĩa"
+    },
+    {
+      "t": 61.6,
+      "s": "rộng trăm nghìn năm ánh sáng, thua một thứ"
+    },
+    {
+      "t": 64.25,
+      "s": "vừa lọt trong quỹ đạo Sao Hải Vương."
+    },
+    {
+      "t": 66.52,
+      "s": "Tôi nói câu đó ra mà chính tôi thấy nó vô"
+    },
+    {
+      "t": 69.36,
+      "s": "lý."
+    },
+    {
+      "t": 69.57,
+      "s": "Cả chương sau tôi sẽ dành để nói tại sao"
+    },
+    {
+      "t": 72.3,
+      "s": "nó không vô lý."
+    },
+    {
+      "t": 75.33,
+      "s": "Chuyện bắt đầu vào đầu những năm sáu mươi,"
+    },
+    {
+      "t": 77.93,
+      "s": "khi các đài thiên văn vô tuyến bắt đầu"
+    },
+    {
+      "t": 80.29,
+      "s": "quét bầu trời và ghi lại những nơi phát ra"
+    },
+    {
+      "t": 82.89,
+      "s": "sóng radio mạnh."
+    },
+    {
+      "t": 83.88,
+      "s": "Phần lớn các nguồn ấy là những đám mây khí"
+    },
+    {
+      "t": 86.69,
+      "s": "lớn, hoặc là tàn tích của những vụ nổ,"
+    },
+    {
+      "t": 89.23,
+      "s": "những thứ trải rộng trên bầu trời thành"
+    },
+    {
+      "t": 91.84,
+      "s": "một vệt."
+    },
+    {
+      "t": 92.37,
+      "s": "Nhưng có vài nguồn thì kỳ quặc."
+    },
+    {
+      "t": 94.57,
+      "s": "Chúng phát ra sóng radio dữ dội, và khi"
+    },
+    {
+      "t": 97.25,
+      "s": "người ta chĩa kính quang học vào đúng tọa"
+    },
+    {
+      "t": 100.07,
+      "s": "độ, cái hiện ra chỉ là một điểm."
+    },
+    {
+      "t": 102.27,
+      "s": "Một chấm sắc nét."
+    },
+    {
+      "t": 103.79,
+      "s": "Y hệt một ngôi sao."
+    },
+    {
+      "t": 105.99,
+      "s": "Người ta đặt cho chúng cái tên tạm bợ nhất"
+    },
+    {
+      "t": 108.99,
+      "s": "có thể: nguồn vô tuyến gần giống sao."
+    },
+    {
+      "t": 111.64,
+      "s": "Trong tiếng Anh là qua-di ste-la."
+    },
+    {
+      "t": 114.68,
+      "s": "Về sau rút ngắn lại thành quasar."
+    },
+    {
+      "t": 117.3,
+      "s": "Cái tên ấy, thật ra, là một lời thú nhận"
+    },
+    {
+      "t": 120.31,
+      "s": "không biết."
+    },
+    {
+      "t": 121.14,
+      "s": "Vì nếu là sao, tại sao quang phổ của chúng"
+    },
+    {
+      "t": 123.91,
+      "s": "không đọc được?"
+    },
+    {
+      "t": 126.4,
+      "s": "Tôi cần dừng lại giải thích chỗ này, vì cả"
+    },
+    {
+      "t": 129.16,
+      "s": "câu chuyện xoay quanh nó."
+    },
+    {
+      "t": 130.8,
+      "s": "Khi tôi tách ánh sáng của một ngôi sao ra"
+    },
+    {
+      "t": 133.16,
+      "s": "thành dải màu, tôi không thấy một dải liền"
+    },
+    {
+      "t": 135.57,
+      "s": "mượt."
+    },
+    {
+      "t": 135.86,
+      "s": "Tôi thấy những vạch tối nằm ở những vị trí"
+    },
+    {
+      "t": 138.63,
+      "s": "cố định."
+    },
+    {
+      "t": 139.16,
+      "s": "Mỗi nguyên tố để lại một bộ vạch riêng,"
+    },
+    {
+      "t": 142.02,
+      "s": "như dấu vân tay."
+    },
+    {
+      "t": 143.19,
+      "s": "Hydro có bộ vạch của hydro, không lẫn với"
+    },
+    {
+      "t": 147.4,
+      "s": "aai."
+    },
+    {
+      "t": 147.81,
+      "s": "Bộ vạch ấy không thay đổi."
+    },
+    {
+      "t": 149.56,
+      "s": "Trong phòng thí nghiệm ở Trái Đất, trong"
+    },
+    {
+      "t": 152.61,
+      "s": "lòng một ngôi sao cách đây nghìn năm ánh"
+    },
+    {
+      "t": 155.66,
+      "s": "sáng, hydro vẫn là hydro."
+    },
+    {
+      "t": 157.56,
+      "s": "Nhưng quang phổ của những chấm sáng kỳ"
+    },
+    {
+      "t": 159.75,
+      "s": "quặc kia thì không khớp với bất cứ nguyên"
+    },
+    {
+      "t": 162.12,
+      "s": "tố nào."
+    },
+    {
+      "t": 162.52,
+      "s": "Các vạch nằm ở những chỗ không nguyên tố"
+    },
+    {
+      "t": 165.2,
+      "s": "nào được phép nằm."
+    },
+    {
+      "t": 166.4,
+      "s": "Suốt mấy năm, người ta nghĩ mình vừa tìm"
+    },
+    {
+      "t": 168.86,
+      "s": "ra một dạng vật chất chưa từng biết."
+    },
+    {
+      "t": 171.08,
+      "s": "Một loại sao mới, có hoá học riêng."
+    },
+    {
+      "t": 174.62,
+      "s": "Rồi năm 1963, một nhà thiên văn người Hà"
+    },
+    {
+      "t": 177.76,
+      "s": "Lan tên Mác-ten Sờ-mít ngồi nhìn tấm quang"
+    },
+    {
+      "t": 181.06,
+      "s": "phổ của một nguồn mang số hiệu ba xê hai"
+    },
+    {
+      "t": 184.21,
+      "s": "bảy ba, và ông nhận ra chuyện khác hẳn."
+    },
+    {
+      "t": 187.27,
+      "s": "Các vạch ấy là hydro."
+    },
+    {
+      "t": 189.06,
+      "s": "Vẫn đúng bộ vạch quen thuộc, vẫn đúng"
+    },
+    {
+      "t": 191.61,
+      "s": "khoảng cách giữa chúng, đúng tỉ lệ."
+    },
+    {
+      "t": 194.02,
+      "s": "Chỉ là toàn bộ bộ vạch đã bị trượt về phía"
+    },
+    {
+      "t": 196.98,
+      "s": "đỏ."
+    },
+    {
+      "t": 197.19,
+      "s": "Trượt rất xa."
+    },
+    {
+      "t": 198.98,
+      "s": "Mà trong một vũ trụ đang giãn ra, trượt về"
+    },
+    {
+      "t": 201.61,
+      "s": "phía đỏ nghĩa là đang lùi xa."
+    },
+    {
+      "t": 203.42,
+      "s": "Trượt càng nhiều thì càng xa."
+    },
+    {
+      "t": 205.82,
+      "s": "Con số Sờ-mít đọc ra hôm đó đặt cái chấm"
+    },
+    {
+      "t": 209.04,
+      "s": "nhỏ ấy cách chúng ta hơn hai tỉ năm ánh"
+    },
+    {
+      "t": 212.19,
+      "s": "sáng."
+    },
+    {
+      "t": 214.59,
+      "s": "Và ngay khoảnh khắc đó, bài toán lật"
+    },
+    {
+      "t": 217.27,
+      "s": "ngược."
+    },
+    {
+      "t": 217.72,
+      "s": "Không phải vì nó lạ mà nó khó hiểu."
+    },
+    {
+      "t": 220.05,
+      "s": "Nó ở xa hơn gần như mọi thứ người ta từng"
+    },
+    {
+      "t": 223.24,
+      "s": "đo."
+    },
+    {
+      "t": 223.47,
+      "s": "Ở khoảng cách đó, các thiên hà mờ tới mức"
+    },
+    {
+      "t": 226.46,
+      "s": "phải phơi sáng rất lâu mới hiện lên."
+    },
+    {
+      "t": 229.08,
+      "s": "Còn cái chấm này thì sáng tới mức một kính"
+    },
+    {
+      "t": 231.65,
+      "s": "thiên văn cỡ nhỏ trong sân sau cũng bắt"
+    },
+    {
+      "t": 234.03,
+      "s": "được nó."
+    },
+    {
+      "t": 234.52,
+      "s": "Nghĩa là nó không phải một ngôi sao."
+    },
+    {
+      "t": 236.62,
+      "s": "Không ngôi sao nào cháy nổi như thế."
+    },
+    {
+      "t": 239.22,
+      "s": "Người ta vừa nhìn thấy một thứ hoàn toàn"
+    },
+    {
+      "t": 241.91,
+      "s": "khác, và chưa aai biết thứ đó là gì."
+    },
+    {
+      "t": 244.33,
+      "s": "Câu hỏi đầu tiên mà aai cũng hỏi là: nó"
+    },
+    {
+      "t": 247.09,
+      "s": "lấy năng lượng ở đâu?"
+    },
+    {
+      "t": 248.58,
+      "s": "Và câu trả lời quen thuộc nhất, phản ứng"
+    },
+    {
+      "t": 251.37,
+      "s": "hạt nhân, không dùng được."
+    },
+    {
+      "t": 253.19,
+      "s": "Tôi muốn giải thích tại sao không dùng"
+    },
+    {
+      "t": 255.72,
+      "s": "được, vì đó là chỗ trực giác của tôi bị bẻ"
+    },
+    {
+      "t": 258.51,
+      "s": "gãy."
+    },
+    {
+      "t": 258.78,
+      "s": "Một ngôi sao sống bằng cách ép các hạt"
+    },
+    {
+      "t": 261.45,
+      "s": "nhân hydro dính vào nhau thành helium."
+    },
+    {
+      "t": 264.13,
+      "s": "Khi chúng dính lại, sản phẩm nhẹ hơn tổng"
+    },
+    {
+      "t": 267.22,
+      "s": "các phần gộp lại một chút."
+    },
+    {
+      "t": 269.18,
+      "s": "Chút hụt đó thoát ra thành năng lượng."
+    },
+    {
+      "t": 272.01,
+      "s": "Chút đó là bao nhiêu?"
+    },
+    {
+      "t": 273.31,
+      "s": "Khoảng bảy phần nghìn."
+    },
+    {
+      "t": 274.94,
+      "s": "Không phẩy bảy phần trăm khối lượng."
+    },
+    {
+      "t": 277.39,
+      "s": "Mặt Trời đốt bốn triệu tấn vật chất mỗi"
+    },
+    {
+      "t": 280.09,
+      "s": "giây theo kiểu đó."
+    },
+    {
+      "t": 281.33,
+      "s": "Bảy phần nghìn nghe thì bé, nhưng nó đủ để"
+    },
+    {
+      "t": 284.22,
+      "s": "thắp một ngôi sao trong mười tỉ năm."
+    },
+    {
+      "t": 286.7,
+      "s": "Vấn đề là nó không đủ cho cái chấm sáng"
+    },
+    {
+      "t": 289.12,
+      "s": "kia."
+    },
+    {
+      "t": 289.37,
+      "s": "Dù tôi có nhét bao nhiêu ngôi sao vào một"
+    },
+    {
+      "t": 292.14,
+      "s": "vùng nhỏ cỡ hệ Mặt Trời, chúng cũng không"
+    },
+    {
+      "t": 294.91,
+      "s": "cháy ra nổi từng ấy ánh sáng."
+    },
+    {
+      "t": 296.87,
+      "s": "Và nếu chen nhau tới mức đó, chúng sẽ va"
+    },
+    {
+      "t": 299.88,
+      "s": "vào nhau trước khi kịp cháy."
+    },
+    {
+      "t": 303.48,
+      "s": "Cái làm cho quasar sáng không phải lửa."
+    },
+    {
+      "t": 306.51,
+      "s": "Là độ cao."
+    },
+    {
+      "t": 308.13,
+      "s": "Tôi biết nghe lạ, nên để tôi kéo nó về mặt"
+    },
+    {
+      "t": 311.13,
+      "s": "đất trước."
+    },
+    {
+      "t": 311.84,
+      "s": "Khi tôi thả một hòn đá từ trên cao xuống,"
+    },
+    {
+      "t": 314.5,
+      "s": "nó rơi, nó đập vào sàn, và nó phát ra một"
+    },
+    {
+      "t": 317.17,
+      "s": "tiếng động."
+    },
+    {
+      "t": 317.88,
+      "s": "Tiếng động đó là năng lượng."
+    },
+    {
+      "t": 320.34,
+      "s": "Năng lượng đó không do hòn đá tự chế ra."
+    },
+    {
+      "t": 323.33,
+      "s": "Nó đến từ việc hòn đá vừa mất độ cao."
+    },
+    {
+      "t": 326.28,
+      "s": "Càng thả từ cao, tiếng đập càng lớn."
+    },
+    {
+      "t": 329.12,
+      "s": "Đơn giản vậy thôi."
+    },
+    {
+      "t": 330.53,
+      "s": "Hấp dẫn không chế tạo năng lượng."
+    },
+    {
+      "t": 332.66,
+      "s": "Nó thu thuế trên mỗi mét rơi xuống."
+    },
+    {
+      "t": 335.5,
+      "s": "Bây giờ thay cái sàn nhà bằng một hố đen"
+    },
+    {
+      "t": 338.5,
+      "s": "nặng bằng một tỉ Mặt Trời."
+    },
+    {
+      "t": 341.45,
+      "s": "Cái giếng hấp dẫn quanh một vật như thế"
+    },
+    {
+      "t": 343.94,
+      "s": "sâu tới mức vật chất rơi vào đó không rơi"
+    },
+    {
+      "t": 346.55,
+      "s": "vài mét."
+    },
+    {
+      "t": 347.06,
+      "s": "Nó rơi qua một độ dốc mà tới cuối đường,"
+    },
+    {
+      "t": 350.13,
+      "s": "tốc độ của nó đạt phần đáng kể của tốc độ"
+    },
+    {
+      "t": 353.27,
+      "s": "ánh sáng."
+    },
+    {
+      "t": 353.96,
+      "s": "Nhưng vật chất không rơi thẳng vào."
+    },
+    {
+      "t": 356.38,
+      "s": "Đó là chi tiết quan trọng nhất của cả tập"
+    },
+    {
+      "t": 359.74,
+      "s": "này, và nó là lý do quasar tồn tại."
+    },
+    {
+      "t": 362.6,
+      "s": "Mọi thứ trong vũ trụ đều đang quay quanh"
+    },
+    {
+      "t": 365.42,
+      "s": "cái gì đó."
+    },
+    {
+      "t": 366.13,
+      "s": "Đám khí trôi về phía hố đen cũng mang theo"
+    },
+    {
+      "t": 368.81,
+      "s": "chuyển động ngang của nó."
+    },
+    {
+      "t": 370.4,
+      "s": "Nên thay vì lao thẳng xuống, nó bị cuốn"
+    },
+    {
+      "t": 373.78,
+      "s": "vòng quanh, và dẹt dần ra thành một cái"
+    },
+    {
+      "t": 377.16,
+      "s": "đĩa."
+    },
+    {
+      "t": 377.51,
+      "s": "Một cái đĩa khí khổng lồ, xoáy quanh một"
+    },
+    {
+      "t": 380.1,
+      "s": "cái miệng không đáy."
+    },
+    {
+      "t": 381.4,
+      "s": "Và trong cái đĩa đó, vòng khí phía trong"
+    },
+    {
+      "t": 384.06,
+      "s": "quay nhanh hơn vòng phía ngoài."
+    },
+    {
+      "t": 386.13,
+      "s": "Chúng cọ vào nhau."
+    },
+    {
+      "t": 388,
+      "s": "Chúng kéo lê nhau."
+    },
+    {
+      "t": 389.39,
+      "s": "Ma sát."
+    },
+    {
+      "t": 390.85,
+      "s": "Ma sát trên quy mô đó không làm ấm lên."
+    },
+    {
+      "t": 393.85,
+      "s": "Nó nung đĩa khí lên hàng triệu độ, và ở"
+    },
+    {
+      "t": 396.69,
+      "s": "nhiệt độ ấy khí không còn phát ra ánh sáng"
+    },
+    {
+      "t": 399.75,
+      "s": "nhìn thấy nữa."
+    },
+    {
+      "t": 400.77,
+      "s": "Nó phát tia cực tím."
+    },
+    {
+      "t": 402.71,
+      "s": "Nó phát tia X."
+    },
+    {
+      "t": 404.6,
+      "s": "Cái đĩa ấy là thứ tôi thấy."
+    },
+    {
+      "t": 406.44,
+      "s": "Không phải hố đen."
+    },
+    {
+      "t": 407.96,
+      "s": "Hố đen thì đen, và nó luôn đen."
+    },
+    {
+      "t": 410.97,
+      "s": "Cái sáng rực là bữa ăn đang bị xé nhỏ ngay"
+    },
+    {
+      "t": 414.41,
+      "s": "trước miệng nó."
+    },
+    {
+      "t": 417.14,
+      "s": "Nhưng làm sao biết vùng phát sáng ấy nhỏ?"
+    },
+    {
+      "t": 419.42,
+      "s": "Không kính thiên văn nào phóng to nổi một"
+    },
+    {
+      "t": 422.1,
+      "s": "chấm ở cách hai tỉ năm ánh sáng thành"
+    },
+    {
+      "t": 424.52,
+      "s": "hình."
+    },
+    {
+      "t": 424.85,
+      "s": "Câu trả lời nằm ở chỗ tôi không ngờ tới."
+    },
+    {
+      "t": 428.08,
+      "s": "Nó nằm ở nhịp nhấp nháy."
+    },
+    {
+      "t": 430.43,
+      "s": "Độ sáng của quasar không đứng yên."
+    },
+    {
+      "t": 432.54,
+      "s": "Có cái thay đổi rõ rệt trong vài tháng."
+    },
+    {
+      "t": 435.44,
+      "s": "Có cái đổi trong vài ngày."
+    },
+    {
+      "t": 438.1,
+      "s": "Có cái đổi trong vài giờ."
+    },
+    {
+      "t": 440.34,
+      "s": "Và một vật không thể thay đổi độ sáng"
+    },
+    {
+      "t": 442.85,
+      "s": "nhanh hơn thời gian ánh sáng cần để đi từ"
+    },
+    {
+      "t": 445.62,
+      "s": "đầu này sang đầu kia của nó."
+    },
+    {
+      "t": 447.52,
+      "s": "Lý do rất cơ học."
+    },
+    {
+      "t": 449.1,
+      "s": "Nếu toàn bộ vật sáng lên cùng một lúc, ánh"
+    },
+    {
+      "t": 452.34,
+      "s": "sáng từ mép xa vẫn tới sau ánh sáng từ mép"
+    },
+    {
+      "t": 455.58,
+      "s": "gần."
+    },
+    {
+      "t": 455.89,
+      "s": "Cú sáng bị nhoè ra, kéo dài đúng bằng bề"
+    },
+    {
+      "t": 458.56,
+      "s": "ngang của vật tính theo thời gian ánh"
+    },
+    {
+      "t": 461.04,
+      "s": "sáng."
+    },
+    {
+      "t": 461.37,
+      "s": "Một vật rộng một năm ánh sáng thì không"
+    },
+    {
+      "t": 464.06,
+      "s": "thể chớp trong một ngày."
+    },
+    {
+      "t": 465.72,
+      "s": "Nó sẽ chớp nhoè thành một năm."
+    },
+    {
+      "t": 468.36,
+      "s": "Nên khi tôi thấy một quasar đổi độ sáng"
+    },
+    {
+      "t": 470.91,
+      "s": "trong vòng vài giờ, tôi vừa đo được kích"
+    },
+    {
+      "t": 473.53,
+      "s": "thước của nó mà không cần nhìn thấy nó."
+    },
+    {
+      "t": 476.08,
+      "s": "Vùng phát sáng đó không thể rộng hơn vài"
+    },
+    {
+      "t": 479.41,
+      "s": "giờ ánh sáng."
+    },
+    {
+      "t": 480.49,
+      "s": "Vài giờ ánh sáng."
+    },
+    {
+      "t": 482.04,
+      "s": "Ánh sáng đi từ Mặt Trời ra tới Sao Hải"
+    },
+    {
+      "t": 484.74,
+      "s": "Vương mất khoảng bốn tiếng."
+    },
+    {
+      "t": 486.65,
+      "s": "Cái máy phát ra nhiều ánh sáng hơn cả một"
+    },
+    {
+      "t": 488.93,
+      "s": "thiên hà vừa lọt trong hệ Mặt Trời."
+    },
+    {
+      "t": 490.87,
+      "s": "Không phải phỏng đoán."
+    },
+    {
+      "t": 492.4,
+      "s": "Đó là hệ quả trực tiếp của việc đếm nhịp"
+    },
+    {
+      "t": 495.74,
+      "s": "nhấp nháy."
+    },
+    {
+      "t": 498.57,
+      "s": "Bây giờ đến con số làm tôi ngồi lặng khi"
+    },
+    {
+      "t": 501.18,
+      "s": "lần đầu đọc được."
+    },
+    {
+      "t": 502.29,
+      "s": "Một ngôi sao chuyển được không phẩy bảy"
+    },
+    {
+      "t": 504.53,
+      "s": "phần trăm khối lượng thành năng lượng."
+    },
+    {
+      "t": 506.71,
+      "s": "Đó là mức tốt nhất mà phản ứng hạt nhân"
+    },
+    {
+      "t": 509.73,
+      "s": "làm được."
+    },
+    {
+      "t": 510.43,
+      "s": "Một cái đĩa bồi tụ quanh hố đen chuyển"
+    },
+    {
+      "t": 513.01,
+      "s": "được từ sáu đến khoảng ba mươi phần trăm,"
+    },
+    {
+      "t": 515.79,
+      "s": "tuỳ hố đen quay nhanh cỡ nào."
+    },
+    {
+      "t": 517.76,
+      "s": "Hiệu suất gấp mười lần, có khi gấp bốn"
+    },
+    {
+      "t": 520.59,
+      "s": "mươi lần, so với thứ đang thắp sáng mọi"
+    },
+    {
+      "t": 523.5,
+      "s": "ngôi sao trên bầu trời."
+    },
+    {
+      "t": 525.21,
+      "s": "Trong toàn bộ danh mục các cách vũ trụ"
+    },
+    {
+      "t": 527.92,
+      "s": "biết biến vật chất thành ánh sáng, chỉ có"
+    },
+    {
+      "t": 530.83,
+      "s": "một cách ăn đứt nó: vật chất gặp phản vật"
+    },
+    {
+      "t": 533.75,
+      "s": "chất và cả hai cùng biến mất."
+    },
+    {
+      "t": 535.81,
+      "s": "Nghĩa là một hố đen đang ăn là cỗ máy hiệu"
+    },
+    {
+      "t": 538.66,
+      "s": "quả thứ hai trong vũ trụ."
+    },
+    {
+      "t": 540.35,
+      "s": "Và nó không kén nhiên liệu."
+    },
+    {
+      "t": 542.23,
+      "s": "Nó ăn bất cứ thứ gì rơi tới: khí hydro,"
+    },
+    {
+      "t": 546.09,
+      "s": "bụi, hành tinh lạc, những ngôi sao đi quá"
+    },
+    {
+      "t": 550.14,
+      "s": "gần."
+    },
+    {
+      "t": 550.54,
+      "s": "Thứ mà một ngôi sao phải chắt chiu cả đời"
+    },
+    {
+      "t": 553.45,
+      "s": "để rút ra được bảy phần nghìn, một hố đen"
+    },
+    {
+      "t": 556.37,
+      "s": "rút gọn trong một vòng xoáy."
+    },
+    {
+      "t": 559.86,
+      "s": "Và không phải tất cả vật chất đều rơi"
+    },
+    {
+      "t": 562.42,
+      "s": "xuống được."
+    },
+    {
+      "t": 563.18,
+      "s": "Cái đĩa quay quá nhanh, từ trường xoắn"
+    },
+    {
+      "t": 565.86,
+      "s": "quanh nó quá chặt, nên một phần khí bị vắt"
+    },
+    {
+      "t": 568.81,
+      "s": "ngược ra khỏi mặt phẳng đĩa và bắn đi theo"
+    },
+    {
+      "t": 571.77,
+      "s": "hai hướng duy nhất còn trống: thẳng lên và"
+    },
+    {
+      "t": 574.73,
+      "s": "thẳng xuống, dọc theo hai cực."
+    },
+    {
+      "t": 576.84,
+      "s": "Kết quả là hai tia."
+    },
+    {
+      "t": 578.62,
+      "s": "Hai vòi vật chất phun ra ở tốc độ sát tốc"
+    },
+    {
+      "t": 581.68,
+      "s": "độ ánh sáng."
+    },
+    {
+      "t": 582.58,
+      "s": "Tia của ba xê hai bảy ba, cái chấm mà"
+    },
+    {
+      "t": 586.19,
+      "s": "Sờ-mít đọc quang phổ năm 1963, dài khoảng"
+    },
+    {
+      "t": 590.18,
+      "s": "hai trăm nghìn năm ánh sáng."
+    },
+    {
+      "t": 592.91,
+      "s": "Tôi để con số đó đứng một mình một chút."
+    },
+    {
+      "t": 595.5,
+      "s": "Hai trăm nghìn năm ánh sáng."
+    },
+    {
+      "t": 597.43,
+      "s": "Dài hơn đường kính dải Ngân Hà."
+    },
+    {
+      "t": 600.03,
+      "s": "Một vật thể nhỏ hơn hệ Mặt Trời đang nhổ"
+    },
+    {
+      "t": 602.76,
+      "s": "ra một cái vòi dài hơn cả thiên hà của"
+    },
+    {
+      "t": 605.36,
+      "s": "tôi."
+    },
+    {
+      "t": 605.63,
+      "s": "Tới đây tôi tưởng mình đã hiểu quasar là"
+    },
+    {
+      "t": 608.13,
+      "s": "gì."
+    },
+    {
+      "t": 608.32,
+      "s": "Rồi tôi nhìn vào chỗ chúng nằm, và mọi thứ"
+    },
+    {
+      "t": 611.55,
+      "s": "đổi nghĩa."
+    },
+    {
+      "t": 612.32,
+      "s": "Khi các nhà thiên văn vẽ bản đồ quasar, họ"
+    },
+    {
+      "t": 614.97,
+      "s": "không tìm thấy chúng rải đều khắp vũ trụ."
+    },
+    {
+      "t": 617.55,
+      "s": "Chúng dồn về một phía."
+    },
+    {
+      "t": 619.4,
+      "s": "Phía xa."
+    },
+    {
+      "t": 620.91,
+      "s": "Càng nhìn gần, quasar càng hiếm."
+    },
+    {
+      "t": 623.56,
+      "s": "Càng nhìn xa, chúng càng dày đặc."
+    },
+    {
+      "t": 626.45,
+      "s": "Rồi tới một khoảng cách nhất định, chúng"
+    },
+    {
+      "t": 629.17,
+      "s": "đông nhất."
+    },
+    {
+      "t": 629.85,
+      "s": "Rồi xa hơn nữa, chúng lại thưa dần."
+    },
+    {
+      "t": 632.98,
+      "s": "Cái bản đồ đó không phải bản đồ không"
+    },
+    {
+      "t": 635.42,
+      "s": "gian."
+    },
+    {
+      "t": 635.75,
+      "s": "Nó là bản đồ thời gian."
+    },
+    {
+      "t": 639.36,
+      "s": "Ánh sáng đi với tốc độ hữu hạn."
+    },
+    {
+      "t": 642.04,
+      "s": "Thứ tôi nhìn thấy ở khoảng cách mười tỉ"
+    },
+    {
+      "t": 644.49,
+      "s": "năm ánh sáng không phải hiện trạng của nó."
+    },
+    {
+      "t": 647.13,
+      "s": "Đó là trạng thái nó có cách đây mười tỉ"
+    },
+    {
+      "t": 649.79,
+      "s": "năm, vì ánh sáng đó mất đúng chừng ấy thời"
+    },
+    {
+      "t": 652.66,
+      "s": "gian mới tới được mắt tôi."
+    },
+    {
+      "t": 654.43,
+      "s": "Nên khi tôi thấy quasar dày đặc ở rất xa"
+    },
+    {
+      "t": 657.03,
+      "s": "và gần như biến mất ở gần, tôi không đang"
+    },
+    {
+      "t": 659.69,
+      "s": "thấy chúng phân bố lệch trong không gian."
+    },
+    {
+      "t": 662.35,
+      "s": "Tôi đang thấy một cái gì đó đã từng phổ"
+    },
+    {
+      "t": 665.54,
+      "s": "biến, rồi ngừng xảy ra."
+    },
+    {
+      "t": 667.42,
+      "s": "Quasar không phải một loại vật thể."
+    },
+    {
+      "t": 669.72,
+      "s": "Nó là một giai đoạn."
+    },
+    {
+      "t": 671.14,
+      "s": "Và giai đoạn ấy gần như đã kết thúc."
+    },
+    {
+      "t": 676.4,
+      "s": "Đỉnh điểm rơi vào khoảng mười tỉ năm"
+    },
+    {
+      "t": 679.07,
+      "s": "trước, khi vũ trụ mới chỉ được vài tỉ"
+    },
+    {
+      "t": 681.81,
+      "s": "tuổi."
+    },
+    {
+      "t": 682.18,
+      "s": "Lý do rất thô sơ, và tôi thích nó chính vì"
+    },
+    {
+      "t": 685.84,
+      "s": "nó thô sơ: hồi đó còn nhiều đồ ăn."
+    },
+    {
+      "t": 688.8,
+      "s": "Các thiên hà thời trẻ ngập trong khí."
+    },
+    {
+      "t": 691.09,
+      "s": "Chúng chưa kịp đúc khí thành sao."
+    },
+    {
+      "t": 693.18,
+      "s": "Chúng còn đang va vào nhau liên tục, và"
+    },
+    {
+      "t": 695.99,
+      "s": "mỗi cú va làm khí mất thăng bằng, đổ ập về"
+    },
+    {
+      "t": 699.02,
+      "s": "phía trung tâm."
+    },
+    {
+      "t": 700.1,
+      "s": "Ở trung tâm có một hố đen."
+    },
+    {
+      "t": 702.16,
+      "s": "Và một hố đen được rót khí vào sẽ làm đúng"
+    },
+    {
+      "t": 705.06,
+      "s": "cái nó phải làm."
+    },
+    {
+      "t": 706.17,
+      "s": "Nó bật sáng."
+    },
+    {
+      "t": 707.73,
+      "s": "Cả vũ trụ hồi ấy lốm đốm những ngọn đèn"
+    },
+    {
+      "t": 710.61,
+      "s": "như thế."
+    },
+    {
+      "t": 711.2,
+      "s": "Không phải một vài."
+    },
+    {
+      "t": 712.74,
+      "s": "Hàng triệu."
+    },
+    {
+      "t": 715.1,
+      "s": "Rồi khí hết."
+    },
+    {
+      "t": 716.49,
+      "s": "Một phần bị nuốt."
+    },
+    {
+      "t": 717.65,
+      "s": "Một phần đông lại thành sao."
+    },
+    {
+      "t": 719.48,
+      "s": "Một phần bị chính cái đĩa bồi tụ thổi văng"
+    },
+    {
+      "t": 722.43,
+      "s": "ra khỏi thiên hà, vì bức xạ mạnh tới mức"
+    },
+    {
+      "t": 725.25,
+      "s": "nó đẩy bay chính nguồn thức ăn của mình."
+    },
+    {
+      "t": 728.06,
+      "s": "Và khi dòng khí rót vào ngừng lại, cái đĩa"
+    },
+    {
+      "t": 730.82,
+      "s": "cạn dần."
+    },
+    {
+      "t": 731.35,
+      "s": "Ma sát không còn gì để nung."
+    },
+    {
+      "t": 733.53,
+      "s": "Ánh sáng tắt."
+    },
+    {
+      "t": 735.17,
+      "s": "Hố đen vẫn ở đó."
+    },
+    {
+      "t": 736.63,
+      "s": "Nó không mất đi cái gì cả."
+    },
+    {
+      "t": 738.74,
+      "s": "Nó chỉ thôi ăn."
+    },
+    {
+      "t": 742.57,
+      "s": "Và đây là chỗ tôi phải ngồi xuống một lúc"
+    },
+    {
+      "t": 745.36,
+      "s": "mới tiêu hoá nổi."
+    },
+    {
+      "t": 746.51,
+      "s": "Cái chấm sáng tôi nhìn thấy tối nay."
+    },
+    {
+      "t": 748.7,
+      "s": "Ánh sáng của nó rời khỏi đĩa bồi tụ từ"
+    },
+    {
+      "t": 751.5,
+      "s": "mười tỉ năm trước."
+    },
+    {
+      "t": 752.83,
+      "s": "Mười tỉ năm trước, Mặt Trời chưa có."
+    },
+    {
+      "t": 755.95,
+      "s": "Trái Đất chưa có."
+    },
+    {
+      "t": 757.66,
+      "s": "Đám mây khí sau này cô đặc lại thành hệ"
+    },
+    {
+      "t": 760.17,
+      "s": "Mặt Trời còn chưa hình thành, còn đang là"
+    },
+    {
+      "t": 762.81,
+      "s": "bụi trôi ở một góc khác của thiên hà."
+    },
+    {
+      "t": 765.19,
+      "s": "Chùm ánh sáng ấy đã lên đường."
+    },
+    {
+      "t": 767.46,
+      "s": "Nó băng qua khoảng trống."
+    },
+    {
+      "t": 769.35,
+      "s": "Nó đi ngang những thiên hà chưa từng có"
+    },
+    {
+      "t": 771.97,
+      "s": "aai nhìn thấy."
+    },
+    {
+      "t": 772.91,
+      "s": "Suốt thời gian đó nó không dừng, không"
+    },
+    {
+      "t": 775.42,
+      "s": "nghỉ, không mất năng lượng vào đâu ngoài"
+    },
+    {
+      "t": 778.07,
+      "s": "chính sự giãn ra của không gian."
+    },
+    {
+      "t": 780.19,
+      "s": "Nó vẫn đang đi trong lúc Mặt Trời châm"
+    },
+    {
+      "t": 782.63,
+      "s": "lửa."
+    },
+    {
+      "t": 782.89,
+      "s": "Nó vẫn đang đi trong lúc Trái Đất nguội"
+    },
+    {
+      "t": 785.37,
+      "s": "lại thành đá."
+    },
+    {
+      "t": 786.19,
+      "s": "Trong lúc đại dương đầy lên."
+    },
+    {
+      "t": 787.95,
+      "s": "Trong lúc thứ gì đó trong nước bắt đầu tự"
+    },
+    {
+      "t": 790.82,
+      "s": "sao chép."
+    },
+    {
+      "t": 791.45,
+      "s": "Nó vẫn đang đi trong lúc loài người học"
+    },
+    {
+      "t": 794.17,
+      "s": "dùng lửa, học viết, dựng thành phố, chế ra"
+    },
+    {
+      "t": 797.1,
+      "s": "kính thiên văn."
+    },
+    {
+      "t": 798.15,
+      "s": "Và rồi nó tới, đúng vào tối nay, và dừng"
+    },
+    {
+      "t": 801.27,
+      "s": "lại ở một tấm cảm biến."
+    },
+    {
+      "t": 804.57,
+      "s": "Trong suốt mười tỉ năm ấy, cái quasar đã"
+    },
+    {
+      "t": 807.59,
+      "s": "tắt."
+    },
+    {
+      "t": 807.89,
+      "s": "Gần như chắc chắn."
+    },
+    {
+      "t": 809.35,
+      "s": "Vì cơn đói kiểu đó chỉ kéo dài được vài"
+    },
+    {
+      "t": 812.14,
+      "s": "chục triệu năm, có khi vài trăm triệu,"
+    },
+    {
+      "t": 814.86,
+      "s": "cùng lắm là thế."
+    },
+    {
+      "t": 816,
+      "s": "Mười tỉ năm dài gấp hàng chục tới hàng"
+    },
+    {
+      "t": 818.62,
+      "s": "trăm lần một đời quasar."
+    },
+    {
+      "t": 820.27,
+      "s": "Thiên hà quanh nó bây giờ chắc đã già."
+    },
+    {
+      "t": 822.94,
+      "s": "Khí đã thành sao, những ngôi sao nặng đã"
+    },
+    {
+      "t": 825.45,
+      "s": "đốt hết nhiên liệu, ánh sáng còn lại ngả"
+    },
+    {
+      "t": 827.95,
+      "s": "về màu đỏ của tuổi."
+    },
+    {
+      "t": 829.14,
+      "s": "Ở giữa nó là một hố đen yim lìm, tối,"
+    },
+    {
+      "t": 832.56,
+      "s": "không phát ra gì."
+    },
+    {
+      "t": 834.13,
+      "s": "Nơi đó bây giờ là một chỗ yên tĩnh."
+    },
+    {
+      "t": 836.58,
+      "s": "Và tôi không có cách nào nhìn thấy chỗ yên"
+    },
+    {
+      "t": 839.27,
+      "s": "tĩnh ấy."
+    },
+    {
+      "t": 839.78,
+      "s": "Ánh sáng của nó phải mất thêm mười tỉ năm"
+    },
+    {
+      "t": 842.41,
+      "s": "nữa mới tới đây."
+    },
+    {
+      "t": 843.44,
+      "s": "Thứ tôi đang nhìn không phải một vật thể."
+    },
+    {
+      "t": 845.76,
+      "s": "Đó là một tấm ảnh chụp một vật thể không"
+    },
+    {
+      "t": 848.4,
+      "s": "còn tồn tại, và tấm ảnh ấy vẫn đang được"
+    },
+    {
+      "t": 851.03,
+      "s": "rửa, từng giây một, ngay trong mắt tôi."
+    },
+    {
+      "t": 853.6,
+      "s": "Cái bầu trời đầy quasar mà tôi tưởng mình"
+    },
+    {
+      "t": 856.12,
+      "s": "đang quan sát thật ra là một phòng chiếu."
+    },
+    {
+      "t": 858.64,
+      "s": "Mỗi chấm là một cuộn phim cũ, quay xong từ"
+    },
+    {
+      "t": 861.62,
+      "s": "lâu, đang chạy tới những khung hình cuối."
+    },
+    {
+      "t": 864.52,
+      "s": "Và không aai tắt được máy chiếu."
+    },
+    {
+      "t": 866.64,
+      "s": "Ánh sáng đã phát ra rồi thì nó cứ đi, dù"
+    },
+    {
+      "t": 869.71,
+      "s": "cái phát ra nó đã tắt từ trước khi có Trái"
+    },
+    {
+      "t": 872.92,
+      "s": "Đất."
+    },
+    {
+      "t": 874.73,
+      "s": "Có một điều tôi muốn nói rõ, vì nó dễ bị"
+    },
+    {
+      "t": 877.65,
+      "s": "hiểu thành chuyện buồn, mà tôi không thấy"
+    },
+    {
+      "t": 880.65,
+      "s": "nó buồn."
+    },
+    {
+      "t": 881.23,
+      "s": "Cái quasar ấy không biến mất."
+    },
+    {
+      "t": 883.35,
+      "s": "Không có gì trong nó bị xoá đi."
+    },
+    {
+      "t": 885.47,
+      "s": "Khí nó chưa kịp nuốt vẫn còn trong thiên"
+    },
+    {
+      "t": 888.19,
+      "s": "hà đó, có lẽ đã thành sao."
+    },
+    {
+      "t": 889.95,
+      "s": "Năng lượng nó phun ra vẫn đang đi, đúng"
+    },
+    {
+      "t": 892.64,
+      "s": "cái chùm tôi vừa nhận."
+    },
+    {
+      "t": 894.16,
+      "s": "Thứ kết thúc chỉ là cái điều kiện."
+    },
+    {
+      "t": 896.52,
+      "s": "Một hố đen, một dòng khí đủ mạnh rót vào,"
+    },
+    {
+      "t": 899.46,
+      "s": "và một thời kỳ mà các thiên hà còn đủ đầy"
+    },
+    {
+      "t": 902.41,
+      "s": "để rót."
+    },
+    {
+      "t": 902.91,
+      "s": "Điều kiện đó đã qua."
+    },
+    {
+      "t": 904.42,
+      "s": "Phần lớn khí tự do trong vũ trụ giờ đã bị"
+    },
+    {
+      "t": 907.41,
+      "s": "khoá lại trong các ngôi sao, hoặc trôi quá"
+    },
+    {
+      "t": 910.47,
+      "s": "loãng, quá xa, để rơi về đâu đó."
+    },
+    {
+      "t": 912.8,
+      "s": "Nên khi tôi nói quasar là chuyện của vũ"
+    },
+    {
+      "t": 915.14,
+      "s": "trụ trẻ, tôi không nói về tuổi của những"
+    },
+    {
+      "t": 917.53,
+      "s": "cái máy."
+    },
+    {
+      "t": 918.01,
+      "s": "Tôi nói về tuổi của bữa tiệc."
+    },
+    {
+      "t": 920.44,
+      "s": "Bữa tiệc đã tàn từ lâu."
+    },
+    {
+      "t": 922.17,
+      "s": "Ánh đèn thì vẫn đang trên đường tới."
+    },
+    {
+      "t": 925.15,
+      "s": "Tôi rời mắt khỏi cái chấm ấy và nhìn về"
+    },
+    {
+      "t": 927.68,
+      "s": "một hướng khác trên bầu trời."
+    },
+    {
+      "t": 929.56,
+      "s": "Hướng chòm Nhân Mã."
+    },
+    {
+      "t": 931.49,
+      "s": "Ở đó, cách tôi hai mươi sáu nghìn năm ánh"
+    },
+    {
+      "t": 934.52,
+      "s": "sáng, sau nhiều lớp bụi dày tới mức mắt"
+    },
+    {
+      "t": 937.41,
+      "s": "thường không xuyên qua nổi, là trung tâm"
+    },
+    {
+      "t": 940.36,
+      "s": "dải Ngân Hà."
+    },
+    {
+      "t": 941.25,
+      "s": "Và ở chính giữa trung tâm đó có một hố đen"
+    },
+    {
+      "t": 943.95,
+      "s": "nặng bằng bốn triệu Mặt Trời."
+    },
+    {
+      "t": 947.31,
+      "s": "Nó rất yên."
+    },
+    {
+      "t": 948.34,
+      "s": "Đó là điều đầu tiên các nhà thiên văn nói"
+    },
+    {
+      "t": 951.35,
+      "s": "về nó."
+    },
+    {
+      "t": 951.79,
+      "s": "So với những gì một hố đen cỡ ấy có thể"
+    },
+    {
+      "t": 954.67,
+      "s": "làm, nó gần như không làm gì cả."
+    },
+    {
+      "t": 957.03,
+      "s": "Nó nhặt nhạnh chút khí loãng trôi ngang"
+    },
+    {
+      "t": 959.52,
+      "s": "qua."
+    },
+    {
+      "t": 959.78,
+      "s": "Lâu lâu có một đám nhỏ sa vào và nó loé"
+    },
+    {
+      "t": 963.43,
+      "s": "lên một chút, rồi lại yim."
+    },
+    {
+      "t": 965.87,
+      "s": "Ánh sáng nó phát ra chưa bằng một phần rất"
+    },
+    {
+      "t": 968.54,
+      "s": "nhỏ của những gì một quasar phát ra trong"
+    },
+    {
+      "t": 971.15,
+      "s": "một giây."
+    },
+    {
+      "t": 971.72,
+      "s": "Nhưng nó không hỏng."
+    },
+    {
+      "t": 972.95,
+      "s": "Không có gì trong nó bị gãy."
+    },
+    {
+      "t": 975.28,
+      "s": "Cái giếng hấp dẫn vẫn sâu y như cũ."
+    },
+    {
+      "t": 977.82,
+      "s": "Cơ chế vẫn nguyên vẹn."
+    },
+    {
+      "t": 980.28,
+      "s": "Đổ khí vào, đĩa sẽ hình thành, ma sát sẽ"
+    },
+    {
+      "t": 983.03,
+      "s": "nung nó lên hàng triệu độ, và trung tâm"
+    },
+    {
+      "t": 985.72,
+      "s": "dải Ngân Hà sẽ sáng lên."
+    },
+    {
+      "t": 987.37,
+      "s": "Nó không tắt vì hỏng."
+    },
+    {
+      "t": 988.85,
+      "s": "Nó yim vì đói."
+    },
+    {
+      "t": 992.87,
+      "s": "Có nhiều lý do để nghĩ rằng nó đã từng"
+    },
+    {
+      "t": 995.29,
+      "s": "không yim."
+    },
+    {
+      "t": 995.93,
+      "s": "Hai bong bóng khí nóng khổng lồ trải ra"
+    },
+    {
+      "t": 998.91,
+      "s": "phía trên và phía dưới mặt phẳng thiên hà,"
+    },
+    {
+      "t": 1002.11,
+      "s": "mỗi cái cao hàng chục nghìn năm ánh sáng,"
+    },
+    {
+      "t": 1005.24,
+      "s": "vẫn còn ở đó, như tàn dư của một cơn gì đó"
+    },
+    {
+      "t": 1008.44,
+      "s": "rất lớn đã thổi qua."
+    },
+    {
+      "t": 1009.97,
+      "s": "Chúng đối xứng qua tâm thiên hà."
+    },
+    {
+      "t": 1012.11,
+      "s": "Chúng phồng ra đúng theo hai hướng mà một"
+    },
+    {
+      "t": 1014.88,
+      "s": "cái đĩa bồi tụ sẽ thổi ra nếu nó từng hoạt"
+    },
+    {
+      "t": 1017.71,
+      "s": "động."
+    },
+    {
+      "t": 1018.05,
+      "s": "Và chúng vẫn còn nóng, nghĩa là cái thổi"
+    },
+    {
+      "t": 1020.9,
+      "s": "ra chúng không quá cũ theo thang thiên"
+    },
+    {
+      "t": 1023.61,
+      "s": "văn."
+    },
+    {
+      "t": 1023.9,
+      "s": "Có một dấu vết nữa, rộng hơn, và tôi thấy"
+    },
+    {
+      "t": 1026.95,
+      "s": "nó thuyết phục hơn cả."
+    },
+    {
+      "t": 1028.59,
+      "s": "Khi các nhà thiên văn cân hố đen ở tâm"
+    },
+    {
+      "t": 1031.18,
+      "s": "nhiều thiên hà khác nhau, họ phát hiện"
+    },
+    {
+      "t": 1033.77,
+      "s": "khối lượng hố đen luôn giữ một tỉ lệ khá"
+    },
+    {
+      "t": 1036.49,
+      "s": "đều với khối lượng phần lõi thiên hà bao"
+    },
+    {
+      "t": 1039.22,
+      "s": "quanh nó."
+    },
+    {
+      "t": 1039.83,
+      "s": "Thiên hà lớn thì hố đen lớn."
+    },
+    {
+      "t": 1042.35,
+      "s": "Thiên hà nhỏ thì hố đen nhỏ."
+    },
+    {
+      "t": 1045.01,
+      "s": "Điều đó không tự nhiên xảy ra."
+    },
+    {
+      "t": 1047,
+      "s": "Một hố đen chiếm một phần rất nhỏ khối"
+    },
+    {
+      "t": 1049.41,
+      "s": "lượng thiên hà, và lực hấp dẫn của nó"
+    },
+    {
+      "t": 1051.75,
+      "s": "không với tới được những vùng ngoài xa."
+    },
+    {
+      "t": 1054.22,
+      "s": "Nó không có lý do gì để biết thiên hà"
+    },
+    {
+      "t": 1057.22,
+      "s": "quanh nó to cỡ nào."
+    },
+    {
+      "t": 1058.76,
+      "s": "Trừ khi cả hai đã lớn lên cùng nhau, và"
+    },
+    {
+      "t": 1061.47,
+      "s": "cùng dừng lại vì cùng một lý do."
+    },
+    {
+      "t": 1063.7,
+      "s": "Khí nuôi sao cũng chính là khí nuôi hố"
+    },
+    {
+      "t": 1066.26,
+      "s": "đen."
+    },
+    {
+      "t": 1066.53,
+      "s": "Khi hố đen ăn đủ mạnh, bức xạ của nó thổi"
+    },
+    {
+      "t": 1069.66,
+      "s": "khí bay đi, và cả hai cùng đứt bữa."
+    },
+    {
+      "t": 1072.33,
+      "s": "Cái tỉ lệ ấy có mặt ở gần như mọi thiên hà"
+    },
+    {
+      "t": 1075,
+      "s": "lớn được đo."
+    },
+    {
+      "t": 1075.76,
+      "s": "Kể cả thiên hà của tôi."
+    },
+    {
+      "t": 1077.91,
+      "s": "Chúng ta không biết chắc hố đen của chúng"
+    },
+    {
+      "t": 1080.17,
+      "s": "ta có từng sáng bằng những ngọn hải đăng ở"
+    },
+    {
+      "t": 1082.49,
+      "s": "rìa thời gian kia hay không."
+    },
+    {
+      "t": 1084.03,
+      "s": "Nó có thể chỉ từng là một ngọn đèn hạng"
+    },
+    {
+      "t": 1086.73,
+      "s": "xoàng."
+    },
+    {
+      "t": 1087.14,
+      "s": "Nhưng cơ chế thì chỉ có một."
+    },
+    {
+      "t": 1089.82,
+      "s": "Và bốn triệu Mặt Trời khối lượng ấy không"
+    },
+    {
+      "t": 1093.28,
+      "s": "tự có."
+    },
+    {
+      "t": 1093.79,
+      "s": "Chúng đã được ăn vào, từng đợt một."
+    },
+    {
+      "t": 1098.37,
+      "s": "Nếu ở đâu đó rất xa, cách đây mười tỉ năm"
+    },
+    {
+      "t": 1101.26,
+      "s": "ánh sáng, có aai đó đang nhìn về phía này"
+    },
+    {
+      "t": 1104.15,
+      "s": "tối nay, họ sẽ không thấy tôi."
+    },
+    {
+      "t": 1106.26,
+      "s": "Họ sẽ không thấy Trái Đất, không thấy Mặt"
+    },
+    {
+      "t": 1109.36,
+      "s": "Trời, không thấy dải Ngân Hà như tôi biết"
+    },
+    {
+      "t": 1112.46,
+      "s": "nó."
+    },
+    {
+      "t": 1112.69,
+      "s": "Ánh sáng tới được chỗ họ là ánh sáng của"
+    },
+    {
+      "t": 1115.15,
+      "s": "mười tỉ năm trước."
+    },
+    {
+      "t": 1116.26,
+      "s": "Của một thiên hà còn đang lớn, còn đầy"
+    },
+    {
+      "t": 1118.79,
+      "s": "khí, còn đang va vào những thiên hà khác."
+    },
+    {
+      "t": 1121.51,
+      "s": "Và có thể, ở chỗ này, trên tấm kính của"
+    },
+    {
+      "t": 1124.92,
+      "s": "họ, dải Ngân Hà là một chấm."
+    },
+    {
+      "t": 1127.36,
+      "s": "Một chấm nhỏ, mờ, lẫn giữa vài nghìn chấm"
+    },
+    {
+      "t": 1130.69,
+      "s": "khác."
+    },
+    {
+      "t": 1131.1,
+      "s": "Sáng hơn cả một thiên hà."
+    },
+    {
+      "t": 1133.01,
+      "s": "Và họ sẽ không có cách nào biết rằng nó đã"
+    },
+    {
+      "t": 1136.31,
+      "s": "tắt."
+    },
+    {
+      "t": 1138.62,
+      "s": "Tôi nghĩ về điều đó khá lâu."
+    },
+    {
+      "t": 1140.35,
+      "s": "Về việc một ngọn hải đăng và cái xác của"
+    },
+    {
+      "t": 1143.05,
+      "s": "ngọn hải đăng trông giống hệt nhau, nếu"
+    },
+    {
+      "t": 1145.69,
+      "s": "đứng đủ xa."
+    },
+    {
+      "t": 1146.43,
+      "s": "Về việc cái vũ trụ tôi ngước lên nhìn"
+    },
+    {
+      "t": 1149.01,
+      "s": "không phải cái vũ trụ đang có."
+    },
+    {
+      "t": 1151.1,
+      "s": "Nó là cái vũ trụ đã có, xếp chồng lên nhau"
+    },
+    {
+      "t": 1154.17,
+      "s": "theo từng lớp khoảng cách, lớp càng xa thì"
+    },
+    {
+      "t": 1157.24,
+      "s": "càng cũ."
+    },
+    {
+      "t": 1157.82,
+      "s": "Và về việc, ở tâm thiên hà của chính tôi,"
+    },
+    {
+      "t": 1160.7,
+      "s": "một cỗ máy nặng bốn triệu Mặt Trời đang"
+    },
+    {
+      "t": 1163.44,
+      "s": "nằm đó, nguyên vẹn, lạnh, quay chậm trong"
+    },
+    {
+      "t": 1166.33,
+      "s": "bóng tối."
+    },
+    {
+      "t": 1166.96,
+      "s": "Không chết."
+    },
+    {
+      "t": 1167.88,
+      "s": "Không hỏng."
+    },
+    {
+      "t": 1168.91,
+      "s": "Chỉ là hết đồ ăn, và đang đợi."
+    }
+  ]
+}

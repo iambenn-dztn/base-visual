@@ -1,0 +1,1583 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, height=1080">
+<title>Mũi tên thời gian — vì sao thời gian chỉ trôi một chiều — HyperFrames</title>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{width:1920px;height:1080px;overflow:hidden;background:#08080c;font-family:"Segoe UI",-apple-system,Roboto,sans-serif;}
+  #root{position:relative;width:1920px;height:1080px;}
+  #c{position:absolute;inset:0;display:block;z-index:0;}
+  #vig{position:absolute;inset:0;pointer-events:none;z-index:6;background:radial-gradient(ellipse at center,rgba(0,0,0,0) 46%,rgba(8,8,12,.74) 100%);}
+  #chap{position:absolute;left:50%;top:6.4%;transform:translateX(-50%);z-index:18;color:#BFD9FF;font-size:26px;font-weight:600;letter-spacing:6px;text-transform:uppercase;opacity:0;text-shadow:0 2px 18px rgba(0,0,0,.95);white-space:nowrap;}
+  #sub{position:absolute;left:50%;bottom:8.5%;transform:translateX(-50%);z-index:20;width:min(1400px,86%);text-align:center;color:#F2F4F8;font-size:40px;font-weight:600;line-height:1.4;text-shadow:0 2px 18px rgba(0,0,0,.96),0 0 3px rgba(0,0,0,.96);}
+  #err{position:absolute;left:12px;top:12px;z-index:99;color:#ff9090;background:rgba(0,0,0,.8);padding:8px 10px;font:12px/1.5 monospace;max-width:90%;white-space:pre-wrap;border-radius:8px;display:none;}
+</style>
+</head>
+<body>
+<div data-hf-id="hf-root" id="root" data-composition-id="mui-ten-thoi-gian" data-start="0" data-duration="818.33" data-width="1920" data-height="1080">
+  <canvas data-hf-id="hf-c" id="c" class="clip" data-start="0.01" data-duration="818.33" data-track-index="0"></canvas>
+  <audio data-hf-id="hf-narr" id="narr" class="clip" data-start="0" data-duration="818.33" data-track-index="1" src="projects/mui-ten-thoi-gian/voice/narration_mixed.mp3"></audio>
+  <div data-hf-id="hf-vig" id="vig"></div>
+  <div data-hf-id="hf-chap" id="chap" data-layout-allow-occlusion></div>
+  <div data-hf-id="hf-sub" id="sub" data-layout-allow-occlusion></div>
+  <div data-hf-id="hf-err" id="err"></div>
+</div>
+
+<script>
+window.addEventListener('error',function(e){var d=document.getElementById('err');if(!d)return;d.style.display='block';
+  d.textContent='LỖI: '+(e.message||e.type)+(e.filename?('\n@ '+e.filename.split('/').pop()+':'+e.lineno):'');});
+
+/* ============================================================
+   "MŨI TÊN THỜI GIAN — vì sao thời gian chỉ trôi một chiều" — mui-ten-thoi-gian
+   Composition TẤT ĐỊNH theo t. Tập KHÁI NIỆM: procedural / particle / graph.
+   Timeline khớp timing.json THẬT (t hình = t tiếng, KHÔNG remap).
+   Palette: graphite đen nền · MŨI TÊN THỜI GIAN trắng-lam #BFD9FF (motif) ·
+            entropy THẤP/trật tự lơ #5FC8E8 · entropy CAO/hỗn loạn cam #FF6A3D ·
+            Big Bang/sao vàng-cam #FFC04A · hố đen tím #7B4BFF · ký ức/sự sống hồng ấm #FFB6A0 ·
+            cái chết nhiệt xám-lam #8FA0B5.
+
+   SCENE (bật/tắt theo t, cắt dứt khoát) — biên = cue.start (timing.json):
+    A clock    (C01  0      – 7.47  ) Đồng hồ · kim giây một chiều · motif mũi tên mờ
+    B memory   (C02  7.47   – 26.99 ) Trục ký ức: quá khứ rõ (trái) · tương lai mù (phải)
+    C cup      (C03  26.99  – 46    ) Cốc rơi vỡ tan · gợi ý tua ngược rồi khựng
+    D diffuse  (C04  46      – 65.46 ) Khói + giọt mực loang MỘT CHIỀU
+    E arrow    (C05  65.46   – 78.6  ) Đặt tên MŨI TÊN THỜI GIAN · cây cung chớm
+    F laws     (C06  78.6    – 92.44 ) Định luật đối xứng · hai mũi tên xuôi/ngược cân bằng
+    G billiard (C07  92.44   – 130.05) Va chạm bi-a · split xuôi/ngược đều hợp lệ
+    H entropy  (C09  130.05  – 160.25) Nhãn ENTROPY · lưới đếm cách sắp xếp
+    I desk     (C11  160.25  – 211.8 ) Bàn gọn↔bừa · bộ đếm · Boltzmann S=k·logW
+    K gas      (C14  211.8   – 244.8 ) Khí trong phòng: dồn góc (hiếm) vs trải đều (phổ biến)
+    L cup2     (C16  244.8   – 285.41) Cốc vỡ rung tua ngược · trượt trật tự→hỗn loạn
+    M law2     (C18  285.41  – 325.22) THANH ENTROPY chỉ tăng · một hạt vs đám đông
+    N missing  (C20  325.22  – 358.07) Mũi tên khuyết mảnh · parabol entropy đối xứng
+    O rewind   (C22  358.07  – 407.18) Trôi ngược thời gian · entropy tụt về đáy Big Bang
+    P bigbang  (C25  407.18  – 442.83) Biển lửa Big Bang · trọng lực lật luật chơi
+    Q smooth   (C27  442.83  – 489.56) Vũ trụ trơn mịn · cây cung kéo căng hết cỡ
+    R clump    (C29  489.56  – 530.61) Vón cục sao/thiên hà · nhiệt tỏa · entropy tổng tăng
+    S blackhole(C31  530.61  – 579.6 ) Hố đen entropy cực đại · đường entropy vũ trụ
+    T pasthyp  (C33  579.6   – 642.96) Đồng hồ trở lại · Giả thuyết quá khứ · điểm gốc
+    U heatdeath(C37  642.96  – 684.44) Sao tắt · hố đen bốc hơi · cái chết nhiệt
+    V life     (C39  684.44  – 718.12) Con dốc entropy · cơ thể lấy trật tự trả hỗn loạn
+    W neuron   (C41  718.12  – 769.31) Nơ-ron sắp lại lưu ký ức · hai mũi tên chập một
+    X close    (C44  769.31  – 818.33) Ký ức nối về gốc Big Bang · đồng hồ đóng · fade đen
+   ============================================================ */
+
+const TOTAL=818.33;
+
+const CUES=[
+ {t:0,ch:"CHƯƠNG 1",s:"Tôi muốn bắt đầu bằng một câu hỏi nghe có"},
+ {t:2.28,s:"vẻ ngây thơ đến mức gần như ngớ ngẩn."},
+ {t:4.34,s:"Vì sao thời gian chỉ trôi một chiều?"},
+ {t:7.47,s:"Bạn thử nghĩ mà xem."},
+ {t:9.1,s:"Tôi nhớ được buổi sáng hôm nay, nhớ được"},
+ {t:12.02,s:"ngày hôm qua, nhớ cả những mùa hè đã xa."},
+ {t:14.94,s:"Nhưng tôi không tài nào nhớ nổi ngày mai."},
+ {t:18.32,s:"Quá khứ thì rõ ràng, còn tương lai thì mịt"},
+ {t:22.23,s:"mù."},
+ {t:22.51,s:"Chuyện đó với chúng ta hiển nhiên đến mức"},
+ {t:25.34,s:"chẳng ai buồn thắc mắc."},
+ {t:26.99,s:"Tôi làm rơi một chiếc cốc."},
+ {t:28.61,s:"Nó chạm sàn và vỡ tan thành nghìn mảnh."},
+ {t:31.75,s:"Chuyện đó xảy ra mỗi ngày."},
+ {t:33.85,s:"Nhưng bạn có bao giờ thấy điều ngược lại"},
+ {t:36.53,s:"chưa?"},
+ {t:36.87,s:"Những mảnh vỡ tự nhảy lên khỏi sàn, ghép"},
+ {t:39.78,s:"lại với nhau, thành một chiếc cốc nguyên"},
+ {t:42.68,s:"vẹn trở về trong tay tôi?"},
+ {t:46,s:"Không bao giờ."},
+ {t:47.35,s:"Khói bay ra khỏi điếu thuốc rồi loang vào"},
+ {t:49.98,s:"không khí, không bao giờ tự chui ngược trở"},
+ {t:52.67,s:"lại."},
+ {t:52.93,s:"Một giọt mực rơi vào ly nước sẽ loang ra"},
+ {t:56,s:"khắp ly, chứ không bao giờ tự gom lại"},
+ {t:58.83,s:"thành một giọt."},
+ {t:59.98,s:"Thế giới có một chiều mà nó luôn đi, và"},
+ {t:62.72,s:"một chiều mà nó không bao giờ quay lại."},
+ {t:65.46,s:"Chúng ta gọi cái chiều đó là mũi tên thời"},
+ {t:68.53,s:"gian."},
+ {t:68.91,s:"Nó chỉ thẳng từ quá khứ về tương lai."},
+ {t:71.98,s:"Và tối nay, tôi muốn dẫn bạn đi tìm xem,"},
+ {t:75.56,s:"thật ra, ai đã bắn mũi tên ấy đi."},
+ {t:78.6,s:"Bởi vì đây mới là điều khiến tôi lặng"},
+ {t:81.21,s:"người khi lần đầu hiểu ra nó."},
+ {t:83.26,s:"Các định luật vật lý cơ bản nhất, những"},
+ {t:85.77,s:"định luật cai quản chuyển động của mọi hạt"},
+ {t:88.46,s:"trong vũ trụ, gần như không hề phân biệt"},
+ {t:91.03,s:"quá khứ với tương lai."},
+ {t:92.44,s:"Hãy hình dung một cú va chạm của hai viên"},
+ {t:95.58,s:"bi-a."},
+ {t:95.96,s:"Một viên lăn tới, chạm viên kia, rồi cả"},
+ {t:99.33,s:"hai tách ra theo hai hướng."},
+ {t:101.67,s:"Nếu tôi quay lại cảnh đó thành một đoạn"},
+ {t:104.29,s:"phim, rồi cho bạn xem nó chạy ngược, bạn"},
+ {t:106.97,s:"sẽ không thể nào biết được đâu là bản gốc,"},
+ {t:109.79,s:"đâu là bản đảo ngược."},
+ {t:111.2,s:"Cả hai đoạn phim đều tuân theo đúng những"},
+ {t:113.48,s:"định luật vật lý y hệt nhau."},
+ {t:115.03,s:"Cả hai đều hoàn toàn hợp lệ."},
+ {t:117.42,s:"Với một cú va chạm của vài hạt, thời gian"},
+ {t:120.33,s:"trôi xuôi hay trôi ngược, tự nhiên đều"},
+ {t:123.02,s:"chấp nhận như nhau."},
+ {t:124.37,s:"Vậy thì chiếc cốc kia lấy đâu ra cái chiều"},
+ {t:127.73,s:"mà nó không bao giờ quay lại?"},
+ {t:130.05,ch:"CHƯƠNG 2",s:"Để trả lời, tôi phải kể cho bạn nghe về"},
+ {t:132.81,s:"một đại lượng có cái tên nghe hơi lạnh"},
+ {t:135.5,s:"lùng."},
+ {t:135.85,s:"Entropy."},
+ {t:137.52,s:"Và đằng sau cái tên khô khan ấy là một"},
+ {t:140.61,s:"trong những ý tưởng đẹp nhất của toàn bộ"},
+ {t:143.86,s:"vật lý."},
+ {t:144.43,s:"Người ta thường dịch entropy thành sự hỗn"},
+ {t:147.47,s:"loạn, hay sự mất trật tự."},
+ {t:149.33,s:"Cách nói đó không sai, nhưng nó bỏ sót"},
+ {t:152.78,s:"phần thú vị nhất."},
+ {t:154.32,s:"Vì entropy thật ra là một trò chơi đếm."},
+ {t:157.84,s:"Đếm số cách sắp xếp."},
+ {t:160.25,s:"Hãy tưởng tượng bàn làm việc của tôi."},
+ {t:162.42,s:"Có đúng một cách để mọi thứ nằm gọn gàng,"},
+ {t:165.56,s:"ngăn nắp đúng chỗ."},
+ {t:166.94,s:"Nhưng có hàng triệu, hàng tỉ cách để nó"},
+ {t:170.58,s:"bừa bộn."},
+ {t:171.33,s:"Sách vứt chỗ này, bút lăn chỗ kia, giấy tờ"},
+ {t:175.72,s:"tứ tung."},
+ {t:176.56,s:"Trạng thái gọn gàng là hiếm hoi, vì chỉ có"},
+ {t:179.79,s:"vài cách để đạt được nó."},
+ {t:181.64,s:"Trạng thái bừa bộn là phổ biến, vì có vô"},
+ {t:185.01,s:"số cách để bừa bộn."},
+ {t:186.61,s:"Và đó chính là cốt lõi của entropy."},
+ {t:189.69,s:"Một trạng thái có càng nhiều cách sắp xếp"},
+ {t:192.62,s:"bên trong để tạo ra nó, thì entropy của nó"},
+ {t:195.63,s:"càng cao."},
+ {t:196.27,s:"Một nhà vật lý tên Ludwig Boltzmann là"},
+ {t:198.73,s:"người đã nhìn ra điều này rõ ràng nhất."},
+ {t:201.25,s:"Ông nhận ra rằng cái ta gọi là hỗn loạn"},
+ {t:204.95,s:"thật ra chỉ là cái phổ biến."},
+ {t:207.6,s:"Là trạng thái mà thiên nhiên có nhiều cách"},
+ {t:210.69,s:"nhất để tạo ra."},
+ {t:211.8,s:"Và bây giờ hãy nghĩ tới không khí trong"},
+ {t:214.44,s:"căn phòng bạn đang ngồi."},
+ {t:216.07,s:"Nó gồm vô số phân tử khí đang bay loạn xạ."},
+ {t:219.42,s:"Có vô cùng ít cách để tất cả chúng cùng"},
+ {t:222.07,s:"dồn về một góc phòng."},
+ {t:223.49,s:"Nhưng có nhiều đến kinh hoàng số cách để"},
+ {t:226.33,s:"chúng trải đều khắp phòng."},
+ {t:228.17,s:"Thế nên không khí luôn trải đều."},
+ {t:230.67,s:"Không phải vì có một định luật nào cấm nó"},
+ {t:233.5,s:"dồn về một góc."},
+ {t:234.54,s:"Mà chỉ vì trải đều thì có quá nhiều cách,"},
+ {t:237.8,s:"còn dồn góc thì gần như không có cách nào."},
+ {t:241.14,s:"Xác suất nghiêng lệch đến mức gần như"},
+ {t:244.02,s:"tuyệt đối."},
+ {t:244.8,s:"Và đây là điều then chốt tôi muốn bạn giữ"},
+ {t:247.13,s:"lại."},
+ {t:247.36,s:"Không có định luật nào cấm những mảnh cốc"},
+ {t:250.26,s:"vỡ tự ghép lại."},
+ {t:251.32,s:"Về mặt lý thuyết, các nguyên tử hoàn toàn"},
+ {t:254.11,s:"có thể tình cờ chuyển động đúng cách để"},
+ {t:256.76,s:"chiếc cốc lành lại."},
+ {t:258.05,s:"Chuyện đó không hề bị cấm."},
+ {t:260.27,s:"Nó chỉ đơn giản là quá, quá hiếm."},
+ {t:263.65,s:"Có vô số cách để các nguyên tử của chiếc"},
+ {t:266.36,s:"cốc nằm rải rác thành đống mảnh vỡ."},
+ {t:268.74,s:"Nhưng chỉ có cực kỳ ít cách để chúng xếp"},
+ {t:271.48,s:"thành một chiếc cốc nguyên vẹn."},
+ {t:273.61,s:"Nên khi thời gian trôi, hệ luôn trượt từ"},
+ {t:277.07,s:"cái hiếm về cái phổ biến."},
+ {t:279.23,s:"Từ trật tự về hỗn loạn."},
+ {t:281.58,s:"Từ entropy thấp lên entropy cao."},
+ {t:285.41,s:"Người ta gọi đây là định luật thứ hai của"},
+ {t:287.77,s:"nhiệt động lực học."},
+ {t:288.87,s:"Entropy của một hệ cô lập luôn tăng, hoặc"},
+ {t:291.97,s:"giữ nguyên, chứ không bao giờ tự giảm."},
+ {t:294.84,s:"Và đây là định luật hiếm hoi trong vật lý"},
+ {t:298.16,s:"biết phân biệt quá khứ với tương lai."},
+ {t:301.15,s:"Bạn thấy điều kỳ lạ chưa?"},
+ {t:303.1,s:"Từng cú va chạm của từng cặp hạt thì không"},
+ {t:306.33,s:"phân biệt xuôi ngược."},
+ {t:307.95,s:"Nhưng khi gộp hàng tỉ tỉ hạt lại thành một"},
+ {t:311.05,s:"đám đông, một chiều bỗng hiện ra."},
+ {t:313.48,s:"Mũi tên thời gian không nằm trong mỗi hạt."},
+ {t:317.07,s:"Nó trốn trong đám đông."},
+ {t:319.16,s:"Nó là một sự thật của thống kê, của xác"},
+ {t:323.2,s:"suất."},
+ {t:325.22,s:"Nhưng khoan đã."},
+ {t:326.67,s:"Nếu tôi thành thật với bạn, thì lời giải"},
+ {t:329.85,s:"này vẫn còn thiếu một mảnh."},
+ {t:331.99,s:"Một mảnh lớn đến mức nó làm rung chuyển cả"},
+ {t:335.71,s:"câu chuyện."},
+ {t:336.68,s:"Định luật thứ hai nói rằng entropy luôn"},
+ {t:339.82,s:"tăng khi ta đi về tương lai."},
+ {t:342.08,s:"Nhưng nếu các định luật cơ bản không phân"},
+ {t:344.84,s:"biệt xuôi ngược, thì cũng đúng một cách"},
+ {t:347.47,s:"logic khi nói rằng entropy phải cao hơn ở"},
+ {t:350.23,s:"cả trong quá khứ."},
+ {t:351.38,s:"Thống kê thuần túy dự đoán rằng dù đi về"},
+ {t:354.68,s:"hướng nào, ta cũng phải rơi vào hỗn loạn."},
+ {t:358.07,ch:"CHƯƠNG 3",s:"Vậy tại sao quá khứ lại có entropy thấp"},
+ {t:360.72,s:"hơn hiện tại?"},
+ {t:361.61,s:"Tại sao hôm qua trật tự hơn hôm nay?"},
+ {t:364.55,s:"Câu hỏi này dẫn tôi đi ngược dòng thời"},
+ {t:367.68,s:"gian, xa hết mức có thể."},
+ {t:369.65,s:"Về tận điểm khởi đầu của mọi thứ."},
+ {t:372.91,s:"Bởi vì nếu entropy chỉ có tăng khi ta tiến"},
+ {t:375.91,s:"về tương lai, thì càng lùi về quá khứ,"},
+ {t:378.63,s:"entropy phải càng thấp."},
+ {t:380.27,s:"Thấp hơn nữa."},
+ {t:381.85,s:"Và lùi tới tận cùng, tới khoảnh khắc Big"},
+ {t:384.92,s:"Bang, entropy phải thấp đến mức không thể"},
+ {t:388.07,s:"thấp hơn được nữa."},
+ {t:389.45,s:"Nói cách khác, vũ trụ của chúng ta khởi"},
+ {t:392.01,s:"đầu ở một trạng thái trật tự phi thường."},
+ {t:394.63,s:"Một trạng thái entropy cực thấp."},
+ {t:397.48,s:"Và toàn bộ mười bốn tỉ năm kể từ đó, tất"},
+ {t:400.66,s:"cả những gì vũ trụ làm, chỉ là lăn từ từ"},
+ {t:403.84,s:"từ cái trật tự ban đầu ấy về phía hỗn"},
+ {t:406.78,s:"loạn."},
+ {t:407.18,s:"Nhưng ở đây có một nghịch lý làm tôi bối"},
+ {t:410,s:"rối rất lâu."},
+ {t:410.84,s:"Bạn thử hình dung Big Bang xem."},
+ {t:413.3,s:"Một biển lửa nóng bỏng, đặc quánh, các hạt"},
+ {t:416.37,s:"bay loạn xạ với năng lượng khủng khiếp."},
+ {t:419.22,s:"Nghe không hề giống một trạng thái trật tự"},
+ {t:421.91,s:"chút nào."},
+ {t:422.49,s:"Nghe như đỉnh điểm của hỗn loạn."},
+ {t:425.29,s:"Và đây chính là chỗ mà trực giác của chúng"},
+ {t:428.09,s:"ta phản bội chúng ta."},
+ {t:429.49,s:"Bởi vì khi có trọng lực tham gia, mọi thứ"},
+ {t:433.08,s:"lật ngược lại."},
+ {t:434.3,s:"Với trọng lực, một trạng thái trơn tru,"},
+ {t:437.44,s:"mịn màng, trải đều khắp nơi, lại là một"},
+ {t:440.58,s:"trạng thái entropy rất thấp."},
+ {t:442.83,s:"Hãy nhớ lại không khí trong phòng."},
+ {t:445.05,s:"Ở đó, trải đều là hỗn loạn, là entropy"},
+ {t:449.61,s:"cao."},
+ {t:450.09,s:"Nhưng khi trọng lực chi phối, luật chơi"},
+ {t:452.97,s:"đảo ngược."},
+ {t:453.71,s:"Trọng lực luôn muốn kéo vật chất tụ lại,"},
+ {t:457.12,s:"vón cục, sụp vào nhau."},
+ {t:458.99,s:"Nên một vũ trụ trơn mịn, đều đặn, chống"},
+ {t:462.07,s:"lại xu hướng ấy, lại là một vũ trụ hiếm"},
+ {t:465.15,s:"hoi và trật tự khác thường."},
+ {t:467.28,s:"Và đó chính xác là những gì Big Bang để"},
+ {t:470.44,s:"lại."},
+ {t:470.76,s:"Một vũ trụ sơ khai trơn mịn đến kinh ngạc,"},
+ {t:474,s:"gần như đều tăm tắp ở mọi hướng."},
+ {t:476.46,s:"Nóng, vâng."},
+ {t:478.77,s:"Nhưng dưới con mắt của trọng lực, đó là"},
+ {t:482.24,s:"trật tự tinh khôi."},
+ {t:483.84,s:"Đó là entropy thấp."},
+ {t:486.1,s:"Đó là cây cung đã được kéo căng hết cỡ."},
+ {t:489.56,s:"Từ trạng thái trơn mịn ấy, trọng lực bắt"},
+ {t:492.94,s:"đầu nặn tỉa."},
+ {t:493.95,s:"Những chỗ đặc hơn một chút hút thêm vật"},
+ {t:497.14,s:"chất, đặc dần lên, tụ lại."},
+ {t:499.27,s:"Khí gom thành đám mây, đám mây co thành"},
+ {t:502.39,s:"ngôi sao, sao tụ thành thiên hà."},
+ {t:504.95,s:"Vũ trụ trông như đang trở nên có cấu trúc"},
+ {t:508.48,s:"hơn, phức tạp hơn, đẹp hơn."},
+ {t:510.81,s:"Nhưng đừng để vẻ đẹp ấy đánh lừa bạn."},
+ {t:513.87,s:"Suốt quá trình vật chất vón cục thành sao"},
+ {t:516.71,s:"và thiên hà, entropy tổng cộng vẫn luôn"},
+ {t:519.4,s:"tăng."},
+ {t:519.75,s:"Bởi mỗi ngôi sao hình thành đều tỏa ra một"},
+ {t:522.59,s:"biển nhiệt và ánh sáng, phát tán ra không"},
+ {t:525.37,s:"gian."},
+ {t:525.71,s:"Cái trật tự bạn thấy được trả giá bằng một"},
+ {t:528.45,s:"cơn hỗn loạn khổng lồ ở nơi khác."},
+ {t:530.61,s:"Và đâu là đỉnh cao của hỗn loạn mà trọng"},
+ {t:533.55,s:"lực có thể tạo ra?"},
+ {t:534.88,s:"Đâu là trạng thái entropy cực đại?"},
+ {t:537.76,s:"Câu trả lời khiến tôi rùng mình."},
+ {t:540.13,s:"Đó là hố đen."},
+ {t:541.85,s:"Khi vật chất vón cục đến tận cùng, sụp đổ"},
+ {t:545.73,s:"hoàn toàn vào chính nó, nó tạo ra hố đen."},
+ {t:549.6,s:"Và một hố đen chứa entropy nhiều đến mức"},
+ {t:552.57,s:"khủng khiếp, nhiều hơn bất cứ thứ gì cùng"},
+ {t:555.61,s:"kích thước."},
+ {t:556.43,s:"Nên bức tranh hiện ra thật rõ ràng."},
+ {t:558.9,s:"Vũ trụ khởi đầu trơn mịn và trật tự,"},
+ {t:561.84,s:"entropy thấp nhất."},
+ {t:563.31,s:"Rồi trọng lực vón nó lại thành sao, thành"},
+ {t:566.68,s:"thiên hà, thành hố đen, entropy cứ thế leo"},
+ {t:570.14,s:"thang."},
+ {t:570.63,s:"Mũi tên thời gian chính là con đường một"},
+ {t:573.57,s:"chiều ấy."},
+ {t:574.23,s:"Từ mịn màng đến vón cục."},
+ {t:577.13,s:"Từ trật tự đến hỗn loạn."},
+ {t:579.6,ch:"CHƯƠNG 4",s:"Nhưng có một câu hỏi mà tôi vẫn chưa trả"},
+ {t:582.4,s:"lời."},
+ {t:582.68,s:"Và tôi phải thành thật với bạn rằng khoa"},
+ {t:585.74,s:"học cũng chưa trả lời được nó."},
+ {t:588.03,s:"Vì sao vũ trụ lại khởi đầu ở trạng thái"},
+ {t:590.68,s:"entropy thấp đến vậy?"},
+ {t:592.11,s:"Vì sao Big Bang lại trật tự khác thường"},
+ {t:594.82,s:"đến thế, thay vì bắt đầu ngay trong hỗn"},
+ {t:597.52,s:"loạn?"},
+ {t:597.87,s:"Các nhà khoa học đặt cho sự thật kỳ lạ này"},
+ {t:601.04,s:"một cái tên."},
+ {t:601.94,s:"Họ gọi nó là Giả thuyết quá khứ."},
+ {t:605,s:"Đó là giả định rằng vũ trụ, ở khởi đầu của"},
+ {t:608.59,s:"nó, có entropy cực thấp."},
+ {t:610.64,s:"Chúng ta phải đặt điều đó vào như một điểm"},
+ {t:613.44,s:"xuất phát, bởi nếu không, ta không thể"},
+ {t:615.97,s:"giải thích nổi vì sao thời gian có chiều."},
+ {t:618.7,s:"Nhưng vì sao chính điểm xuất phát ấy lại"},
+ {t:621.24,s:"tồn tại, thì đến hôm nay vẫn là một trong"},
+ {t:623.85,s:"những câu hỏi mở sâu sắc nhất của vật lý."},
+ {t:626.45,s:"Tôi thấy có gì đó khiêm nhường và đẹp đẽ"},
+ {t:629.23,s:"trong việc thừa nhận điều này."},
+ {t:631.32,s:"Chúng ta biết mũi tên thời gian bay đi từ"},
+ {t:634.07,s:"đâu."},
+ {t:634.34,s:"Nhưng vì sao cây cung ban đầu lại được kéo"},
+ {t:637.36,s:"căng đến thế, thì ta vẫn đang đứng trước"},
+ {t:640.24,s:"tấm màn chưa vén."},
+ {t:642.96,s:"Và nếu mũi tên ấy cứ bay tới, thì nó bay"},
+ {t:645.87,s:"về đâu?"},
+ {t:646.38,s:"Hãy tưởng tượng cùng tôi một tương lai xa"},
+ {t:649.23,s:"xôi đến khôn cùng."},
+ {t:650.48,s:"Khi mọi ngôi sao đã cạn nhiên liệu và tắt"},
+ {t:653.47,s:"ngấm."},
+ {t:653.84,s:"Khi cả những hố đen cuối cùng cũng bốc hơi"},
+ {t:656.53,s:"hết."},
+ {t:656.79,s:"Khi entropy đã leo tới đỉnh, không còn chỗ"},
+ {t:660.18,s:"nào để tăng thêm nữa."},
+ {t:661.88,s:"Người ta gọi trạng thái đó là cái chết"},
+ {t:663.94,s:"nhiệt."},
+ {t:664.26,s:"Một vũ trụ trải đều, nguội lạnh, tĩnh lặng"},
+ {t:667.72,s:"tuyệt đối."},
+ {t:668.54,s:"Không còn chênh lệch nào để dòng chảy tiếp"},
+ {t:671.4,s:"diễn, không còn gì thay đổi."},
+ {t:673.3,s:"Và trong một vũ trụ như thế, thời gian gần"},
+ {t:676.52,s:"như mất hết ý nghĩa."},
+ {t:678.06,s:"Vì chẳng còn gì để phân biệt khoảnh khắc"},
+ {t:680.8,s:"này với khoảnh khắc sau."},
+ {t:684.44,s:"Nhưng chúng ta không sống ở cái chết"},
+ {t:686.84,s:"nhiệt."},
+ {t:687.24,s:"Chúng ta sống ở đây, trong quãng giữa, khi"},
+ {t:690.35,s:"vũ trụ vẫn đang trên con dốc đổ từ trật tự"},
+ {t:693.46,s:"về hỗn loạn."},
+ {t:694.35,s:"Và tôi muốn bạn cảm nhận điều này thật"},
+ {t:697.33,s:"khẽ."},
+ {t:697.63,s:"Ngay cả cơ thể bạn cũng là một phần của"},
+ {t:700.24,s:"mũi tên ấy."},
+ {t:700.97,s:"Mỗi hơi thở bạn hít vào, mỗi lần tim bạn"},
+ {t:704.01,s:"đập, bạn đang lấy trật tự từ thức ăn, từ"},
+ {t:707.06,s:"ánh nắng, và trả lại cho vũ trụ nhiều hỗn"},
+ {t:710.18,s:"loạn hơn dưới dạng hơi ấm tỏa ra."},
+ {t:712.69,s:"Sự sống không chống lại định luật thứ hai."},
+ {t:715.66,s:"Sự sống cưỡi lên nó."},
+ {t:718.12,s:"Và đây là điều tôi thấy sâu sắc nhất trong"},
+ {t:721.25,s:"tất cả."},
+ {t:721.77,s:"Cái mũi tên tâm lý trong đầu tôi, cái"},
+ {t:724.33,s:"chiều mà tôi nhớ được quá khứ chứ không"},
+ {t:727.03,s:"nhớ tương lai, không hề tách rời khỏi mũi"},
+ {t:729.87,s:"tên nhiệt động của vũ trụ."},
+ {t:731.67,s:"Chúng là cùng một mũi tên."},
+ {t:734.11,s:"Để lưu lại một ký ức, não tôi phải sắp xếp"},
+ {t:737.76,s:"lại các nơ-ron của nó."},
+ {t:739.67,s:"Và để làm điều đó, nó phải tỏa nhiệt ra"},
+ {t:742.48,s:"ngoài, phải đẩy thêm một chút hỗn loạn vào"},
+ {t:745.51,s:"vũ trụ."},
+ {t:746.01,s:"Mỗi ký ức tôi có được đều được trả giá"},
+ {t:748.54,s:"bằng một chút entropy tăng thêm của thế"},
+ {t:751.14,s:"giới quanh tôi."},
+ {t:752.14,s:"Nên tôi chỉ có thể nhớ về quá khứ, theo"},
+ {t:754.93,s:"đúng cái chiều mà entropy đang tăng."},
+ {t:757.51,s:"Tôi nhớ hôm qua vì hôm qua trật tự hơn hôm"},
+ {t:761.3,s:"nay."},
+ {t:761.66,s:"Và nói cho cùng, tôi nhớ được bất cứ điều"},
+ {t:764.62,s:"gì, chỉ vì vũ trụ từng khởi đầu trong một"},
+ {t:767.58,s:"trật tự đẹp đến khó tin."},
+ {t:769.31,s:"Hãy nghĩ mà xem."},
+ {t:770.72,s:"Ký ức của bạn về người bạn yêu."},
+ {t:773.21,s:"Về một buổi chiều đã xa."},
+ {t:775.61,s:"Về giọng nói của ai đó không còn ở đây"},
+ {t:778.49,s:"nữa."},
+ {t:778.79,s:"Tất cả những điều quý giá ấy tồn tại được,"},
+ {t:782.2,s:"chỉ vì mười bốn tỉ năm trước, vũ trụ đã"},
+ {t:785.37,s:"bắt đầu ở một trạng thái trật tự khác"},
+ {t:788.38,s:"thường."},
+ {t:788.94,s:"Nên lần tới, khi bạn nghe tiếng một chiếc"},
+ {t:791.81,s:"đồng hồ tích tắc, hãy khẽ nhớ điều này."},
+ {t:794.54,s:"Cái tích tắc đó không đo thời gian."},
+ {t:797.62,s:"Nó chính là thời gian, đang hé lộ chiều đi"},
+ {t:800.96,s:"của mình."},
+ {t:801.67,s:"Đó là âm thanh của cả một vũ trụ đang lăn,"},
+ {t:804.98,s:"thật chậm, thật đều, từ trật tự về phía"},
+ {t:808.06,s:"hỗn loạn."},
+ {t:808.77,s:"Và bạn, với từng ký ức mình mang theo,"},
+ {t:811.77,s:"đang cưỡi trên chính mũi tên ấy, ngay lúc"},
+ {t:815.01,s:"này."}
+];
+
+// ---- seeded PRNG (mulberry32) ----
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+
+// ---- scene boundaries (real time = cue.start) ----
+const SC={
+  A:[0,7.47], B:[7.47,26.99], C:[26.99,46], D:[46,65.46], E:[65.46,78.6],
+  F:[78.6,92.44], G:[92.44,130.05], H:[130.05,160.25], I:[160.25,211.8],
+  K:[211.8,244.8], L:[244.8,285.41], M:[285.41,325.22], N:[325.22,358.07],
+  O:[358.07,407.18], P:[407.18,442.83], Q:[442.83,489.56], R:[489.56,530.61],
+  S:[530.61,579.6], T:[579.6,642.96], U:[642.96,684.44], V:[684.44,718.12],
+  W:[718.12,769.31], X:[769.31,818.33]
+};
+function loc(t,k){const w=SC[k];return Math.min(1,Math.max(0,(t-w[0])/(w[1]-w[0])));}
+function inSc(t,k){const w=SC[k];return t>=w[0]&&t<w[1];}
+const clamp=(x,a,b)=>Math.min(b,Math.max(a,x));
+const smooth=(x)=>{x=clamp(x,0,1);return x*x*(3-2*x);};
+function band(t,a,b,f){f=f||0.8;if(t<a-f||t>b+f)return 0;let up=smooth((t-(a-f))/(2*f));let dn=smooth(((b+f)-t)/(2*f));return Math.min(1,Math.min(up,dn));}
+const TAU=Math.PI*2;
+
+// ============ THREE core ============
+const W=1920,H=1080;
+const renderer=new THREE.WebGLRenderer({canvas:document.getElementById('c'),antialias:true,alpha:false});
+renderer.setPixelRatio(1);renderer.setSize(W,H);
+renderer.setClearColor(0x08080c,1);
+renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.05;
+renderer.outputEncoding=THREE.sRGBEncoding;
+
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(46,W/H,0.1,60000);
+camera.position.set(0,0,60);
+
+const amb=new THREE.AmbientLight(0x24283a,0.95);scene.add(amb);
+const key=new THREE.DirectionalLight(0xdfe8ff,1.05);key.position.set(6,4,8);scene.add(key);
+const rim=new THREE.DirectionalLight(0x8fa8ff,0.4);rim.position.set(-8,-3,-6);scene.add(rim);
+
+// ---------- postprocessing ----------
+const composer=new THREE.EffectComposer(renderer);
+composer.addPass(new THREE.RenderPass(scene,camera));
+const bloom=new THREE.UnrealBloomPass(new THREE.Vector2(W,H),0.8,0.7,0.62);
+composer.addPass(bloom);
+const LensShader={
+  uniforms:{tDiffuse:{value:null},uT:{value:0},uVig:{value:0.34},uCA:{value:0.0015},uGrain:{value:0.04},uFade:{value:1.0},uFlash:{value:0.0}},
+  vertexShader:`varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
+  fragmentShader:`
+   varying vec2 vUv;uniform sampler2D tDiffuse;uniform float uT,uVig,uCA,uGrain,uFade,uFlash;
+   float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+   void main(){
+     vec2 d=vUv-0.5;float r=dot(d,d);
+     vec2 off=d*uCA*(1.0+r*2.2);
+     vec3 col;
+     col.r=texture2D(tDiffuse,vUv+off).r;
+     col.g=texture2D(tDiffuse,vUv).g;
+     col.b=texture2D(tDiffuse,vUv-off).b;
+     float vig=smoothstep(1.02,uVig,r*2.0);
+     col*=mix(1.0,vig,0.85);
+     float g=h(vUv*vec2(1920.0,1080.0)+fract(uT)*97.3)-0.5;
+     col+=g*uGrain;
+     col=mix(col,vec3(0.95,0.97,1.0),uFlash);
+     col*=uFade;
+     gl_FragColor=vec4(col,1.0);
+   }`
+};
+const lens=new THREE.ShaderPass(LensShader);lens.renderToScreen=true;composer.addPass(lens);
+
+// ============================================================
+//  SHARED starfield (temperature-colored) + Milky Way band
+// ============================================================
+const STAR_R=13000;
+function buildStars(){
+  const N=4200,pr=mulberry32(20260808);
+  const pos=new Float32Array(N*3),col=new Float32Array(N*3),siz=new Float32Array(N);
+  const tmp=new THREE.Vector3();
+  for(let i=0;i<N;i++){
+    let u=pr(),v=pr();
+    let theta=Math.acos(2*u-1),phi=TAU*v;
+    let bnd=pr();if(bnd<0.4){theta=Math.PI*0.5+(pr()-0.5)*0.5;}
+    tmp.set(Math.sin(theta)*Math.cos(phi),Math.cos(theta)*0.7,Math.sin(theta)*Math.sin(phi)).normalize().multiplyScalar(STAR_R);
+    pos[i*3]=tmp.x;pos[i*3+1]=tmp.y;pos[i*3+2]=tmp.z;
+    let tt=pr();let c=new THREE.Color();
+    if(tt<0.14)c.setRGB(0.62,0.72,1.0);
+    else if(tt<0.4)c.setRGB(0.9,0.94,1.0);
+    else if(tt<0.7)c.setRGB(1.0,0.96,0.85);
+    else if(tt<0.88)c.setRGB(1.0,0.84,0.6);
+    else c.setRGB(1.0,0.66,0.5);
+    let br=0.35+pr()*0.6;c.multiplyScalar(br);
+    col[i*3]=c.r;col[i*3+1]=c.g;col[i*3+2]=c.b;
+    siz[i]=(pr()<0.06?3.2:1.0)*(0.9+pr()*1.6);
+  }
+  const g=new THREE.BufferGeometry();
+  g.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  g.setAttribute('color',new THREE.BufferAttribute(col,3));
+  g.setAttribute('aS',new THREE.BufferAttribute(siz,1));
+  const m=new THREE.ShaderMaterial({
+    uniforms:{uOp:{value:1}},transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,
+    vertexShader:`attribute float aS;attribute vec3 color;varying vec3 vC;uniform float uOp;varying float vO;
+      void main(){vC=color;vO=uOp;vec4 mv=modelViewMatrix*vec4(position,1.0);
+      gl_PointSize=aS*(${STAR_R.toFixed(1)}/-mv.z);gl_Position=projectionMatrix*mv;}`,
+    fragmentShader:`varying vec3 vC;varying float vO;
+      void main(){vec2 d=gl_PointCoord-0.5;float r=length(d);
+      float a=smoothstep(0.5,0.0,r);gl_FragColor=vec4(vC,a*vO);}`
+  });
+  return new THREE.Points(g,m);
+}
+const stars=buildStars();scene.add(stars);
+stars.visible=false;
+
+// ============================================================
+//  Reusable soft particle sprite textures
+// ============================================================
+function dotTex(rr,gg,bb){
+  const cv=document.createElement('canvas');cv.width=cv.height=64;const cx=cv.getContext('2d');
+  const gr=cx.createRadialGradient(32,32,0,32,32,32);
+  gr.addColorStop(0,`rgba(${rr},${gg},${bb},1)`);gr.addColorStop(0.4,`rgba(${rr},${gg},${bb},0.5)`);gr.addColorStop(1,'rgba(0,0,0,0)');
+  cx.fillStyle=gr;cx.fillRect(0,0,64,64);const tx=new THREE.CanvasTexture(cv);tx.encoding=THREE.sRGBEncoding;return tx;
+}
+const COL={arrow:0xBFD9FF,low:0x5FC8E8,high:0xFF6A3D,warm:0xFFC04A,violet:0x7B4BFF,memory:0xFFB6A0,cold:0x8FA0B5,white:0xF2F4F8};
+const TDOT={arrow:dotTex(191,217,255),low:dotTex(95,200,232),high:dotTex(255,106,61),warm:dotTex(255,192,74),violet:dotTex(123,75,255),memory:dotTex(255,182,160),cold:dotTex(143,160,181),white:dotTex(242,244,248),smoke:dotTex(150,160,180)};
+
+// ============================================================
+//  Text/label sprite
+// ============================================================
+function labelSprite(txt,color,px,font){
+  const cv=document.createElement('canvas');cv.width=1024;cv.height=256;const cx=cv.getContext('2d');
+  cx.fillStyle=color;cx.font='bold '+(px||120)+'px '+(font||'Segoe UI, sans-serif');cx.textAlign='center';cx.textBaseline='middle';
+  cx.shadowColor=color;cx.shadowBlur=22;cx.fillText(txt,512,128);
+  const tx=new THREE.CanvasTexture(cv);tx.encoding=THREE.sRGBEncoding;
+  const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tx,transparent:true,depthWrite:false}));
+  sp.scale.set(8,2,1);
+  return sp;
+}
+function setOp(obj,o){obj.traverse(c=>{if(c.material){c.material.transparent=true;c.material.opacity=o;}});}
+
+// ============================================================
+//  Arrow-of-time motif — reusable line + head (points right)
+// ============================================================
+function makeArrow(len,color){
+  const grp=new THREE.Group();
+  const mat=new THREE.MeshBasicMaterial({color:color||COL.arrow,transparent:true,opacity:0.9,depthWrite:false,blending:THREE.AdditiveBlending});
+  const shaft=new THREE.Mesh(new THREE.CylinderGeometry(0.055,0.055,len,12),mat);
+  shaft.rotation.z=-Math.PI/2;shaft.position.x=-0.35;grp.add(shaft);
+  const head=new THREE.Mesh(new THREE.ConeGeometry(0.22,0.6,16),mat.clone());
+  head.rotation.z=-Math.PI/2;head.position.x=len/2-0.35;grp.add(head);
+  grp.userData={shaft,head,mat,len};
+  return grp;
+}
+
+function G(){const g=new THREE.Group();g.visible=false;scene.add(g);return g;}
+function camSet(x,y,z,lx,ly,lz,fov){camera.position.set(x,y,z);camera.lookAt(lx||0,ly||0,lz||0);if(fov){camera.fov=fov;camera.updateProjectionMatrix();}}
+
+// simple particle system helper
+function makePoints(N,tex,size,color,op){
+  const pos=new Float32Array(N*3);
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  const m=new THREE.PointsMaterial({map:tex,size:size,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,color:color,opacity:op==null?0.85:op});
+  const p=new THREE.Points(g,m);p.userData.arr=pos;p.userData.N=N;return p;
+}
+
+// ============================================================
+//  A: clock face + faint arrow
+// ============================================================
+const gA=G();
+(function(){
+  const ring=new THREE.Mesh(new THREE.TorusGeometry(2.6,0.09,20,120),new THREE.MeshBasicMaterial({color:0x6a7a95,transparent:true,opacity:0.7}));
+  gA.add(ring);
+  const ticks=new THREE.Group();
+  for(let i=0;i<12;i++){const a=i/12*TAU;const tk=new THREE.Mesh(new THREE.BoxGeometry(0.09,0.34,0.02),new THREE.MeshBasicMaterial({color:0x8fa0b8,transparent:true,opacity:0.65}));
+    tk.position.set(Math.cos(a)*2.28,Math.sin(a)*2.28,0);tk.rotation.z=a-Math.PI/2;ticks.add(tk);}
+  gA.add(ticks);
+  const hand=new THREE.Mesh(new THREE.BoxGeometry(0.045,2.1,0.02),new THREE.MeshBasicMaterial({color:COL.arrow,transparent:true,opacity:0.95}));
+  hand.geometry.translate(0,0.9,0);gA.add(hand);
+  const hub=new THREE.Mesh(new THREE.CircleGeometry(0.12,20),new THREE.MeshBasicMaterial({color:COL.arrow}));gA.add(hub);
+  const hh=new THREE.Mesh(new THREE.BoxGeometry(0.07,1.3,0.02),new THREE.MeshBasicMaterial({color:0xaebccf,transparent:true,opacity:0.8}));
+  hh.geometry.translate(0,0.55,0);gA.add(hh);
+  const arrow=makeArrow(6.0,COL.arrow);arrow.position.set(0,-3.4,-0.5);arrow.scale.setScalar(0.9);gA.add(arrow);
+  gA.userData={hand,hh,arrow,ring,ticks,hub};
+})();
+
+// ============================================================
+//  B: memory timeline — past clear (left), future fog (right)
+// ============================================================
+const gB=G();
+(function(){
+  const arrow=makeArrow(15,COL.arrow);gB.add(arrow);
+  const pr=mulberry32(11);const N=90;const mem=makePoints(N,TDOT.memory,0.55,COL.memory,0.9);
+  const base=new Float32Array(N*3),ph=new Float32Array(N);
+  for(let i=0;i<N;i++){const x=-7.5+pr()*6.5;const y=(pr()-0.5)*4.2;base[i*3]=x;base[i*3+1]=y;base[i*3+2]=(pr()-0.5)*1.2;ph[i]=pr()*TAU;}
+  gB.add(mem);
+  const NF=140;const fog=makePoints(NF,TDOT.cold,0.9,COL.cold,0.4);
+  const fb=new Float32Array(NF*3),fph=new Float32Array(NF);
+  for(let i=0;i<NF;i++){fb[i*3]=1.5+pr()*7.5;fb[i*3+1]=(pr()-0.5)*6;fb[i*3+2]=(pr()-0.5)*3;fph[i]=pr()*TAU;}
+  gB.add(fog);
+  const lp=labelSprite('QUÁ KHỨ',"#BFD9FF",64);lp.position.set(-5,3.3,0);lp.scale.set(4.6,1.15,1);gB.add(lp);
+  const lf=labelSprite('TƯƠNG LAI',"#8FA0B5",64);lf.position.set(5,3.3,0);lf.scale.set(4.9,1.2,1);gB.add(lf);
+  gB.userData={arrow,mem,base,ph,N,fog,fb,fph,NF,lp,lf};
+})();
+
+// ============================================================
+//  C: cup fall + shatter (procedural shards), reverse hint
+// ============================================================
+const gC=G();
+(function(){
+  const cupMat=new THREE.MeshStandardMaterial({color:0xcfe0f0,emissive:0x1a2634,emissiveIntensity:0.35,roughness:0.25,metalness:0.15,transparent:true,opacity:0.95});
+  const cup=new THREE.Group();
+  const body=new THREE.Mesh(new THREE.CylinderGeometry(0.7,0.5,1.5,28,1,true),cupMat);cup.add(body);
+  const rimT=new THREE.Mesh(new THREE.TorusGeometry(0.7,0.06,10,28),cupMat);rimT.rotation.x=Math.PI/2;rimT.position.y=0.75;cup.add(rimT);
+  const bottom=new THREE.Mesh(new THREE.CircleGeometry(0.5,28),cupMat);bottom.rotation.x=-Math.PI/2;bottom.position.y=-0.75;cup.add(bottom);
+  gC.add(cup);
+  const pr=mulberry32(7);const NS=160;const shards=new THREE.Group();
+  const sd=[];
+  for(let i=0;i<NS;i++){
+    const sz=0.06+pr()*0.16;
+    const m=new THREE.Mesh(new THREE.TetrahedronGeometry(sz),cupMat.clone());
+    const a=pr()*TAU,el=(pr()-0.5)*0.8;
+    const dir=new THREE.Vector3(Math.cos(a)*Math.cos(el),Math.abs(Math.sin(el))*0.6+0.15,Math.sin(a)*Math.cos(el));
+    const spd=1.6+pr()*3.4;
+    sd.push({dir,spd,rot:new THREE.Vector3(pr()-0.5,pr()-0.5,pr()-0.5).multiplyScalar(6),ph:pr()*TAU});
+    shards.add(m);
+  }
+  gC.add(shards);
+  const revLbl=labelSprite('◄◄  tua ngược?',"#BFD9FF",60);revLbl.position.set(0,3.2,0);revLbl.scale.set(6,1.4,1);gC.add(revLbl);
+  const floor=new THREE.Mesh(new THREE.PlaneGeometry(20,20),new THREE.MeshBasicMaterial({color:0x101420,transparent:true,opacity:0.5}));
+  floor.rotation.x=-Math.PI/2;floor.position.y=-2.4;gC.add(floor);
+  gC.userData={cup,shards,sd,NS,revLbl,cupMat};
+})();
+
+// ============================================================
+//  D: smoke + ink one-way diffusion (two panels)
+// ============================================================
+const gD=G();
+(function(){
+  const pr=mulberry32(23);
+  const NSm=200;const smoke=makePoints(NSm,TDOT.smoke,0.7,0xaab4c8,0.5);
+  const sph=new Float32Array(NSm),sdir=new Float32Array(NSm*3),srate=new Float32Array(NSm);
+  for(let i=0;i<NSm;i++){const a=pr()*TAU;sdir[i*3]=Math.cos(a)*0.5;sdir[i*3+1]=0.6+pr()*0.6;sdir[i*3+2]=Math.sin(a)*0.5;sph[i]=pr();srate[i]=0.4+pr()*0.7;}
+  smoke.position.set(-4.6,0,0);gD.add(smoke);
+  const cig=new THREE.Mesh(new THREE.CylinderGeometry(0.1,0.1,1.4,12),new THREE.MeshBasicMaterial({color:0xd8d2c4}));
+  cig.position.set(-4.6,-2.6,0);gD.add(cig);
+  const tip=new THREE.Mesh(new THREE.CircleGeometry(0.1,12),new THREE.MeshBasicMaterial({color:0xff7a3a}));tip.position.set(-4.6,-1.9,0.01);gD.add(tip);
+  const glass=new THREE.Mesh(new THREE.CylinderGeometry(1.7,1.5,3.4,32,1,true),new THREE.MeshBasicMaterial({color:0x2a4a66,transparent:true,opacity:0.28,side:THREE.DoubleSide}));
+  glass.position.set(4.6,0,0);gD.add(glass);
+  const NInk=260;const ink=makePoints(NInk,dotTex(90,110,190),0.5,0x8a7bff,0.85);
+  const ir=new Float32Array(NInk),ia=new Float32Array(NInk),iel=new Float32Array(NInk);
+  for(let i=0;i<NInk;i++){ir[i]=pr();ia[i]=pr()*TAU;iel[i]=(pr()-0.5)*2;}
+  ink.position.set(4.6,0,0);gD.add(ink);
+  const lbl=labelSprite('MỘT CHIỀU — không quay lại',"#BFD9FF",54);lbl.position.set(0,-3.3,0);lbl.scale.set(9,1.3,1);gD.add(lbl);
+  gD.userData={smoke,sdir,sph,srate,NSm,ink,ir,ia,iel,NInk,lbl};
+})();
+
+// ============================================================
+//  E: arrow of time named + bow (chớm)
+// ============================================================
+const gE=G();
+(function(){
+  const arrow=makeArrow(13,COL.arrow);gE.add(arrow);
+  const pr=mulberry32(31);const NT=120;const trail=makePoints(NT,TDOT.arrow,0.4,COL.arrow,0.7);
+  const tx0=new Float32Array(NT),ty0=new Float32Array(NT),tph=new Float32Array(NT);
+  for(let i=0;i<NT;i++){tx0[i]=pr()*14;ty0[i]=(pr()-0.5)*0.7;tph[i]=pr()*TAU;}
+  gE.add(trail);
+  const bowPts=[];for(let i=0;i<=30;i++){const a=-0.9+i/30*1.8;bowPts.push(new THREE.Vector3(-8.8+Math.cos(a)*1.6,Math.sin(a)*2.2,0));}
+  const bow=new THREE.Line(new THREE.BufferGeometry().setFromPoints(bowPts),new THREE.LineBasicMaterial({color:COL.arrow,transparent:true,opacity:0.4}));
+  gE.add(bow);
+  const lbl=labelSprite('MŨI TÊN THỜI GIAN',"#BFD9FF",70);lbl.position.set(0,2.6,0);lbl.scale.set(9,1.6,1);gE.add(lbl);
+  const lp=labelSprite('quá khứ',"#8fa0b8",48);lp.position.set(-6.3,-2.4,0);lp.scale.set(3.2,0.9,1);gE.add(lp);
+  const lf=labelSprite('tương lai',"#BFD9FF",48);lf.position.set(6.3,-2.4,0);lf.scale.set(3.6,0.9,1);gE.add(lf);
+  gE.userData={arrow,trail,tx0,ty0,tph,NT,bow,lbl};
+})();
+
+// ============================================================
+//  F: symmetric laws — two balanced arrows (fwd/back)
+// ============================================================
+const gF=G();
+(function(){
+  const aR=makeArrow(6,COL.arrow);aR.position.set(1.2,0,0);gF.add(aR);
+  const aL=makeArrow(6,COL.arrow);aL.position.set(-1.2,0,0);aL.rotation.z=Math.PI;gF.add(aL);
+  const node=new THREE.Mesh(new THREE.IcosahedronGeometry(0.9,1),new THREE.MeshStandardMaterial({color:0x2a3550,emissive:0x2a3a66,emissiveIntensity:0.6,roughness:0.4,metalness:0.5,wireframe:true}));
+  gF.add(node);
+  const pr=mulberry32(41);const N=100;const parts=makePoints(N,TDOT.arrow,0.28,COL.arrow,0.55);
+  const px0=new Float32Array(N),py0=new Float32Array(N),pdir=new Float32Array(N),pph=new Float32Array(N);
+  for(let i=0;i<N;i++){px0[i]=pr()*14;py0[i]=(pr()-0.5)*5;pdir[i]=pr()<0.5?1:-1;pph[i]=pr()*TAU;}
+  gF.add(parts);
+  const lf=labelSprite('quá khứ  ◄',"#BFD9FF",48);lf.position.set(-5.2,2.1,0);lf.scale.set(3.6,0.95,1);gF.add(lf);
+  const lr=labelSprite('►  tương lai',"#BFD9FF",48);lr.position.set(5.2,2.1,0);lr.scale.set(3.9,0.95,1);gF.add(lr);
+  const lbl=labelSprite('ĐỊNH LUẬT ĐỐI XỨNG',"#9fb4e0",56);lbl.position.set(0,-2.7,0);lbl.scale.set(8,1.3,1);gF.add(lbl);
+  gF.userData={aR,aL,node,parts,px0,py0,pdir,pph,N};
+})();
+
+// ============================================================
+//  G: billiard collision, split forward/reverse
+// ============================================================
+const gG=G();
+(function(){
+  function table(cx){
+    const grp=new THREE.Group();grp.position.x=cx;
+    const felt=new THREE.Mesh(new THREE.PlaneGeometry(7.5,4.6),new THREE.MeshBasicMaterial({color:0x0e2a24,transparent:true,opacity:0.9}));
+    grp.add(felt);
+    const frame=new THREE.Mesh(new THREE.PlaneGeometry(7.9,5.0),new THREE.MeshBasicMaterial({color:0x2a1c12}));frame.position.z=-0.02;grp.add(frame);
+    const ballA=new THREE.Mesh(new THREE.SphereGeometry(0.34,24,24),new THREE.MeshStandardMaterial({color:0x5FC8E8,emissive:0x123a4a,emissiveIntensity:0.4,roughness:0.3,metalness:0.2}));
+    const ballB=new THREE.Mesh(new THREE.SphereGeometry(0.34,24,24),new THREE.MeshStandardMaterial({color:0xFF6A3D,emissive:0x4a1a0e,emissiveIntensity:0.4,roughness:0.3,metalness:0.2}));
+    ballA.position.z=0.35;ballB.position.z=0.35;grp.add(ballA);grp.add(ballB);
+    return {grp,ballA,ballB};
+  }
+  const tF=table(-4.6);const tR=table(4.6);
+  gG.add(tF.grp);gG.add(tR.grp);
+  const tick=labelSprite('✓ hợp lệ',"#7be0a0",46);tick.position.set(-4.6,-3.0,0);tick.scale.set(3.4,0.9,1);gG.add(tick);
+  const tick2=labelSprite('✓ hợp lệ',"#7be0a0",46);tick2.position.set(4.6,-3.0,0);tick2.scale.set(3.4,0.9,1);gG.add(tick2);
+  const lF=labelSprite('XUÔI  ►',"#BFD9FF",50);lF.position.set(-4.6,2.9,0);lF.scale.set(3.4,0.95,1);gG.add(lF);
+  const lR=labelSprite('◄  NGƯỢC',"#BFD9FF",50);lR.position.set(4.6,2.9,0);lR.scale.set(3.6,0.95,1);gG.add(lR);
+  const qLbl=labelSprite('? cái chiều từ đâu ?',"#FF6A3D",54);qLbl.position.set(0,-1.2,1);qLbl.scale.set(7,1.4,1);gG.add(qLbl);
+  gG.userData={tF,tR,tick,tick2,qLbl};
+})();
+
+// ============================================================
+//  Reusable: counting grid
+// ============================================================
+function makeGrid(cx,cy,n,cell,seed){
+  const grp=new THREE.Group();grp.position.set(cx,cy,0);
+  const pr=mulberry32(seed||5);
+  const cells=[];
+  const gap=cell*1.08;
+  for(let r=0;r<n;r++)for(let c=0;c<n;c++){
+    const m=new THREE.Mesh(new THREE.PlaneGeometry(cell,cell),new THREE.MeshBasicMaterial({color:0x5FC8E8,transparent:true,opacity:0.9}));
+    m.position.set((c-(n-1)/2)*gap,(r-(n-1)/2)*gap,0);
+    m.userData={r,c,ph:pr()*TAU,ord:(r+c)%2};
+    cells.push(m);grp.add(m);
+  }
+  grp.userData={cells,n,gap};
+  return grp;
+}
+
+// ============================================================
+//  H: ENTROPY label + counting grid
+// ============================================================
+const gH=G();
+(function(){
+  const grid=makeGrid(0,-0.3,8,0.62,101);gH.add(grid);
+  const lbl=labelSprite('ENTROPY',"#BFD9FF",96);lbl.position.set(0,3.1,0);lbl.scale.set(9,2.1,1);gH.add(lbl);
+  const sub=labelSprite('= trò chơi đếm cách sắp xếp',"#9fb4e0",50);sub.position.set(0,-4.0,0);sub.scale.set(9,1.2,1);gH.add(sub);
+  gH.userData={grid,lbl,sub};
+})();
+
+// ============================================================
+//  I: desk tidy<->messy + Boltzmann
+// ============================================================
+const gI=G();
+(function(){
+  const pr=mulberry32(53);
+  const N=26;const objs=new THREE.Group();
+  const od=[];
+  for(let i=0;i<N;i++){
+    const w=0.35+pr()*0.5,h=0.1+pr()*0.4;
+    const col=i<10?0x9fb4e0:(i<18?0xFFC04A:0xFFB6A0);
+    const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,0.25),new THREE.MeshStandardMaterial({color:col,emissive:col,emissiveIntensity:0.12,roughness:0.6,metalness:0.1}));
+    const gx=(i%6-2.5)*0.95,gy=(Math.floor(i/6)-1.5)*0.7;
+    const tidy=new THREE.Vector3(gx,gy,0);
+    const messy=new THREE.Vector3((pr()-0.5)*6.4,(pr()-0.5)*4.2,(pr()-0.5)*1.5);
+    const rotM=new THREE.Vector3(pr()*TAU,pr()*TAU,pr()*TAU);
+    od.push({tidy,messy,rotM});
+    objs.add(m);
+  }
+  gI.add(objs);
+  const deskTop=new THREE.Mesh(new THREE.PlaneGeometry(9,6),new THREE.MeshBasicMaterial({color:0x141824,transparent:true,opacity:0.55}));
+  deskTop.position.z=-0.6;gI.add(deskTop);
+  const cntTidy=labelSprite('1 cách gọn',"#5FC8E8",60);cntTidy.position.set(0,-3.5,0);cntTidy.scale.set(6,1.3,1);gI.add(cntTidy);
+  const cntMess=labelSprite('hàng tỉ cách bừa',"#FF6A3D",60);cntMess.position.set(0,-3.5,0);cntMess.scale.set(7,1.3,1);cntMess.material.opacity=0;gI.add(cntMess);
+  const boltz=labelSprite('S = k · log W',"#BFD9FF",64);boltz.position.set(0,3.4,0);boltz.scale.set(7,1.4,1);boltz.material.opacity=0;gI.add(boltz);
+  const bname=labelSprite('Ludwig Boltzmann',"#9fb4e0",50);bname.position.set(0,4.5,0);bname.scale.set(7,1.2,1);bname.material.opacity=0;gI.add(bname);
+  gI.userData={objs,od,N,cntTidy,cntMess,boltz,bname};
+})();
+
+// ============================================================
+//  K: gas in a room — corner (rare) vs spread (common)
+// ============================================================
+const gK=G();
+(function(){
+  const room=new THREE.Mesh(new THREE.BoxGeometry(9,5.4,4),new THREE.MeshBasicMaterial({color:0x2a3550,transparent:true,opacity:0.14,wireframe:true}));
+  gK.add(room);
+  const pr=mulberry32(67);const N=340;const gas=makePoints(N,TDOT.low,0.34,0x9fd8ee,0.8);
+  const corner=new Float32Array(N*3),spread=new Float32Array(N*3),ph=new Float32Array(N*3);
+  for(let i=0;i<N;i++){
+    corner[i*3]=-3.6+pr()*1.4;corner[i*3+1]=-1.9+pr()*1.4;corner[i*3+2]=-1.4+pr()*1.2;
+    spread[i*3]=(pr()-0.5)*8.4;spread[i*3+1]=(pr()-0.5)*5.0;spread[i*3+2]=(pr()-0.5)*3.6;
+    ph[i*3]=pr()*TAU;ph[i*3+1]=pr()*TAU;ph[i*3+2]=pr()*TAU;
+  }
+  gK.add(gas);
+  const lc=labelSprite('dồn góc  ✕  hiếm',"#FF6A3D",50);lc.position.set(0,3.2,0);lc.scale.set(6.4,1.2,1);lc.material.opacity=0;gK.add(lc);
+  const ls=labelSprite('trải đều  ✓  phổ biến',"#5FC8E8",50);ls.position.set(0,3.2,0);ls.scale.set(6.8,1.2,1);ls.material.opacity=0;gK.add(ls);
+  gK.userData={gas,corner,spread,ph,N,lc,ls,room};
+})();
+
+// ============================================================
+//  L: cup reverse hint + slide order->chaos
+// ============================================================
+const gL=G();
+(function(){
+  const cupMat=new THREE.MeshStandardMaterial({color:0xcfe0f0,emissive:0x1a2634,emissiveIntensity:0.3,roughness:0.25,metalness:0.15,transparent:true,opacity:0.95});
+  const pr=mulberry32(71);const NS=170;const shards=new THREE.Group();const sd=[];
+  for(let i=0;i<NS;i++){
+    const sz=0.06+pr()*0.15;
+    const m=new THREE.Mesh(new THREE.TetrahedronGeometry(sz),cupMat.clone());
+    const a=pr()*TAU;
+    const rest=new THREE.Vector3(Math.cos(a)*(1.5+pr()*2.6),-2.2+pr()*0.4,Math.sin(a)*(1.0+pr()*1.6));
+    sd.push({rest,rot:new THREE.Vector3(pr()-0.5,pr()-0.5,pr()-0.5).multiplyScalar(4),ph:pr()*TAU});
+    shards.add(m);
+  }
+  gL.add(shards);
+  const floor=new THREE.Mesh(new THREE.PlaneGeometry(20,20),new THREE.MeshBasicMaterial({color:0x101420,transparent:true,opacity:0.5}));
+  floor.rotation.x=-Math.PI/2;floor.position.y=-2.4;gL.add(floor);
+  const arrow=makeArrow(9,COL.arrow);arrow.position.set(0,3.0,0);arrow.scale.setScalar(0.85);gL.add(arrow);
+  const lo=labelSprite('trật tự · hiếm',"#5FC8E8",50);lo.position.set(-5.2,3.0,0);lo.scale.set(4.4,1.1,1);gL.add(lo);
+  const lc=labelSprite('hỗn loạn · phổ biến',"#FF6A3D",50);lc.position.set(5.4,3.0,0);lc.scale.set(4.8,1.1,1);gL.add(lc);
+  const lbl=labelSprite('không bị cấm — chỉ quá hiếm',"#9fb4e0",50);lbl.position.set(0,-3.6,0);lbl.scale.set(9,1.2,1);gL.add(lbl);
+  gL.userData={shards,sd,NS,arrow,lbl,lo,lc};
+})();
+
+// ============================================================
+//  M: entropy bar (monotone up) + crowd
+// ============================================================
+const gM=G();
+(function(){
+  const axis=new THREE.Group();axis.position.set(0,-0.5,0);
+  const xa=new THREE.Mesh(new THREE.BoxGeometry(11,0.05,0.02),new THREE.MeshBasicMaterial({color:0x6a7a95,transparent:true,opacity:0.7}));xa.position.y=-2.4;axis.add(xa);
+  const ya=new THREE.Mesh(new THREE.BoxGeometry(0.05,6,0.02),new THREE.MeshBasicMaterial({color:0x6a7a95,transparent:true,opacity:0.7}));ya.position.set(-5.5,0.6,0);axis.add(ya);
+  const NL=120;const pts=[];for(let i=0;i<NL;i++){pts.push(new THREE.Vector3(0,0,0));}
+  const line=new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),new THREE.LineBasicMaterial({color:COL.low,transparent:true,opacity:0.95}));
+  axis.add(line);
+  gM.add(axis);
+  const lbl=labelSprite('ĐỊNH LUẬT 2 — entropy luôn tăng',"#BFD9FF",50);lbl.position.set(0,3.4,0);lbl.scale.set(10,1.2,1);gM.add(lbl);
+  const noDown=labelSprite('không bao giờ ↓',"#FF6A3D",46);noDown.position.set(3.6,2.0,0);noDown.scale.set(4.4,1.0,1);gM.add(noDown);
+  const pr=mulberry32(83);const NC=260;const crowd=makePoints(NC,TDOT.arrow,0.3,COL.arrow,0.6);
+  const cb=new Float32Array(NC*3),cph=new Float32Array(NC);
+  for(let i=0;i<NC;i++){cb[i*3]=(pr()-0.5)*9;cb[i*3+1]=(pr()-0.5)*4.5;cb[i*3+2]=(pr()-0.5)*2;cph[i]=pr()*TAU;}
+  crowd.position.set(0,0,0);gM.add(crowd);
+  gM.userData={line,NL,lbl,noDown,crowd,cb,cph,NC,axis};
+})();
+
+// ============================================================
+//  N: arrow with missing gap + symmetric parabola entropy
+// ============================================================
+const gN=G();
+(function(){
+  const mat=new THREE.MeshBasicMaterial({color:COL.arrow,transparent:true,opacity:0.85,depthWrite:false,blending:THREE.AdditiveBlending});
+  const seg1=new THREE.Mesh(new THREE.CylinderGeometry(0.06,0.06,4.5,12),mat);seg1.rotation.z=-Math.PI/2;seg1.position.set(-3.5,1.4,0);
+  const seg2=new THREE.Mesh(new THREE.CylinderGeometry(0.06,0.06,4.5,12),mat.clone());seg2.rotation.z=-Math.PI/2;seg2.position.set(2.5,1.4,0);
+  const head=new THREE.Mesh(new THREE.ConeGeometry(0.24,0.7,16),mat.clone());head.rotation.z=-Math.PI/2;head.position.set(5.2,1.4,0);
+  const gap=new THREE.Mesh(new THREE.CircleGeometry(0.35,20),new THREE.MeshBasicMaterial({color:0xFF6A3D,transparent:true,opacity:0.7}));gap.position.set(-0.5,1.4,0);
+  gN.add(seg1);gN.add(seg2);gN.add(head);gN.add(gap);
+  const NP=100;const pts=[];for(let i=0;i<NP;i++){const x=-5.5+i/(NP-1)*11;const y=-2.6+0.13*x*x;pts.push(new THREE.Vector3(x,Math.min(y,3.2),0));}
+  const para=new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),new THREE.LineBasicMaterial({color:0xFF6A3D,transparent:true,opacity:0.9}));
+  para.position.y=-1.4;gN.add(para);
+  const now=new THREE.Mesh(new THREE.CircleGeometry(0.18,16),new THREE.MeshBasicMaterial({color:0x5FC8E8}));now.position.set(0,-4.0,0);gN.add(now);
+  const lbl=labelSprite('thiếu một mảnh',"#FF6A3D",56);lbl.position.set(-0.5,2.6,0);lbl.scale.set(6,1.3,1);gN.add(lbl);
+  const lbl2=labelSprite('quá khứ cũng phải hỗn loạn?',"#9fb4e0",48);lbl2.position.set(0,-5.0,0);lbl2.scale.set(9,1.1,1);gN.add(lbl2);
+  gN.userData={seg1,seg2,head,gap,para,now,lbl,lbl2};
+})();
+
+// ============================================================
+//  O: rewind time — entropy dips to Big Bang seed
+// ============================================================
+const gO=G();
+(function(){
+  const arrow=makeArrow(13,COL.arrow);arrow.position.set(0,2.6,0);arrow.scale.setScalar(0.85);gO.add(arrow);
+  const NL=120;const pts=[];for(let i=0;i<NL;i++){pts.push(new THREE.Vector3(0,0,0));}
+  const line=new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),new THREE.LineBasicMaterial({color:COL.low,transparent:true,opacity:0.95}));
+  line.position.set(0,-0.8,0);gO.add(line);
+  const xa=new THREE.Mesh(new THREE.BoxGeometry(11,0.05,0.02),new THREE.MeshBasicMaterial({color:0x6a7a95,transparent:true,opacity:0.6}));xa.position.set(0,-3.4,0);gO.add(xa);
+  const seed=new THREE.Mesh(new THREE.SphereGeometry(0.3,20,20),new THREE.MeshBasicMaterial({color:0xFFC04A}));seed.position.set(-5.2,-3.0,0);gO.add(seed);
+  const seedGlow=new THREE.Sprite(new THREE.SpriteMaterial({map:dotTex(255,200,120),color:0xFFC04A,transparent:true,opacity:0.8,depthWrite:false,blending:THREE.AdditiveBlending}));
+  seedGlow.position.copy(seed.position);seedGlow.scale.setScalar(2.4);gO.add(seedGlow);
+  const bb=labelSprite('Big Bang',"#FFC04A",50);bb.position.set(-5.0,-4.3,0);bb.scale.set(3.4,1.1,1);gO.add(bb);
+  const now=labelSprite('hiện tại',"#9fb4e0",46);now.position.set(5.0,-4.3,0);now.scale.set(3.2,1.0,1);gO.add(now);
+  const lbl=labelSprite('lùi về entropy thấp nhất',"#5FC8E8",50);lbl.position.set(0,3.9,0);lbl.scale.set(8,1.2,1);gO.add(lbl);
+  gO.userData={arrow,line,NL,seed,seedGlow,bb,now,lbl};
+})();
+
+// ============================================================
+//  P: Big Bang fireball paradox + gravity flips
+// ============================================================
+const gP=G();
+(function(){
+  const pr=mulberry32(97);const N=520;const fire=makePoints(N,TDOT.warm,0.5,0xffb050,0.9);
+  const fdir=new Float32Array(N*3),fph=new Float32Array(N),fr=new Float32Array(N);
+  for(let i=0;i<N;i++){const a=pr()*TAU,el=Math.acos(2*pr()-1),r=pr();
+    fdir[i*3]=Math.sin(el)*Math.cos(a);fdir[i*3+1]=Math.cos(el);fdir[i*3+2]=Math.sin(el)*Math.sin(a);fr[i]=r;fph[i]=pr()*TAU;}
+  gP.add(fire);
+  const core=new THREE.Mesh(new THREE.SphereGeometry(1.0,32,32),new THREE.MeshBasicMaterial({color:0xffe0a0,transparent:true,opacity:0.85}));gP.add(core);
+  const q=labelSprite('? đỉnh điểm hỗn loạn ?',"#FF6A3D",54);q.position.set(0,3.6,0);q.scale.set(8,1.3,1);gP.add(q);
+  const flip=labelSprite('trọng lực LẬT luật chơi',"#BFD9FF",54);flip.position.set(0,-3.8,0);flip.scale.set(8.4,1.3,1);flip.material.opacity=0;gP.add(flip);
+  gP.userData={fire,fdir,fph,fr,N,core,q,flip};
+})();
+
+// ============================================================
+//  Q: smooth universe + bow fully drawn
+// ============================================================
+const gQ=G();
+(function(){
+  const pr=mulberry32(103);const N=620;const field=makePoints(N,TDOT.warm,0.36,0xffcf80,0.55);
+  const fb=new Float32Array(N*3),fj=new Float32Array(N*3),fph=new Float32Array(N);
+  for(let i=0;i<N;i++){
+    fb[i*3]=(pr()-0.5)*12;fb[i*3+1]=(pr()-0.5)*6.6;fb[i*3+2]=(pr()-0.5)*4;
+    fj[i*3]=(pr()-0.5);fj[i*3+1]=(pr()-0.5);fj[i*3+2]=(pr()-0.5);fph[i]=pr()*TAU;
+  }
+  gQ.add(field);
+  const bowGrp=new THREE.Group();gQ.add(bowGrp);
+  const bowPts=[];for(let i=0;i<=40;i++){const a=-1.0+i/40*2.0;bowPts.push(new THREE.Vector3(-6+Math.cos(a)*2.0,Math.sin(a)*2.6,0));}
+  const bow=new THREE.Line(new THREE.BufferGeometry().setFromPoints(bowPts),new THREE.LineBasicMaterial({color:COL.arrow,transparent:true,opacity:0.7}));bowGrp.add(bow);
+  const arrow=makeArrow(7,COL.arrow);arrow.position.set(-1.0,0,0);bowGrp.add(arrow);
+  const strMat=new THREE.LineBasicMaterial({color:COL.arrow,transparent:true,opacity:0.5});
+  const str=new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-6+Math.cos(-1.0)*2.0,Math.sin(-1.0)*2.6,0),new THREE.Vector3(-4.6,0,0),new THREE.Vector3(-6+Math.cos(1.0)*2.0,Math.sin(1.0)*2.6,0)]),strMat);
+  bowGrp.add(str);
+  const lbl=labelSprite('trơn mịn = trật tự = entropy thấp',"#5FC8E8",50);lbl.position.set(0,3.5,0);lbl.scale.set(10.5,1.2,1);gQ.add(lbl);
+  const lbl2=labelSprite('cây cung kéo căng hết cỡ',"#BFD9FF",50);lbl2.position.set(0,-3.6,0);lbl2.scale.set(9,1.2,1);gQ.add(lbl2);
+  gQ.userData={field,fb,fj,fph,N,bow,arrow,str,bowGrp,lbl,lbl2};
+})();
+
+// ============================================================
+//  R: gravity sculpts stars/galaxies, heat radiates
+// ============================================================
+const gR=G();
+(function(){
+  const pr=mulberry32(109);const N=560;const gas=makePoints(N,TDOT.warm,0.4,0xffc060,0.8);
+  const start=new Float32Array(N*3),cluster=new Float32Array(N*3),cid=new Int32Array(N),ph=new Float32Array(N);
+  const NC=5;const cc=[];for(let k=0;k<NC;k++){cc.push(new THREE.Vector3((pr()-0.5)*8,(pr()-0.5)*4.4,(pr()-0.5)*2));}
+  for(let i=0;i<N;i++){
+    start[i*3]=(pr()-0.5)*12;start[i*3+1]=(pr()-0.5)*6.4;start[i*3+2]=(pr()-0.5)*3.6;
+    const k=Math.floor(pr()*NC);cid[i]=k;
+    const a=pr()*TAU,rr=0.2+pr()*0.9;
+    cluster[i*3]=cc[k].x+Math.cos(a)*rr;cluster[i*3+1]=cc[k].y+Math.sin(a)*rr*0.6;cluster[i*3+2]=cc[k].z+(pr()-0.5)*0.6;
+    ph[i]=pr()*TAU;
+  }
+  gR.add(gas);
+  const NH=280;const heat=makePoints(NH,TDOT.high,0.34,0xff6a3d,0.0);
+  const hdir=new Float32Array(NH*3),hph=new Float32Array(NH),hc=new Int32Array(NH);
+  for(let i=0;i<NH;i++){const a=pr()*TAU,el=Math.acos(2*pr()-1);hdir[i*3]=Math.sin(el)*Math.cos(a);hdir[i*3+1]=Math.cos(el);hdir[i*3+2]=Math.sin(el)*Math.sin(a);hph[i]=pr();hc[i]=Math.floor(pr()*NC);}
+  gR.add(heat);
+  const lbl=labelSprite('vón cục — nhưng entropy TỔNG vẫn tăng',"#FF6A3D",46);lbl.position.set(0,3.6,0);lbl.scale.set(11,1.1,1);gR.add(lbl);
+  gR.userData={gas,start,cluster,cid,ph,N,heat,hdir,hph,hc,NH,cc,NC,lbl};
+})();
+
+// ============================================================
+//  S: black hole entropy max + cosmic entropy curve
+// ============================================================
+const gS=G();
+(function(){
+  const pr=mulberry32(127);const N=420;const infall=makePoints(N,TDOT.violet,0.4,0x9a7bff,0.85);
+  const ir=new Float32Array(N),ia=new Float32Array(N),iel=new Float32Array(N),iph=new Float32Array(N);
+  for(let i=0;i<N;i++){ir[i]=1.5+pr()*5;ia[i]=pr()*TAU;iel[i]=(pr()-0.5)*1.2;iph[i]=pr()*TAU;}
+  gS.add(infall);
+  const eh=new THREE.Mesh(new THREE.SphereGeometry(1.0,40,40),new THREE.MeshBasicMaterial({color:0x000000}));gS.add(eh);
+  const rim=new THREE.Mesh(new THREE.TorusGeometry(1.15,0.05,16,80),new THREE.MeshBasicMaterial({color:COL.violet,transparent:true,opacity:0.9,blending:THREE.AdditiveBlending}));gS.add(rim);
+  const ND=260;const disk=makePoints(ND,TDOT.violet,0.32,0xC86BFF,0.85);
+  const da=new Float32Array(ND),dr=new Float32Array(ND),dy=new Float32Array(ND);
+  for(let i=0;i<ND;i++){da[i]=pr()*TAU;dr[i]=1.4+pr()*1.5;dy[i]=(pr()-0.5)*0.14;}
+  gS.add(disk);
+  const NL=120;const pts=[];for(let i=0;i<NL;i++){pts.push(new THREE.Vector3(0,0,0));}
+  const curve=new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),new THREE.LineBasicMaterial({color:0xC86BFF,transparent:true,opacity:0.9}));
+  curve.position.set(0,-2.0,0);curve.visible=false;gS.add(curve);
+  const lbl=labelSprite('hố đen = entropy CỰC ĐẠI',"#7B4BFF",54);lbl.position.set(0,3.5,0);lbl.scale.set(9,1.3,1);gS.add(lbl);
+  const lbl2=labelSprite('mịn màng → vón cục → hỗn loạn',"#9fb4e0",48);lbl2.position.set(0,-4.4,0);lbl2.scale.set(10,1.1,1);lbl2.material.opacity=0;gS.add(lbl2);
+  gS.userData={infall,ir,ia,iel,iph,N,eh,rim,disk,da,dr,dy,ND,curve,NL,lbl,lbl2};
+})();
+
+// ============================================================
+//  T: clock returns + Past Hypothesis seed
+// ============================================================
+const gT=G();
+(function(){
+  const arrow=makeArrow(13,COL.arrow);arrow.position.set(0,-1.4,0);arrow.scale.setScalar(0.85);gT.add(arrow);
+  const xa=new THREE.Mesh(new THREE.BoxGeometry(12,0.05,0.02),new THREE.MeshBasicMaterial({color:0x6a7a95,transparent:true,opacity:0.5}));xa.position.set(0,-2.6,0);gT.add(xa);
+  const seed=new THREE.Mesh(new THREE.SphereGeometry(0.34,24,24),new THREE.MeshBasicMaterial({color:0x5FC8E8}));seed.position.set(-5.4,-2.6,0);gT.add(seed);
+  const seedGlow=new THREE.Sprite(new THREE.SpriteMaterial({map:dotTex(120,220,240),color:0x5FC8E8,transparent:true,opacity:0.85,depthWrite:false,blending:THREE.AdditiveBlending}));
+  seedGlow.position.copy(seed.position);seedGlow.scale.setScalar(2.2);gT.add(seedGlow);
+  const circle=new THREE.Mesh(new THREE.TorusGeometry(0.7,0.04,12,48),new THREE.MeshBasicMaterial({color:0xBFD9FF,transparent:true,opacity:0.8}));circle.position.copy(seed.position);gT.add(circle);
+  const clk=new THREE.Group();clk.position.set(0,2.4,0);
+  const ring=new THREE.Mesh(new THREE.TorusGeometry(1.1,0.05,16,80),new THREE.MeshBasicMaterial({color:0x6a7a95,transparent:true,opacity:0.6}));clk.add(ring);
+  const hand=new THREE.Mesh(new THREE.BoxGeometry(0.035,0.9,0.02),new THREE.MeshBasicMaterial({color:COL.arrow}));hand.geometry.translate(0,0.45,0);clk.add(hand);
+  gT.add(clk);
+  const lbl=labelSprite('GIẢ THUYẾT QUÁ KHỨ',"#BFD9FF",56);lbl.position.set(0,4.1,0);lbl.scale.set(9,1.3,1);gT.add(lbl);
+  const lbl2=labelSprite('vì sao điểm gốc lại trật tự? — câu hỏi mở',"#9fb4e0",44);lbl2.position.set(0,-4.2,0);lbl2.scale.set(11,1.0,1);gT.add(lbl2);
+  gT.userData={arrow,seed,seedGlow,circle,clk,hand,lbl,lbl2};
+})();
+
+// ============================================================
+//  U: stars die, black holes evaporate, heat death
+// ============================================================
+const gU=G();
+(function(){
+  const arrow=makeArrow(14,COL.arrow);arrow.position.set(0,3.2,0);arrow.scale.setScalar(0.8);gU.add(arrow);
+  const pr=mulberry32(131);const N=240;const starPts=makePoints(N,TDOT.warm,0.6,0xffd070,0.9);
+  const sx=new Float32Array(N),sy=new Float32Array(N),sz=new Float32Array(N),soff=new Float32Array(N);
+  for(let i=0;i<N;i++){sx[i]=(pr()-0.5)*13;sy[i]=(pr()-0.5)*6;sz[i]=(pr()-0.5)*4;soff[i]=pr();}
+  gU.add(starPts);
+  const NC=360;const cold=makePoints(NC,TDOT.cold,0.4,0x8FA0B5,0.0);
+  const cb=new Float32Array(NC*3),cph=new Float32Array(NC);
+  for(let i=0;i<NC;i++){cb[i*3]=(pr()-0.5)*13;cb[i*3+1]=(pr()-0.5)*6.5;cb[i*3+2]=(pr()-0.5)*4;cph[i]=pr()*TAU;}
+  gU.add(cold);
+  const lbl=labelSprite('sao tắt · hố đen bốc hơi',"#8FA0B5",50);lbl.position.set(0,-3.8,0);lbl.scale.set(8,1.2,1);gU.add(lbl);
+  const lbl2=labelSprite('CÁI CHẾT NHIỆT',"#8FA0B5",64);lbl2.position.set(0,0,0);lbl2.scale.set(8,1.5,1);lbl2.material.opacity=0;gU.add(lbl2);
+  gU.userData={arrow,starPts,sx,sy,sz,soff,N,cold,cb,cph,NC,lbl,lbl2};
+})();
+
+// ============================================================
+//  V: entropy slope + body takes order, releases heat
+// ============================================================
+const gV=G();
+(function(){
+  const NL=80;const pts=[];for(let i=0;i<NL;i++){const x=-5.5+i/(NL-1)*11;const y=-2.4+(i/(NL-1))*4.6;pts.push(new THREE.Vector3(x,y,0));}
+  const slope=new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),new THREE.LineBasicMaterial({color:0x9fb4e0,transparent:true,opacity:0.7}));
+  slope.position.y=-0.4;gV.add(slope);
+  const here=new THREE.Mesh(new THREE.CircleGeometry(0.22,20),new THREE.MeshBasicMaterial({color:COL.memory}));here.position.set(0,-0.4,0.1);gV.add(here);
+  const hereGlow=new THREE.Sprite(new THREE.SpriteMaterial({map:dotTex(255,182,160),color:COL.memory,transparent:true,opacity:0.8,depthWrite:false,blending:THREE.AdditiveBlending}));
+  hereGlow.position.copy(here.position);hereGlow.scale.setScalar(1.8);gV.add(hereGlow);
+  const lblHere=labelSprite('ĐÂY — quãng giữa',"#FFB6A0",46);lblHere.position.set(0.2,0.8,0);lblHere.scale.set(5,1.0,1);gV.add(lblHere);
+  const bodyGrp=new THREE.Group();bodyGrp.position.set(0,-0.2,0);bodyGrp.visible=false;gV.add(bodyGrp);
+  const torso=new THREE.Mesh(new THREE.CylinderGeometry(0.5,0.6,1.9,20),new THREE.MeshBasicMaterial({color:0x2a3448,transparent:true,opacity:0.85}));torso.position.y=-0.2;bodyGrp.add(torso);
+  const shoulder=new THREE.Mesh(new THREE.SphereGeometry(0.55,20,20),new THREE.MeshBasicMaterial({color:0x2a3448,transparent:true,opacity:0.85}));shoulder.position.y=0.55;shoulder.scale.set(1,0.55,1);bodyGrp.add(shoulder);
+  const headM=new THREE.Mesh(new THREE.SphereGeometry(0.42,24,24),new THREE.MeshBasicMaterial({color:0x2a3448,transparent:true,opacity:0.85}));headM.position.y=1.05;bodyGrp.add(headM);
+  const heartGlow=new THREE.Sprite(new THREE.SpriteMaterial({map:dotTex(255,182,160),color:COL.memory,transparent:true,opacity:0.9,depthWrite:false,blending:THREE.AdditiveBlending}));
+  heartGlow.position.set(0,0.1,0.4);heartGlow.scale.setScalar(1.2);bodyGrp.add(heartGlow);
+  const pr=mulberry32(137);
+  const NIn=110;const orderIn=makePoints(NIn,TDOT.low,0.3,0x5FC8E8,0.0);
+  const inA=new Float32Array(NIn),inR=new Float32Array(NIn),inPh=new Float32Array(NIn);
+  for(let i=0;i<NIn;i++){inA[i]=pr()*TAU;inR[i]=pr();inPh[i]=pr()*TAU;}
+  bodyGrp.add(orderIn);
+  const NOut=150;const heatOut=makePoints(NOut,TDOT.high,0.3,0xFF6A3D,0.0);
+  const outA=new Float32Array(NOut),outEl=new Float32Array(NOut),outPh=new Float32Array(NOut);
+  for(let i=0;i<NOut;i++){outA[i]=pr()*TAU;outEl[i]=(pr()-0.5)*1.4;outPh[i]=pr();}
+  bodyGrp.add(heatOut);
+  const lblLife=labelSprite('sự sống CƯỠI lên định luật 2',"#FFB6A0",50);lblLife.position.set(0,-3.8,0);lblLife.scale.set(9,1.2,1);lblLife.material.opacity=0;gV.add(lblLife);
+  gV.userData={slope,here,hereGlow,lblHere,bodyGrp,heartGlow,orderIn,inA,inR,inPh,NIn,heatOut,outA,outEl,outPh,NOut,lblLife};
+})();
+
+// ============================================================
+//  W: neurons rearrange, two arrows merge to one
+// ============================================================
+const gW=G();
+(function(){
+  const pr=mulberry32(149);
+  const NN=34;const nodes=[];const nodeGrp=new THREE.Group();gW.add(nodeGrp);
+  const np=[];
+  for(let i=0;i<NN;i++){const x=(pr()-0.5)*8,y=(pr()-0.5)*4.4,z=(pr()-0.5)*1.5;
+    const m=new THREE.Mesh(new THREE.SphereGeometry(0.12,12,12),new THREE.MeshBasicMaterial({color:0xFFB6A0,transparent:true,opacity:0.9}));
+    m.position.set(x,y,z);nodeGrp.add(m);np.push(new THREE.Vector3(x,y,z));nodes.push(m);}
+  const conns=[];const connGrp=new THREE.Group();gW.add(connGrp);
+  for(let i=0;i<NN;i++){for(let j=i+1;j<NN;j++){if(np[i].distanceTo(np[j])<2.4&&pr()<0.4){
+    const ln=new THREE.Line(new THREE.BufferGeometry().setFromPoints([np[i],np[j]]),new THREE.LineBasicMaterial({color:0xFFB6A0,transparent:true,opacity:0.25}));
+    ln.userData={ph:pr()*TAU,base:0.12+pr()*0.3};connGrp.add(ln);conns.push(ln);}}}
+  const NH=140;const heat=makePoints(NH,TDOT.high,0.28,0xFF6A3D,0.0);
+  const hdir=new Float32Array(NH*3),hph=new Float32Array(NH);
+  for(let i=0;i<NH;i++){const a=pr()*TAU,el=Math.acos(2*pr()-1);hdir[i*3]=Math.sin(el)*Math.cos(a);hdir[i*3+1]=Math.cos(el);hdir[i*3+2]=Math.sin(el)*Math.sin(a);hph[i]=pr();}
+  gW.add(heat);
+  const aPsy=makeArrow(6,0xFFB6A0);aPsy.position.set(-1,1.6,0);aPsy.scale.setScalar(0.7);gW.add(aPsy);
+  const aTher=makeArrow(6,0x9fb4e0);aTher.position.set(-1,-1.6,0);aTher.scale.setScalar(0.7);gW.add(aTher);
+  const lPsy=labelSprite('mũi tên tâm lý',"#FFB6A0",42);lPsy.position.set(-4.6,2.5,0);lPsy.scale.set(3.8,0.9,1);gW.add(lPsy);
+  const lTher=labelSprite('mũi tên nhiệt động',"#9fb4e0",42);lTher.position.set(-4.6,-2.5,0);lTher.scale.set(4.4,0.9,1);gW.add(lTher);
+  const lbl=labelSprite('cùng MỘT mũi tên',"#BFD9FF",56);lbl.position.set(0,-3.9,0);lbl.scale.set(7,1.3,1);lbl.material.opacity=0;gW.add(lbl);
+  gW.userData={nodeGrp,nodes,np,NN,connGrp,conns,heat,hdir,hph,NH,aPsy,aTher,lPsy,lTher,lbl};
+})();
+
+// ============================================================
+//  X: memories thread to Big Bang seed, clock closes
+// ============================================================
+const gX=G();
+(function(){
+  const arrow=makeArrow(15,COL.arrow);arrow.position.set(0,-1.6,0);arrow.scale.setScalar(0.8);gX.add(arrow);
+  const pr=mulberry32(151);const NM=6;const photos=new THREE.Group();gX.add(photos);
+  const pp=[];
+  for(let i=0;i<NM;i++){const x=-6+i*1.15;const y=1.4+Math.sin(i*1.3)*0.6;
+    const m=new THREE.Mesh(new THREE.PlaneGeometry(0.9,0.7),new THREE.MeshBasicMaterial({color:0xFFB6A0,transparent:true,opacity:0.0}));
+    m.position.set(x,y,0);m.userData={ph:pr()*TAU};photos.add(m);pp.push(m);}
+  const seed=new THREE.Mesh(new THREE.SphereGeometry(0.34,24,24),new THREE.MeshBasicMaterial({color:0x5FC8E8}));seed.position.set(-6.8,-1.6,0);gX.add(seed);
+  const seedGlow=new THREE.Sprite(new THREE.SpriteMaterial({map:dotTex(120,220,240),color:0x5FC8E8,transparent:true,opacity:0.85,depthWrite:false,blending:THREE.AdditiveBlending}));
+  seedGlow.position.copy(seed.position);seedGlow.scale.setScalar(2.0);gX.add(seedGlow);
+  const thread=new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-6.8,-1.6,0),new THREE.Vector3(0,1.4,0)]),new THREE.LineBasicMaterial({color:0xBFD9FF,transparent:true,opacity:0.0}));gX.add(thread);
+  const clk=new THREE.Group();clk.position.set(0,0,0);clk.visible=false;gX.add(clk);
+  const ring=new THREE.Mesh(new THREE.TorusGeometry(2.2,0.08,20,100),new THREE.MeshBasicMaterial({color:0x6a7a95,transparent:true,opacity:0.7}));clk.add(ring);
+  for(let i=0;i<12;i++){const a=i/12*TAU;const tk=new THREE.Mesh(new THREE.BoxGeometry(0.08,0.28,0.02),new THREE.MeshBasicMaterial({color:0x8fa0b8,transparent:true,opacity:0.6}));
+    tk.position.set(Math.cos(a)*1.95,Math.sin(a)*1.95,0);tk.rotation.z=a-Math.PI/2;clk.add(tk);}
+  const hand=new THREE.Mesh(new THREE.BoxGeometry(0.04,1.8,0.02),new THREE.MeshBasicMaterial({color:COL.arrow}));hand.geometry.translate(0,0.9,0);clk.add(hand);
+  const hub=new THREE.Mesh(new THREE.CircleGeometry(0.1,20),new THREE.MeshBasicMaterial({color:COL.arrow}));clk.add(hub);
+  const lbl=labelSprite('nhớ được — vì vũ trụ từng khởi đầu trật tự',"#FFB6A0",44);lbl.position.set(0,-4.2,0);lbl.scale.set(12,1.0,1);gX.add(lbl);
+  gX.userData={arrow,photos,pp,NM,seed,seedGlow,thread,clk,hand,lbl};
+})();
+
+// ============================================================
+//  renderAtTime(t) — deterministic
+// ============================================================
+function renderAtTime(t){
+  t=Math.max(0,Math.min(TOTAL,t));
+  let flash=0;
+
+  gA.visible=inSc(t,'A');gB.visible=inSc(t,'B');gC.visible=inSc(t,'C');gD.visible=inSc(t,'D');
+  gE.visible=inSc(t,'E');gF.visible=inSc(t,'F');gG.visible=inSc(t,'G');gH.visible=inSc(t,'H');
+  gI.visible=inSc(t,'I');gK.visible=inSc(t,'K');gL.visible=inSc(t,'L');gM.visible=inSc(t,'M');
+  gN.visible=inSc(t,'N');gO.visible=inSc(t,'O');gP.visible=inSc(t,'P');gQ.visible=inSc(t,'Q');
+  gR.visible=inSc(t,'R');gS.visible=inSc(t,'S');gT.visible=inSc(t,'T');gU.visible=inSc(t,'U');
+  gV.visible=inSc(t,'V');gW.visible=inSc(t,'W');gX.visible=inSc(t,'X');
+  const cosmic=inSc(t,'O')||inSc(t,'P')||inSc(t,'Q')||inSc(t,'R')||inSc(t,'S')||inSc(t,'U')||inSc(t,'X');
+  stars.visible=cosmic;
+  if(cosmic)stars.material.uniforms.uOp.value=0.5;
+
+  try{
+  // ---------------- A: clock ----------------
+  if(gA.visible){
+    const d=gA.userData;
+    d.hand.rotation.z=-t*(TAU/12);
+    d.hh.rotation.z=-t*(TAU/120);
+    setOp(d.arrow,0.35+0.15*Math.sin(t*0.8));
+    camSet(0,0,7.6,0,0,0,46);
+  }
+
+  // ---------------- B: memory timeline ----------------
+  if(gB.visible){
+    const d=gB.userData;const p=loc(t,'B');
+    const arr=d.mem.geometry.attributes.position.array;
+    for(let i=0;i<d.N;i++){const b=i*3;
+      arr[b]=d.base[b]+Math.sin(t*0.5+d.ph[i])*0.15;
+      arr[b+1]=d.base[b+1]+Math.cos(t*0.4+d.ph[i])*0.15;
+      arr[b+2]=d.base[b+2];}
+    d.mem.geometry.attributes.position.needsUpdate=true;
+    d.mem.material.opacity=0.85*smooth(clamp((t-7.47)/2,0,1));
+    const fa=d.fog.geometry.attributes.position.array;
+    for(let i=0;i<d.NF;i++){const b=i*3;
+      fa[b]=d.fb[b]+Math.sin(t*0.25+d.fph[i])*0.5;
+      fa[b+1]=d.fb[b+1]+Math.cos(t*0.2+d.fph[i])*0.5;
+      fa[b+2]=d.fb[b+2];}
+    d.fog.geometry.attributes.position.needsUpdate=true;
+    d.fog.material.opacity=0.4;
+    camSet(3.0-p*6.0,0,9.5,3.0-p*6.0,0,0,50);
+  }
+
+  // ---------------- C: cup fall + shatter ----------------
+  if(gC.visible){
+    const d=gC.userData;
+    const fall=smooth(clamp((t-26.99)/2.4,0,1));
+    const impactT=29.4;
+    const shatter=smooth(clamp((t-impactT)/2.6,0,1));
+    d.cup.visible=shatter<0.02;
+    d.cup.position.y=2.4-fall*4.4;
+    d.cup.rotation.z=fall*0.3;
+    d.shards.visible=shatter>0.01;
+    if(d.shards.visible){
+      for(let i=0;i<d.NS;i++){const s=d.sd[i];const m=d.shards.children[i];
+        const rise=Math.max(0,s.dir.y*shatter*2.2 - shatter*shatter*2.0);
+        m.position.set(s.dir.x*shatter*3.0,-2.0+rise,s.dir.z*shatter*3.0);
+        m.rotation.set(s.rot.x*shatter,s.rot.y*shatter,s.rot.z*shatter);
+        m.material.opacity=0.95;}
+      if(t>=impactT&&t<impactT+0.28)flash=0.5*(1-(t-impactT)/0.28);
+    }
+    d.revLbl.material.opacity=0.85*band(t,36.87,46,1.0)*(0.6+0.4*Math.sin(t*3));
+    camSet(0,0.3,8,0,0.2,0,48);
+  }
+
+  // ---------------- D: smoke + ink one-way ----------------
+  if(gD.visible){
+    const d=gD.userData;
+    const sa=d.smoke.geometry.attributes.position.array;
+    for(let i=0;i<d.NSm;i++){const b=i*3;const life=((t*0.09*d.srate[i]+d.sph[i])%1);
+      const spread=life*2.4;
+      sa[b]=d.sdir[b]*spread+Math.sin(t*0.6+i)*0.2;
+      sa[b+1]=-1.6+d.sdir[b+1]*life*4.2;
+      sa[b+2]=d.sdir[b+2]*spread+Math.cos(t*0.5+i)*0.2;}
+    d.smoke.geometry.attributes.position.needsUpdate=true;
+    d.smoke.material.opacity=0.45;
+    const ia=d.ink.geometry.attributes.position.array;
+    const diff=smooth(clamp((t-47)/9,0,1));
+    for(let i=0;i<d.NInk;i++){const b=i*3;const rr=d.ir[i]*(0.2+diff*1.5);
+      ia[b]=Math.cos(d.ia[i])*rr;
+      ia[b+1]=1.4-diff*(1.2+d.iel[i]*0.8)+Math.sin(t*0.4+i)*0.05*diff;
+      ia[b+2]=Math.sin(d.ia[i])*rr;}
+    d.ink.geometry.attributes.position.needsUpdate=true;
+    d.ink.material.opacity=0.85;
+    d.lbl.material.opacity=0.85*band(t,52.93,65.46,1.5);
+    camSet(0,0,9.5,0,0,0,50);
+  }
+
+  // ---------------- E: arrow named + bow ----------------
+  if(gE.visible){
+    const d=gE.userData;
+    const ta=d.trail.geometry.attributes.position.array;
+    for(let i=0;i<d.NT;i++){const b=i*3;const x=((d.tx0[i]+t*0.8)%14)-7;
+      ta[b]=x;ta[b+1]=d.ty0[i]+Math.sin(t*2+d.tph[i])*0.1;ta[b+2]=0;}
+    d.trail.geometry.attributes.position.needsUpdate=true;
+    d.trail.material.opacity=0.6;
+    setOp(d.arrow,0.9);
+    d.lbl.material.opacity=smooth(clamp((t-65.46)/1.4,0,1));
+    camSet(0,0,10,0,0,0,50);
+  }
+
+  // ---------------- F: symmetric laws ----------------
+  if(gF.visible){
+    const d=gF.userData;
+    d.node.rotation.y=t*0.4;d.node.rotation.x=t*0.2;
+    const pa=d.parts.geometry.attributes.position.array;
+    for(let i=0;i<d.N;i++){const b=i*3;const x=((d.px0[i]+d.pdir[i]*t*0.9)%14+14)%14-7;
+      pa[b]=x;pa[b+1]=d.py0[i]+Math.sin(t*1.5+d.pph[i])*0.2;pa[b+2]=0;}
+    d.parts.geometry.attributes.position.needsUpdate=true;
+    const g=0.7+0.25*Math.sin(t*1.5);
+    setOp(d.aR,g);setOp(d.aL,g);
+    camSet(0,0,10,0,0,0,50);
+  }
+
+  // ---------------- G: billiard fwd/reverse ----------------
+  if(gG.visible){
+    const d=gG.userData;
+    const period=4.0;const lt=(t-92.44)%period;
+    function place(tab,tt){
+      const half=period/2;
+      let ax,az,bx,bz;
+      if(tt<half){const u=tt/half;ax=-2.6+u*2.6;az=0.35;bx=0;bz=0.35;}
+      else{const u=(tt-half)/half;ax=0-u*0.6;az=0.35-u*0.9;bx=u*2.6;bz=0.35+u*0.9;}
+      tab.ballA.position.set(ax,0,az);tab.ballB.position.set(bx,0,bz);
+    }
+    place(d.tF,lt);
+    place(d.tR,period-lt);
+    setOp(d.tick,0.85);setOp(d.tick2,0.85);
+    d.qLbl.material.opacity=0.85*band(t,124.37,130.05,1.2)*(0.6+0.4*Math.sin(t*3));
+    camSet(0,3.2,10.5,0,0,0,52);
+  }
+
+  // ---------------- H: entropy label + grid ----------------
+  if(gH.visible){
+    const d=gH.userData;
+    d.grid.userData.cells.forEach((m,i)=>{
+      const v=0.5+0.5*Math.sin(t*1.4+m.userData.ph*3+i*0.3);
+      m.material.color.setHSL(0.55,0.6,0.35+v*0.35);
+      m.material.opacity=0.5+0.4*v;
+    });
+    d.lbl.material.opacity=smooth(clamp((t-130.05)/1.2,0,1));
+    d.sub.material.opacity=0.8*band(t,154.32,160.25,1.0);
+    camSet(0,0,9,0,0,0,50);
+  }
+
+  // ---------------- I: desk tidy<->messy ----------------
+  if(gI.visible){
+    const d=gI.userData;
+    const mess=smooth(clamp((t-166.94)/8,0,1));
+    for(let i=0;i<d.N;i++){const o=d.od[i];const m=d.objs.children[i];
+      m.position.lerpVectors(o.tidy,o.messy,mess);
+      m.rotation.set(o.rotM.x*mess,o.rotM.y*mess,o.rotM.z*mess);}
+    d.cntTidy.material.opacity=0.9*(1-smooth(clamp((mess-0.1)/0.3,0,1)));
+    d.cntMess.material.opacity=0.9*smooth(clamp((mess-0.15)/0.3,0,1));
+    d.boltz.material.opacity=0.9*band(t,196.27,211.8,1.2);
+    d.bname.material.opacity=0.9*band(t,196.27,211.8,1.2);
+    camSet(Math.sin(t*0.05)*1.5,0,10,0,0,0,52);
+  }
+
+  // ---------------- K: gas corner vs spread ----------------
+  if(gK.visible){
+    const d=gK.userData;
+    const spread=smooth(clamp((t-222.07)/8,0,1));
+    const ga=d.gas.geometry.attributes.position.array;
+    for(let i=0;i<d.N;i++){const b=i*3;
+      const jx=Math.sin(t*1.6+d.ph[b])*0.12,jy=Math.cos(t*1.4+d.ph[b+1])*0.12,jz=Math.sin(t*1.2+d.ph[b+2])*0.12;
+      ga[b]=d.corner[b]+(d.spread[b]-d.corner[b])*spread+jx;
+      ga[b+1]=d.corner[b+1]+(d.spread[b+1]-d.corner[b+1])*spread+jy;
+      ga[b+2]=d.corner[b+2]+(d.spread[b+2]-d.corner[b+2])*spread+jz;}
+    d.gas.geometry.attributes.position.needsUpdate=true;
+    d.lc.material.opacity=0.85*(1-spread)*band(t,211.8,228,1.0);
+    d.ls.material.opacity=0.85*spread;
+    camSet(Math.sin(t*0.06)*1.5,0.4,10,0,0,0,52);
+  }
+
+  // ---------------- L: cup shards reverse hint ----------------
+  if(gL.visible){
+    const d=gL.userData;
+    const quiver=band(t,258,268,1.5);
+    for(let i=0;i<d.NS;i++){const s=d.sd[i];const m=d.shards.children[i];
+      const lift=quiver*(0.3+0.5*Math.sin(t*6+s.ph));
+      m.position.set(s.rest.x,s.rest.y+Math.abs(lift)*0.5,s.rest.z);
+      m.rotation.set(s.rot.x*(1+quiver*0.4),s.rot.y*(1+quiver*0.4),s.rot.z);
+      m.material.opacity=0.95;}
+    setOp(d.arrow,0.85);
+    d.lbl.material.opacity=0.85;
+    camSet(Math.sin(t*0.05)*1.2,0.6,9.5,0,0,0,50);
+  }
+
+  // ---------------- M: entropy bar + crowd ----------------
+  if(gM.visible){
+    const d=gM.userData;
+    const prog=loc(t,'M');
+    const la=d.line.geometry.attributes.position.array;
+    for(let i=0;i<d.NL;i++){const xN=i/(d.NL-1);const x=-5.4+xN*10.8;
+      const y=-2.0 + (1-Math.exp(-xN*2.6))*4.6;
+      la[i*3]=x;la[i*3+1]=xN<=prog?y:-2.0;la[i*3+2]=0;}
+    d.line.geometry.attributes.position.needsUpdate=true;
+    const crowdIn=smooth(clamp((t-303.1)/8,0,1));
+    const ca=d.crowd.geometry.attributes.position.array;
+    for(let i=0;i<d.NC;i++){const b=i*3;
+      ca[b]=d.cb[b]+Math.sin(t*0.8+d.cph[i])*0.4*crowdIn;
+      ca[b+1]=d.cb[b+1]+Math.cos(t*0.7+d.cph[i])*0.4*crowdIn;
+      ca[b+2]=d.cb[b+2];}
+    d.crowd.geometry.attributes.position.needsUpdate=true;
+    d.crowd.material.opacity=0.5*crowdIn;
+    setOp(d.line,0.95);
+    camSet(0,0,10.5,0,0,0,50);
+  }
+
+  // ---------------- N: missing piece + symmetric parabola ----------------
+  if(gN.visible){
+    const d=gN.userData;
+    const gapPulse=0.5+0.5*Math.sin(t*3);
+    d.gap.material.opacity=0.6*gapPulse;
+    const showPara=smooth(clamp((t-342)/6,0,1));
+    setOp(d.para,0.9*showPara);
+    d.lbl2.material.opacity=0.85*showPara;
+    d.now.material.opacity=showPara;
+    camSet(0,-0.6,11,0,-0.6,0,52);
+  }
+
+  // ---------------- O: rewind time, entropy dips ----------------
+  if(gO.visible){
+    const d=gO.userData;const p=loc(t,'O');
+    const la=d.line.geometry.attributes.position.array;
+    for(let i=0;i<d.NL;i++){const xN=i/(d.NL-1);const x=-5.2+xN*10.4;
+      const y=-2.2+(1-Math.exp(-(xN)*2.4))*4.2;
+      la[i*3]=x;la[i*3+1]=y;la[i*3+2]=0;}
+    d.line.geometry.attributes.position.needsUpdate=true;
+    setOp(d.line,0.95);
+    d.seedGlow.material.opacity=0.6+0.3*Math.sin(t*2);
+    camSet(3.0-p*7.0,0.3,10.5,3.0-p*7.0,0,0,52);
+  }
+
+  // ---------------- P: Big Bang fireball + gravity flip ----------------
+  if(gP.visible){
+    const d=gP.userData;
+    const fa=d.fire.geometry.attributes.position.array;
+    for(let i=0;i<d.N;i++){const b=i*3;const rr=(0.6+d.fr[i]*2.2)*(0.9+0.1*Math.sin(t*2+d.fph[i]));
+      const jit=0.3*Math.sin(t*3+d.fph[i]*5);
+      fa[b]=d.fdir[b]*rr+Math.sin(t*4+i)*0.15;
+      fa[b+1]=d.fdir[b+1]*rr+jit*0.3;
+      fa[b+2]=d.fdir[b+2]*rr+Math.cos(t*3.5+i)*0.15;}
+    d.fire.geometry.attributes.position.needsUpdate=true;
+    d.core.material.opacity=0.85*(0.85+0.15*Math.sin(t*5));
+    d.q.material.opacity=0.85*band(t,419,425,1.0)*(0.6+0.4*Math.sin(t*3));
+    d.flip.material.opacity=0.9*band(t,429,442.83,1.5);
+    camSet(Math.sin(t*0.08)*1.5,0,9.5,0,0,0,50);
+  }
+
+  // ---------------- Q: smooth universe + bow ----------------
+  if(gQ.visible){
+    const d=gQ.userData;
+    const fa=d.field.geometry.attributes.position.array;
+    for(let i=0;i<d.N;i++){const b=i*3;
+      fa[b]=d.fb[b]+d.fj[b]*Math.sin(t*0.4+d.fph[i])*0.12;
+      fa[b+1]=d.fb[b+1]+d.fj[b+1]*Math.cos(t*0.35+d.fph[i])*0.12;
+      fa[b+2]=d.fb[b+2];}
+    d.field.geometry.attributes.position.needsUpdate=true;
+    const bowIn=smooth(clamp((t-478)/6,0,1));
+    d.bowGrp.visible=bowIn>0.02;
+    setOp(d.bowGrp,bowIn*0.85);
+    d.lbl2.material.opacity=0.85*bowIn;
+    d.lbl.material.opacity=0.85*band(t,442.83,478,2.0);
+    camSet(Math.sin(t*0.05)*1.5,0,10,0,0,0,52);
+  }
+
+  // ---------------- R: clump stars/galaxies + heat ----------------
+  if(gR.visible){
+    const d=gR.userData;const p=loc(t,'R');
+    const clump=smooth(clamp((t-493)/16,0,1));
+    const ga=d.gas.geometry.attributes.position.array;
+    for(let i=0;i<d.N;i++){const b=i*3;
+      const jx=Math.sin(t*0.7+d.ph[i])*0.1,jy=Math.cos(t*0.6+d.ph[i])*0.1;
+      ga[b]=d.start[b]+(d.cluster[b]-d.start[b])*clump+jx;
+      ga[b+1]=d.start[b+1]+(d.cluster[b+1]-d.start[b+1])*clump+jy;
+      ga[b+2]=d.start[b+2]+(d.cluster[b+2]-d.start[b+2])*clump;}
+    d.gas.geometry.attributes.position.needsUpdate=true;
+    const heatIn=smooth(clamp((t-510.81)/8,0,1));
+    const ha=d.heat.geometry.attributes.position.array;
+    for(let i=0;i<d.NH;i++){const b=i*3;const c=d.cc[d.hc[i]];const life=((t*0.15+d.hph[i])%1);
+      const rr=life*4.0;
+      ha[b]=c.x+d.hdir[b]*rr;ha[b+1]=c.y+d.hdir[b+1]*rr;ha[b+2]=c.z+d.hdir[b+2]*rr;}
+    d.heat.geometry.attributes.position.needsUpdate=true;
+    d.heat.material.opacity=0.5*heatIn;
+    d.lbl.material.opacity=0.85*band(t,510.81,530.61,1.5);
+    camSet(Math.sin(t*0.05)*2,0,11-p*1.5,0,0,0,52);
+  }
+
+  // ---------------- S: black hole + cosmic entropy curve ----------------
+  if(gS.visible){
+    const d=gS.userData;
+    const collapse=smooth(clamp((t-541.85)/6,0,1));
+    const ia=d.infall.geometry.attributes.position.array;
+    for(let i=0;i<d.N;i++){const a=d.ia[i]+t*(0.4+ (1-d.ir[i]/6)*1.2);
+      const rr=d.ir[i]*(1-collapse*0.85)+0.2;
+      ia[i*3]=Math.cos(a)*rr;ia[i*3+1]=d.iel[i]*rr*0.4;ia[i*3+2]=Math.sin(a)*rr;}
+    d.infall.geometry.attributes.position.needsUpdate=true;
+    d.infall.material.opacity=0.85;
+    d.eh.visible=collapse>0.2;d.eh.scale.setScalar(Math.max(0.01,collapse));
+    d.rim.visible=collapse>0.2;d.rim.scale.setScalar(Math.max(0.01,collapse));d.rim.rotation.z=t*0.3;
+    d.rim.material.opacity=0.9*collapse;
+    d.disk.visible=collapse>0.2;
+    const dda=d.disk.geometry.attributes.position.array;
+    for(let i=0;i<d.ND;i++){const a=d.da[i]+t*(0.6+ (2.0-d.dr[i])*0.4);const rr=d.dr[i]*collapse;
+      dda[i*3]=Math.cos(a)*rr;dda[i*3+1]=d.dy[i];dda[i*3+2]=Math.sin(a)*rr;}
+    d.disk.geometry.attributes.position.needsUpdate=true;
+    d.disk.material.opacity=0.85*collapse;
+    const showCurve=smooth(clamp((t-556.43)/6,0,1));
+    d.curve.visible=showCurve>0.02;
+    if(d.curve.visible){
+      const la=d.curve.geometry.attributes.position.array;
+      for(let i=0;i<d.NL;i++){const xN=i/(d.NL-1);const x=-5.2+xN*10.4;
+        const y=-1.8+(1-Math.exp(-xN*2.8))*3.2;
+        la[i*3]=x;la[i*3+1]=y;la[i*3+2]=0;}
+      d.curve.geometry.attributes.position.needsUpdate=true;
+      setOp(d.curve,0.9*showCurve);
+    }
+    d.lbl2.material.opacity=0.85*showCurve;
+    d.lbl.material.opacity=0.85*band(t,530.61,556.43,2.0);
+    camSet(Math.sin(t*0.05)*1.5,showCurve*1.0,9.5+showCurve*1.5,0,showCurve*0.5,0,50);
+  }
+
+  // ---------------- T: clock returns + Past Hypothesis ----------------
+  if(gT.visible){
+    const d=gT.userData;
+    d.hand.rotation.z=-t*(TAU/60)*0.5;
+    d.seedGlow.material.opacity=0.6+0.3*Math.sin(t*1.5);
+    d.circle.rotation.z=t*0.3;
+    setOp(d.arrow,0.8);
+    d.lbl.material.opacity=0.9*band(t,601,642.96,1.5);
+    camSet(0,0,10,0,0,0,52);
+  }
+
+  // ---------------- U: stars die + heat death ----------------
+  if(gU.visible){
+    const d=gU.userData;const p=loc(t,'U');
+    const fade=smooth(clamp((t-650.48)/10,0,1));
+    const sa=d.starPts.geometry.attributes.position.array;
+    for(let i=0;i<d.N;i++){sa[i*3]=d.sx[i];sa[i*3+1]=d.sy[i];sa[i*3+2]=d.sz[i];}
+    d.starPts.geometry.attributes.position.needsUpdate=true;
+    d.starPts.material.opacity=0.9*(1-fade);
+    const cold=smooth(clamp((t-661.88)/10,0,1));
+    const ca=d.cold.geometry.attributes.position.array;
+    for(let i=0;i<d.NC;i++){const b=i*3;
+      ca[b]=d.cb[b]+Math.sin(t*0.15+d.cph[i])*0.2;
+      ca[b+1]=d.cb[b+1]+Math.cos(t*0.13+d.cph[i])*0.2;
+      ca[b+2]=d.cb[b+2];}
+    d.cold.geometry.attributes.position.needsUpdate=true;
+    d.cold.material.opacity=0.45*cold;
+    d.lbl2.material.opacity=0.85*band(t,661.88,684.44,2.0);
+    setOp(d.arrow,0.7*(1-cold*0.6));
+    camSet(Math.sin(t*0.04)*2,0,11+p*1.5,0,0,0,52);
+  }
+
+  // ---------------- V: entropy slope + body ----------------
+  if(gV.visible){
+    const d=gV.userData;
+    d.hereGlow.material.opacity=0.6+0.3*Math.sin(t*1.5);
+    const bodyIn=smooth(clamp((t-697.63)/3,0,1));
+    d.bodyGrp.visible=bodyIn>0.02;
+    if(d.bodyGrp.visible){
+      const beat=0.5+0.5*Math.sin(t*3.2);
+      d.heartGlow.scale.setScalar(1.0+beat*0.5);
+      d.heartGlow.material.opacity=0.7+0.3*beat;
+      d.bodyGrp.scale.y=1.0+0.02*Math.sin(t*1.4);
+      const oa=d.orderIn.geometry.attributes.position.array;
+      for(let i=0;i<d.NIn;i++){const life=((t*0.3+d.inPh[i])%1);const rr=(1-life)*3.5+0.4;
+        const a=d.inA[i]+t*0.4;
+        oa[i*3]=Math.cos(a)*rr;oa[i*3+1]=Math.sin(a)*rr*0.7+0.1;oa[i*3+2]=Math.sin(d.inR[i]*TAU)*0.5;}
+      d.orderIn.geometry.attributes.position.needsUpdate=true;
+      d.orderIn.material.opacity=0.6*bodyIn;
+      const ha=d.heatOut.geometry.attributes.position.array;
+      for(let i=0;i<d.NOut;i++){const life=((t*0.25+d.outPh[i])%1);const rr=life*3.8+0.3;
+        ha[i*3]=Math.cos(d.outA[i])*rr;ha[i*3+1]=Math.sin(d.outA[i])*rr*0.7+d.outEl[i];ha[i*3+2]=Math.sin(d.outEl[i])*rr*0.4;}
+      d.heatOut.geometry.attributes.position.needsUpdate=true;
+      d.heatOut.material.opacity=0.55*bodyIn;
+      d.lblLife.material.opacity=0.85*band(t,712.69,718.12,1.0);
+      setOp(d.slope,0.4);d.lblHere.material.opacity=0.6*(1-bodyIn);
+      d.here.material.opacity=1-bodyIn;d.hereGlow.material.opacity*=(1-bodyIn);
+    }else{
+      setOp(d.slope,0.7);d.lblHere.material.opacity=0.85;
+    }
+    camSet(0,0,10,0,0,0,50);
+  }
+
+  // ---------------- W: neurons + arrows merge ----------------
+  if(gW.visible){
+    const d=gW.userData;
+    const form=smooth(clamp((t-734.11)/6,0,1));
+    d.conns.forEach((ln,i)=>{const v=0.5+0.5*Math.sin(t*2+ln.userData.ph);
+      ln.material.opacity=ln.userData.base*(0.4+form*v);});
+    d.nodes.forEach((m,i)=>{m.material.opacity=0.7+0.3*Math.sin(t*1.5+i);
+      m.scale.setScalar(1+form*0.4*Math.sin(t*2+i));});
+    const ha=d.heat.geometry.attributes.position.array;
+    for(let i=0;i<d.NH;i++){const life=((t*0.3+d.hph[i])%1);const rr=life*5.0+0.5;
+      ha[i*3]=d.hdir[i*3]*rr;ha[i*3+1]=d.hdir[i*3+1]*rr;ha[i*3+2]=d.hdir[i*3+2]*rr;}
+    d.heat.geometry.attributes.position.needsUpdate=true;
+    d.heat.material.opacity=0.5*form;
+    const merge=smooth(clamp((t-729.87)/3,0,1));
+    d.aPsy.position.y=1.6*(1-merge);
+    d.aTher.position.y=-1.6*(1-merge);
+    setOp(d.aPsy,0.7*(1-merge*0.6));setOp(d.aTher,0.7*(1-merge*0.6));
+    d.lbl.material.opacity=0.9*merge;
+    d.lPsy.material.opacity=0.7*(1-merge);d.lTher.material.opacity=0.7*(1-merge);
+    camSet(Math.sin(t*0.05)*1.5,0,10,0,0,0,52);
+  }
+
+  // ---------------- X: memories thread to seed, clock closes ----------------
+  if(gX.visible){
+    const d=gX.userData;
+    setOp(d.arrow,0.7);
+    d.seedGlow.material.opacity=0.6+0.3*Math.sin(t*1.2);
+    const memIn=smooth(clamp((t-770)/6,0,1));
+    d.pp.forEach((m,i)=>{m.material.opacity=memIn*(0.6+0.4*Math.sin(t*1.2+m.userData.ph));
+      m.position.y=(1.4+Math.sin(i*1.3)*0.6)+Math.sin(t*0.8+m.userData.ph)*0.08;});
+    d.thread.material.opacity=0.6*memIn;
+    const clkIn=smooth(clamp((t-788.94)/4,0,1));
+    d.clk.visible=clkIn>0.02;
+    if(d.clk.visible){
+      setOp(d.clk,clkIn*0.85);
+      d.hand.rotation.z=-t*(TAU/60)*0.35;
+      d.photos.children.forEach(m=>{m.material.opacity*=(1-clkIn*0.7);});
+      d.thread.material.opacity*=(1-clkIn*0.7);
+    }
+    d.lbl.material.opacity=0.85*band(t,778.79,800,2.0)*(1-clkIn*0.5);
+    camSet(0,0,10+clkIn*2,0,0,0,50);
+  }
+  }catch(err){var ed=document.getElementById('err');if(ed){ed.style.display='block';ed.textContent='SCENE ERR @t='+t.toFixed(1)+': '+(err&&err.message||err);}}
+
+  // ---------------- global fades ----------------
+  let fade=1.0;
+  fade*=smooth(clamp(t/3.0,0,1));
+  fade*=smooth(clamp((TOTAL-t)/4.0,0,1));
+
+  lens.uniforms.uT.value=t;
+  lens.uniforms.uFade.value=fade;
+  lens.uniforms.uFlash.value=flash;
+  const fiery=inSc(t,'P')||inSc(t,'R')||(inSc(t,'C')&&t<32);
+  bloom.strength=fiery?1.05:0.8;
+
+  updateText(t);
+  composer.render();
+}
+
+// subtitle / chapter lookup
+let _lastSub=-1,_lastChap='';
+function updateText(t){
+  let idx=0;for(let i=0;i<CUES.length;i++){if(CUES[i].t<=t+1e-6)idx=i;else break;}
+  const cur=CUES[idx];
+  if(idx!==_lastSub){document.getElementById('sub').textContent=cur?cur.s:'';_lastSub=idx;}
+  let chT=-1,chS='';for(const c of CUES){if(c.ch&&c.t<=t){chT=c.t;chS=c.ch;}}
+  const chapEl=document.getElementById('chap');
+  if(chS!==_lastChap){chapEl.textContent=chS;_lastChap=chS;}
+  const op=chT>=0?smooth(clamp((t-chT)/0.8,0,1))*smooth(clamp((chT+4.5-t)/1.2,0,1)):0;
+  chapEl.style.opacity=op;
+  document.getElementById('sub').style.opacity=1;
+}
+
+// ============================================================
+//  GSAP timeline (paused) — deterministic driver
+// ============================================================
+window.__timelines=window.__timelines||{};
+const tl=gsap.timeline({paused:true});
+const clk={t:0};
+tl.to(clk,{t:TOTAL,duration:TOTAL,ease:"none",onUpdate:()=>renderAtTime(clk.t)},0);
+window.__timelines["mui-ten-thoi-gian"]=tl;
+
+// initial render
+renderAtTime(0);
+</script>
+</body>
+</html>

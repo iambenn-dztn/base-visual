@@ -1,0 +1,1350 @@
+{
+  "total": 806.14,
+  "count": 336,
+  "cues": [
+    {
+      "t": 0,
+      "s": "Tôi muốn bạn ngồi thật yên một chút."
+    },
+    {
+      "t": 2.27,
+      "s": "Nhắm mắt lại nếu có thể."
+    },
+    {
+      "t": 4.42,
+      "s": "Và lắng nghe."
+    },
+    {
+      "t": 6.26,
+      "s": "Vì ngay lúc này, một cơn mưa đang xuyên"
+    },
+    {
+      "t": 9.64,
+      "s": "qua bạn."
+    },
+    {
+      "t": 10.33,
+      "s": "Một cơn mưa mà bạn không thấy, không nghe,"
+    },
+    {
+      "t": 13.76,
+      "s": "không hề cảm nhận được."
+    },
+    {
+      "t": 15.64,
+      "s": "Nhưng nó chưa từng ngừng lại, dù chỉ một"
+    },
+    {
+      "t": 19.02,
+      "s": "khoảnh khắc."
+    },
+    {
+      "t": 20.04,
+      "s": "Trong đúng một giây bạn vừa nghe câu này,"
+    },
+    {
+      "t": 22.58,
+      "s": "khoảng một trăm nghìn tỉ hạt đã đi xuyên"
+    },
+    {
+      "t": 25.05,
+      "s": "qua cơ thể bạn."
+    },
+    {
+      "t": 25.98,
+      "s": "Xuyên qua da, qua xương, qua trái tim đang"
+    },
+    {
+      "t": 29.38,
+      "s": "đập."
+    },
+    {
+      "t": 29.7,
+      "s": "Và không một hạt nào chạm vào bất cứ thứ"
+    },
+    {
+      "t": 32.57,
+      "s": "gì trong người bạn."
+    },
+    {
+      "t": 35.43,
+      "s": "Những hạt ấy có một cái tên nghe như bước"
+    },
+    {
+      "t": 38.4,
+      "s": "ra từ truyện ma."
+    },
+    {
+      "t": 39.56,
+      "s": "Neutrino."
+    },
+    {
+      "t": 41.26,
+      "s": "Hạt trung hòa nhỏ bé."
+    },
+    {
+      "t": 43.36,
+      "s": "Và người ta thường gọi nó bằng một biệt"
+    },
+    {
+      "t": 46.03,
+      "s": "danh khác, đúng hơn với bản chất của nó."
+    },
+    {
+      "t": 48.77,
+      "s": "Hạt ma."
+    },
+    {
+      "t": 50.54,
+      "s": "Chúng đến từ Mặt Trời."
+    },
+    {
+      "t": 52.41,
+      "s": "Từ tận trong lõi của ngôi sao ấy, cách"
+    },
+    {
+      "t": 55.2,
+      "s": "chúng ta một trăm năm mươi triệu cây số."
+    },
+    {
+      "t": 58.13,
+      "s": "Và chúng vừa lao một mạch qua khoảng không"
+    },
+    {
+      "t": 61.02,
+      "s": "vũ trụ, để rồi đi thẳng qua bạn như thể"
+    },
+    {
+      "t": 63.7,
+      "s": "bạn không hề tồn tại."
+    },
+    {
+      "t": 65.15,
+      "s": "Nhưng đây mới là điều khiến tôi lặng"
+    },
+    {
+      "t": 67.75,
+      "s": "người."
+    },
+    {
+      "t": 68.18,
+      "s": "Chúng không chỉ xuyên qua bạn."
+    },
+    {
+      "t": 70.43,
+      "s": "Chúng xuyên qua cả Trái Đất."
+    },
+    {
+      "t": 72.98,
+      "s": "Ngay lúc này là ban đêm ở đâu đó bên kia"
+    },
+    {
+      "t": 76.4,
+      "s": "hành tinh."
+    },
+    {
+      "t": 77.25,
+      "s": "Với những người ở đó, Mặt Trời đang nằm"
+    },
+    {
+      "t": 80.18,
+      "s": "dưới chân họ, bị cả một khối cầu đất đá"
+    },
+    {
+      "t": 83.1,
+      "s": "dày mười hai nghìn cây số che khuất."
+    },
+    {
+      "t": 85.8,
+      "s": "Vậy mà cơn mưa neutrino vẫn đang tưới lên"
+    },
+    {
+      "t": 88.97,
+      "s": "họ, y hệt như tưới lên bạn giữa ban ngày."
+    },
+    {
+      "t": 92.13,
+      "s": "Với neutrino, cả Trái Đất trong suốt như"
+    },
+    {
+      "t": 95.13,
+      "s": "một tấm kính."
+    },
+    {
+      "t": 96.1,
+      "s": "Cả hành tinh của chúng ta chỉ là một làn"
+    },
+    {
+      "t": 98.97,
+      "s": "sương mà nó đi xuyên qua mà không hề chậm"
+    },
+    {
+      "t": 101.9,
+      "s": "lại."
+    },
+    {
+      "t": 102.19,
+      "s": "Và tôi muốn dẫn bạn đi tìm hiểu, làm sao"
+    },
+    {
+      "t": 105.34,
+      "s": "một hạt lại có thể vô hình đến mức đó."
+    },
+    {
+      "t": 108.34,
+      "s": "Để hiểu neutrino, trước hết tôi phải kể"
+    },
+    {
+      "t": 111.22,
+      "s": "cho bạn nghe về nơi nó ra đời."
+    },
+    {
+      "t": 113.43,
+      "s": "Về cái lò đã sinh ra nó."
+    },
+    {
+      "t": 116.12,
+      "s": "Sâu trong lõi Mặt Trời, trọng lực nghiến"
+    },
+    {
+      "t": 118.91,
+      "s": "các hạt nhân hydro vào nhau với sức ép"
+    },
+    {
+      "t": 121.56,
+      "s": "khủng khiếp, ép chúng hợp lại thành heli."
+    },
+    {
+      "t": 124.42,
+      "s": "Đó chính là phản ứng nuôi sống Mặt Trời,"
+    },
+    {
+      "t": 127.28,
+      "s": "thứ đã thắp sáng bầu trời của chúng ta"
+    },
+    {
+      "t": 130.01,
+      "s": "suốt bốn tỉ rưỡi năm."
+    },
+    {
+      "t": 131.51,
+      "s": "Và mỗi lần các hạt nhân ấy hợp nhất, chúng"
+    },
+    {
+      "t": 134.43,
+      "s": "nhả ra hai thứ."
+    },
+    {
+      "t": 135.47,
+      "s": "Một là ánh sáng."
+    },
+    {
+      "t": 137.28,
+      "s": "Hai là những hạt ma."
+    },
+    {
+      "t": 139.87,
+      "s": "Neutrino sinh ra ngay trong khoảnh khắc"
+    },
+    {
+      "t": 143.11,
+      "s": "lửa hạt nhân bùng lên ở trái tim ngôi sao."
+    },
+    {
+      "t": 146.6,
+      "s": "Nhưng số phận của hai thứ đó khác nhau một"
+    },
+    {
+      "t": 150.18,
+      "s": "trời một vực."
+    },
+    {
+      "t": 151.29,
+      "s": "Ánh sáng thì bị nhốt lại."
+    },
+    {
+      "t": 153.58,
+      "s": "Nó va vào vô số hạt trên đường, bị hấp thụ"
+    },
+    {
+      "t": 156.96,
+      "s": "rồi nhả ra, hết lần này đến lần khác."
+    },
+    {
+      "t": 159.94,
+      "s": "Một hạt ánh sáng sinh ra trong lõi Mặt"
+    },
+    {
+      "t": 162.71,
+      "s": "Trời phải mất hàng chục nghìn năm mới lết"
+    },
+    {
+      "t": 165.7,
+      "s": "được ra tới bề mặt."
+    },
+    {
+      "t": 167.09,
+      "s": "Còn neutrino thì khác hẳn."
+    },
+    {
+      "t": 169.42,
+      "s": "Vừa sinh ra, nó phóng thẳng ra khỏi Mặt"
+    },
+    {
+      "t": 172.72,
+      "s": "Trời."
+    },
+    {
+      "t": 173.14,
+      "s": "Không va vào gì."
+    },
+    {
+      "t": 174.86,
+      "s": "Không bị cản lại."
+    },
+    {
+      "t": 176.66,
+      "s": "Cả một ngôi sao đặc quánh vật chất, với"
+    },
+    {
+      "t": 179.75,
+      "s": "nó, cũng gần như là hư không."
+    },
+    {
+      "t": 182.04,
+      "s": "Chỉ hai giây sau khi ra đời, nó đã thoát"
+    },
+    {
+      "t": 185.4,
+      "s": "ra tới bề mặt và lao về phía chúng ta."
+    },
+    {
+      "t": 188.6,
+      "s": "Vậy điều gì làm cho neutrino trơn tuột đến"
+    },
+    {
+      "t": 191.93,
+      "s": "thế?"
+    },
+    {
+      "t": 192.25,
+      "s": "Vì sao nó có thể phớt lờ cả một ngôi sao,"
+    },
+    {
+      "t": 195.88,
+      "s": "cả một hành tinh, cả cơ thể bạn?"
+    },
+    {
+      "t": 198.71,
+      "s": "Bí mật nằm ở chỗ này."
+    },
+    {
+      "t": 200.51,
+      "s": "Trong vũ trụ có bốn lực cơ bản chi phối"
+    },
+    {
+      "t": 203.49,
+      "s": "mọi thứ."
+    },
+    {
+      "t": 204.1,
+      "s": "Nhưng neutrino gần như làm ngơ tất cả."
+    },
+    {
+      "t": 207.5,
+      "s": "Nó không mang điện, nên lực điện từ không"
+    },
+    {
+      "t": 210.64,
+      "s": "níu được nó."
+    },
+    {
+      "t": 211.56,
+      "s": "Nó gần như không có khối lượng, nên trọng"
+    },
+    {
+      "t": 215.55,
+      "s": "lực gần như bỏ quên nó."
+    },
+    {
+      "t": 217.78,
+      "s": "Nó chỉ trò chuyện với thế giới qua đúng"
+    },
+    {
+      "t": 220.4,
+      "s": "một kênh duy nhất, một lực gọi là tương"
+    },
+    {
+      "t": 223.02,
+      "s": "tác yếu."
+    },
+    {
+      "t": 223.56,
+      "s": "Và đúng như tên gọi, lực ấy yếu đến mức"
+    },
+    {
+      "t": 226.39,
+      "s": "chỉ khi neutrino đâm sầm trực diện vào tâm"
+    },
+    {
+      "t": 229.44,
+      "s": "một hạt nhân, may ra mới có chuyện xảy ra."
+    },
+    {
+      "t": 232.49,
+      "s": "Nhưng hạt nhân thì bé đến vô lý, còn"
+    },
+    {
+      "t": 234.83,
+      "s": "khoảng trống giữa chúng thì mênh mông."
+    },
+    {
+      "t": 237.29,
+      "s": "Với neutrino, vật chất mà chúng ta thấy"
+    },
+    {
+      "t": 240.4,
+      "s": "đặc cứng lại chủ yếu là khoảng không."
+    },
+    {
+      "t": 243.35,
+      "s": "Nó cứ thế len qua những kẽ hở khổng lồ"
+    },
+    {
+      "t": 246.42,
+      "s": "giữa các nguyên tử."
+    },
+    {
+      "t": 247.96,
+      "s": "Các nhà vật lý đã tính ra một con số làm"
+    },
+    {
+      "t": 251,
+      "s": "tôi choáng váng."
+    },
+    {
+      "t": 252.21,
+      "s": "Nếu bạn muốn chặn đứng một dòng neutrino,"
+    },
+    {
+      "t": 255.34,
+      "s": "bạn cần một bức tường chì."
+    },
+    {
+      "t": 257.33,
+      "s": "Nhưng không phải dày vài mét."
+    },
+    {
+      "t": 259.78,
+      "s": "Mà là một bức tường chì dày cỡ một năm ánh"
+    },
+    {
+      "t": 263.27,
+      "s": "sáng."
+    },
+    {
+      "t": 263.69,
+      "s": "Một bức tường chì dài bằng quãng đường ánh"
+    },
+    {
+      "t": 266.46,
+      "s": "sáng đi trong trọn một năm, mới có thể"
+    },
+    {
+      "t": 268.97,
+      "s": "chặn được một nửa số neutrino lao tới."
+    },
+    {
+      "t": 271.48,
+      "s": "Vậy thì một hạt gần như không bao giờ chạm"
+    },
+    {
+      "t": 274.35,
+      "s": "vào gì, làm sao ta có thể bắt được nó?"
+    },
+    {
+      "t": 276.94,
+      "s": "Làm sao ta biết nó có thật?"
+    },
+    {
+      "t": 281.15,
+      "s": "Và đây là nghịch lý đẹp nhất của câu"
+    },
+    {
+      "t": 283.53,
+      "s": "chuyện này."
+    },
+    {
+      "t": 284.26,
+      "s": "Chính vì neutrino trơn tuột đến thế, nó"
+    },
+    {
+      "t": 287.18,
+      "s": "lại trở thành một sứ giả trung thực đến"
+    },
+    {
+      "t": 290.1,
+      "s": "tuyệt đối."
+    },
+    {
+      "t": 290.85,
+      "s": "Ánh sáng Mặt Trời mà tôi nhìn thấy là ánh"
+    },
+    {
+      "t": 293.36,
+      "s": "sáng của bề mặt, đã bị nhào nặn suốt hàng"
+    },
+    {
+      "t": 295.87,
+      "s": "chục nghìn năm trước khi thoát ra."
+    },
+    {
+      "t": 297.95,
+      "s": "Nó không kể cho tôi nghe gì về cái lõi."
+    },
+    {
+      "t": 300.97,
+      "s": "Nhưng neutrino thì bay thẳng từ lõi ra,"
+    },
+    {
+      "t": 304.05,
+      "s": "không hề bị bóp méo."
+    },
+    {
+      "t": 305.63,
+      "s": "Nó là tấm ảnh chụp trực tiếp trái tim Mặt"
+    },
+    {
+      "t": 308.37,
+      "s": "Trời, chụp cách đây chỉ tám phút."
+    },
+    {
+      "t": 310.57,
+      "s": "Vậy là con người quyết tâm bắt cho được"
+    },
+    {
+      "t": 313.01,
+      "s": "một hạt ma."
+    },
+    {
+      "t": 313.7,
+      "s": "Và cách chúng ta làm điều đó, với tôi, là"
+    },
+    {
+      "t": 316.57,
+      "s": "một trong những kỳ tích điên rồ nhất của"
+    },
+    {
+      "t": 319.38,
+      "s": "khoa học."
+    },
+    {
+      "t": 320.01,
+      "s": "Nếu neutrino chỉ va chạm cực kỳ hiếm hoi,"
+    },
+    {
+      "t": 323.31,
+      "s": "thì cách duy nhất là gom thật nhiều nguyên"
+    },
+    {
+      "t": 326.7,
+      "s": "tử lại một chỗ, rồi kiên nhẫn chờ."
+    },
+    {
+      "t": 329.44,
+      "s": "Chờ cái khoảnh khắc một trong hàng tỉ tỉ"
+    },
+    {
+      "t": 332.26,
+      "s": "hạt bay qua tình cờ đâm trúng một hạt"
+    },
+    {
+      "t": 334.87,
+      "s": "nhân."
+    },
+    {
+      "t": 335.22,
+      "s": "Thế là người ta xây những cỗ máy dò khổng"
+    },
+    {
+      "t": 337.91,
+      "s": "lồ."
+    },
+    {
+      "t": 338.11,
+      "s": "Không phải trên mặt đất, mà chôn sâu dưới"
+    },
+    {
+      "t": 341.42,
+      "s": "lòng đất, dưới cả một ngọn núi."
+    },
+    {
+      "t": 343.92,
+      "s": "Bởi chỉ có lớp đá dày hàng cây số mới chặn"
+    },
+    {
+      "t": 347.08,
+      "s": "được mọi thứ khác, mọi hạt ồn ào của vũ"
+    },
+    {
+      "t": 350.01,
+      "s": "trụ."
+    },
+    {
+      "t": 350.31,
+      "s": "Chỉ có neutrino, kẻ xuyên thấu mọi thứ,"
+    },
+    {
+      "t": 353.75,
+      "s": "mới lọt được xuống tận đó."
+    },
+    {
+      "t": 356.05,
+      "s": "Hãy hình dung cùng tôi một trong những cỗ"
+    },
+    {
+      "t": 359.13,
+      "s": "máy ấy, ở Nhật Bản."
+    },
+    {
+      "t": 360.56,
+      "s": "Nó là một bể chứa khổng lồ nằm sâu một cây"
+    },
+    {
+      "t": 363.4,
+      "s": "số dưới một ngọn núi, đựng năm mươi nghìn"
+    },
+    {
+      "t": 366.16,
+      "s": "tấn nước siêu tinh khiết."
+    },
+    {
+      "t": 367.85,
+      "s": "Thành bể phủ kín hàng chục nghìn con mắt"
+    },
+    {
+      "t": 370.72,
+      "s": "điện tử, yim lìm chờ đợi trong bóng tối"
+    },
+    {
+      "t": 373.52,
+      "s": "tuyệt đối."
+    },
+    {
+      "t": 374.24,
+      "s": "Rồi thi thoảng, rất thi thoảng, một hạt ma"
+    },
+    {
+      "t": 377.39,
+      "s": "trong hàng tỉ tỉ hạt đâm trúng một nguyên"
+    },
+    {
+      "t": 380.47,
+      "s": "tử trong bể nước."
+    },
+    {
+      "t": 381.74,
+      "s": "Và trong tích tắc va chạm đó, một tia sáng"
+    },
+    {
+      "t": 385.05,
+      "s": "xanh mờ lóe lên trong nước, một vòng ánh"
+    },
+    {
+      "t": 388.2,
+      "s": "sáng lan ra như gợn sóng."
+    },
+    {
+      "t": 390.17,
+      "s": "Những con mắt điện tử bắt lấy nó."
+    },
+    {
+      "t": 393.26,
+      "s": "Cái chớp sáng xanh li ti ấy chính là dấu"
+    },
+    {
+      "t": 396.23,
+      "s": "chân của một hạt ma."
+    },
+    {
+      "t": 397.71,
+      "s": "Lần đầu tiên, con người nhìn thấy bóng"
+    },
+    {
+      "t": 400.51,
+      "s": "dáng của thứ tưởng như vô hình."
+    },
+    {
+      "t": 402.8,
+      "s": "Và họ có thể lần theo vòng sáng để biết"
+    },
+    {
+      "t": 406.1,
+      "s": "hạt ấy đến từ đâu."
+    },
+    {
+      "t": 407.62,
+      "s": "Nó chỉ thẳng về phía Mặt Trời."
+    },
+    {
+      "t": 412.2,
+      "s": "Nhưng khi con người bắt đầu đếm những hạt"
+    },
+    {
+      "t": 415.13,
+      "s": "ma từ Mặt Trời, một bí ẩn kỳ lạ hiện ra."
+    },
+    {
+      "t": 417.99,
+      "s": "Một bí ẩn ám ảnh các nhà khoa học suốt mấy"
+    },
+    {
+      "t": 421.16,
+      "s": "chục năm."
+    },
+    {
+      "t": 421.83,
+      "s": "Một nhà khoa học tên Ray Davis đã dựng một"
+    },
+    {
+      "t": 424.68,
+      "s": "máy dò và cần mẫn đếm neutrino Mặt Trời"
+    },
+    {
+      "t": 427.32,
+      "s": "qua từng năm tháng."
+    },
+    {
+      "t": 428.61,
+      "s": "Ông biết rõ Mặt Trời phải phun ra bao"
+    },
+    {
+      "t": 431.26,
+      "s": "nhiêu hạt."
+    },
+    {
+      "t": 431.97,
+      "s": "Lý thuyết đã tính rất chắc chắn."
+    },
+    {
+      "t": 434.94,
+      "s": "Vậy mà ông đếm đi đếm lại, chỉ thấy khoảng"
+    },
+    {
+      "t": 438.21,
+      "s": "một phần ba con số ấy."
+    },
+    {
+      "t": 439.92,
+      "s": "Hai phần ba số neutrino đã biến đi đâu mất"
+    },
+    {
+      "t": 442.81,
+      "s": "trên đường từ Mặt Trời đến Trái Đất."
+    },
+    {
+      "t": 445.29,
+      "s": "Người ta gọi đó là bài toán neutrino Mặt"
+    },
+    {
+      "t": 449.33,
+      "s": "Trời."
+    },
+    {
+      "t": 449.83,
+      "s": "Hoặc là chúng ta hiểu sai về Mặt Trời."
+    },
+    {
+      "t": 452.78,
+      "s": "Hoặc là chúng ta hiểu sai về chính hạt ma"
+    },
+    {
+      "t": 455.99,
+      "s": "này."
+    },
+    {
+      "t": 456.3,
+      "s": "Và sự thật hóa ra còn lạ lùng hơn cả hai"
+    },
+    {
+      "t": 459.59,
+      "s": "khả năng đó."
+    },
+    {
+      "t": 460.58,
+      "s": "Những hạt neutrino ấy chưa hề biến mất."
+    },
+    {
+      "t": 463.59,
+      "s": "Chúng chỉ đã hóa trang."
+    },
+    {
+      "t": 465.79,
+      "s": "Bạn thấy đấy, neutrino không chỉ có một"
+    },
+    {
+      "t": 469.38,
+      "s": "loại."
+    },
+    {
+      "t": 469.84,
+      "s": "Nó có ba khuôn mặt, ba hương vị khác nhau,"
+    },
+    {
+      "t": 473.04,
+      "s": "mà các nhà khoa học gọi là ba hương."
+    },
+    {
+      "t": 475.78,
+      "s": "Có neutrino electron, neutrino muon, và"
+    },
+    {
+      "t": 479.88,
+      "s": "neutrino tau."
+    },
+    {
+      "t": 481.24,
+      "s": "Mặt Trời chỉ sinh ra loại thứ nhất."
+    },
+    {
+      "t": 483.87,
+      "s": "Còn máy dò của Ray Davis cũng chỉ đếm được"
+    },
+    {
+      "t": 486.97,
+      "s": "đúng loại thứ nhất ấy."
+    },
+    {
+      "t": 488.59,
+      "s": "Điều kỳ diệu là thế này."
+    },
+    {
+      "t": 490.37,
+      "s": "Trên đường bay từ Mặt Trời đến Trái Đất,"
+    },
+    {
+      "t": 493,
+      "s": "mỗi hạt neutrino liên tục thay đổi khuôn"
+    },
+    {
+      "t": 495.63,
+      "s": "mặt của mình."
+    },
+    {
+      "t": 496.48,
+      "s": "Nó rời Mặt Trời với một hương, rồi hóa"
+    },
+    {
+      "t": 499.91,
+      "s": "thành hương thứ hai, rồi thứ ba, rồi quay"
+    },
+    {
+      "t": 503.61,
+      "s": "lại, cứ thế đổi qua đổi lại suốt hành"
+    },
+    {
+      "t": 506.95,
+      "s": "trình."
+    },
+    {
+      "t": 507.49,
+      "s": "Người ta gọi hiện tượng này là dao động"
+    },
+    {
+      "t": 510.64,
+      "s": "neutrino."
+    },
+    {
+      "t": 511.37,
+      "s": "Thế nên khi những hạt ma ấy tới được Trái"
+    },
+    {
+      "t": 513.85,
+      "s": "Đất, chỉ còn khoảng một phần ba đang khoác"
+    },
+    {
+      "t": 516.39,
+      "s": "đúng khuôn mặt mà máy của Davis nhìn thấy"
+    },
+    {
+      "t": 518.87,
+      "s": "được."
+    },
+    {
+      "t": 519.17,
+      "s": "Hai phần ba kia không hề mất."
+    },
+    {
+      "t": 521.55,
+      "s": "Chúng chỉ đang đội một hương khác."
+    },
+    {
+      "t": 524.05,
+      "s": "Bài toán được giải, không phải bằng cách"
+    },
+    {
+      "t": 526.99,
+      "s": "sửa Mặt Trời, mà bằng cách hé lộ một bí"
+    },
+    {
+      "t": 529.86,
+      "s": "mật sâu thẳm của chính hạt ma."
+    },
+    {
+      "t": 532.06,
+      "s": "Và bí mật ấy còn đi xa hơn."
+    },
+    {
+      "t": 534.57,
+      "s": "Bởi vì để đổi được khuôn mặt như vậy, một"
+    },
+    {
+      "t": 537.38,
+      "s": "hạt buộc phải có khối lượng."
+    },
+    {
+      "t": 539.3,
+      "s": "Dù cực kỳ nhỏ bé."
+    },
+    {
+      "t": 541.5,
+      "s": "Suốt bao năm, người ta cứ ngỡ neutrino"
+    },
+    {
+      "t": 544.11,
+      "s": "hoàn toàn không có khối lượng."
+    },
+    {
+      "t": 546.17,
+      "s": "Nhưng chính sự hóa trang này đã chứng minh"
+    },
+    {
+      "t": 549.17,
+      "s": "điều ngược lại."
+    },
+    {
+      "t": 550.24,
+      "s": "Neutrino có khối lượng."
+    },
+    {
+      "t": 552.03,
+      "s": "Nhỏ đến mức gần như không thể tin nổi, nhỏ"
+    },
+    {
+      "t": 555,
+      "s": "hơn cả một phần triệu khối lượng một"
+    },
+    {
+      "t": 557.54,
+      "s": "electron, nhưng khác không."
+    },
+    {
+      "t": 559.45,
+      "s": "Khám phá ấy làm rung chuyển vật lý, và"
+    },
+    {
+      "t": 562.08,
+      "s": "mang về một giải Nobel cho hai nhà khoa"
+    },
+    {
+      "t": 564.78,
+      "s": "học đã vén được tấm màn."
+    },
+    {
+      "t": 566.44,
+      "s": "Một hạt trơn tuột và vô hình, hóa ra lại"
+    },
+    {
+      "t": 569.32,
+      "s": "giấu trong mình một bí mật về bản chất của"
+    },
+    {
+      "t": 572.34,
+      "s": "vật chất."
+    },
+    {
+      "t": 572.99,
+      "s": "Nhưng neutrino không chỉ mang tin từ Mặt"
+    },
+    {
+      "t": 576.12,
+      "s": "Trời."
+    },
+    {
+      "t": 576.51,
+      "s": "Nó còn là sứ giả của những sự kiện dữ dội"
+    },
+    {
+      "t": 579.49,
+      "s": "nhất trong cả vũ trụ."
+    },
+    {
+      "t": 581.02,
+      "s": "Và tôi muốn kể cho bạn nghe về một đêm đặc"
+    },
+    {
+      "t": 584.42,
+      "s": "biệt."
+    },
+    {
+      "t": 584.83,
+      "s": "Khi một ngôi sao khổng lồ chết đi trong"
+    },
+    {
+      "t": 587.68,
+      "s": "một vụ nổ siêu tân tinh, lõi của nó sụp đổ"
+    },
+    {
+      "t": 590.74,
+      "s": "trong tích tắc."
+    },
+    {
+      "t": 591.84,
+      "s": "Và trong khoảnh khắc kinh hoàng ấy, nó"
+    },
+    {
+      "t": 594.4,
+      "s": "giải phóng một cơn lũ neutrino không thể"
+    },
+    {
+      "t": 597.1,
+      "s": "tưởng tượng nổi."
+    },
+    {
+      "t": 598.18,
+      "s": "Gần như toàn bộ năng lượng của cái chết ấy"
+    },
+    {
+      "t": 601.27,
+      "s": "tuôn ra dưới dạng hạt ma."
+    },
+    {
+      "t": 603.1,
+      "s": "Năm một nghìn chín trăm tám mươi bảy, một"
+    },
+    {
+      "t": 605.68,
+      "s": "ngôi sao nổ tung ở một thiên hà lân cận,"
+    },
+    {
+      "t": 608.19,
+      "s": "cách chúng ta một trăm sáu mươi nghìn năm"
+    },
+    {
+      "t": 610.76,
+      "s": "ánh sáng."
+    },
+    {
+      "t": 611.33,
+      "s": "Và điều đáng kinh ngạc là các máy dò dưới"
+    },
+    {
+      "t": 614.19,
+      "s": "lòng đất đã bắt được đợt neutrino từ vụ nổ"
+    },
+    {
+      "t": 617.11,
+      "s": "ấy."
+    },
+    {
+      "t": 617.32,
+      "s": "Nhưng đây mới là chi tiết khiến tôi nổi da"
+    },
+    {
+      "t": 620.22,
+      "s": "gà."
+    },
+    {
+      "t": 620.43,
+      "s": "Đợt neutrino ấy đến Trái Đất sớm hơn ánh"
+    },
+    {
+      "t": 623.55,
+      "s": "sáng của vụ nổ vài giờ đồng hồ."
+    },
+    {
+      "t": 625.96,
+      "s": "Vài giờ."
+    },
+    {
+      "t": 627.81,
+      "s": "Vì ánh sáng phải chật vật chen qua các lớp"
+    },
+    {
+      "t": 630.33,
+      "s": "vật chất đang bùng nổ của ngôi sao mới"
+    },
+    {
+      "t": 632.6,
+      "s": "thoát ra được."
+    },
+    {
+      "t": 633.44,
+      "s": "Còn neutrino, như mọi khi, phóng thẳng qua"
+    },
+    {
+      "t": 637.51,
+      "s": "tất cả, không gì cản nổi."
+    },
+    {
+      "t": 639.93,
+      "s": "Chúng lao một mạch qua một trăm sáu mươi"
+    },
+    {
+      "t": 642.77,
+      "s": "nghìn năm ánh sáng, và về đích trước ánh"
+    },
+    {
+      "t": 645.61,
+      "s": "sáng."
+    },
+    {
+      "t": 645.97,
+      "s": "Chỉ hai mươi mấy hạt ma được bắt trong vài"
+    },
+    {
+      "t": 648.77,
+      "s": "giây ngắn ngủi ấy."
+    },
+    {
+      "t": 649.97,
+      "s": "Hai mươi mấy hạt, sau một hành trình một"
+    },
+    {
+      "t": 652.85,
+      "s": "trăm sáu mươi nghìn năm."
+    },
+    {
+      "t": 654.58,
+      "s": "Nhưng chúng là lời báo tin đầu tiên loài"
+    },
+    {
+      "t": 657.57,
+      "s": "người nhận được, rằng ở tận nơi xa xôi"
+    },
+    {
+      "t": 660.4,
+      "s": "kia, một ngôi sao vừa qua đời."
+    },
+    {
+      "t": 664.14,
+      "s": "Và neutrino còn mang trong mình một tin"
+    },
+    {
+      "t": 666.96,
+      "s": "nhắn cổ xưa hơn tất cả."
+    },
+    {
+      "t": 668.62,
+      "s": "Cổ xưa hơn cả Mặt Trời, cả các ngôi sao."
+    },
+    {
+      "t": 672.37,
+      "s": "Một tin nhắn từ chính buổi bình minh của"
+    },
+    {
+      "t": 675.51,
+      "s": "vũ trụ."
+    },
+    {
+      "t": 676.06,
+      "s": "Chỉ một giây sau Big Bang, khi vũ trụ còn"
+    },
+    {
+      "t": 679.1,
+      "s": "là một biển lửa đặc quánh, ánh sáng còn bị"
+    },
+    {
+      "t": 682.22,
+      "s": "giam cầm không lối thoát, thì neutrino đã"
+    },
+    {
+      "t": 685.26,
+      "s": "tự do bay đi."
+    },
+    {
+      "t": 686.23,
+      "s": "Chúng thoát ra sớm hơn ánh sáng cả hàng"
+    },
+    {
+      "t": 689.01,
+      "s": "trăm nghìn năm."
+    },
+    {
+      "t": 690.08,
+      "s": "Và chúng vẫn còn ở đây, ngay lúc này, trôi"
+    },
+    {
+      "t": 694.34,
+      "s": "khắp vũ trụ."
+    },
+    {
+      "t": 695.56,
+      "s": "Người ta gọi đó là nền neutrino vũ trụ."
+    },
+    {
+      "t": 698.64,
+      "s": "Trong mỗi centimet khối không gian quanh"
+    },
+    {
+      "t": 701.57,
+      "s": "bạn có khoảng ba trăm hạt ma cổ đại ấy."
+    },
+    {
+      "t": 704.42,
+      "s": "Chúng là những nhân chứng già nhất còn"
+    },
+    {
+      "t": 707.19,
+      "s": "sống, đã lang thang gần mười bốn tỉ năm,"
+    },
+    {
+      "t": 710.1,
+      "s": "mang trên mình dấu vết của giây đầu tiên"
+    },
+    {
+      "t": 713.01,
+      "s": "khi vũ trụ vừa ra đời."
+    },
+    {
+      "t": 716.61,
+      "s": "Vậy nên bây giờ, tôi lại ngồi thật yên."
+    },
+    {
+      "t": 719.62,
+      "s": "Và tôi nghĩ về cơn mưa vô hình vẫn đang"
+    },
+    {
+      "t": 722.28,
+      "s": "tưới qua tôi, không ngừng nghỉ, ngay trong"
+    },
+    {
+      "t": 725.14,
+      "s": "giây phút này."
+    },
+    {
+      "t": 726.09,
+      "s": "Trong lúc bạn nghe câu này, hàng tỉ tỉ hạt"
+    },
+    {
+      "t": 729.19,
+      "s": "ma vừa đi xuyên qua cơ thể bạn."
+    },
+    {
+      "t": 731.48,
+      "s": "Phần lớn đến thẳng từ lõi Mặt Trời, rời"
+    },
+    {
+      "t": 734.4,
+      "s": "khỏi trái tim ngôi sao chỉ tám phút trước."
+    },
+    {
+      "t": 737.55,
+      "s": "Chúng vừa lướt qua từng tế bào của bạn,"
+    },
+    {
+      "t": 740.08,
+      "s": "mang theo một tin nhắn trực tiếp từ nơi mà"
+    },
+    {
+      "t": 742.8,
+      "s": "không ánh mắt nào chạm tới được."
+    },
+    {
+      "t": 744.88,
+      "s": "Và lẫn trong cơn mưa ấy, có cả những hạt"
+    },
+    {
+      "t": 747.72,
+      "s": "ma đến từ những ngôi sao đã nổ tung từ"
+    },
+    {
+      "t": 750.42,
+      "s": "lâu, ở những thiên hà xa xôi."
+    },
+    {
+      "t": 752.48,
+      "s": "Có cả những hạt đã lang thang từ giây đầu"
+    },
+    {
+      "t": 755.28,
+      "s": "tiên của vũ trụ, già hơn mọi thứ bạn từng"
+    },
+    {
+      "t": 758.09,
+      "s": "biết."
+    },
+    {
+      "t": 758.43,
+      "s": "Tất cả cùng lặng lẽ đi xuyên qua bạn, ngay"
+    },
+    {
+      "t": 761.98,
+      "s": "lúc này."
+    },
+    {
+      "t": 762.65,
+      "s": "Chúng ta cứ ngỡ mình đứng ngoài vũ trụ mà"
+    },
+    {
+      "t": 765.51,
+      "s": "ngắm nhìn nó."
+    },
+    {
+      "t": 766.42,
+      "s": "Nhưng vũ trụ chưa từng ngừng chảy qua ta."
+    },
+    {
+      "t": 769.6,
+      "s": "Mỗi giây, nó gửi tới ta hàng nghìn tỉ sứ"
+    },
+    {
+      "t": 772.57,
+      "s": "giả vô hình, thầm lặng, trung thực, kể cho"
+    },
+    {
+      "t": 775.69,
+      "s": "ta nghe về những nơi ta không bao giờ tới"
+    },
+    {
+      "t": 778.73,
+      "s": "được."
+    },
+    {
+      "t": 779.1,
+      "s": "Nên lần tới, khi ánh nắng chạm vào da bạn,"
+    },
+    {
+      "t": 782.61,
+      "s": "hãy khẽ nhớ điều này."
+    },
+    {
+      "t": 784.37,
+      "s": "Ngay dưới lớp nắng ấy, một cơn mưa ma đang"
+    },
+    {
+      "t": 787.69,
+      "s": "lặng lẽ xuyên qua bạn."
+    },
+    {
+      "t": 789.43,
+      "s": "Mang trên mình câu chuyện của lõi Mặt"
+    },
+    {
+      "t": 791.99,
+      "s": "Trời, của những ngôi sao đã chết, và của"
+    },
+    {
+      "t": 794.75,
+      "s": "khoảnh khắc đầu tiên khi tất cả bắt đầu."
+    },
+    {
+      "t": 797.52,
+      "s": "Bạn không hề tách khỏi nó."
+    },
+    {
+      "t": 799.86,
+      "s": "Bạn đang tắm trong nó, ngay lúc này."
+    }
+  ]
+}

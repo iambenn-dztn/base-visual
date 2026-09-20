@@ -1,0 +1,384 @@
+{
+  "slug": "nguyen-to-cacbon",
+  "fps": 30,
+  "totalDuration": 584.05,
+  "dryRun": false,
+  "narration": "voice/narration.mp3",
+  "voice": {
+    "provider": "aimax-minimax",
+    "voice_id": "uv_5cee29af",
+    "voice_name": "uv_5cee29af",
+    "model": "speech-2.8-hd",
+    "speed": 0.96
+  },
+  "cues": [
+    {
+      "id": "C01",
+      "chapter": "CHƯƠNG 1",
+      "text": "Tôi hít vào một hơi thật sâu. Giữ lại một nhịp. Rồi thở ra.",
+      "file": "voice/seg-00.mp3",
+      "start": 0,
+      "duration": 6.12
+    },
+    {
+      "id": "C02",
+      "chapter": null,
+      "text": "Cái hơi tôi vừa thở ra ấy — nó không rỗng không. Nó mang theo cacbon. Những nguyên tử cacbon vừa mới rời khỏi cơ thể tôi, tan vào không khí quanh tôi.",
+      "file": "voice/seg-01.mp3",
+      "start": 6.12,
+      "duration": 11.13
+    },
+    {
+      "id": "C03",
+      "chapter": null,
+      "text": "Và tôi muốn kể cho bạn nghe về những nguyên tử ấy. Bởi vì chúng già hơn Trái Đất. Chúng già hơn cả Mặt Trời.",
+      "file": "voice/seg-02.mp3",
+      "start": 17.25,
+      "duration": 8.43
+    },
+    {
+      "id": "C04",
+      "chapter": null,
+      "text": "Hãy nhìn vào bàn tay mình. Xương của tôi, da của tôi, từng sợi tóc. Bộ não đang lưu giữ mọi kỷ niệm của tôi. Tất cả đều được dựng lên từ cùng một viên gạch nền tảng: nguyên tử cacbon.",
+      "file": "voice/seg-04.mp3",
+      "start": 27.19,
+      "duration": 14.63
+    },
+    {
+      "id": "C05",
+      "chapter": null,
+      "text": "Cứ mỗi năm nguyên tử trong cơ thể tôi thì có gần một nguyên tử là cacbon. Nó là bộ khung xương của mọi thứ làm nên sự sống.",
+      "file": "voice/seg-05.mp3",
+      "start": 41.82,
+      "duration": 8.7
+    },
+    {
+      "id": "C06",
+      "chapter": null,
+      "text": "Nhưng đây mới là điều khiến tôi lặng người. Không một nguyên tử cacbon nào trong tôi được sinh ra ở đây. Không một nguyên tử nào ra đời trên hành tinh này.",
+      "file": "voice/seg-06.mp3",
+      "start": 50.52,
+      "duration": 10.53
+    },
+    {
+      "id": "C07",
+      "chapter": null,
+      "text": "Chúng được nung, được rèn, trong lò lửa của những ngôi sao. Những ngôi sao đã sống, đã cháy, và đã chết — từ rất lâu trước khi Mặt Trời của chúng ta kịp thắp sáng.",
+      "file": "voice/seg-07.mp3",
+      "start": 61.05,
+      "duration": 12.05
+    },
+    {
+      "id": "C08",
+      "chapter": null,
+      "text": "Tôi, theo đúng nghĩa đen của từng con chữ, là tàn tro của các vì sao. Và tôi muốn dẫn bạn về tận nơi khởi đầu, để hiểu vì sao.",
+      "file": "voice/seg-08.mp3",
+      "start": 73.1,
+      "duration": 10.05
+    },
+    {
+      "id": "C09",
+      "chapter": "CHƯƠNG 2",
+      "text": "Hãy trôi ngược cùng tôi về mười ba tỉ năm trước. Về những khoảnh khắc đầu tiên sau Big Bang.",
+      "file": "voice/seg-10.mp3",
+      "start": 85.16,
+      "duration": 6.57
+    },
+    {
+      "id": "C10",
+      "chapter": null,
+      "text": "Vũ trụ lúc ấy nóng bỏng và đơn giản đến kỳ lạ. Nó chỉ biết làm ra hai thứ. Hydro, nguyên tố nhẹ nhất. Và một chút heli.",
+      "file": "voice/seg-11.mp3",
+      "start": 91.73,
+      "duration": 11.17
+    },
+    {
+      "id": "C11",
+      "chapter": null,
+      "text": "Chỉ có thế. Không có oxy để thở. Không có sắt để đúc. Và tuyệt nhiên, không có một nguyên tử cacbon nào. Không có gì để làm nên tôi.",
+      "file": "voice/seg-12.mp3",
+      "start": 102.9,
+      "duration": 12.19
+    },
+    {
+      "id": "C12",
+      "chapter": null,
+      "text": "Một vũ trụ chỉ toàn hydro và heli là một vũ trụ chết. Một vũ trụ không thể mơ tới sự sống. Vậy thì cacbon đã đến từ đâu?",
+      "file": "voice/seg-13.mp3",
+      "start": 115.09,
+      "duration": 10.45
+    },
+    {
+      "id": "C13",
+      "chapter": null,
+      "text": "Câu trả lời nằm trong bụng của những ngôi sao. Ngôi sao là một cái lò luyện kim khổng lồ. Ở tâm nó, trọng lực nghiến các nguyên tử vào nhau với sức ép không thể tưởng tượng nổi.",
+      "file": "voice/seg-14.mp3",
+      "start": 125.54,
+      "duration": 11.88
+    },
+    {
+      "id": "C14",
+      "chapter": null,
+      "text": "Suốt hàng tỉ năm, một ngôi sao đốt hydro thành heli. Đó là cả cuộc đời bình yên của nó. Nhưng rồi nhiên liệu cạn. Và đây là lúc câu chuyện thật sự bắt đầu.",
+      "file": "voice/seg-15.mp3",
+      "start": 137.43,
+      "duration": 13.22
+    },
+    {
+      "id": "C15",
+      "chapter": null,
+      "text": "Ngôi sao phồng lên. Nó biến thành một quái vật đỏ rực gọi là sao khổng lồ đỏ, lớn đến mức có thể nuốt trọn cả quỹ đạo của những hành tinh. Và trong cái lõi đang co lại của nó, nhiệt độ vọt lên hàng trăm triệu độ.",
+      "file": "voice/seg-16.mp3",
+      "start": 150.65,
+      "duration": 15.17
+    },
+    {
+      "id": "C16",
+      "chapter": null,
+      "text": "Nóng đến mức đó, những hạt nhân heli bắt đầu lao vào nhau. Và ở đây, tôi phải kể cho bạn nghe một phép màu ẩn trong vật lý.",
+      "file": "voice/seg-17.mp3",
+      "start": 165.82,
+      "duration": 8.43
+    },
+    {
+      "id": "C17",
+      "chapter": null,
+      "text": "Để làm ra một nguyên tử cacbon, cần ba hạt nhân heli hợp lại làm một. Người ta gọi đó là phản ứng ba-alpha.",
+      "file": "voice/seg-18.mp3",
+      "start": 174.25,
+      "duration": 8.39
+    },
+    {
+      "id": "C18",
+      "chapter": null,
+      "text": "Nhưng có một trục trặc chết người. Khi hai hạt heli đầu tiên dính vào nhau, chúng tạo ra một mảnh ghép cực kỳ mong manh. Nó tồn tại trong khoảng thời gian ngắn đến vô lý — một phần tỉ tỉ của giây rồi vỡ tan.",
+      "file": "voice/seg-19.mp3",
+      "start": 182.64,
+      "duration": 14.44
+    },
+    {
+      "id": "C19",
+      "chapter": null,
+      "text": "Vậy làm sao hạt heli thứ ba kịp lao tới và dính vào, trong cái khoảnh khắc mong manh đến thế? Về lý thuyết, gần như là không thể. Cacbon lẽ ra không nên tồn tại. Và tôi lẽ ra cũng không nên tồn tại.",
+      "file": "voice/seg-20.mp3",
+      "start": 197.09,
+      "duration": 16
+    },
+    {
+      "id": "C20",
+      "chapter": "CHƯƠNG 3",
+      "text": "Bảy mươi năm trước, một nhà thiên văn tên Fred Hoyle nhìn vào nghịch lý này. Ông thấy rõ: nếu phép tính đúng, sẽ chẳng có cacbon nào cả. Nhưng cacbon rõ ràng đang tồn tại. Nó nằm trong chính cơ thể ông.",
+      "file": "voice/seg-22.mp3",
+      "start": 214.59,
+      "duration": 17.05
+    },
+    {
+      "id": "C21",
+      "chapter": null,
+      "text": "Thế là Hoyle đưa ra một tiên đoán táo bạo đến mức liều lĩnh. Ông nói: hẳn phải có một cánh cửa bí mật. Một điểm cộng hưởng.",
+      "file": "voice/seg-23.mp3",
+      "start": 231.64,
+      "duration": 9.81
+    },
+    {
+      "id": "C22",
+      "chapter": null,
+      "text": "Ông tính ra rằng hạt nhân cacbon phải sở hữu một mức năng lượng rất riêng, ở đúng một con số: bảy phẩy sáu năm triệu electron-vôn. Không hơn, không kém.",
+      "file": "voice/seg-24.mp3",
+      "start": 241.46,
+      "duration": 13.76
+    },
+    {
+      "id": "C23",
+      "chapter": null,
+      "text": "Nếu tồn tại đúng cái mức năng lượng ấy, nó sẽ hoạt động như một tần số cộng hưởng. Giống như khi bạn đẩy xích đu đúng nhịp, một cú đẩy nhỏ cũng làm nó bay cao. Cái mức năng lượng ấy sẽ khiến ba hạt heli khớp vào nhau một cách nhịp nhàng, và cacbon được tạo ra hiệu quả hơn hàng chục triệu lần.",
+      "file": "voice/seg-25.mp3",
+      "start": 255.22,
+      "duration": 18.96
+    },
+    {
+      "id": "C24",
+      "chapter": null,
+      "text": "Đây là điều tôi thấy kinh ngạc nhất. Hoyle chưa hề nhìn thấy mức năng lượng đó. Chưa ai đo được nó. Ông tiên đoán nó phải tồn tại, chỉ vì một lẽ đơn giản: vì chúng ta đang ở đây để đặt câu hỏi.",
+      "file": "voice/seg-26.mp3",
+      "start": 274.18,
+      "duration": 15.76
+    },
+    {
+      "id": "C25",
+      "chapter": null,
+      "text": "Rồi người ta mang ông vào phòng thí nghiệm. Họ đo. Và cánh cửa bí mật ấy có thật. Nằm gần như chính xác ở nơi Hoyle đã chỉ.",
+      "file": "voice/seg-27.mp3",
+      "start": 289.94,
+      "duration": 10.61
+    },
+    {
+      "id": "C26",
+      "chapter": null,
+      "text": "Hãy dừng lại một nhịp mà cảm nhận điều này. Nếu cái mức năng lượng đó chỉ lệch đi một chút xíu thôi, một phần rất nhỏ, thì phản ứng sẽ tắt ngấm. Vũ trụ sẽ gần như trống trơn cacbon.",
+      "file": "voice/seg-28.mp3",
+      "start": 300.56,
+      "duration": 13.15
+    },
+    {
+      "id": "C27",
+      "chapter": null,
+      "text": "Không cacbon, thì không có phân tử của sự sống. Không có cây. Không có bạn. Không có tôi đang thở ra hơi này. Vũ trụ của chúng ta dường như được tinh chỉnh đến mức hoàn hảo, chỉ vừa đủ để làm ra những nguyên tử tạo nên chúng ta.",
+      "file": "voice/seg-29.mp3",
+      "start": 313.71,
+      "duration": 17.53
+    },
+    {
+      "id": "C28",
+      "chapter": null,
+      "text": "Tôi không biết gọi đó là may mắn, là tình cờ, hay là điều gì đó sâu xa hơn. Nhưng tôi biết một điều: chính trong cái khe hẹp mong manh ấy của vật lý, sự sống đã lách qua.",
+      "file": "voice/seg-30.mp3",
+      "start": 331.24,
+      "duration": 12.22
+    },
+    {
+      "id": "C29",
+      "chapter": null,
+      "text": "Nhưng cacbon nằm sâu trong bụng một ngôi sao thì đâu thể làm nên tôi. Nó phải thoát ra. Nó phải được gieo đi.",
+      "file": "voice/seg-32.mp3",
+      "start": 345.47,
+      "duration": 8.94
+    },
+    {
+      "id": "C30",
+      "chapter": null,
+      "text": "Và những ngôi sao, khi về già, chính là những kẻ gieo hạt hào phóng nhất vũ trụ. Ngôi sao khổng lồ đỏ bắt đầu run rẩy, phập phồng. Nó thổi bay những lớp vỏ ngoài của chính mình vào không gian.",
+      "file": "voice/seg-33.mp3",
+      "start": 354.41,
+      "duration": 13.99
+    },
+    {
+      "id": "C31",
+      "chapter": null,
+      "text": "Từng đợt, từng đợt gió sao mang cacbon rời khỏi lò lửa, trải vào bóng tối. Có ngôi sao lớn hơn thì kết thúc bằng một tiếng nổ chói lòa, phóng vật chất của mình đi khắp thiên hà.",
+      "file": "voice/seg-34.mp3",
+      "start": 368.4,
+      "duration": 11.93
+    },
+    {
+      "id": "C32",
+      "chapter": null,
+      "text": "Cái chết của một ngôi sao trở thành một vụ mùa. Nó gieo cacbon thành những đám mây bụi mênh mông, tối đen, trôi lững lờ giữa các vì sao.",
+      "file": "voice/seg-35.mp3",
+      "start": 380.33,
+      "duration": 10.07
+    },
+    {
+      "id": "C33",
+      "chapter": "CHƯƠNG 4",
+      "text": "Nếu bạn bay cùng tôi qua những đám mây bụi ấy, bạn sẽ ngạc nhiên vì chúng sống động đến nhường nào.",
+      "file": "voice/seg-37.mp3",
+      "start": 391.9,
+      "duration": 6.56
+    },
+    {
+      "id": "C34",
+      "chapter": null,
+      "text": "Trong đó có những hạt bụi cacbon li ti, giống như bồ hóng của vũ trụ, nhuộm đen cả những đám mây giữa các vì sao. Có những phân tử hữu cơ đang lặng lẽ hình thành trong lạnh giá.",
+      "file": "voice/seg-38.mp3",
+      "start": 398.47,
+      "duration": 11.64
+    },
+    {
+      "id": "C35",
+      "chapter": null,
+      "text": "Ở đó, thậm chí có cả những viên kim cương nhỏ xíu trôi nổi. Và có những phân tử cacbon kết thành hình quả cầu rỗng hoàn hảo, như những trái bóng tí hon. Vũ trụ, hóa ra, là một phòng thí nghiệm hóa học cacbon vĩ đại.",
+      "file": "voice/seg-39.mp3",
+      "start": 410.11,
+      "duration": 17.19
+    },
+    {
+      "id": "C36",
+      "chapter": null,
+      "text": "Rồi một ngày, một đám mây như thế co lại dưới trọng lực. Ở trung tâm nó, một mặt trời mới bừng sáng. Quanh đó, từ chính đám bụi cacbon ấy, những hành tinh ngưng tụ lại. Một trong số đó là Trái Đất.",
+      "file": "voice/seg-40.mp3",
+      "start": 427.3,
+      "duration": 16.38
+    },
+    {
+      "id": "C37",
+      "chapter": null,
+      "text": "Và bây giờ, hãy để tôi hỏi bạn một câu tôi luôn tự hỏi. Trong cả trăm nguyên tố của vũ trụ, vì sao lại là cacbon được chọn để xây nên sự sống?",
+      "file": "voice/seg-41.mp3",
+      "start": 443.68,
+      "duration": 11
+    },
+    {
+      "id": "C38",
+      "chapter": null,
+      "text": "Bí mật nằm ở chỗ này. Mỗi nguyên tử cacbon có bốn cánh tay để nắm lấy những nguyên tử khác. Bốn cánh tay linh hoạt, không quá tham lam cũng không quá hờ hững.",
+      "file": "voice/seg-42.mp3",
+      "start": 454.69,
+      "duration": 12.68
+    },
+    {
+      "id": "C39",
+      "chapter": null,
+      "text": "Với bốn cánh tay ấy, cacbon xây được những chuỗi dài vô tận. Nó cuộn thành vòng. Nó đan thành mạng. Nó ghép nên những kiến trúc phức tạp không nguyên tố nào khác sánh được.",
+      "file": "voice/seg-43.mp3",
+      "start": 467.37,
+      "duration": 12.41
+    },
+    {
+      "id": "C40",
+      "chapter": null,
+      "text": "Chính vì thế mà cacbon là bộ xương của mọi thứ trong tôi. Nó là xương sống của chuỗi DNA lưu giữ bản thiết kế của tôi. Nó dựng nên protein, nên đường, nên chất béo. Người ta nói, hóa học của sự sống chính là hóa học của cacbon. Và tôi thấy câu đó đúng đến tận từng tế bào.",
+      "file": "voice/seg-44.mp3",
+      "start": 479.78,
+      "duration": 22.24
+    },
+    {
+      "id": "C41",
+      "chapter": null,
+      "text": "Vậy nên bây giờ, tôi lại hít vào một hơi thật sâu. Và tôi nghĩ về hành trình của những nguyên tử này.",
+      "file": "voice/seg-46.mp3",
+      "start": 504.02,
+      "duration": 7.25
+    },
+    {
+      "id": "C42",
+      "chapter": null,
+      "text": "Từ một lò lửa sao đã tắt hàng tỉ năm trước. Qua gió sao và bóng tối lạnh giá. Qua đám bụi, qua Trái Đất non trẻ, qua đất, qua cây, qua thức ăn tôi từng ăn. Cho đến khoảnh khắc này, khi chúng đang là chính tôi.",
+      "file": "voice/seg-47.mp3",
+      "start": 511.28,
+      "duration": 18.18
+    },
+    {
+      "id": "C43",
+      "chapter": null,
+      "text": "Và câu chuyện chưa dừng lại. Cacbon trong tôi chỉ đang mượn đường qua tôi mà thôi. Một ngày kia, nó sẽ trở về với đất, tan vào không khí, được một cái cây khác hít lấy, thành một sinh vật khác.",
+      "file": "voice/seg-48.mp3",
+      "start": 529.46,
+      "duration": 14.37
+    },
+    {
+      "id": "C44",
+      "chapter": null,
+      "text": "Và trong một tương lai xa xôi không thể hình dung, khi cả Mặt Trời cũng lụi tàn, những nguyên tử này có thể lại trôi vào không gian, và một ngày nào đó, lại được góp vào một ngôi sao mới.",
+      "file": "voice/seg-49.mp3",
+      "start": 543.83,
+      "duration": 13.05
+    },
+    {
+      "id": "C45",
+      "chapter": null,
+      "text": "Tôi không tách rời khỏi vũ trụ. Tôi không phải là kẻ đứng ngoài ngắm nhìn những vì sao. Tôi được làm ra từ chúng. Tôi là một cách để vũ trụ, trong một khoảnh khắc ngắn ngủi, tự chiêm ngưỡng chính mình.",
+      "file": "voice/seg-50.mp3",
+      "start": 556.88,
+      "duration": 14.06
+    },
+    {
+      "id": "C46",
+      "chapter": null,
+      "text": "Nên lần tới, khi bạn thở ra, hãy nhớ. Hơi thở ấy mang theo tàn tro của những vì sao. Và bạn, cũng chính là một vì sao — chỉ là đang thở, đang nghĩ, và đang sống.",
+      "file": "voice/seg-51.mp3",
+      "start": 570.95,
+      "duration": 13.1
+    }
+  ]
+}

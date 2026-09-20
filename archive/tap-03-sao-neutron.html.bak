@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, height=1080">
+<title>Tập 3 — Sao Neutron — HyperFrames</title>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{width:1920px;height:1080px;overflow:hidden;background:#02040a;font-family:"Segoe UI",-apple-system,Roboto,sans-serif;}
+  #root{position:relative;width:1920px;height:1080px;}
+  #c{position:absolute;inset:0;display:block;z-index:0;}
+  #fx{position:absolute;inset:0;display:block;z-index:4;}
+  #vig{position:absolute;inset:0;pointer-events:none;z-index:6;background:radial-gradient(ellipse at center,rgba(0,0,0,0) 54%,rgba(1,2,7,.6) 100%);}
+  #chap{position:absolute;left:50%;top:6.2%;transform:translateX(-50%);z-index:18;color:#b7d4ff;font-size:26px;font-weight:600;letter-spacing:5px;text-transform:uppercase;opacity:0;text-shadow:0 2px 16px rgba(0,0,0,.95);white-space:nowrap;}
+  #sub{position:absolute;left:50%;bottom:8.5%;transform:translateX(-50%);z-index:20;width:min(1400px,86%);text-align:center;color:#f4f1ff;font-size:40px;font-weight:600;line-height:1.4;text-shadow:0 2px 18px rgba(0,0,0,.95),0 0 3px rgba(0,0,0,.95);}
+  #err{position:absolute;left:12px;top:12px;z-index:99;color:#ff9090;background:rgba(0,0,0,.8);padding:8px 10px;font:12px/1.5 monospace;max-width:90%;white-space:pre-wrap;border-radius:8px;display:none;}
+</style>
+</head>
+<body>
+<div data-hf-id="hf-root" id="root" data-composition-id="tap-03-sao-neutron" data-start="0" data-duration="1135.2" data-width="1920" data-height="1080">
+  <canvas data-hf-id="hf-c" id="c" class="clip" data-start="0" data-duration="1135.2" data-track-index="0"></canvas>
+  <canvas data-hf-id="hf-fx" id="fx" class="clip" data-start="0" data-duration="1135.2" data-track-index="1"></canvas>
+  <audio data-hf-id="hf-narr" id="narr" class="clip" data-start="0" data-duration="1135.2" data-track-index="2" src="../projects/sao-neutron/voice/narration_mixed.mp3"></audio>
+  <div data-hf-id="hf-vig" id="vig"></div>
+  <div data-hf-id="hf-chap" id="chap" data-layout-allow-occlusion></div>
+  <div data-hf-id="hf-sub" id="sub" data-layout-allow-occlusion></div>
+  <div data-hf-id="hf-err" id="err"></div>
+</div>
+
+<script>
+window.addEventListener('error',function(e){var d=document.getElementById('err');if(!d)return;d.style.display='block';
+  d.textContent='LỖI: '+(e.message||e.type)+(e.filename?('\n@ '+e.filename.split('/').pop()+':'+e.lineno):'');});
+
+/* ============================================================
+   "SAO NEUTRON — VẬT THỂ ĐIÊN RỒ NHẤT"
+   Composition TẤT ĐỊNH theo t. 8 chương = 8 CẢNH khác biệt,
+   cắt dứt khoát, hình bám sát lời thoại. Dựng thẳng trên
+   timeline 0..1111.63 (KHÔNG remap, KHÔNG audio).
+   ============================================================ */
+const TOTAL=1135.2, W=1920, H=1080;
+/* mốc CẮT CẢNH = start của các cue có chapter (timing.json) + TOTAL cuối */
+const SB=[0, 141.66, 287.64, 418.9, 595.78, 740.67, 841.13, 978.33, 1111.63];
+const CHAP=["","CÁI CHẾT CỦA MỘT NGÔI SAO","SỰ NÉN ĐIÊN RỒ","BÊN TRONG SAO NEUTRON",
+  "NGỌN HẢI ĐĂNG QUAY","TỪ TRƯỜNG KINH HOÀNG","HẤP DẪN CỰC ĐOAN",
+  "KHI HAI SAO NEUTRON VA NHAU","NHỮNG NGỌN HẢI ĐĂNG KỲ VĨ"];
+
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return ((t^t>>>14)>>>0)/4294967296;};}
+const rnd=mulberry32(20260706), rndc=mulberry32(7133), L=mulberry32(555);
+
+function clamp(x,a,b){return Math.max(a,Math.min(b,x));}
+function lerp(a,b,x){return a+(b-a)*x;}
+function smooth(a){a=clamp(a,0,1);return a*a*a*(a*(a*6-15)+10);}
+function ss(e0,e1,x){let t=clamp((x-e0)/((e1-e0)||1e-6),0,1);return t*t*(3-2*t);}
+function win(t,a,b,fi,fo){return Math.max(0,Math.min(ss(a,a+fi,t),1-ss(b-fo,b,t)));}
+function track(t,k){if(t<=k[0].t)return k[0].v;if(t>=k[k.length-1].t)return k[k.length-1].v;
+  for(let i=0;i<k.length-1;i++){if(t>=k[i].t&&t<=k[i+1].t){const a=smooth((t-k[i].t)/(k[i+1].t-k[i].t)),v0=k[i].v,v1=k[i+1].v;
+    if(Array.isArray(v0))return v0.map((x,j)=>x+(v1[j]-x)*a);return v0+(v1-v0)*a;}}return k[k.length-1].v;}
+function hsh(n){const x=Math.sin(n*127.1)*43758.5453;return x-Math.floor(x);}
+
+/* ---------------- Three.js: renderer / scene ---------------- */
+const renderer=new THREE.WebGLRenderer({canvas:document.getElementById('c'),antialias:true});
+renderer.setPixelRatio(1); renderer.setSize(W,H);
+renderer.outputEncoding=THREE.sRGBEncoding; renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=0.9;
+renderer.setClearColor(0x02040a,1);
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(50,W/H,0.1,40000);
+
+/* ---------------- textures canvas (không phụ thuộc mạng) ---------------- */
+function softDot(size,r,g,b){const cv=document.createElement('canvas');cv.width=cv.height=size;const x=cv.getContext('2d');const c=size/2;
+  const gr=x.createRadialGradient(c,c,0,c,c,c);gr.addColorStop(0,'rgba('+r+','+g+','+b+',1)');gr.addColorStop(.28,'rgba('+r+','+g+','+b+',.45)');gr.addColorStop(.6,'rgba('+r+','+g+','+b+',.09)');gr.addColorStop(1,'rgba('+r+','+g+','+b+',0)');
+  x.fillStyle=gr;x.fillRect(0,0,size,size);const t=new THREE.Texture(cv);t.needsUpdate=true;return t;}
+function coronaTex(size,rays,rng,rr,gg,bb){const cv=document.createElement('canvas');cv.width=cv.height=size;const g=cv.getContext('2d');const c=size/2;
+  const gr=g.createRadialGradient(c,c,0,c,c,c);gr.addColorStop(0,'rgba('+rr+','+gg+','+bb+',1)');gr.addColorStop(.08,'rgba('+rr+','+gg+','+bb+',.9)');gr.addColorStop(.24,'rgba('+rr+','+gg+','+bb+',.4)');gr.addColorStop(1,'rgba(0,0,0,0)');
+  g.fillStyle=gr;g.fillRect(0,0,size,size);g.globalCompositeOperation='lighter';
+  for(let i=0;i<rays;i++){const a=rng()*Math.PI*2,len=c*(0.5+rng()*0.5),wid=(1.2+rng()*2.4)*(size/256);
+    g.save();g.translate(c,c);g.rotate(a);const rg=g.createLinearGradient(0,0,len,0);rg.addColorStop(0,'rgba('+rr+','+gg+','+bb+',0.16)');rg.addColorStop(1,'rgba('+rr+','+gg+','+bb+',0)');
+    g.fillStyle=rg;g.beginPath();g.moveTo(0,-wid);g.lineTo(len,0);g.lineTo(0,wid);g.closePath();g.fill();g.restore();}
+  const t=new THREE.Texture(cv);t.needsUpdate=true;return t;}
+const BLUEGLOW=coronaTex(512,36,rndc,150,205,255);
+const ORANGEGLOW=coronaTex(512,42,mulberry32(881),255,180,110);
+const GALDOT=softDot(128,210,225,255);
+
+/* ---------------- starfield THẬT (r=22000 > khoảng cách camera xa nhất) ----------------
+   màu theo nhiệt độ sao (lam→trắng→vàng→cam→đỏ) */
+function starColor(rng){const u=rng();
+  if(u<0.06)      return [0.62,0.74,1.00];
+  else if(u<0.20) return [0.80,0.87,1.00];
+  else if(u<0.46) return [1.00,0.98,0.94];
+  else if(u<0.72) return [1.00,0.93,0.72];
+  else if(u<0.90) return [1.00,0.78,0.50];
+  else            return [1.00,0.60,0.42];}
+const SR=22000;
+const starVS=`attribute float aS;varying vec3 vC;void main(){vC=color;vec4 mv=modelViewMatrix*vec4(position,1.0);gl_PointSize=aS*(22000.0/-mv.z);gl_Position=projectionMatrix*mv;}`;
+const starFS=`varying vec3 vC;void main(){vec2 c=gl_PointCoord-0.5;float d=length(c);float a=smoothstep(0.5,0.0,d);float core=smoothstep(0.16,0.0,d);gl_FragColor=vec4(vC*(a+core*0.8),a);}`;
+const stars=(function(){const N=4200,P=new Float32Array(N*3),S=new Float32Array(N),C=new Float32Array(N*3);
+  for(let i=0;i<N;i++){const u=rnd(),v=rnd(),th=2*Math.PI*u,ph=Math.acos(2*v-1),sp=Math.sin(ph),r=SR;
+    P[i*3]=sp*Math.cos(th)*r;P[i*3+1]=Math.cos(ph)*r;P[i*3+2]=sp*Math.sin(th)*r;
+    const bright=rnd()<0.04?(16+rnd()*16):(Math.pow(rnd(),2.8)*10+2.2);
+    S[i]=bright; const col=starColor(rnd),lum=0.6+0.4*Math.min(1,bright/14);
+    C[i*3]=col[0]*lum;C[i*3+1]=col[1]*lum;C[i*3+2]=col[2]*lum;}
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(P,3));g.setAttribute('aS',new THREE.BufferAttribute(S,1));g.setAttribute('color',new THREE.BufferAttribute(C,3));
+  const pts=new THREE.Points(g,new THREE.ShaderMaterial({vertexColors:true,vertexShader:starVS,fragmentShader:starFS,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));
+  scene.add(pts);return pts;})();
+/* dải Ngân Hà mờ vắt ngang nền */
+const milkyBand=(function(){const N=4200,P=new Float32Array(N*3),S=new Float32Array(N),C=new Float32Array(N*3);
+  const tilt=0.5,ct=Math.cos(tilt),stt=Math.sin(tilt);
+  for(let i=0;i<N;i++){const th=rnd()*Math.PI*2;const lat=(rnd()-0.5)*(rnd()-0.5)*1.7;const cl=Math.cos(lat),sl=Math.sin(lat),r=21000;
+    let x=cl*Math.cos(th)*r, y=sl*r, z=cl*Math.sin(th)*r;const y2=y*ct-z*stt, z2=y*stt+z*ct;
+    P[i*3]=x;P[i*3+1]=y2;P[i*3+2]=z2;S[i]=Math.pow(rnd(),3.0)*4.5+1.2;
+    const w=(0.5+rnd()*0.4)*(0.55+0.45*Math.exp(-Math.abs(lat)*3.0));
+    C[i*3]=w*0.86;C[i*3+1]=w*0.9;C[i*3+2]=w;}
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(P,3));g.setAttribute('aS',new THREE.BufferAttribute(S,1));g.setAttribute('color',new THREE.BufferAttribute(C,3));
+  const pts=new THREE.Points(g,new THREE.ShaderMaterial({vertexColors:true,vertexShader:starVS,fragmentShader:starFS,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,opacity:0.5}));
+  scene.add(pts);return pts;})();
+
+/* ---------------- noise GLSL (photosphere) ---------------- */
+const SN=`
+vec3 mod289(vec3 x){return x-floor(x*(1.0/289.0))*289.0;}
+vec4 mod289(vec4 x){return x-floor(x*(1.0/289.0))*289.0;}
+vec4 permute(vec4 x){return mod289(((x*34.0)+1.0)*x);}
+vec4 taylorInvSqrt(vec4 r){return 1.79284291400159-0.85373472095314*r;}
+float snoise(vec3 v){const vec2 C=vec2(1.0/6.0,1.0/3.0);const vec4 D=vec4(0.0,0.5,1.0,2.0);
+ vec3 i=floor(v+dot(v,C.yyy));vec3 x0=v-i+dot(i,C.xxx);
+ vec3 g=step(x0.yzx,x0.xyz);vec3 l=1.0-g;vec3 i1=min(g.xyz,l.zxy);vec3 i2=max(g.xyz,l.zxy);
+ vec3 x1=x0-i1+C.xxx;vec3 x2=x0-i2+C.yyy;vec3 x3=x0-D.yyy;i=mod289(i);
+ vec4 p=permute(permute(permute(i.z+vec4(0.0,i1.z,i2.z,1.0))+i.y+vec4(0.0,i1.y,i2.y,1.0))+i.x+vec4(0.0,i1.x,i2.x,1.0));
+ float n_=0.142857142857;vec3 ns=n_*D.wyz-D.xzx;vec4 j=p-49.0*floor(p*ns.z*ns.z);
+ vec4 x_=floor(j*ns.z);vec4 y_=floor(j-7.0*x_);vec4 x=x_*ns.x+ns.yyyy;vec4 y=y_*ns.x+ns.yyyy;vec4 h=1.0-abs(x)-abs(y);
+ vec4 b0=vec4(x.xy,y.xy);vec4 b1=vec4(x.zw,y.zw);vec4 s0=floor(b0)*2.0+1.0;vec4 s1=floor(b1)*2.0+1.0;vec4 sh=-step(h,vec4(0.0));
+ vec4 a0=b0.xzyw+s0.xzyw*sh.xxyy;vec4 a1=b1.xzyw+s1.xzyw*sh.zzww;
+ vec3 p0=vec3(a0.xy,h.x);vec3 p1=vec3(a0.zw,h.y);vec3 p2=vec3(a1.xy,h.z);vec3 p3=vec3(a1.zw,h.w);
+ vec4 norm=taylorInvSqrt(vec4(dot(p0,p0),dot(p1,p1),dot(p2,p2),dot(p3,p3)));p0*=norm.x;p1*=norm.y;p2*=norm.z;p3*=norm.w;
+ vec4 m=max(0.6-vec4(dot(x0,x0),dot(x1,x1),dot(x2,x2),dot(x3,x3)),0.0);m=m*m;
+ return 42.0*dot(m*m,vec4(dot(p0,x0),dot(p1,x1),dot(p2,x2),dot(p3,x3)));}
+float fbm(vec3 p){float f=0.0,a=0.5;for(int i=0;i<5;i++){f+=a*snoise(p);p=p*2.05+3.3;a*=0.5;}return f;}
+`;
+const psVert=`varying vec3 vDir;varying vec3 vN;varying vec3 vV;void main(){vDir=normalize(position);vN=normalize(normalMatrix*normal);vec4 mv=modelViewMatrix*vec4(position,1.0);vV=-mv.xyz;gl_Position=projectionMatrix*mv;}`;
+
+/* ---------- NGÔI SAO KHỔNG LỒ (quang cầu VÀNG-CAM nóng) — cảnh 1 ---------- */
+const giantMat=new THREE.ShaderMaterial({transparent:true,depthWrite:false,uniforms:{uT:{value:0},uOp:{value:1}},
+  vertexShader:psVert,
+  fragmentShader:`precision highp float;varying vec3 vDir;varying vec3 vN;varying vec3 vV;uniform float uT;uniform float uOp;`+SN+`
+   void main(){vec3 d=normalize(vDir);
+    vec3 q=d*7.0+vec3(uT*0.02,uT*0.015,-uT*0.02);
+    float gran=fbm(q);float fine=fbm(d*22.0+uT*0.05);
+    float cells=gran*0.72+fine*0.28;float bri=smoothstep(-0.5,0.7,cells);
+    float sp=fbm(d*1.7+3.3);float spot=smoothstep(0.56,0.76,sp);
+    vec3 cDark=vec3(0.72,0.20,0.02),cMid=vec3(1.0,0.60,0.16),cHot=vec3(1.0,0.93,0.72);
+    vec3 col=mix(cDark,cMid,smoothstep(0.15,0.6,bri));col=mix(col,cHot,smoothstep(0.62,1.0,bri));
+    col=mix(col,vec3(0.26,0.07,0.02),spot*0.92);
+    float mu=clamp(dot(normalize(vN),normalize(vV)),0.0,1.0);
+    col*=(0.30+0.70*pow(mu,0.6));col+=cHot*pow(1.0-mu,3.0)*bri*0.22;col*=1.12;
+    gl_FragColor=vec4(col,uOp);}`});
+const giantStar=new THREE.Group(); scene.add(giantStar);
+giantStar.add(new THREE.Mesh(new THREE.SphereGeometry(1,72,72),giantMat));
+const giantCorona=new THREE.Sprite(new THREE.SpriteMaterial({map:ORANGEGLOW,color:0xffd8a0,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:1})); giantStar.add(giantCorona); giantCorona.scale.set(1,1,1);
+
+/* ---------- SAO NEUTRON (quang cầu XANH-TRẮNG cực nóng) — dùng lại nhiều cảnh ---------- */
+const nMat=new THREE.ShaderMaterial({transparent:true,depthWrite:false,uniforms:{uT:{value:0},uOp:{value:1}},
+  vertexShader:psVert,
+  fragmentShader:`precision highp float;varying vec3 vDir;varying vec3 vN;varying vec3 vV;uniform float uT;uniform float uOp;`+SN+`
+   void main(){vec3 d=normalize(vDir);
+    vec3 q=d*9.0+vec3(uT*0.06,uT*0.04,-uT*0.05);
+    float gran=fbm(q);float fine=fbm(d*30.0+uT*0.14);
+    float cells=gran*0.65+fine*0.35;float bri=smoothstep(-0.55,0.7,cells);
+    vec3 cDark=vec3(0.06,0.16,0.42),cMid=vec3(0.36,0.66,1.0),cHot=vec3(0.88,0.96,1.0);
+    vec3 col=mix(cDark,cMid,smoothstep(0.12,0.6,bri));col=mix(col,cHot,smoothstep(0.6,1.0,bri));
+    float pole=pow(abs(d.y),4.0);col=mix(col,cHot,pole*0.55);
+    float mu=clamp(dot(normalize(vN),normalize(vV)),0.0,1.0);
+    col*=(0.34+0.66*pow(mu,0.55));col+=cHot*pow(1.0-mu,2.6)*bri*0.22;col*=1.08;
+    gl_FragColor=vec4(col,uOp);}`});
+function makeNStar(){const grp=new THREE.Group();
+  grp.add(new THREE.Mesh(new THREE.SphereGeometry(1,64,64),nMat));
+  const glow=new THREE.Sprite(new THREE.SpriteMaterial({map:BLUEGLOW,color:0xbfe0ff,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:0.5}));
+  grp.add(glow); grp.userData.glow=glow; scene.add(grp); return grp;}
+const nstar=makeNStar(), nstar2=makeNStar();
+
+/* ---------- CHÙM TIA PULSAR (cone additive) — cảnh 4 & 8 ---------- */
+const beamMat=new THREE.ShaderMaterial({transparent:true,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending,
+  uniforms:{uH:{value:1500},uR:{value:66},uA:{value:1}},
+  vertexShader:`varying vec3 vP;void main(){vP=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
+  fragmentShader:`precision highp float;varying vec3 vP;uniform float uH;uniform float uR;uniform float uA;
+   void main(){float f=(vP.y+uH*0.5)/uH;float rad=length(vP.xz)/(uR*(1.0-f)+0.001);
+    float edge=smoothstep(1.0,0.12,rad);float lenF=pow(clamp(f,0.0,1.0),1.15)*(1.0-smoothstep(0.82,1.0,f));
+    float a=uA*edge*lenF;vec3 col=mix(vec3(0.46,0.76,1.0),vec3(0.92,0.98,1.0),edge*0.85);
+    gl_FragColor=vec4(col*a*1.35,a*0.92);}`});
+const pulsarGroup=new THREE.Group(); scene.add(pulsarGroup);
+const magAxis=new THREE.Group(); magAxis.rotation.z=0.44; pulsarGroup.add(magAxis);
+const beamGeo=new THREE.ConeGeometry(66,1500,40,1,true);
+const beamN=new THREE.Mesh(beamGeo,beamMat); beamN.rotation.x=Math.PI; beamN.position.y=750; magAxis.add(beamN);
+const beamS=new THREE.Mesh(beamGeo,beamMat); beamS.position.y=-750; magAxis.add(beamS);
+const poleGlowN=new THREE.Sprite(new THREE.SpriteMaterial({map:BLUEGLOW,color:0xdff0ff,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:0.45}));
+poleGlowN.scale.set(34,34,1); poleGlowN.position.y=27; magAxis.add(poleGlowN);
+const poleGlowS=poleGlowN.clone(); poleGlowS.position.y=-27; magAxis.add(poleGlowS);
+
+/* ---------- TỪ TRƯỜNG (đường sức lưỡng cực) — cảnh 5 ---------- */
+const magGroup=new THREE.Group(); scene.add(magGroup);
+function dipoleLine(Lr,phi){const pts=[];for(let i=0;i<=64;i++){const th=Math.PI*(0.05+0.9*i/64);const r=Lr*Math.sin(th)*Math.sin(th);
+    const x=r*Math.sin(th),y=r*Math.cos(th);pts.push(new THREE.Vector3(x*Math.cos(phi),y,x*Math.sin(phi)));}return pts;}
+const magLineMat=new THREE.LineBasicMaterial({color:0x8fc4ff,transparent:true,opacity:0.5,blending:THREE.AdditiveBlending,depthWrite:false});
+(function(){for(let k=0;k<9;k++){const phi=k*Math.PI/4.5;
+    [150,230,320].forEach(function(Lr){const g=new THREE.BufferGeometry().setFromPoints(dipoleLine(Lr,phi));
+      magGroup.add(new THREE.Line(g,magLineMat));});}})();
+const magFlare=new THREE.Sprite(new THREE.SpriteMaterial({map:BLUEGLOW,color:0xcfe6ff,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:0})); magFlare.scale.set(1,1,1); scene.add(magFlare);
+
+/* ---------- LƯỚI KHÔNG-THỜI GIAN (cảnh 6 & 7) ---------- */
+const GN=44, GS=1600;
+const gridBase=[];
+const gridGeo=new THREE.BufferGeometry();
+(function(){const verts=[];
+  for(let i=0;i<=GN;i++)for(let j=0;j<=GN;j++){const x=(i/GN-0.5)*GS,z=(j/GN-0.5)*GS;gridBase.push([x,z]);}
+  const idxLine=(i,j)=>i*(GN+1)+j;
+  for(let i=0;i<=GN;i++)for(let j=0;j<=GN;j++){
+    if(i<GN){verts.push(idxLine(i,j),idxLine(i+1,j));}
+    if(j<GN){verts.push(idxLine(i,j),idxLine(i,j+1));}}
+  const pos=new Float32Array(gridBase.length*3);
+  for(let k=0;k<gridBase.length;k++){pos[k*3]=gridBase[k][0];pos[k*3+1]=0;pos[k*3+2]=gridBase[k][1];}
+  gridGeo.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  gridGeo.setIndex(verts);})();
+const gridMesh=new THREE.LineSegments(gridGeo,new THREE.LineBasicMaterial({color:0x3d6cc0,transparent:true,opacity:0.45,blending:THREE.AdditiveBlending,depthWrite:false}));
+scene.add(gridMesh);
+function updateGrid(t,centers,depth,waveT){const pos=gridGeo.attributes.position.array;
+  for(let k=0;k<gridBase.length;k++){const x=gridBase[k][0],z=gridBase[k][1];let y=0;
+    for(let ci=0;ci<centers.length;ci++){const cx=centers[ci][0],cz=centers[ci][1];const r=Math.sqrt((x-cx)*(x-cx)+(z-cz)*(z-cz));
+      y+=-depth/(1+(r/160)*(r/160));
+      if(waveT>=0){const dr=r-260*waveT;y+=26*Math.sin(r*0.05-waveT*3.0)*Math.exp(-Math.abs(dr)/240)*Math.exp(-r*0.0012);}}
+    pos[k*3+1]=y;}
+  gridGeo.attributes.position.needsUpdate=true;}
+
+/* ---------- VÒNG PHOTON (lensing) — cảnh 6 ---------- */
+const lensRing=new THREE.Mesh(new THREE.TorusGeometry(1,0.04,16,96),new THREE.MeshBasicMaterial({color:0xbfe0ff,transparent:true,opacity:0,blending:THREE.AdditiveBlending,depthWrite:false})); scene.add(lensRing);
+const lensRing2=new THREE.Mesh(new THREE.TorusGeometry(1,0.02,16,96),new THREE.MeshBasicMaterial({color:0xdff0ff,transparent:true,opacity:0,blending:THREE.AdditiveBlending,depthWrite:false})); scene.add(lensRing2);
+
+/* ---------- NỔ (siêu tân tinh + kilonova) ---------- */
+function makeBoom(N,palette,rng){const P=new Float32Array(N*3),C=new Float32Array(N*3),S=new Float32Array(N);
+  for(let i=0;i<N;i++){const u=rng(),v=rng(),th=2*Math.PI*u,ph=Math.acos(2*v-1),sp=Math.sin(ph);
+    const rr=0.35+Math.pow(rng(),0.6)*0.95;
+    P[i*3]=sp*Math.cos(th)*rr;P[i*3+1]=Math.cos(ph)*rr;P[i*3+2]=sp*Math.sin(th)*rr;
+    const col=palette[(rng()*palette.length)|0],b=0.6+rng()*0.4;
+    C[i*3]=col[0]*b;C[i*3+1]=col[1]*b;C[i*3+2]=col[2]*b;S[i]=1.6+rng()*3.6;}
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(P,3));g.setAttribute('color',new THREE.BufferAttribute(C,3));g.setAttribute('aS',new THREE.BufferAttribute(S,1));
+  const m=new THREE.ShaderMaterial({vertexColors:true,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,uniforms:{uOp:{value:1}},
+    vertexShader:`attribute float aS;varying vec3 vC;void main(){vC=color;vec4 mv=modelViewMatrix*vec4(position,1.0);gl_PointSize=aS*(320.0/-mv.z);gl_Position=projectionMatrix*mv;}`,
+    fragmentShader:`varying vec3 vC;uniform float uOp;void main(){vec2 c=gl_PointCoord-0.5;float a=smoothstep(0.5,0.0,length(c));gl_FragColor=vec4(vC*a,a)*uOp;}`});
+  const pts=new THREE.Points(g,m);scene.add(pts);pts.visible=false;return pts;}
+const snBoom=makeBoom(2600,[[1.0,0.95,0.8],[1.0,0.6,0.2],[1.0,0.35,0.12],[1.0,0.8,0.5]],mulberry32(313));
+const knBoom=makeBoom(2200,[[1.0,0.9,0.55],[1.0,0.75,0.3],[0.7,0.85,1.0],[1.0,0.55,0.2]],mulberry32(717));
+function flashSprite(col){const s=new THREE.Sprite(new THREE.SpriteMaterial({map:softDot(256,col[0],col[1],col[2]),blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:0}));scene.add(s);s.visible=false;return s;}
+const snFlash=flashSprite([255,240,210]), knFlash=flashSprite([255,235,200]);
+
+/* ---------- LẤP LÁNH VÀNG (cảnh 7 & 8) ---------- */
+const goldMat=new THREE.ShaderMaterial({transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,uniforms:{uT:{value:0},uOp:{value:1}},
+  vertexShader:`attribute float aSeed;attribute float aSz;varying float vSeed;varying vec3 vC;uniform float uT;void main(){vSeed=aSeed;vC=color;vec4 mv=modelViewMatrix*vec4(position,1.0);float tw=0.6+0.4*sin(uT*3.0+aSeed*6.28);gl_PointSize=aSz*(240.0/-mv.z)*tw;gl_Position=projectionMatrix*mv;}`,
+  fragmentShader:`varying float vSeed;varying vec3 vC;uniform float uT;uniform float uOp;void main(){vec2 c=gl_PointCoord-0.5;float a=smoothstep(0.5,0.0,length(c));float tw=0.35+0.65*abs(sin(uT*2.0+vSeed*6.28));gl_FragColor=vec4(vC*a*tw,a*tw)*uOp;}`});
+const goldPts=(function(){const N=520,P=new Float32Array(N*3),Sd=new Float32Array(N),Sz=new Float32Array(N),C=new Float32Array(N*3);
+  for(let i=0;i<N;i++){const u=rnd(),v=rnd(),th=2*Math.PI*u,ph=Math.acos(2*v-1),sp=Math.sin(ph),r=50+rnd()*320;
+    P[i*3]=sp*Math.cos(th)*r;P[i*3+1]=Math.cos(ph)*r*0.72;P[i*3+2]=sp*Math.sin(th)*r;
+    Sd[i]=rnd();Sz[i]=2.2+rnd()*4.2;const b=0.75+rnd()*0.25;
+    C[i*3]=1.0*b;C[i*3+1]=0.82*b;C[i*3+2]=0.4*b;}
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(P,3));g.setAttribute('color',new THREE.BufferAttribute(C,3));g.setAttribute('aSeed',new THREE.BufferAttribute(Sd,1));g.setAttribute('aSz',new THREE.BufferAttribute(Sz,1));
+  const pts=new THREE.Points(g,goldMat);scene.add(pts);pts.visible=false;return pts;})();
+
+/* ---------------- hậu kỳ: bloom + lens ---------------- */
+const composer=new THREE.EffectComposer(renderer);composer.addPass(new THREE.RenderPass(scene,camera));
+const bloom=new THREE.UnrealBloomPass(new THREE.Vector2(W,H),0.42,0.55,0.82);composer.addPass(bloom);
+const lensPass=new THREE.ShaderPass({uniforms:{tDiffuse:{value:null},uRes:{value:new THREE.Vector2(W,H)},uT:{value:0}},
+  vertexShader:`varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
+  fragmentShader:`uniform sampler2D tDiffuse;uniform vec2 uRes;uniform float uT;varying vec2 vUv;
+    float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+    void main(){vec2 uv=vUv,c=uv-0.5;float r2=dot(c,c),ca=0.0006+r2*0.0022;vec3 col;
+      col.r=texture2D(tDiffuse,uv+c*ca).r;col.g=texture2D(tDiffuse,uv).g;col.b=texture2D(tDiffuse,uv-c*ca).b;
+      float vig=1.0-smoothstep(0.32,0.98,r2*1.85);col*=mix(0.62,1.0,vig);col+=(h(uv*uRes+floor(uT*30.0))-0.5)*0.024;gl_FragColor=vec4(col,1.0);}`});
+lensPass.renderToScreen=true;composer.addPass(lensPass);
+
+/* ============================================================
+   #fx — canvas 2D overlay (kinetic type / sơ đồ / ẩn dụ)
+   ============================================================ */
+const fx=document.getElementById('fx'); fx.width=W; fx.height=H; const X=fx.getContext('2d');
+function clearFx(){X.setTransform(1,0,0,1,0,0);X.clearRect(0,0,W,H);X.textAlign='center';X.textBaseline='middle';X.globalAlpha=1;X.shadowBlur=0;}
+function backdrop(a){if(a<=0)return;X.fillStyle="rgba(2,4,10,"+Math.min(1,a)+")";X.fillRect(0,0,W,H);}
+function F(w,s){return w+' '+s+'px "Segoe UI",Roboto,Arial,sans-serif';}
+function txt(s,x,y,size,weight,col,a,glow,align){if(a<=0.004)return;X.save();X.globalAlpha=Math.min(1,a);X.font=F(weight,size);X.fillStyle=col;X.textAlign=align||'center';X.textBaseline='middle';if(glow){X.shadowColor=glow;X.shadowBlur=size*0.45;}X.fillText(s,x,y);X.restore();}
+function glow2d(x,y,r,cr,cg,cb,a){if(a<=0.004||r<=0)return;X.save();X.globalAlpha=Math.min(1,a);const g=X.createRadialGradient(x,y,0,x,y,r);g.addColorStop(0,`rgba(${cr},${cg},${cb},1)`);g.addColorStop(.35,`rgba(${cr},${cg},${cb},.5)`);g.addColorStop(1,`rgba(${cr},${cg},${cb},0)`);X.fillStyle=g;X.beginPath();X.arc(x,y,r,0,7);X.fill();X.restore();}
+function dot2d(x,y,r,col,a){if(a<=0.004)return;X.save();X.globalAlpha=Math.min(1,a);X.fillStyle=col;X.beginPath();X.arc(x,y,r,0,7);X.fill();X.restore();}
+function ring2d(x,y,r,col,lw,a){if(a<=0.004||r<=0)return;X.save();X.globalAlpha=Math.min(1,a);X.strokeStyle=col;X.lineWidth=lw;X.beginPath();X.arc(x,y,r,0,7);X.stroke();X.restore();}
+function line2d(x0,y0,x1,y1,col,lw,a){if(a<=0.004)return;X.save();X.globalAlpha=Math.min(1,a);X.strokeStyle=col;X.lineWidth=lw;X.beginPath();X.moveTo(x0,y0);X.lineTo(x1,y1);X.stroke();X.restore();}
+function sceneOp(i,t){return win(t,SB[i-1],SB[i],0.4,0.4);}
+const CY='rgba(150,216,255,1)', WH='rgba(223,234,255,1)', GD='rgba(255,210,122,1)', RD='rgba(255,138,106,1)', DIM='rgba(160,186,224,1)';
+
+/* precompute tất định (seed L) */
+const STARQ=[];for(let i=0;i<60;i++)STARQ.push({a:L()*6.28,r:0.3+L()*0.7,s:L()});
+const PASTA=[];for(let i=0;i<70;i++)PASTA.push({x:L(),y:L(),k:(L()*3)|0,ang:L()*6.28,s:L()});
+const ATOME=[];for(let i=0;i<5;i++)ATOME.push({r:120+i*46,ph:L()*6.28,sp:0.5+L()*0.6,tilt:(L()-0.5)*1.4});
+const GRAVE=[];for(let i=0;i<40;i++)GRAVE.push({x:L(),y:L(),ph:L()*6.28});
+
+/* ============================================================
+   CẢNH 1 — CÁI CHẾT CỦA MỘT NGÔI SAO (siêu tân tinh)
+   ============================================================ */
+function fxScene1(t,op){
+  /* 0-20 mở đầu tối, gợi vật thể tí hon nhưng nặng */
+  const a0=win(t,1.5,19,2.5,3)*op;
+  if(a0>0.01){txt("MỘT VẬT THỂ NHỎ ĐẾN KHÓ TIN",W/2,H*0.40,52,"700",WH,a0,"rgba(80,130,220,0.4)");
+    txt("— mà nặng hơn cả Mặt Trời —",W/2,H*0.485,34,"400",DIM,a0*0.9);
+    txt("để hiểu nó, hãy bắt đầu từ một CÁI CHẾT",W/2,H*0.7,30,"500","rgba(150,180,230,1)",win(t,10,19,2,3)*op);}
+  /* 38-55 giằng co hấp dẫn ↔ áp suất */
+  const tg=win(t,39,54,1.5,1.5)*op;
+  if(tg>0.01){const cx=W/2,cy=H*0.5,pu=0.5+0.5*Math.sin(t*2.2);
+    for(let k=0;k<8;k++){const an=k*Math.PI/4;const ix=Math.cos(an),iy=Math.sin(an);
+      line2d(cx+ix*280,cy+iy*280,cx+ix*(150+pu*30),cy+iy*(150+pu*30),"rgba(120,170,255,0.9)",4,tg*0.7);
+      line2d(cx+ix*70,cy+iy*70,cx+ix*(150-pu*20),cy+iy*(150-pu*20),"rgba(255,180,120,0.9)",4,tg*0.7);}
+    txt("HẤP DẪN ép vào",cx,H*0.16,32,"600","rgba(150,190,255,1)",tg);
+    txt("↔",cx,H*0.5,64,"700",WH,tg*0.5);
+    txt("NĂNG LƯỢNG đẩy ra",cx,H*0.85,32,"600","rgba(255,190,140,1)",tg);}
+  /* 55-69 lớp hành + lõi sắt */
+  const on=win(t,56,69,1.5,1.2)*op;
+  if(on>0.01){const cx=W/2,cy=H*0.5;const labs=["H","He","C","O","Si","Fe"];const cols=["rgba(120,170,255,.5)","rgba(150,220,255,.55)","rgba(180,200,180,.55)","rgba(220,180,140,.6)","rgba(255,170,120,.7)","rgba(255,120,90,.95)"];
+    for(let k=5;k>=0;k--){const rr=60+k*46;ring2d(cx,cy,rr,cols[k],k===0?0:4,on*0.8);}
+    dot2d(cx,cy,40,"rgba(255,110,80,1)",on*win(t,63,69,1,1));
+    txt("LÕI SẮT — dấu chấm hết",cx,H*0.85,34,"600",RD,win(t,63,69,1.5,1.2)*op,"rgba(255,120,80,0.4)");}
+  /* 69-86 lò tắt */
+  txt("LÒ LỬA TẮT PHỤT",W/2,H*0.2,58,"800",RD,win(t,70,86,1.5,1.5)*op,"rgba(255,110,70,0.5)");
+  /* 86-103 sụp lõi */
+  const co=win(t,87,102,1.2,1)*op;
+  if(co>0.01){txt("SỤP ĐỔ",W/2,H*0.18,72,"800",WH,co,"rgba(120,170,255,0.5)");
+    txt("¼ tốc độ ánh sáng · Trái Đất → 20 km",W/2,H*0.82,34,"600",CY,co);}
+  /* 103-121 siêu tân tinh */
+  const su=win(t,104,120,1,1.5)*op;
+  if(su>0.01){txt("SIÊU TÂN TINH",W/2,H*0.16,74,"800","rgba(255,236,206,1)",su,"rgba(255,170,90,0.5)");
+    txt("SÁNG HƠN CẢ MỘT THIÊN HÀ",W/2,H*0.85,38,"700","rgba(255,224,180,1)",win(t,112,121,1.5,1.5)*op,"rgba(255,160,90,0.4)");}
+  /* 121-141 lộ sao neutron */
+  const nn=win(t,124,141,1.5,1.2)*op;
+  if(nn>0.01){txt("CÒN LẠI: MỘT SAO NEUTRON",W/2,H*0.2,52,"700",WH,nn,"rgba(120,180,255,0.5)");
+    txt("trái tim vừa chết của ngôi sao",W/2,H*0.8,32,"500",DIM,nn);}
+}
+
+/* ============================================================
+   CẢNH 2 — SỰ NÉN ĐIÊN RỒ (kinetic type + nguyên tử)
+   ============================================================ */
+function drawAtom(cx,cy,a,t){
+  X.save();X.globalAlpha=a;
+  for(const o of ATOME){X.strokeStyle="rgba(120,170,255,0.28)";X.lineWidth=1.5;X.beginPath();X.ellipse(cx,cy,o.r,o.r*0.36,o.tilt,0,7);X.stroke();
+    const an=o.ph+t*o.sp;const ex=cx+Math.cos(an)*o.r*Math.cos(o.tilt)-Math.sin(an)*o.r*0.36*Math.sin(o.tilt);
+    const ey=cy+Math.cos(an)*o.r*Math.sin(o.tilt)+Math.sin(an)*o.r*0.36*Math.cos(o.tilt);
+    dot2d(ex,ey,5,"rgba(150,210,255,1)",a);}
+  X.restore();
+  glow2d(cx,cy,26,255,150,110,a*0.9);dot2d(cx,cy,9,"rgba(255,150,110,1)",a);
+}
+function fxScene2(t,op){
+  backdrop(clamp(op*1.3,0,0.55));
+  /* 151-171 nén 1 sao → 20km */
+  const sc=win(t,151,171,1.2,1.2)*op;
+  if(sc>0.01){txt("MỘT NGÔI SAO NẶNG HƠN MẶT TRỜI",W/2,H*0.2,44,"700",WH,sc,"rgba(120,170,255,0.4)");
+    glow2d(W*0.26,H*0.52,90,255,210,150,sc*0.9);dot2d(W*0.26,H*0.52,60,"rgba(255,200,140,1)",sc*0.8);
+    txt("→",W/2,H*0.52,80,"700",CY,sc);
+    glow2d(W*0.72,H*0.52,20,180,220,255,sc);dot2d(W*0.72,H*0.52,7,"rgba(220,240,255,1)",sc);
+    txt("ÉP LẠI CHỈ CÒN ~20 km",W/2,H*0.8,40,"700",CY,sc,"rgba(90,160,230,0.4)");
+    txt("nhỏ hơn cả một thành phố",W/2,H*0.86,28,"400",DIM,sc);}
+  /* 171-188 một thìa = tỷ tấn */
+  const sp=win(t,171,188,1.2,1.2)*op;
+  if(sp>0.01){const v=Math.round(lerp(0,1000000000,ss(172,180,t)));
+    txt("MỘT THÌA CÀ PHÊ",W/2,H*0.24,40,"600",DIM,sp);
+    txt("≈ "+v.toLocaleString('vi-VN')+" TẤN",W/2,H*0.42,86,"800",WH,sp,"rgba(120,180,255,0.5)");
+    txt("= cả một NGỌN NÚI",W/2,H*0.56,44,"700",CY,win(t,180,188,1.2,1.2)*op);
+    txt("nặng hơn toàn bộ loài người cộng lại",W/2,H*0.82,32,"500",DIM,win(t,183,188,1.2,1.2)*op);}
+  /* 188-206 xuyên qua mọi thứ */
+  const pi=win(t,189,206,1.2,1.2)*op;
+  if(pi>0.01){const y=lerp(H*0.2,H*0.78,ss(190,203,t));
+    line2d(W/2,H*0.16,W/2,y,"rgba(150,210,255,0.5)",3,pi*0.6);
+    glow2d(W/2,y,30,180,220,255,pi);dot2d(W/2,y,10,"rgba(220,240,255,1)",pi);
+    txt("xuyên MẶT BÀN · SÀN · lòng TRÁI ĐẤT",W/2,H*0.88,34,"600",CY,pi);}
+  /* 206-216 vào nguyên tử */
+  txt("TẠI SAO ĐẶC ĐẾN THẾ?",W/2,H*0.4,54,"700",WH,win(t,207,216,1.2,1)*op,"rgba(120,170,255,0.4)");
+  txt("hãy vào bên trong MỘT NGUYÊN TỬ",W/2,H*0.5,34,"500",DIM,win(t,209,216,1.2,1)*op);
+  /* 216-235 nguyên tử rỗng */
+  const at=win(t,217,235,1.5,1.2)*op;
+  if(at>0.01){backdrop(op*0.6*win(t,217,235,1.5,1.2));drawAtom(W/2,H*0.5,at,t);
+    txt("NGUYÊN TỬ — gần như TRỐNG RỖNG",W/2,H*0.16,42,"700",WH,at,"rgba(120,170,255,0.4)");
+    txt("hạt nhân tí hon · electron ở rất xa",W/2,H*0.86,32,"500",DIM,at);}
+  /* 235-250 sân vận động ↔ hạt đậu */
+  const st=win(t,236,250,1.4,1.2)*op;
+  if(st>0.01){backdrop(op*0.6*win(t,236,250,1.4,1.2));
+    X.save();X.globalAlpha=st*0.7;X.strokeStyle="rgba(140,180,240,0.9)";X.lineWidth=3;X.beginPath();X.ellipse(W/2,H*0.5,420,240,0,0,7);X.stroke();X.restore();
+    dot2d(W/2,H*0.5,6,"rgba(255,170,120,1)",st);glow2d(W/2,H*0.5,16,255,170,120,st);
+    txt("NGUYÊN TỬ = SÂN VẬN ĐỘNG",W/2,H*0.18,46,"700",WH,st,"rgba(120,170,255,0.4)");
+    txt("hạt nhân = một HẠT ĐẬU ở chính giữa",W/2,H*0.85,34,"600",CY,st);}
+  /* 250-266 nén electron vào hạt nhân → neutron */
+  const nc=win(t,251,266,1.2,1.2)*op;
+  if(nc>0.01){backdrop(op*0.55*win(t,251,266,1.2,1.2));const cx=W/2,cy=H*0.5;const crush=ss(252,263,t);
+    for(let k=0;k<12;k++){const an=k*Math.PI/6;const rr=lerp(230,26,crush);
+      dot2d(cx+Math.cos(an)*rr,cy+Math.sin(an)*rr,5,"rgba(150,210,255,1)",nc*(1-crush*0.6));}
+    glow2d(cx,cy,30+crush*24,180,220,255,nc);dot2d(cx,cy,10+crush*12,"rgba(220,240,255,1)",nc);
+    txt("electron BỊ ÉP vào hạt nhân → NEUTRON",W/2,H*0.85,34,"600",CY,nc);}
+  /* 266-287 quả cầu neutron */
+  const qc=win(t,268,287,1.4,1.2)*op;
+  if(qc>0.01){txt("QUẢ CẦU NEUTRON — 20 km",W/2,H*0.2,52,"800",WH,qc,"rgba(120,180,255,0.5)");
+    txt("một HẠT NHÂN NGUYÊN TỬ khổng lồ",W/2,H*0.8,34,"600",CY,qc);}
+}
+
+/* ============================================================
+   CẢNH 3 — BÊN TRONG SAO NEUTRON (sơ đồ cắt lớp)
+   ============================================================ */
+function fxScene3(t,op){
+  backdrop(clamp(op*1.6,0,0.9));
+  const cx=W*0.36, cy=H*0.54;
+  txt("BÊN TRONG MỘT SAO NEUTRON",W/2,H*0.12,44,"700",WH,win(t,288,418,1.5,2)*op,"rgba(120,170,255,0.4)");
+  /* lõi bí ẩn */
+  const coreA=win(t,379,418,1.5,2)*op;
+  glow2d(cx,cy,90,150,120,255,Math.max(win(t,379,418,1.5,2)*op*0.7, op*0.15));
+  dot2d(cx,cy,60,"rgba(90,70,180,0.9)",op*0.8);
+  if(coreA>0.01)txt("?",cx,cy,90,"300","rgba(210,200,255,1)",coreA*(0.5+0.4*Math.sin(t*3)),"rgba(150,120,255,0.6)");
+  /* lớp mì hạt nhân */
+  const pastaA=win(t,341,418,1.5,2)*op;
+  ring2d(cx,cy,150,"rgba(255,170,120,0.55)",30,pastaA*0.5);
+  if(pastaA>0.01){X.save();X.beginPath();X.arc(cx,cy,168,0,7);X.arc(cx,cy,120,0,7,true);X.clip();
+    for(const p of PASTA){const rr=124+p.y*40,an=p.x*6.28,px=cx+Math.cos(an)*rr,py=cy+Math.sin(an)*rr;
+      X.save();X.globalAlpha=pastaA*0.85;X.translate(px,py);X.rotate(p.ang+t*0.05);X.fillStyle="rgba(255,190,140,0.9)";X.strokeStyle="rgba(255,200,150,0.9)";X.lineWidth=3;
+      if(p.k===0){X.beginPath();X.arc(0,0,3+p.s*3,0,7);X.fill();}
+      else if(p.k===1){X.beginPath();X.moveTo(-10-p.s*8,0);X.lineTo(10+p.s*8,0);X.stroke();}
+      else{X.fillRect(-8-p.s*6,-2,16+p.s*12,4);}X.restore();}
+    X.restore();}
+  /* vỏ tinh thể */
+  ring2d(cx,cy,180,"rgba(150,210,255,0.9)",6,op*win(t,304,418,1.5,2));
+  ring2d(cx,cy,192,"rgba(120,180,255,0.5)",2,op*win(t,304,418,1.5,2)*0.7);
+  /* chấn tinh — nứt vỏ */
+  const qk=win(t,323,341,1.2,1.2)*op;
+  if(qk>0.01){const fl=0.5+0.5*Math.sin(t*7);for(let k=0;k<5;k++){const an=k*1.3+0.4;
+    line2d(cx+Math.cos(an)*180,cy+Math.sin(an)*180,cx+Math.cos(an+0.12)*205,cy+Math.sin(an+0.12)*205,"rgba(255,220,150,1)",3,qk*fl);}}
+  /* nhãn động theo lời thoại */
+  const lx=W*0.68;
+  function label(y,tt,head,body,col){const a=win(t,tt,418,1.2,2)*op;if(a<0.01)return;
+    line2d(cx+140,cy-60,lx-30,y,"rgba(150,190,240,0.5)",1.5,a*0.5);
+    txt(head,lx,y,34,"700",col,a,"rgba(0,0,0,0.6)","left");txt(body,lx,y+34,26,"400",DIM,a*0.9,null,"left");}
+  label(H*0.30,304,"VỎ TINH THỂ","cứng hơn thép hàng tỷ lần","rgba(150,210,255,1)");
+  label(H*0.45,323,"CHẤN TINH","vỏ nứt — bùng năng lượng","rgba(255,220,150,1)");
+  label(H*0.60,341,"MÌ HẠT NHÂN","spaghetti · lasagna hạt nhân","rgba(255,190,140,1)");
+  label(H*0.75,379,"LÕI BÍ ẨN","không ai biết làm từ gì","rgba(200,190,255,1)");
+}
+
+/* ============================================================
+   CẢNH 4 — NGỌN HẢI ĐĂNG QUAY (pulsar)
+   ============================================================ */
+function fxScene4(t,op){
+  /* 433-450 vận động viên trượt băng */
+  const sk=win(t,434,450,1.2,1.2)*op;
+  if(sk>0.01){const cx=W*0.5,cy=H*0.5;ring2d(cx,cy,lerp(210,90,ss(436,448,t)),"rgba(150,210,255,0.7)",3,sk);
+    for(let k=0;k<3;k++){const an=t*(2+ss(436,448,t)*6)+k*2.1;const rr=lerp(200,90,ss(436,448,t));
+      dot2d(cx+Math.cos(an)*rr,cy+Math.sin(an)*rr,7,"rgba(150,220,255,1)",sk);}
+    txt("THU TAY LẠI → XOAY NHANH VỌT",W/2,H*0.85,36,"600",CY,sk,"rgba(90,160,230,0.4)");}
+  /* 468-500 700 vòng/giây */
+  const rv=win(t,468,500,1.2,1.2)*op;
+  if(rv>0.01){const v=Math.round(lerp(0,700,ss(470,480,t)));
+    txt(v+" VÒNG / GIÂY",W/2,H*0.2,84,"800",WH,rv,"rgba(120,180,255,0.5)");
+    txt("một quả cầu 20 km — quay trọn 700 lần trong một chớp mắt",W/2,H*0.3,30,"500",DIM,win(t,478,500,1.2,1.2)*op);
+    txt("xích đạo ≈ 1/10 TỐC ĐỘ ÁNH SÁNG",W/2,H*0.84,36,"700",CY,win(t,488,500,1.2,1.2)*op,"rgba(90,160,230,0.4)");}
+  /* 500-529 hai chùm tia / hải đăng */
+  txt("HAI CHÙM TIA — như HAI LƯỠI KIẾM",W/2,H*0.14,40,"700",WH,win(t,501,529,1.2,1.5)*op,"rgba(120,180,255,0.4)");
+  /* 529-546 xung tít tít */
+  const pu=win(t,530,546,1.2,1.2)*op;
+  if(pu>0.01){const per=1.4;const beats=Math.floor((t-530)/per);
+    for(let k=0;k<=beats&&k<12;k++){const bt=530+k*per;const bl=clamp(1-(t-bt)/0.5,0,1);
+      dot2d(W*0.22+k*0.05*W,H*0.5,6+bl*10,"rgba(150,220,255,1)",pu*(0.3+0.7*bl));}
+    txt("TÍT · TÍT · TÍT — đều đến kinh ngạc",W/2,H*0.84,36,"600",CY,pu);}
+  /* 546-569 1967 / người tí hon màu xanh */
+  const yr=win(t,547,569,1.2,1.2)*op;
+  if(yr>0.01){txt("1967 · phát hiện đầu tiên",W/2,H*0.2,42,"700",WH,yr,"rgba(120,180,255,0.4)");
+    txt('thoạt đầu ngờ là "NGƯỜI TÍ HON MÀU XANH"',W/2,H*0.83,34,"600","rgba(150,255,200,1)",yr);}
+  /* 569-595 đồng hồ chính xác nhất */
+  const ck=win(t,570,595,1.2,1.5)*op;
+  if(ck>0.01){const cx=W/2,cy=H*0.46;ring2d(cx,cy,120,"rgba(150,210,255,0.8)",5,ck);
+    const ha=t*2.2;line2d(cx,cy,cx+Math.cos(ha-1.57)*90,cy+Math.sin(ha-1.57)*90,"rgba(220,240,255,1)",4,ck);
+    line2d(cx,cy,cx+Math.cos(ha*12-1.57)*60,cy+Math.sin(ha*12-1.57)*60,"rgba(150,220,255,1)",3,ck);
+    txt("ĐỒNG HỒ CHÍNH XÁC NHẤT VŨ TRỤ",W/2,H*0.78,40,"700",CY,ck,"rgba(90,160,230,0.4)");}
+}
+
+/* ============================================================
+   CẢNH 5 — TỪ TRƯỜNG KINH HOÀNG (magnetar)
+   ============================================================ */
+function fxScene5(t,op){
+  txt("TỪ TRƯỜNG",W/2,H*0.12,44,"700",WH,win(t,596,740,1.5,2)*op,"rgba(120,170,255,0.4)");
+  /* 606-620 nam châm tủ lạnh → Trái Đất */
+  const fr=win(t,607,620,1.2,1.2)*op;
+  if(fr>0.01){txt("nam châm tủ lạnh · la bàn Trái Đất",W/2,H*0.84,34,"500",DIM,fr);}
+  /* 634-650 magnetar mạnh nhất */
+  const mg=win(t,634,650,1.2,1.2)*op;
+  if(mg>0.01){txt("MAGNETAR",W/2,H*0.2,72,"800","rgba(200,220,255,1)",mg,"rgba(120,180,255,0.5)");
+    txt("nam châm MẠNH NHẤT trong vũ trụ",W/2,H*0.3,32,"500",CY,mg);}
+  /* 650-667 xoá thẻ tín dụng */
+  const cr=win(t,651,667,1.2,1.2)*op;
+  if(cr>0.01){txt("từ nửa đường tới MẶT TRĂNG",W/2,H*0.2,40,"600",WH,cr,"rgba(120,180,255,0.4)");
+    txt("XOÁ SẠCH mọi thẻ tín dụng, mọi ổ cứng",W/2,H*0.84,36,"600",CY,cr);}
+  /* 667-712 bóp méo nguyên tử / xé cơ thể */
+  const dm=win(t,668,712,1.5,1.5)*op;
+  if(dm>0.01){const cx=W/2,cy=H*0.5,str=ss(669,700,t);
+    X.save();X.globalAlpha=dm*0.85;X.strokeStyle="rgba(150,190,255,0.5)";X.lineWidth=1.5;
+    for(const o of ATOME){X.beginPath();X.ellipse(cx,cy,o.r,lerp(o.r*0.36,o.r*0.05,str),0,0,7);X.stroke();}X.restore();
+    glow2d(cx,cy,20,255,150,110,dm);
+    txt("bóp méo NGUYÊN TỬ thành hình trụ dài",W/2,H*0.16,38,"600","rgba(200,220,255,1)",win(t,668,689,1.2,1.2)*op,"rgba(120,180,255,0.3)");
+    txt("HOÁ HỌC SỤP ĐỔ — liên kết bị xé toạc",W/2,H*0.85,38,"700",RD,win(t,689,712,1.2,1.2)*op,"rgba(255,120,90,0.4)");}
+  /* 712-740 bùng nổ flare */
+  const fl=win(t,713,740,1.2,1.5)*op;
+  if(fl>0.01){txt("BÙNG NỔ FLARE",W/2,H*0.2,60,"800","rgba(255,235,200,1)",fl,"rgba(255,170,90,0.5)");
+    txt("nhiễu động khí quyển Trái Đất — từ 50.000 năm ánh sáng",W/2,H*0.84,32,"500","rgba(255,220,180,1)",win(t,722,740,1.2,1.5)*op);}
+}
+
+/* ============================================================
+   CẢNH 6 — HẤP DẪN CỰC ĐOAN (lensing + không-thời gian)
+   ============================================================ */
+function fxScene6(t,op){
+  txt("HẤP DẪN CỰC ĐOAN",W/2,H*0.12,44,"700",WH,win(t,741,841,1.5,2)*op,"rgba(120,170,255,0.4)");
+  /* 751-771 mạnh 100 tỷ lần / viên sỏi */
+  const pb=win(t,752,771,1.2,1.2)*op;
+  if(pb>0.01){txt("MẠNH HƠN TRÁI ĐẤT 100 TỶ LẦN",W/2,H*0.2,46,"700",CY,pb,"rgba(90,160,230,0.4)");
+    txt("viên sỏi thả từ 1 m → chạm đất trong 1 phần triệu giây",W/2,H*0.84,32,"500",DIM,win(t,760,771,1.2,1.2)*op);}
+  /* 771-799 bẻ cong ánh sáng — thấy hơn nửa mặt cầu */
+  const ln=win(t,772,799,1.2,1.2)*op;
+  if(ln>0.01){txt("BẺ CONG ÁNH SÁNG",W/2,H*0.2,50,"700",WH,ln,"rgba(120,180,255,0.4)");
+    txt("nhìn thấy HƠN NỬA mặt cầu — như nó mở ra trước mắt bạn",W/2,H*0.85,34,"600",CY,ln);}
+  /* 799-841 giãn thời gian */
+  const tm=win(t,800,841,1.2,1.5)*op;
+  if(tm>0.01){const cx=W*0.5,cy=H*0.46;
+    const c1=t*0.6,c2=t*2.4;
+    ring2d(cx-180,cy,70,"rgba(150,210,255,0.7)",4,tm*0.7);line2d(cx-180,cy,cx-180+Math.cos(c1-1.57)*54,cy+Math.sin(c1-1.57)*54,"rgba(220,240,255,1)",4,tm);
+    ring2d(cx+180,cy,70,"rgba(255,200,140,0.7)",4,tm*0.7);line2d(cx+180,cy,cx+180+Math.cos(c2-1.57)*54,cy+Math.sin(c2-1.57)*54,"rgba(255,220,160,1)",4,tm);
+    txt("trên sao neutron",cx-180,cy+100,26,"500",DIM,tm);txt("vũ trụ ở xa",cx+180,cy+100,26,"500",DIM,tm);
+    txt("THỜI GIAN TRÔI CHẬM LẠI",W/2,H*0.82,42,"700",CY,tm,"rgba(90,160,230,0.4)");}
+}
+
+/* ============================================================
+   CẢNH 7 — KHI HAI SAO NEUTRON VA NHAU (kilonova)
+   ============================================================ */
+const MERGE=922.73;
+function fxScene7(t,op){
+  txt("HAI SAO NEUTRON VA NHAU",W/2,H*0.12,44,"700",WH,win(t,842,978,1.5,2)*op*(t<MERGE?1:0.0),"rgba(120,170,255,0.4)");
+  /* 877-922 sóng hấp dẫn — dạng sóng chirp */
+  const gw=win(t,878,922,1.2,1.0)*op;
+  if(gw>0.01){const y0=H*0.8;X.save();X.globalAlpha=gw;X.strokeStyle="rgba(150,210,255,0.9)";X.lineWidth=2.5;X.shadowColor="rgba(90,180,255,0.7)";X.shadowBlur=10;X.beginPath();
+    for(let px=W*0.1;px<=W*0.9;px+=3){const u=(px-W*0.1)/(W*0.8);const freq=6+u*u*60;const amp=(18+u*46);
+      const yy=y0-Math.sin(u*freq+t*2)*amp;if(px<=W*0.1+0.1)X.moveTo(px,yy);else X.lineTo(px,yy);}
+    X.stroke();X.restore();
+    txt("SÓNG HẤP DẪN — gợn của không-thời gian",W/2,H*0.2,40,"700",CY,gw,"rgba(90,160,230,0.4)");}
+  /* 896-922 Einstein / 2017 */
+  const ei=win(t,897,922,1.2,1.0)*op;
+  if(ei>0.01)txt("EINSTEIN tiên đoán · 2017 con người BẮT ĐƯỢC · 130 triệu năm ánh sáng",W/2,H*0.29,28,"500",DIM,ei);
+  /* 922-937 kilonova */
+  const kn=win(t,923,940,0.8,1.5)*op;
+  if(kn>0.01)txt("KILONOVA",W/2,H*0.16,74,"800","rgba(255,236,206,1)",kn,"rgba(255,180,90,0.5)");
+  /* 937-978 rèn kim loại */
+  const fo=win(t,938,978,1.2,1.5)*op;
+  if(fo>0.01){txt("RÈN RA: VÀNG · BẠCH KIM · URANIUM",W/2,H*0.2,44,"800",GD,fo,"rgba(255,190,90,0.5)");
+    txt("lượng vàng nặng gấp nhiều lần cả Trái Đất — văng vào không gian",W/2,H*0.84,32,"500","rgba(255,224,170,1)",win(t,955,978,1.2,1.5)*op);}
+}
+
+/* ============================================================
+   CẢNH 8 — KẾT · NHỮNG NGỌN HẢI ĐĂNG KỲ VĨ
+   ============================================================ */
+function fxScene8(t,op){
+  /* 994-1017 tóm tắt điên rồ */
+  const rc=win(t,995,1017,1.2,1.2)*op;
+  if(rc>0.01){const items=["1 thìa = cả một ngọn núi","700 vòng mỗi giây","từ trường xé toạc nguyên tử","bẻ cong ánh sáng và thời gian"];
+    for(let k=0;k<4;k++){const a=win(t,996+k*4.5,1017,1,1.2)*op;txt(items[k],W/2,H*0.34+k*62,36,"600",k%2?CY:WH,a,"rgba(90,160,230,0.3)");}}
+  /* 1017-1038 không vô nghĩa */
+  const mn=win(t,1018,1038,1.2,1.2)*op;
+  if(mn>0.01){txt("đồng hồ · sóng hấp dẫn · kim loại quý",W/2,H*0.5,40,"600",CY,mn,"rgba(90,160,230,0.4)");}
+  /* 1038-1084 chiếc nhẫn vàng */
+  const rg=win(t,1039,1084,1.4,1.4)*op;
+  if(rg>0.01){const cx=W/2,cy=H*0.42;
+    X.save();X.globalAlpha=rg;X.strokeStyle="rgba(255,210,120,1)";X.lineWidth=10;X.shadowColor="rgba(255,190,90,0.7)";X.shadowBlur=24;X.beginPath();X.arc(cx,cy,66,0,7);X.stroke();X.restore();
+    for(let k=0;k<3;k++){const an=t*1.5+k*2.1;dot2d(cx+Math.cos(an)*66,cy+Math.sin(an)*66,4,"rgba(255,240,200,1)",rg*(0.5+0.5*Math.sin(t*3+k)));}
+    txt("CHIẾC NHẪN VÀNG TRÊN TAY BẠN",W/2,H*0.64,40,"700",GD,win(t,1039,1063,1.4,1.4)*op,"rgba(255,190,90,0.4)");
+    txt("đúc từ một vụ va chạm của hai ngôi sao đã chết — hàng tỷ năm trước",W/2,H*0.86,32,"500","rgba(255,224,170,1)",win(t,1052,1084,1.4,1.4)*op);}
+  /* 1084-1111 kết */
+  const en=win(t,1085,1111,1.5,2)*op;
+  if(en>0.01){txt("NHỮNG NGỌN HẢI ĐĂNG KHẮC NGHIỆT MÀ KỲ VĨ",W/2,H*0.24,42,"700",WH,en,"rgba(120,180,255,0.4)");
+    txt("quét ánh sáng qua bóng tối — đều đặn, kiên nhẫn, không ngừng",W/2,H*0.78,32,"500",DIM,win(t,1092,1111,1.5,2)*op);}
+}
+
+const FX=[null,fxScene1,fxScene2,fxScene3,fxScene4,fxScene5,fxScene6,fxScene7,fxScene8];
+
+/* ---------------- phụ đề (425 CUES) ---------------- */
+const subEl=document.getElementById('sub'), chapEl=document.getElementById('chap');
+const CUES=/*CUES*/[{t:0,s:"Ở đâu đó ngoài kia, trong bóng tối giữa"},{t:2.33,s:"các vì sao, có những vật thể nhỏ đến mức"},{t:4.73,s:"bạn có thể lái xe vòng quanh chúng trong"},{t:7.12,s:"nửa giờ — mà lại nặng hơn cả Mặt Trời của"},{t:9.57,s:"chúng ta."},{t:10.61,s:"Chúng là những thứ điên rồ nhất mà vũ trụ"},{t:12.9,s:"từng tạo ra."},{t:14.07,s:"Và để hiểu chúng ra đời thế nào, tôi phải"},{t:17.05,s:"kể cho bạn nghe về một cái chết."},{t:19.86,s:"Hãy tưởng tượng một ngôi sao khổng lồ."},{t:22.5,s:"Không phải cỡ như Mặt Trời của chúng ta,"},{t:24.76,s:"mà lớn hơn thế nhiều lần — nặng gấp mười,"},{t:27.07,s:"gấp hai mươi lần."},{t:28.53,s:"Suốt hàng triệu năm, nó cháy rực trong"},{t:30.79,s:"không gian, một lò phản ứng khổng lồ ép"},{t:33.11,s:"các nguyên tử vào nhau ở tâm để giải phóng"},{t:35.61,s:"năng lượng."},{t:36.76,s:"Cả cuộc đời một ngôi sao là một cuộc giằng"},{t:39.52,s:"co."},{t:40.22,s:"Lực hấp dẫn của chính nó luôn muốn bóp nó"},{t:42.92,s:"lại, kéo tất cả sụp vào trong."},{t:45.41,s:"Còn năng lượng từ lò lửa ở tâm thì đẩy"},{t:48,s:"ngược ra ngoài, chống đỡ."},{t:50.21,s:"Suốt hàng triệu năm, hai lực ấy cân bằng,"},{t:52.95,s:"và ngôi sao đứng vững."},{t:54.93,s:"Nhưng không có lò lửa nào cháy mãi."},{t:57.99,s:"Ngôi sao đốt hết hydro, rồi đốt tới heli,"},{t:60.71,s:"rồi những nguyên tố nặng hơn, hết lớp này"},{t:63.43,s:"đến lớp khác, như bóc dần một củ hành"},{t:65.88,s:"ngược từ trong ra."},{t:67.57,s:"Cho tới khi ở tận lõi, nó rèn ra sắt."},{t:71.25,s:"Và sắt là dấu chấm hết."},{t:73.81,s:"Bởi sắt là nguyên tố duy nhất mà khi ép"},{t:76.01,s:"lại, ngôi sao không thu về được năng lượng"},{t:78.38,s:"nữa, chỉ mất đi."},{t:79.78,s:"Lò lửa ở tâm tắt phụt trong tích tắc."},{t:82.57,s:"Và trong khoảnh khắc ấy, cuộc giằng co kéo"},{t:85.27,s:"dài hàng triệu năm kết thúc chỉ trong một"},{t:87.91,s:"phần giây."},{t:89.05,s:"Không còn gì chống đỡ, lực hấp dẫn thắng"},{t:91.61,s:"tuyệt đối."},{t:92.75,s:"Cái lõi to bằng cả Trái Đất sụp vào chính"},{t:95.42,s:"nó với tốc độ gần bằng một phần tư tốc độ"},{t:98.09,s:"ánh sáng."},{t:99.17,s:"Trong chưa đầy một giây, một khối vật chất"},{t:101.99,s:"khổng lồ co rúm lại thành một quả cầu chỉ"},{t:104.73,s:"rộng vài chục cây số."},{t:106.64,s:"Các lớp bên ngoài của ngôi sao, đang rơi"},{t:109.34,s:"vào theo, đập vào cái lõi cứng như đá vừa"},{t:112.11,s:"hình thành, rồi bật ngược trở ra trong một"},{t:114.94,s:"vụ nổ mà ta gọi là siêu tân tinh."},{t:117.67,s:"Trong vài ngày, một ngôi sao đang hấp hối"},{t:120.01,s:"bừng sáng rực rỡ hơn cả một thiên hà —"},{t:122.18,s:"sáng hơn hàng trăm tỷ ngôi sao cộng lại."},{t:124.98,s:"Nhưng khi ánh chớp lộng lẫy ấy tắt đi, khi"},{t:127.62,s:"những lớp khí bị thổi bay ra ngoài và tan"},{t:130.19,s:"vào bóng tối — ở ngay chính giữa, thứ còn"},{t:132.77,s:"sót lại mới thật sự là điều tôi muốn kể"},{t:135.21,s:"cho bạn."},{t:136.22,s:"Một hạt nhân."},{t:137.63,s:"Một trái tim vừa chết đi của ngôi sao."},{t:140.27,s:"Đó là một sao neutron."},{t:145.44,s:"Giờ hãy để tôi cố diễn tả cho bạn thứ vừa"},{t:148.35,s:"ra đời ấy đặc đến mức nào."},{t:150.69,s:"Bởi con số thật sự vượt ra ngoài mọi thứ"},{t:153.1,s:"trực giác của ta có thể nắm bắt."},{t:155.54,s:"Hãy lấy toàn bộ khối lượng của một thứ"},{t:157.39,s:"nặng hơn cả Mặt Trời chúng ta."},{t:159.34,s:"Mặt Trời — quả cầu mà bạn có thể nhét vừa"},{t:161.65,s:"hơn một triệu Trái Đất vào bên trong."},{t:164.23,s:"Bây giờ, hãy ép tất cả khối lượng khổng lồ"},{t:167.12,s:"ấy lại, ép mãi, cho tới khi nó chỉ còn là"},{t:169.95,s:"một quả cầu rộng chừng hai mươi cây số."},{t:173.14,s:"Nhỏ hơn cả một thành phố."},{t:175.46,s:"Ở mật độ ấy, một điều kỳ quái xảy ra."},{t:179.28,s:"Hãy tưởng tượng bạn múc lên một thìa cà"},{t:181.63,s:"phê vật chất từ sao neutron."},{t:183.82,s:"Chỉ một thìa nhỏ thôi."},{t:185.5,s:"Thìa vật chất ấy sẽ nặng khoảng một tỷ"},{t:188.33,s:"tấn."},{t:189.13,s:"Nặng ngang với cả một ngọn núi."},{t:191.39,s:"Nặng hơn toàn bộ loài người trên Trái Đất"},{t:194.17,s:"này cộng lại."},{t:195.54,s:"Một tỷ tấn, gói gọn trong một thìa cà phê."},{t:199.18,s:"Nếu bằng cách nào đó bạn có thể mang thìa"},{t:202,s:"vật chất ấy về đặt lên mặt bàn, nó sẽ"},{t:204.55,s:"xuyên thẳng qua mặt bàn, qua sàn nhà, qua"},{t:207.36,s:"nền đất, và khoan sâu vào lòng Trái Đất,"},{t:210.11,s:"bởi không có vật liệu nào trên hành tinh"},{t:212.87,s:"này đủ cứng để đỡ nó."},{t:214.83,s:"Nhưng tại sao vật chất lại có thể đặc đến"},{t:217.4,s:"mức điên rồ như thế?"},{t:219.16,s:"Câu trả lời nằm ở chính cái tên của nó."},{t:222.17,s:"Để hiểu, tôi phải kéo bạn vào bên trong"},{t:224.65,s:"một nguyên tử."},{t:226.03,s:"Mọi thứ quanh bạn — bàn tay bạn, không"},{t:228.82,s:"khí, ngôi nhà — đều làm từ nguyên tử."},{t:232.04,s:"Và một nguyên tử, kỳ lạ thay, gần như"},{t:234.51,s:"trống rỗng."},{t:235.74,s:"Ở giữa là một hạt nhân nhỏ xíu, và xoay"},{t:238.31,s:"quanh nó ở rất xa là những electron."},{t:241.19,s:"Khoảng cách giữa hạt nhân và electron, so"},{t:243.64,s:"với kích thước của chúng, là mênh mông."},{t:246.47,s:"Nếu tôi phóng to một nguyên tử lên bằng cả"},{t:248.92,s:"một sân vận động, thì hạt nhân ở chính"},{t:251.14,s:"giữa chỉ nhỏ bằng một hạt đậu."},{t:253.39,s:"Toàn bộ phần còn lại là khoảng không."},{t:255.89,s:"Vật chất mà ta tưởng là rắn chắc, thật ra"},{t:258.38,s:"chủ yếu là trống rỗng."},{t:260.2,s:"Khi cái lõi ngôi sao sụp đổ, lực hấp dẫn"},{t:263,s:"khủng khiếp đến mức nghiền nát cấu trúc"},{t:265.73,s:"ấy."},{t:266.44,s:"Nó ép các electron lao thẳng vào hạt nhân,"},{t:269.37,s:"hợp nhất với các proton, biến tất cả thành"},{t:272.3,s:"một thứ duy nhất: neutron."},{t:274.61,s:"Toàn bộ khoảng trống trong nguyên tử bị"},{t:276.67,s:"bóp sạch."},{t:277.64,s:"Kết quả là một quả cầu gồm các neutron ép"},{t:280.27,s:"sát vào nhau, không còn một kẽ hở."},{t:282.95,s:"Nó giống như một hạt nhân nguyên tử khổng"},{t:285.29,s:"lồ, rộng hai mươi cây số."},{t:287.21,s:"Đó là lý do nó đặc đến vậy: bạn đã lấy đi"},{t:289.89,s:"toàn bộ khoảng không mà vật chất bình"},{t:292.31,s:"thường vẫn giữ."},{t:293.79,s:"Đó là lý do nó mang tên sao neutron."},{t:299.69,s:"Giờ hãy cùng tôi làm một điều không aai"},{t:302.32,s:"từng làm được: đi xuyên vào bên trong một"},{t:305.09,s:"sao neutron, từ lớp vỏ ngoài cùng cho tới"},{t:307.86,s:"trái tim bí ẩn của nó."},{t:309.85,s:"Bởi bên dưới bề mặt ấy là những trạng thái"},{t:312.35,s:"vật chất mà không phòng thí nghiệm nào"},{t:314.62,s:"trên Trái Đất tái tạo nổi."},{t:316.67,s:"Bề mặt của sao neutron không mềm."},{t:319.34,s:"Nó là một lớp vỏ rắn, một lớp vỏ tinh thể,"},{t:322.53,s:"cứng hơn thép hàng tỷ lần."},{t:325,s:"Nhưng lực hấp dẫn ở đó mạnh đến mức lớp vỏ"},{t:327.44,s:"ấy phẳng lì một cách hoàn hảo."},{t:329.68,s:"Ngọn núi cao nhất trên một sao neutron có"},{t:332.35,s:"lẽ chỉ cao vài milimét."},{t:334.35,s:"Cả một hành tinh nhẵn thín tới mức ấy."},{t:336.96,s:"Đôi khi, lớp vỏ tinh thể ấy chịu sức căng"},{t:339.85,s:"quá lớn và nứt vỡ, giống như một trận động"},{t:342.81,s:"đất."},{t:343.59,s:"Người ta gọi đó là chấn tinh."},{t:346.52,s:"Một vết nứt chỉ dịch chuyển vài milimét"},{t:349.07,s:"trên bề mặt cũng đủ giải phóng năng lượng"},{t:351.74,s:"nhiều hơn tất cả những gì Mặt Trời của ta"},{t:354.42,s:"tỏa ra trong hàng chục năm."},{t:356.67,s:"Xuống sâu hơn nữa, ngay bên dưới lớp vỏ,"},{t:358.79,s:"vật chất bắt đầu hành xử theo những cách"},{t:360.91,s:"quái lạ đến mức các nhà khoa học phải đặt"},{t:363.09,s:"cho chúng những cái tên trong bếp."},{t:365.39,s:"Ở đó, các hạt nhân bị lực hấp dẫn ép cho"},{t:367.93,s:"biến dạng, kéo dài ra thành những sợi dài,"},{t:370.59,s:"rồi ép dẹt thành những tấm mỏng."},{t:373.15,s:"Họ gọi những sợi ấy là mì spaghetti hạt"},{t:376.61,s:"nhân."},{t:377.56,s:"Những tấm dẹt ấy là lasagna hạt nhân."},{t:380.69,s:"Gộp chung lại, người ta gọi cả lớp vật"},{t:383.28,s:"chất kỳ dị này là mì hạt nhân."},{t:385.83,s:"Và người ta tin rằng đây có thể là thứ vật"},{t:388.22,s:"chất bền chắc nhất trong toàn vũ trụ —"},{t:390.38,s:"cứng hơn thép thường tới cả chục tỷ lần."},{t:393.15,s:"Và rồi, sâu hơn nữa, ở tận trung tâm, là"},{t:396.46,s:"điều bí ẩn lớn nhất."},{t:398.61,s:"Áp suất ở lõi lớn đến mức ngay cả các"},{t:401.04,s:"neutron cũng có thể bị nghiền vỡ ra thành"},{t:403.73,s:"những thứ nhỏ hơn — những hạt cơ bản nhất"},{t:406.43,s:"của vật chất, tồn tại ở một trạng thái tự"},{t:409.12,s:"do mà bình thường không bao giờ tồn tại."},{t:412.26,s:"Sự thật là, không aai biết chắc trái tim"},{t:414.8,s:"của một sao neutron được làm từ gì."},{t:417.53,s:"Nó là một trong những câu hỏi lớn chưa có"},{t:419.76,s:"lời đáp của vật lý."},{t:421.3,s:"Một trạng thái vật chất mà ta không thể"},{t:423.61,s:"tạo ra, không thể chạm vào, chỉ có thể suy"},{t:426.09,s:"đoán từ xa."},{t:427.24,s:"Một bí mật được khóa kín dưới hàng cây số"},{t:429.75,s:"vật chất đặc nhất vũ trụ."},{t:434.77,s:"Nhưng sự điên rồ của sao neutron không"},{t:436.88,s:"dừng lại ở khối lượng."},{t:438.6,s:"Bây giờ tôi muốn kể cho bạn nghe về chuyển"},{t:440.74,s:"động của nó."},{t:441.85,s:"Bởi những vật thể này không đứng yên."},{t:444.64,s:"Chúng quay."},{t:445.79,s:"Và chúng quay nhanh đến mức gần như không"},{t:448,s:"thể tin nổi."},{t:449.15,s:"Để hiểu vì sao, hãy hình dung một vận động"},{t:451.75,s:"viên trượt băng đang xoay tròn với hai tay"},{t:454.35,s:"dang rộng."},{t:455.47,s:"Khi cô ấy thu tay lại sát người, cô ấy"},{t:457.9,s:"xoay nhanh vọt lên."},{t:459.62,s:"Đó là một quy luật của tự nhiên: khi một"},{t:462.31,s:"vật đang quay co lại nhỏ hơn, nó phải quay"},{t:465.14,s:"nhanh hơn."},{t:466.3,s:"Bây giờ hãy nghĩ tới ngôi sao khổng lồ ban"},{t:468.95,s:"đầu, vốn cũng đang quay chậm rãi."},{t:471.54,s:"Khi lõi của nó sụp từ kích cỡ cả Trái Đất"},{t:474.43,s:"xuống chỉ còn hai mươi cây số, nó giống"},{t:477.19,s:"như vận động viên trượt băng thu tay lại —"},{t:480.16,s:"nhưng ở một quy mô khủng khiếp."},{t:482.85,s:"Và nó quay nhanh đến chóng mặt."},{t:485.15,s:"Một sao neutron vừa ra đời có thể quay"},{t:487.56,s:"hàng chục vòng mỗi giây."},{t:489.58,s:"Và có những cái, được gọi là pulsar mili"},{t:492.44,s:"giây, quay tới bảy trăm vòng trong một"},{t:495.16,s:"giây."},{t:496.02,s:"Hãy dừng lại và cảm nhận điều đó."},{t:498.35,s:"Một quả cầu nặng hơn cả Mặt Trời, rộng"},{t:500.77,s:"bằng một thành phố, quay bảy trăm vòng"},{t:503.19,s:"trọn vẹn chỉ trong một cái chớp mắt."},{t:505.98,s:"Ở tốc độ ấy, một điểm trên đường xích đạo"},{t:508.56,s:"của nó đang di chuyển với tốc độ bằng gần"},{t:511.14,s:"một phần mười tốc độ ánh sáng."},{t:513.52,s:"Đó là một trong những vật thể quay nhanh"},{t:515.82,s:"nhất mà ta từng biết trong toàn vũ trụ."},{t:518.56,s:"Và khi nó quay, nó làm một điều tuyệt đẹp."},{t:522.35,s:"Từ hai cực của mình, sao neutron bắn ra"},{t:525.02,s:"hai chùm tia sóng vô tuyến cực mạnh, hẹp"},{t:527.76,s:"và tập trung, phóng thẳng ra ngoài không"},{t:530.49,s:"gian."},{t:531.34,s:"Hai luồng sáng như hai lưỡi kiếm."},{t:533.91,s:"Nhưng hai chùm tia ấy thường không thẳng"},{t:536.48,s:"hàng với trục quay."},{t:538.19,s:"Nên khi ngôi sao xoay, hai chùm tia quét"},{t:540.56,s:"vòng qua không gian, giống hệt ngọn đèn"},{t:542.87,s:"của một ngọn hải đăng quét qua mặt biển"},{t:545.18,s:"đêm."},{t:545.91,s:"Quét, và quét, và quét, đều đặn không"},{t:549.25,s:"ngừng."},{t:550.31,s:"Và mỗi lần một trong hai chùm tia ấy vô"},{t:552.67,s:"tình quét ngang qua Trái Đất, kính thiên"},{t:555.08,s:"văn của ta bắt được một xung."},{t:557.33,s:"Một tiếng đập."},{t:558.48,s:"Rồi ngôi sao xoay tiếp, chùm tia lướt đi,"},{t:561.83,s:"rồi vòng lại, và ta lại nhận được một xung"},{t:565.27,s:"nữa."},{t:566.1,s:"Tít."},{t:566.89,s:"Tít."},{t:567.83,s:"Tít."},{t:568.59,s:"Đều đặn đến kinh ngạc."},{t:570.39,s:"Chính những tiếng đập đều đặn ấy đã làm"},{t:572.91,s:"sửng sốt những người đầu tiên phát hiện ra"},{t:575.61,s:"chúng vào năm 1967."},{t:577.34,s:"Tín hiệu đến đều đến mức thoạt đầu, người"},{t:579.85,s:"ta còn nửa đùa nửa thật tự hỏi liệu đó có"},{t:582.35,s:"phải là tín hiệu từ một nền văn minh khác"},{t:584.86,s:"gọi tới."},{t:585.85,s:"Họ đặt cho nó cái tên là người tí hon màu"},{t:588.76,s:"xanh."},{t:589.61,s:"Nhưng sự thật hóa ra còn kỳ diệu hơn cả"},{t:592.11,s:"người ngoài hành tinh."},{t:594.03,s:"Bởi những tiếng đập ấy đều đặn đến mức"},{t:596.37,s:"những pulsar quay nhanh nhất là những"},{t:598.65,s:"chiếc đồng hồ chính xác nhất trong toàn vũ"},{t:601.24,s:"trụ."},{t:601.99,s:"Chúng giữ nhịp ổn định ngang, thậm chí hơn"},{t:604.37,s:"cả những đồng hồ nguyên tử tinh vi nhất mà"},{t:606.75,s:"con người từng chế tạo."},{t:608.56,s:"Một ngôi sao đã chết, quay tròn trong bóng"},{t:611.36,s:"tối, lại là chiếc đồng hồ hoàn hảo nhất mà"},{t:614.17,s:"tự nhiên từng làm ra."},{t:619.07,s:"Và bây giờ, tôi phải kể cho bạn nghe về"},{t:621.27,s:"thứ có lẽ là khía cạnh đáng sợ nhất của"},{t:623.46,s:"những vật thể này."},{t:624.97,s:"Không phải khối lượng."},{t:626.48,s:"Không phải tốc độ."},{t:627.75,s:"Mà là từ trường."},{t:629.48,s:"Bạn biết một cục nam châm gắn trên tủ lạnh"},{t:632.85,s:"chứ."},{t:633.68,s:"Bạn biết từ trường của Trái Đất, cái khiến"},{t:636.12,s:"kim la bàn chỉ về hướng bắc."},{t:638.25,s:"Bây giờ, hãy giữ lấy hình dung ấy trong"},{t:640.8,s:"đầu, vì tôi sắp đưa nó tới một nơi cực"},{t:643.28,s:"đoan."},{t:644.11,s:"Khi lõi ngôi sao sụp đổ và co lại, từ"},{t:646.59,s:"trường vốn có của nó cũng bị nén chặt và"},{t:649.27,s:"tăng cường lên khủng khiếp."},{t:651.58,s:"Một sao neutron bình thường đã có từ"},{t:653.61,s:"trường mạnh gấp hàng nghìn tỷ lần cục nam"},{t:655.91,s:"châm trên tủ lạnh của bạn."},{t:657.88,s:"Nhưng có một loại đặc biệt, gọi là"},{t:659.97,s:"magnetar, thì từ trường của chúng còn mạnh"},{t:662.56,s:"hơn thế cả nghìn lần nữa."},{t:664.6,s:"Chúng là những nam châm mạnh nhất tồn tại"},{t:666.82,s:"trong vũ trụ."},{t:668.02,s:"Và ở mức độ ấy, từ trường thôi cũng đủ sức"},{t:670.85,s:"làm những điều mà lẽ ra không thứ gì làm"},{t:673.55,s:"nổi."},{t:674.31,s:"Hãy tưởng tượng bạn tiến lại gần một"},{t:676.29,s:"magnetar."},{t:677.28,s:"Từ khoảng cách bằng một nửa đường từ Trái"},{t:679.93,s:"Đất tới Mặt Trăng — một khoảng cách nghe"},{t:682.51,s:"có vẻ rất an toàn — từ trường của nó đã đủ"},{t:685.23,s:"mạnh để xóa sạch mọi dữ liệu trong mọi thẻ"},{t:687.94,s:"tín dụng, mọi ổ cứng trên toàn thế giới."},{t:691.04,s:"Nhưng nếu bạn lại gần hơn nữa, điều xảy ra"},{t:693.38,s:"không còn là chuyện dữ liệu."},{t:695.43,s:"Từ trường mạnh đến mức nó bóp méo chính"},{t:697.71,s:"hình dạng của nguyên tử."},{t:699.6,s:"Nó kéo các nguyên tử ra, ép chúng thành"},{t:701.91,s:"những hình trụ dài và mảnh, dẹt đến mức"},{t:704.22,s:"mọi phản ứng hóa học ta biết đều sụp đổ."},{t:707.08,s:"Hóa học, như ta hiểu về nó, đơn giản là"},{t:709.81,s:"không còn tồn tại nữa."},{t:711.86,s:"Cơ thể bạn được giữ hình hài nhờ những"},{t:714.11,s:"liên kết hóa học giữa các nguyên tử."},{t:716.74,s:"Trong từ trường ấy, những liên kết đó bị"},{t:719.22,s:"xé toạc."},{t:720.22,s:"Bạn sẽ không bị đốt cháy, không bị nghiền"},{t:722.49,s:"nát theo cách thông thường."},{t:724.48,s:"Bạn sẽ chỉ đơn giản là thôi tồn tại như"},{t:726.76,s:"một cấu trúc, bởi chính những nguyên tử"},{t:729.03,s:"tạo nên bạn đã bị bẻ cong thành những hình"},{t:731.48,s:"thù mà sự sống không thể nào giữ nổi."},{t:734.14,s:"Và đôi khi, một magnetar bùng nổ."},{t:737.42,s:"Trong một phần nhỏ của một giây, nó có thể"},{t:740.18,s:"phóng ra nhiều năng lượng hơn cả những gì"},{t:742.87,s:"Mặt Trời của ta tỏa ra trong hàng trăm"},{t:745.36,s:"nghìn năm."},{t:746.51,s:"Đã có lần, một tia sáng như thế từ một"},{t:748.74,s:"magnetar cách ta năm mươi nghìn năm ánh"},{t:751.03,s:"sáng vẫn đủ sức làm nhiễu động tầng khí"},{t:753.31,s:"quyển của Trái Đất."},{t:754.93,s:"Từ khoảng cách xa đến mức ánh sáng phải"},{t:757.46,s:"mất năm mươi nghìn năm mới tới nơi."},{t:762.71,s:"Có một điều nữa mà khối lượng khổng lồ dồn"},{t:764.91,s:"vào một không gian bé nhỏ như thế gây ra."},{t:767.57,s:"Nó bẻ cong chính hiện thực quanh nó."},{t:769.93,s:"Nó bẻ cong ánh sáng, và bẻ cong cả thời"},{t:773.17,s:"gian."},{t:774.07,s:"Ngay trên bề mặt một sao neutron, lực hấp"},{t:776.88,s:"dẫn mạnh hơn trên Trái Đất khoảng một trăm"},{t:779.77,s:"tỷ lần."},{t:780.75,s:"Nếu bằng cách nào đó bạn đứng được ở đó,"},{t:783.32,s:"và thả một viên sỏi từ độ cao chỉ một mét,"},{t:786.03,s:"viên sỏi ấy sẽ chạm mặt đất trong một phần"},{t:788.74,s:"triệu của một giây, sau khi đã tăng tốc"},{t:791.25,s:"tới hàng triệu kilômét mỗi giờ."},{t:793.75,s:"Lực hấp dẫn ấy mạnh đến mức nó uốn cong cả"},{t:796.03,s:"đường đi của ánh sáng."},{t:797.73,s:"Điều này dẫn tới một hệ quả kỳ lạ đến khó"},{t:800.28,s:"tin: khi bạn nhìn vào một sao neutron, bạn"},{t:802.89,s:"không chỉ thấy nửa mặt hướng về phía mình."},{t:806,s:"Ánh sáng từ phía sau nó bị lực hấp dẫn kéo"},{t:808.78,s:"vòng qua, uốn cong lại quanh rìa, nên bạn"},{t:811.49,s:"có thể nhìn thấy được một phần của cả mặt"},{t:814.2,s:"bên kia."},{t:815.23,s:"Bạn nhìn thấy một thứ nhiều hơn một nửa"},{t:817.74,s:"của quả cầu, như thể nó đang mở ra trước"},{t:820.31,s:"mắt bạn."},{t:821.33,s:"Và thời gian nữa."},{t:823.14,s:"Theo những định luật của Einstein, hấp dẫn"},{t:825.39,s:"càng mạnh thì thời gian trôi càng chậm."},{t:827.98,s:"Trên bề mặt một sao neutron, hấp dẫn mãnh"},{t:830.67,s:"liệt đến mức thời gian ở đó thật sự trôi"},{t:833.29,s:"chậm lại một cách rõ rệt so với nơi bạn"},{t:835.85,s:"đang đứng lúc này."},{t:837.55,s:"Nếu bạn có thể lơ lửng an toàn ngay trên"},{t:840.02,s:"bề mặt của nó và nhìn về ngôi nhà của"},{t:842.3,s:"mình, bạn sẽ thấy phần còn lại của vũ trụ"},{t:844.83,s:"như đang được tua nhanh, đồng hồ chạy vội"},{t:847.35,s:"vã hơn."},{t:848.29,s:"Còn với những người ở xa nhìn về phía bạn,"},{t:850.77,s:"chính bạn mới là kẻ chuyển động chậm lại."},{t:853.7,s:"Một ngôi sao đã chết bẻ cong không chỉ ánh"},{t:856.53,s:"sáng, mà bẻ cong cả dòng chảy của thời"},{t:859.09,s:"gian."},{t:862.9,s:"Và giờ tôi để dành cho bạn điều dữ dội"},{t:865.29,s:"nhất."},{t:866.11,s:"Bởi đôi khi, một sao neutron không cô đơn."},{t:869.28,s:"Đôi khi, hai sao neutron sinh ra cạnh"},{t:871.4,s:"nhau, và cứ thế xoay quanh nhau trong hàng"},{t:873.81,s:"triệu, hàng tỷ năm."},{t:875.4,s:"Và câu chuyện của chúng kết thúc trong một"},{t:878.03,s:"sự kiện đẹp và mãnh liệt nhất mà vũ trụ"},{t:880.48,s:"biết đến."},{t:881.54,s:"Hai vật thể đặc khủng khiếp ấy xoay quanh"},{t:883.94,s:"nhau, mỗi vòng lại xích lại gần hơn một"},{t:886.22,s:"chút."},{t:887.01,s:"Chậm thôi, qua hàng triệu năm."},{t:889.64,s:"Nhưng khi khoảng cách thu hẹp, chúng xoay"},{t:892.24,s:"nhanh hơn, rồi nhanh hơn nữa, cho tới"},{t:894.59,s:"những giây cuối cùng, chúng lao vòng quanh"},{t:897.25,s:"nhau hàng trăm lần mỗi giây."},{t:899.52,s:"Và khi hai vật thể có khối lượng khủng"},{t:901.79,s:"khiếp ấy gia tốc quanh nhau dữ dội đến"},{t:904.07,s:"thế, chúng làm rung chuyển chính cấu trúc"},{t:906.52,s:"của không gian và thời gian."},{t:908.69,s:"Chúng gửi ra những gợn sóng lan đi khắp vũ"},{t:910.9,s:"trụ, những đợt sóng của chính không-thời"},{t:912.99,s:"gian bị vặn xoắn."},{t:914.38,s:"Ta gọi đó là sóng hấp dẫn."},{t:916.79,s:"Einstein đã tiên đoán sự tồn tại của những"},{t:919.33,s:"gợn sóng ấy từ một trăm năm trước, nhưng"},{t:921.76,s:"ngay cả ông cũng nghĩ ta sẽ không bao giờ"},{t:924.24,s:"đo được chúng."},{t:925.59,s:"Vậy mà vào năm 2017, con người đã bắt được"},{t:928.39,s:"một đợt sóng như thế — tiếng rung của hai"},{t:931.12,s:"sao neutron va vào nhau, phát ra từ cách"},{t:933.78,s:"ta một trăm ba mươi triệu năm ánh sáng."},{t:936.88,s:"Một tiếng thì thầm của không-thời gian,"},{t:939.35,s:"vọng tới qua một khoảng cách không thể"},{t:941.76,s:"hình dung."},{t:942.92,s:"Và khi hai sao neutron cuối cùng chạm vào"},{t:945.8,s:"nhau và hòa làm một, vụ va chạm ấy bùng"},{t:948.55,s:"lên thành một quả cầu lửa gọi là kilonova."},{t:952,s:"Nhưng điều thật sự xảy ra bên trong ngọn"},{t:954.24,s:"lửa đó mới là phần khiến tôi phải sững lại"},{t:956.59,s:"mỗi lần nghĩ tới."},{t:958.07,s:"Trong cái vạc sôi sục của vụ va chạm ấy,"},{t:960.62,s:"giữa nhiệt độ và áp suất không thể tưởng"},{t:963.18,s:"tượng nổi, vũ trụ rèn ra những nguyên tố"},{t:965.73,s:"nặng nhất mà nó biết."},{t:967.57,s:"Vàng."},{t:968.65,s:"Bạch kim."},{t:969.76,s:"Uranium."},{t:971.05,s:"Chúng được đúc nên ngay trong khoảnh khắc"},{t:973.53,s:"kinh hoàng khi hai ngôi sao đã chết lao"},{t:975.89,s:"vào nhau."},{t:976.95,s:"Trong một vụ va chạm như thế, người ta ước"},{t:979.47,s:"tính lượng vàng được tạo ra có thể nặng"},{t:981.82,s:"gấp nhiều lần cả Trái Đất của chúng ta."},{t:984.66,s:"Cả một hành tinh bằng vàng, được rèn nên"},{t:987.31,s:"trong một cái chớp mắt của vũ trụ, rồi"},{t:989.82,s:"văng ra ngoài không gian, gieo mình vào"},{t:992.4,s:"những đám mây khí sẽ tạo nên các ngôi sao"},{t:995.12,s:"và hành tinh mới."},{t:999.71,s:"Vậy nên hãy dừng lại một chút, và cùng tôi"},{t:1002.33,s:"ngẫm về những vật thể này."},{t:1004.45,s:"Sao neutron là tàn dư của cái chết."},{t:1007.85,s:"Chúng ra đời từ khoảnh khắc một ngôi sao"},{t:1010.42,s:"khổng lồ tự sụp đổ."},{t:1012.14,s:"Chúng là những thứ khắc nghiệt nhất mà tôi"},{t:1014.37,s:"biết trong toàn cõi vũ trụ."},{t:1016.3,s:"Đặc đến mức một thìa cà phê nặng bằng cả"},{t:1019.13,s:"một ngọn núi."},{t:1020.54,s:"Quay nhanh đến mức hàng trăm vòng chỉ"},{t:1022.68,s:"trong một giây."},{t:1024.04,s:"Từ trường mạnh đến mức xé toạc chính các"},{t:1026.05,s:"nguyên tử."},{t:1027.05,s:"Hấp dẫn mạnh đến mức bẻ cong cả ánh sáng"},{t:1029.27,s:"và thời gian."},{t:1030.49,s:"Nếu bạn tìm một danh sách những điều bất"},{t:1033.15,s:"khả, những điều lẽ ra không nên tồn tại,"},{t:1035.81,s:"thì sao neutron có mặt trong gần như từng"},{t:1038.54,s:"dòng."},{t:1039.37,s:"Và thế mà, chúng lại không hề vô nghĩa hay"},{t:1042.17,s:"chỉ đơn thuần là bạo lực."},{t:1044.34,s:"Những tiếng đập đều đặn của chúng cho ta"},{t:1046.46,s:"những chiếc đồng hồ chính xác nhất vũ trụ."},{t:1049.19,s:"Cú va chạm của chúng dạy ta cách lắng nghe"},{t:1051.56,s:"những gợn sóng của không-thời gian."},{t:1054.03,s:"Và trong ngọn lửa của cái chết ấy, chúng"},{t:1056.59,s:"rèn nên những kim loại quý giá nhất mà ta"},{t:1059.22,s:"biết."},{t:1060.06,s:"Và đây là điều tôi muốn bạn mang theo, sau"},{t:1063.14,s:"tất cả."},{t:1064.16,s:"Nếu bạn đang đeo một chiếc nhẫn vàng, hay"},{t:1066.59,s:"một sợi dây chuyền bạch kim, hãy nhìn nó"},{t:1068.97,s:"một lần nữa."},{t:1070.18,s:"Vì rất có thể, thứ kim loại ấy đã không"},{t:1072.22,s:"được sinh ra trên Trái Đất."},{t:1074.13,s:"Rất có thể, nó đã được đúc nên từ một vụ"},{t:1076.63,s:"va chạm dữ dội của hai ngôi sao đã chết,"},{t:1079.13,s:"từ hàng tỷ năm trước, từ một nơi cách đây"},{t:1081.7,s:"xa đến mức không thể tưởng tượng nổi."},{t:1084.53,s:"Nó đã bay qua vũ trụ trống rỗng suốt hàng"},{t:1087.17,s:"tỷ năm, đã trở thành một phần của đám mây"},{t:1089.81,s:"khí sinh ra Mặt Trời và Trái Đất, đã nằm"},{t:1092.39,s:"yim trong lòng đất, để rồi cuối cùng, một"},{t:1095.03,s:"ngày nọ, được đặt lên bàn tay bạn."},{t:1097.72,s:"Một mảnh nhỏ của thảm họa vũ trụ đẹp đẽ"},{t:1100.15,s:"nhất, giờ đang nằm gọn trên da thịt bạn."},{t:1105.61,s:"Những sao neutron vẫn ở ngoài kia, ngay"},{t:1108.26,s:"lúc này, quay tròn trong bóng tối."},{t:1111.07,s:"Những ngọn hải đăng khắc nghiệt mà kỳ vĩ,"},{t:1114.01,s:"quét ánh sáng của mình qua không gian, đều"},{t:1117.01,s:"đặn, kiên nhẫn, không ngừng nghỉ."},{t:1119.88,s:"Chúng là những trái tim đã chết của những"},{t:1122.25,s:"ngôi sao đã tắt."},{t:1123.68,s:"Và thế mà, chính từ những cái chết dữ dội"},{t:1126.53,s:"ấy, vũ trụ lại rèn nên những điều đẹp đẽ"},{t:1129.31,s:"nhất."},{t:1130.16,s:"Kể cả, có lẽ, thứ ánh vàng nhỏ bé đang lấp"},{t:1133.33,s:"lánh trên tay bạn."}];
+function subAt(t){let idx=0;for(let i=0;i<CUES.length;i++){if(CUES[i].t<=t+1e-6)idx=i;else break;}return CUES[idx]?CUES[idx].s:"";}
+
+/* ---------------- helpers 3D per scene ---------------- */
+function hideAll(){giantStar.visible=false;giantCorona.visible=false;nstar.visible=false;nstar2.visible=false;
+  pulsarGroup.visible=false;magGroup.visible=false;gridMesh.visible=false;lensRing.visible=false;lensRing2.visible=false;
+  snBoom.visible=false;knBoom.visible=false;snFlash.visible=false;knFlash.visible=false;goldPts.visible=false;magFlare.visible=false;}
+function placeNStar(g,x,y,z,R,op,glowScale){g.visible=true;g.position.set(x,y,z);g.scale.setScalar(R);g.rotation.y*=0;
+  const gl=g.userData.glow;gl.material.opacity=op*0.4;gl.scale.setScalar(R*(glowScale||2.6));}
+
+/* ============================================================
+   renderAtTime(t) — hàm thuần, mọi chuyển động là hàm của t
+   ============================================================ */
+const _NEWT=[0,19.86,36.76,54.93,71.25,89.05,106.64,124.98,145.44,155.54,175.46,195.54,214.83,226.03,246.47,260.2,277.64,299.69,316.67,336.96,356.67,373.15,393.15,412.26,434.77,449.15,466.3,485.15,505.98,518.56,533.91,550.31,570.39,594.03,619.07,629.48,644.11,657.88,674.31,691.04,711.86,734.14,762.71,774.07,793.75,821.33,837.55,862.9,881.54,899.52,916.79,942.92,958.07,976.95,999.71,1016.3,1039.37,1060.06,1084.53,1105.61,1135.2],_OLDT=[0,20.2,38.4,55,69.27,86.4,103.2,121.93,141.66,151.13,171.13,188.53,206.4,216.87,235.87,250.2,266.67,287.64,304.57,323.37,341.44,359.77,378.17,395.9,418.9,433.7,450.37,468.04,487.91,500.91,514.51,529.91,546.78,569.98,595.78,606.25,619.85,633.98,650.51,667.58,688.91,712.64,740.67,751.8,771.2,799.13,815.26,841.13,859.86,877.86,896.33,922.73,937.8,955.2,978.33,994.13,1017.13,1038.46,1063.53,1084.76,1111.63];
+function realToDry(tr){if(tr<=_NEWT[0])return _OLDT[0];var n=_NEWT.length;if(tr>=_NEWT[n-1])return _OLDT[n-1];for(var i=0;i<n-1;i++){if(tr>=_NEWT[i]&&tr<=_NEWT[i+1]){var f=(tr-_NEWT[i])/((_NEWT[i+1]-_NEWT[i])||1e-6);return _OLDT[i]+(_OLDT[i+1]-_OLDT[i])*f;}}return _OLDT[n-1];}
+function renderAtTime(tReal){
+  tReal=clamp(tReal,0,TOTAL);const t=realToDry(tReal);
+  stars.rotation.y=t*0.0007; milkyBand.rotation.y=t*0.0007;
+  nMat.uniforms.uT.value=t; giantMat.uniforms.uT.value=t; goldMat.uniforms.uT.value=t;
+  let A=1;for(let i=1;i<=8;i++){if(t>=SB[i-1])A=i;}
+  hideAll();
+  camera.fov=50;camera.position.set(0,0,300);camera.up.set(0,1,0);camera.lookAt(0,0,0);
+
+  if(A===1){
+    /* ---- SIÊU TÂN TINH ---- */
+    const t0=103.2;
+    giantStar.visible=(t>=18&&t<108);
+    if(giantStar.visible){let sc;
+      if(t<86)sc=lerp(0.4,34,ss(18,27,t));
+      else sc=lerp(34,1.6,ss(86,102.5,t));
+      giantStar.scale.setScalar(Math.max(0.4,sc));giantStar.rotation.y=t*0.02;
+      let opq=1;if(t>=69&&t<86)opq=lerp(1,0.72,ss(69,86,t));if(t>=96)opq*=lerp(1,0.25,ss(96,103,t));
+      giantMat.uniforms.uOp.value=opq;giantCorona.visible=true;giantCorona.material.opacity=opq*0.4*clamp(sc/40,0,1);giantCorona.scale.setScalar(Math.max(1,sc*2.4));}
+    if(t>=t0-0.4&&t<138){snBoom.visible=true;const e=clamp(t-t0,0,36);
+      snBoom.scale.setScalar(5+e*72);snBoom.material.uniforms.uOp.value=clamp(1-(t-t0-2)/24,0,1);snBoom.rotation.y=t*0.01;}
+    if(t>=t0-0.5&&t<122){snFlash.visible=true;const fa=ss(t0-0.3,t0+2.5,t)*(1-ss(110,121,t));
+      snFlash.material.opacity=fa;snFlash.scale.setScalar(lerp(200,1000,ss(t0,113,t)));}
+    if(t>=113){placeNStar(nstar,0,0,0,lerp(1.2,6,ss(113,131,t)),ss(115,124,t),2.8);nMat.uniforms.uOp.value=ss(115,124,t);nstar.rotation.y=t*0.4;}
+    let d=lerp(340,300,ss(18,40,t));
+    if(t>=86)d=lerp(300,150,ss(86,103,t));
+    if(t>=103)d=lerp(150,360,ss(103,120,t));
+    if(t>=120)d=lerp(360,185,ss(120,141,t));
+    const a=t*0.03;camera.position.set(Math.sin(a)*d*0.2,d*0.12,d);camera.lookAt(0,0,0);
+
+  }else if(A===2){
+    /* ---- SỰ NÉN — sao neutron nhỏ, phần lớn là 2D ---- */
+    placeNStar(nstar,0,0,0,13,1,2.6);nMat.uniforms.uOp.value=1;nstar.rotation.y=t*0.5;
+    const a=(t-141.66)*0.02;camera.position.set(Math.sin(a)*40,14,195);camera.lookAt(0,0,0);
+
+  }else if(A===3){
+    /* ---- BÊN TRONG — sao mờ sau backdrop, 2D cắt lớp ---- */
+    placeNStar(nstar,-70,0,0,20,1,2.3);nMat.uniforms.uOp.value=1;nstar.rotation.y=t*0.15;
+    camera.position.set(0,10,300);camera.lookAt(-20,0,0);
+
+  }else if(A===4){
+    /* ---- PULSAR — sao + hai chùm tia quét ---- */
+    placeNStar(nstar,0,0,0,20,1,2.4);nMat.uniforms.uOp.value=1;
+    const spin=t*1.7;nstar.rotation.y=spin;
+    pulsarGroup.visible=true;pulsarGroup.position.set(0,0,0);pulsarGroup.scale.setScalar(1);pulsarGroup.rotation.y=spin;
+    const rise=ss(500,510,t);beamMat.uniforms.uA.value=rise*(0.85+0.15*Math.sin(t*3));
+    magFlare.visible=false;
+    const a=t*0.06;camera.position.set(Math.sin(a)*90,64,380);camera.lookAt(0,0,0);
+
+  }else if(A===5){
+    /* ---- MAGNETAR — sao + đường sức từ + flare ---- */
+    placeNStar(nstar,0,0,0,22,1,2.4);nMat.uniforms.uOp.value=1;nstar.rotation.y=t*0.6;
+    magGroup.visible=true;magGroup.rotation.y=t*0.12;magGroup.rotation.z=0.3;
+    const flareT=[622,660,700,726];let fa=0,fx0=0,fy0=0;
+    for(const ft of flareT){if(t>=ft&&t<ft+2.2){const p=(t-ft)/2.2;fa=Math.max(fa,Math.sin(p*Math.PI));const an=ft*1.3;fx0=Math.cos(an)*130;fy0=(ft%2?1:-1)*160;}}
+    if(fa>0.01){magFlare.visible=true;magFlare.position.set(fx0,fy0,0);magFlare.material.opacity=fa*0.7;magFlare.scale.setScalar(45+fa*80);}
+    const a=t*0.05;camera.position.set(Math.sin(a)*120,54,400);camera.lookAt(0,0,0);
+
+  }else if(A===6){
+    /* ---- HẤP DẪN — lensing ring + lưới không-thời gian ---- */
+    placeNStar(nstar,0,0,0,20,1,2.3);nMat.uniforms.uOp.value=1;nstar.rotation.y=t*0.35;
+    lensRing.visible=lensRing2.visible=true;const lr=ss(772,782,t);
+    lensRing.position.set(0,0,0);lensRing.scale.setScalar(30);lensRing.material.opacity=lr*0.7;lensRing.lookAt(camera.position);
+    lensRing2.position.set(0,0,0);lensRing2.scale.setScalar(35);lensRing2.material.opacity=lr*0.45;lensRing2.lookAt(camera.position);
+    gridMesh.visible=true;gridMesh.position.set(0,-64,0);updateGrid(t,[[0,0]],90,-1);
+    gridMesh.material.opacity=0.42*ss(741,752,t);
+    const a=t*0.03;camera.position.set(Math.sin(a)*70,50,300);camera.lookAt(0,-16,0);
+
+  }else if(A===7){
+    /* ---- VA CHẠM — hai sao xoáy, sóng hấp dẫn, kilonova, vàng ---- */
+    gridMesh.visible=true;gridMesh.position.set(0,-80,0);
+    const preM=clamp(t,SB[6],MERGE);
+    if(t<MERGE){
+      const spiral=ss(841.13,MERGE,t);const sep=lerp(150,14,spiral);const om=lerp(0.5,7.0,spiral*spiral);const an=(t-841.13)*om;
+      const ax=Math.cos(an)*sep,az=Math.sin(an)*sep;
+      placeNStar(nstar,ax,0,az,10,1,2.4);nstar.rotation.y=t*1.0;
+      placeNStar(nstar2,-ax,0,-az,10,1,2.4);nstar2.rotation.y=t*1.0;
+      updateGrid(t,[[ax,az],[-ax,-az]],70,-1);
+      const a=t*0.04;camera.position.set(Math.sin(a)*60,70,300);camera.lookAt(0,-10,0);
+    }else{
+      const e=t-MERGE;
+      /* kilonova */
+      knBoom.visible=true;knBoom.position.set(0,0,0);knBoom.scale.setScalar(6+Math.min(e,40)*66);knBoom.material.uniforms.uOp.value=clamp(1-(e-2)/26,0,1);knBoom.rotation.y=t*0.02;
+      knFlash.visible=true;const fa=ss(MERGE-0.2,MERGE+2.2,t)*(1-ss(MERGE+6,MERGE+16,t));knFlash.material.opacity=fa;knFlash.scale.setScalar(lerp(200,900,ss(MERGE,MERGE+8,t)));
+      /* sao neutron hợp nhất còn lại */
+      placeNStar(nstar,0,0,0,lerp(4,13,ss(MERGE,MERGE+10,t)),clamp((e-4)/6,0,1),2.4);nMat.uniforms.uOp.value=clamp((e-4)/6,0,1);nstar.rotation.y=t*0.6;
+      /* sóng hấp dẫn lan trên lưới */
+      updateGrid(t,[[0,0]],80,clamp(e*0.9,0,20));
+      /* vàng phun ra */
+      goldPts.visible=true;goldPts.scale.setScalar(0.3+Math.min(e,40)*0.9);goldMat.uniforms.uOp.value=clamp((e-3)/8,0,1)*ss(978.33,955,t);
+      const a=t*0.04;camera.position.set(Math.sin(a)*80,90,340);camera.lookAt(0,-10,0);
+    }
+    gridMesh.material.opacity=0.4;
+
+  }else if(A===8){
+    /* ---- KẾT — sao neutron cô độc quay, vàng lấp lánh ---- */
+    placeNStar(nstar,0,0,0,15,1,2.6);nMat.uniforms.uOp.value=1;
+    const spin=t*1.1;nstar.rotation.y=spin;
+    pulsarGroup.visible=true;pulsarGroup.position.set(0,0,0);pulsarGroup.scale.setScalar(0.5);pulsarGroup.rotation.y=spin;
+    beamMat.uniforms.uA.value=0.4*(0.65+0.35*Math.sin(t*2.5));
+    goldPts.visible=true;goldPts.scale.setScalar(1.0);goldMat.uniforms.uOp.value=win(t,1039,1111,4,6)*0.8;
+    const a=(t-978.33)*0.03;camera.position.set(Math.sin(a)*60,34,340);camera.lookAt(0,0,0);
+  }
+
+  camera.updateProjectionMatrix();
+  lensPass.uniforms.uT.value=t;
+  composer.render();
+
+  /* ---- 2D overlay ---- */
+  clearFx();
+  for(let i=1;i<=8;i++){const o=sceneOp(i,t);if(o>0.004)FX[i](t,o);}
+  const fb=(t<1.4?(1-t/1.4):0)+(t>TOTAL-2?clamp((t-(TOTAL-2))/1.9,0,1):0);
+  if(fb>0){X.fillStyle="rgba(1,2,7,"+clamp(fb,0,1)+")";X.fillRect(0,0,W,H);}
+
+  /* ---- tiêu đề chương + phụ đề ---- */
+  const chapO=win(t,SB[A-1],SB[A-1]+6.5,0.8,1.5);
+  chapEl.textContent=CHAP[A];chapEl.style.opacity=(chapO*clamp(1-fb,0,1)).toFixed(3);
+  subEl.textContent=subAt(tReal);subEl.style.opacity=clamp(1-fb,0,1).toFixed(3);
+}
+
+/* ---------------- timeline TẤT ĐỊNH ---------------- */
+window.__timelines=window.__timelines||{};
+const tl=gsap.timeline({paused:true});
+const clk={t:0};
+tl.to(clk,{t:TOTAL,duration:TOTAL,ease:"none",onUpdate:()=>renderAtTime(clk.t)},0);
+window.__timelines["tap-03-sao-neutron"]=tl;
+renderAtTime(0);
+</script>
+</body>
+</html>

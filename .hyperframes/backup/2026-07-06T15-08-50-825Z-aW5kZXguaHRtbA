@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, height=1080">
+<title>Tập 5 — Sự Sống Bắt Đầu Từ Đâu — HyperFrames</title>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{width:1920px;height:1080px;overflow:hidden;background:#02040a;font-family:"Segoe UI",-apple-system,Roboto,sans-serif;}
+  #root{position:relative;width:1920px;height:1080px;}
+  #c{position:absolute;inset:0;display:block;z-index:0;}
+  #fx{position:absolute;inset:0;display:block;z-index:4;}
+  #vig{position:absolute;inset:0;pointer-events:none;z-index:6;background:radial-gradient(ellipse at center,rgba(0,0,0,0) 52%,rgba(1,2,8,.62) 100%);}
+  #chap{position:absolute;left:50%;top:6.2%;transform:translateX(-50%);z-index:18;color:#a8ffcf;font-size:26px;font-weight:600;letter-spacing:5px;text-transform:uppercase;opacity:0;text-shadow:0 2px 16px rgba(0,0,0,.95);white-space:nowrap;}
+  #sub{position:absolute;left:50%;bottom:8.5%;transform:translateX(-50%);z-index:20;width:min(1400px,86%);text-align:center;color:#f2f6ff;font-size:40px;font-weight:600;line-height:1.4;text-shadow:0 2px 18px rgba(0,0,0,.95),0 0 3px rgba(0,0,0,.95);}
+  #err{position:absolute;left:12px;top:12px;z-index:99;color:#ff9090;background:rgba(0,0,0,.8);padding:8px 10px;font:12px/1.5 monospace;max-width:90%;white-space:pre-wrap;border-radius:8px;display:none;}
+</style>
+</head>
+<body>
+<div data-hf-id="hf-root" id="root" data-composition-id="tap-05-su-song" data-start="0" data-duration="1426.66" data-width="1920" data-height="1080">
+  <canvas data-hf-id="hf-c" id="c" class="clip" data-start="0" data-duration="1426.66" data-track-index="0"></canvas>
+  <canvas data-hf-id="hf-fx" id="fx" class="clip" data-start="0" data-duration="1426.66" data-track-index="1"></canvas>
+  <div data-hf-id="hf-vig" id="vig"></div>
+  <div data-hf-id="hf-chap" id="chap" data-layout-allow-occlusion></div>
+  <div data-hf-id="hf-sub" id="sub" data-layout-allow-occlusion></div>
+  <div data-hf-id="hf-err" id="err"></div>
+</div>
+
+<script>
+window.addEventListener('error',function(e){var d=document.getElementById('err');if(!d)return;d.style.display='block';
+  d.textContent='LỖI: '+(e.message||e.type)+(e.filename?('\n@ '+e.filename.split('/').pop()+':'+e.lineno):'');});
+
+/* ============================================================
+   "SỰ SỐNG BẮT ĐẦU TỪ ĐÂU?" — Tập 5
+   Composition TẤT ĐỊNH theo t. 8 chương = 8 CẢNH khác biệt,
+   cắt dứt khoát, hình bám sát lời thoại. Dựng thẳng trên
+   timeline 0..1426.66 (KHÔNG remap, KHÔNG audio).
+   1 Ranh giới sống/chết · 2 Trái Đất sơ khai (địa ngục magma +
+   dội bom + đại dương) · 3 Súp nguyên thuỷ (Miller-Urey 1953) ·
+   4 Miệng phun thuỷ nhiệt (black smoker) · 5 Thế giới ARN (xoắn
+   phát sáng, tự sao chép) · 6 Từ hoá học đến tế bào (màng lipid,
+   LUCA) · 7 Panspermia (sao chổi gieo mầm) · 8 Kết — cây sự sống.
+   ============================================================ */
+const TOTAL=1426.66, W=1920, H=1080;
+/* mốc CẮT CẢNH = start của các cue có chapter (timing.json) + TOTAL cuối */
+const SB=[0, 121.93, 265.95, 449.48, 648.68, 845.88, 1044.28, 1218.27, 1426.66];
+const CHAP=["RANH GIỚI GIỮA SỐNG & CHẾT","TRÁI ĐẤT SƠ KHAI · MỘT ĐỊA NGỤC",
+  "SÚP NGUYÊN THUỶ · 1953","NGỌN LỬA DƯỚI ĐÁY BIỂN","THẾ GIỚI ARN",
+  "TỪ HOÁ HỌC ĐẾN TẾ BÀO","SỰ SỐNG ĐẾN TỪ VŨ TRỤ?","CHÚNG TA LÀ HẬU DUỆ"];
+
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return ((t^t>>>14)>>>0)/4294967296;};}
+const rnd=mulberry32(20260706), rndc=mulberry32(5177), L=mulberry32(831), rndT=mulberry32(2222);
+
+function clamp(x,a,b){return Math.max(a,Math.min(b,x));}
+function lerp(a,b,x){return a+(b-a)*x;}
+function smooth(a){a=clamp(a,0,1);return a*a*a*(a*(a*6-15)+10);}
+function ss(e0,e1,x){let t=clamp((x-e0)/((e1-e0)||1e-6),0,1);return t*t*(3-2*t);}
+function win(t,a,b,fi,fo){return Math.max(0,Math.min(ss(a,a+fi,t),1-ss(b-fo,b,t)));}
+
+/* ---------------- Three.js: renderer / scene / lights ---------------- */
+const renderer=new THREE.WebGLRenderer({canvas:document.getElementById('c'),antialias:true});
+renderer.setPixelRatio(1); renderer.setSize(W,H);
+renderer.outputEncoding=THREE.sRGBEncoding; renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.02;
+renderer.setClearColor(0x02040a,1);
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(50,W/H,0.1,80000);
+scene.add(new THREE.AmbientLight(0x27303f,1.0));
+const keyLight=new THREE.DirectionalLight(0xfff0e0,1.15); keyLight.position.set(3,5,4); scene.add(keyLight);
+const fillLight=new THREE.DirectionalLight(0x5a80c0,0.5); fillLight.position.set(-4,-2,-3); scene.add(fillLight);
+
+/* ---------------- canvas textures (không phụ thuộc mạng) ---------------- */
+function softDot(size,r,g,b){const cv=document.createElement('canvas');cv.width=cv.height=size;const x=cv.getContext('2d');const c=size/2;
+  const gr=x.createRadialGradient(c,c,0,c,c,c);gr.addColorStop(0,'rgba('+r+','+g+','+b+',1)');gr.addColorStop(.28,'rgba('+r+','+g+','+b+',.5)');gr.addColorStop(.6,'rgba('+r+','+g+','+b+',.1)');gr.addColorStop(1,'rgba('+r+','+g+','+b+',0)');
+  x.fillStyle=gr;x.fillRect(0,0,size,size);const t=new THREE.Texture(cv);t.needsUpdate=true;return t;}
+const DOT_W=softDot(128,255,255,255), DOT_WARM=softDot(128,255,205,150), DOT_TEAL=softDot(128,150,255,210);
+function glowSprite(tex,scale,op){const m=new THREE.SpriteMaterial({map:tex,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,opacity:op==null?1:op});const s=new THREE.Sprite(m);s.scale.setScalar(scale);return s;}
+
+/* ---------------- starfield THẬT (r=30000 > khoảng cách camera xa nhất) ----------------
+   màu theo nhiệt độ sao (lam→trắng→vàng→cam→đỏ) */
+function starColor(u){
+  if(u<0.06)      return [0.62,0.74,1.00];
+  else if(u<0.20) return [0.80,0.87,1.00];
+  else if(u<0.46) return [1.00,0.98,0.94];
+  else if(u<0.72) return [1.00,0.93,0.72];
+  else if(u<0.90) return [1.00,0.78,0.50];
+  else            return [1.00,0.60,0.42];}
+const SR=30000;
+const starVS=`attribute float aS;varying vec3 vC;void main(){vC=color;vec4 mv=modelViewMatrix*vec4(position,1.0);gl_PointSize=aS*(30000.0/-mv.z);gl_Position=projectionMatrix*mv;}`;
+const starFS=`varying vec3 vC;uniform float uOp;void main(){vec2 c=gl_PointCoord-0.5;float d=length(c);float a=smoothstep(0.5,0.0,d);float core=smoothstep(0.16,0.0,d);gl_FragColor=vec4(vC*(a+core*0.8),a)*uOp;}`;
+const starOp={value:1};
+const stars=(function(){const N=4400,P=new Float32Array(N*3),S=new Float32Array(N),C=new Float32Array(N*3);
+  for(let i=0;i<N;i++){const u=rnd(),v=rnd(),th=2*Math.PI*u,ph=Math.acos(2*v-1),sp=Math.sin(ph),r=SR;
+    P[i*3]=sp*Math.cos(th)*r;P[i*3+1]=Math.cos(ph)*r;P[i*3+2]=sp*Math.sin(th)*r;
+    const bright=rnd()<0.04?(18+rnd()*18):(Math.pow(rnd(),2.8)*11+2.2);
+    S[i]=bright; const col=starColor(rnd()),lum=0.6+0.4*Math.min(1,bright/14);
+    C[i*3]=col[0]*lum;C[i*3+1]=col[1]*lum;C[i*3+2]=col[2]*lum;}
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(P,3));g.setAttribute('aS',new THREE.BufferAttribute(S,1));g.setAttribute('color',new THREE.BufferAttribute(C,3));
+  const pts=new THREE.Points(g,new THREE.ShaderMaterial({vertexColors:true,uniforms:{uOp:starOp},vertexShader:starVS,fragmentShader:starFS,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));
+  scene.add(pts);return pts;})();
+
+/* ---------------- noise GLSL ---------------- */
+const SN=`
+vec3 mod289(vec3 x){return x-floor(x*(1.0/289.0))*289.0;}
+vec4 mod289(vec4 x){return x-floor(x*(1.0/289.0))*289.0;}
+vec4 permute(vec4 x){return mod289(((x*34.0)+1.0)*x);}
+vec4 taylorInvSqrt(vec4 r){return 1.79284291400159-0.85373472095314*r;}
+float snoise(vec3 v){const vec2 C=vec2(1.0/6.0,1.0/3.0);const vec4 D=vec4(0.0,0.5,1.0,2.0);
+ vec3 i=floor(v+dot(v,C.yyy));vec3 x0=v-i+dot(i,C.xxx);
+ vec3 g=step(x0.yzx,x0.xyz);vec3 l=1.0-g;vec3 i1=min(g.xyz,l.zxy);vec3 i2=max(g.xyz,l.zxy);
+ vec3 x1=x0-i1+C.xxx;vec3 x2=x0-i2+C.yyy;vec3 x3=x0-D.yyy;i=mod289(i);
+ vec4 p=permute(permute(permute(i.z+vec4(0.0,i1.z,i2.z,1.0))+i.y+vec4(0.0,i1.y,i2.y,1.0))+i.x+vec4(0.0,i1.x,i2.x,1.0));
+ float n_=0.142857142857;vec3 ns=n_*D.wyz-D.xzx;vec4 j=p-49.0*floor(p*ns.z*ns.z);
+ vec4 x_=floor(j*ns.z);vec4 y_=floor(j-7.0*x_);vec4 x=x_*ns.x+ns.yyyy;vec4 y=y_*ns.x+ns.yyyy;vec4 h=1.0-abs(x)-abs(y);
+ vec4 b0=vec4(x.xy,y.xy);vec4 b1=vec4(x.zw,y.zw);vec4 s0=floor(b0)*2.0+1.0;vec4 s1=floor(b1)*2.0+1.0;vec4 sh=-step(h,vec4(0.0));
+ vec4 a0=b0.xzyw+s0.xzyw*sh.xxyy;vec4 a1=b1.xzyw+s1.xzyw*sh.zzww;
+ vec3 p0=vec3(a0.xy,h.x);vec3 p1=vec3(a0.zw,h.y);vec3 p2=vec3(a1.xy,h.z);vec3 p3=vec3(a1.zw,h.w);
+ vec4 norm=taylorInvSqrt(vec4(dot(p0,p0),dot(p1,p1),dot(p2,p2),dot(p3,p3)));p0*=norm.x;p1*=norm.y;p2*=norm.z;p3*=norm.w;
+ vec4 m=max(0.6-vec4(dot(x0,x0),dot(x1,x1),dot(x2,x2),dot(x3,x3)),0.0);m=m*m;
+ return 42.0*dot(m*m,vec4(dot(p0,x0),dot(p1,x1),dot(p2,x2),dot(p3,x3)));}
+float fbm(vec3 p){float f=0.0,a=0.5;for(int i=0;i<5;i++){f+=a*snoise(p);p=p*2.05+3.3;a*=0.5;}return f;}
+`;
+const HS=`float hs(float n){return fract(sin(n)*43758.5453);}`;
+const BEADVS=`attribute float aS;varying vec3 vC;void main(){vC=color;vec4 mv=modelViewMatrix*vec4(position,1.0);gl_PointSize=aS*(220.0/-mv.z);gl_Position=projectionMatrix*mv;}`;
+const BEADFS=`varying vec3 vC;uniform float uOp;void main(){vec2 c=gl_PointCoord-0.5;float d=length(c);float a=smoothstep(0.5,0.0,d);gl_FragColor=vec4(vC*(a+smoothstep(0.22,0.0,d)*0.9),a)*uOp;}`;
+
+/* ---------------- phân tử (nguyên tử + liên kết) ---------------- */
+const atomGeo=new THREE.SphereGeometry(1,18,14);
+const bondGeo=new THREE.CylinderGeometry(0.26,0.26,1,8);
+const ATOMC={C:0x6b7686,O:0xff5a48,N:0x5a86ff,H:0xeef3ff,S:0xffd24a};
+function atomMesh(col,r){const m=new THREE.Mesh(atomGeo,new THREE.MeshStandardMaterial({color:col,emissive:col,emissiveIntensity:0.32,roughness:0.32,metalness:0.0}));m.scale.setScalar(r);return m;}
+const _u=new THREE.Vector3(0,1,0);
+function bondMesh(a,b){const dir=new THREE.Vector3().subVectors(b,a);const len=dir.length();const mm=new THREE.Mesh(bondGeo,new THREE.MeshStandardMaterial({color:0x9aa6ba,emissive:0x2c3444,emissiveIntensity:0.5,roughness:0.5}));mm.position.copy(a).add(b).multiplyScalar(0.5);mm.scale.set(1,len,1);mm.quaternion.setFromUnitVectors(_u,dir.clone().normalize());return mm;}
+function buildMolecule(seed){const g=new THREE.Group();const rng=mulberry32(seed);
+  const types=['C','O','N','C','H','C','O','N','S'];const n=4+Math.floor(rng()*4);const pts=[];
+  for(let i=0;i<n;i++){const p=new THREE.Vector3((rng()-0.5)*3.4,(rng()-0.5)*3.4,(rng()-0.5)*3.4);pts.push(p);
+    const tp=types[i%types.length];const r=tp==='H'?0.5:(tp==='C'?0.92:0.8);const a=atomMesh(ATOMC[tp],r);a.position.copy(p);g.add(a);}
+  for(let i=1;i<n;i++)g.add(bondMesh(pts[i-1],pts[i]));
+  return g;
+}
+
+/* ---------------- chuỗi xoắn ARN phát sáng ---------------- */
+function buildHelix(N,radius,pitch,scale){
+  const g=new THREE.Group();
+  const bp=[],bc=[],bs=[],bl=[],blc=[];
+  const cols=[[0.35,1.0,0.72],[0.55,0.82,1.0],[1.0,0.86,0.42],[1.0,0.5,0.62]];
+  let pAx=null,pAy=null,pAz=null,pBx=null,pBy=null,pBz=null;
+  for(let i=0;i<N;i++){const ang=i*0.52;const y=(i-(N-1)/2)*pitch;
+    const ax=Math.cos(ang)*radius,az=Math.sin(ang)*radius;
+    const bx=Math.cos(ang+Math.PI)*radius,bz=Math.sin(ang+Math.PI)*radius;
+    const cA=cols[i%4],cB=cols[(i+2)%4];
+    bp.push(ax,y,az);bc.push(cA[0],cA[1],cA[2]);bs.push(26);
+    bp.push(bx,y,bz);bc.push(cB[0],cB[1],cB[2]);bs.push(26);
+    if(pAx!==null){bl.push(pAx,pAy,pAz,ax,y,az);blc.push(0.35,0.9,0.72,0.35,0.9,0.72);
+      bl.push(pBx,pBy,pBz,bx,y,bz);blc.push(0.4,0.7,0.95,0.4,0.7,0.95);}
+    /* rung (bậc thang) mỗi 2 */
+    if(i%2===0){bl.push(ax,y,az,bx,y,bz);blc.push(0.7,0.85,0.7,0.55,0.7,0.9);}
+    pAx=ax;pAy=y;pAz=az;pBx=bx;pBy=y;pBz=bz;
+  }
+  const pg=new THREE.BufferGeometry();pg.setAttribute('position',new THREE.BufferAttribute(new Float32Array(bp),3));
+  pg.setAttribute('color',new THREE.BufferAttribute(new Float32Array(bc),3));pg.setAttribute('aS',new THREE.BufferAttribute(new Float32Array(bs),1));
+  const pts=new THREE.Points(pg,new THREE.ShaderMaterial({vertexColors:true,uniforms:{uOp:{value:1}},vertexShader:BEADVS,fragmentShader:BEADFS,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));
+  g.add(pts);
+  const lg=new THREE.BufferGeometry();lg.setAttribute('position',new THREE.BufferAttribute(new Float32Array(bl),3));lg.setAttribute('color',new THREE.BufferAttribute(new Float32Array(blc),3));
+  const lines=new THREE.LineSegments(lg,new THREE.LineBasicMaterial({vertexColors:true,transparent:true,opacity:0.75,blending:THREE.AdditiveBlending,depthWrite:false}));
+  g.add(lines);
+  g.scale.setScalar(scale||1);
+  g.userData={pts:pts,lines:lines};
+  return g;
+}
+
+/* ============================================================
+   GROUP 1 — RANH GIỚI SỐNG/CHẾT (bụi vô tri ↔ đốm sống)
+   ============================================================ */
+const grpBoundary=new THREE.Group();scene.add(grpBoundary);
+const dustClump=(function(){const N=900,P=new Float32Array(N*3),S=new Float32Array(N),C=new Float32Array(N*3);
+  for(let i=0;i<N;i++){const rr=Math.pow(rnd(),0.6)*70;const u=rnd(),v=rnd(),th=2*Math.PI*u,ph=Math.acos(2*v-1),sp=Math.sin(ph);
+    P[i*3]=-140+sp*Math.cos(th)*rr;P[i*3+1]=sp*Math.sin(th)*rr*0.8;P[i*3+2]=Math.cos(ph)*rr;
+    S[i]=6+rnd()*7;const g=0.28+rnd()*0.22;C[i*3]=g*1.05;C[i*3+1]=g;C[i*3+2]=g*0.92;}
+  const gg=new THREE.BufferGeometry();gg.setAttribute('position',new THREE.BufferAttribute(P,3));gg.setAttribute('aS',new THREE.BufferAttribute(S,1));gg.setAttribute('color',new THREE.BufferAttribute(C,3));
+  const pts=new THREE.Points(gg,new THREE.ShaderMaterial({vertexColors:true,uniforms:{uOp:{value:1}},vertexShader:BEADVS,fragmentShader:BEADFS,transparent:true,blending:THREE.NormalBlending,depthWrite:false}));
+  grpBoundary.add(pts);return pts;})();
+const lifeCore=glowSprite(DOT_WARM,120,1);lifeCore.position.set(150,0,0);grpBoundary.add(lifeCore);
+const lifeOrbit=(function(){const N=140,P=new Float32Array(N*3),S=new Float32Array(N),C=new Float32Array(N*3);
+  for(let i=0;i<N;i++){const rr=18+rnd()*40;const u=rnd(),v=rnd(),th=2*Math.PI*u,ph=Math.acos(2*v-1),sp=Math.sin(ph);
+    P[i*3]=sp*Math.cos(th)*rr;P[i*3+1]=sp*Math.sin(th)*rr;P[i*3+2]=Math.cos(ph)*rr;
+    S[i]=8+rnd()*10;C[i*3]=1.0;C[i*3+1]=0.82+rnd()*0.15;C[i*3+2]=0.5+rnd()*0.2;}
+  const gg=new THREE.BufferGeometry();gg.setAttribute('position',new THREE.BufferAttribute(P,3));gg.setAttribute('aS',new THREE.BufferAttribute(S,1));gg.setAttribute('color',new THREE.BufferAttribute(C,3));
+  const pts=new THREE.Points(gg,new THREE.ShaderMaterial({vertexColors:true,uniforms:{uOp:{value:1}},vertexShader:BEADVS,fragmentShader:BEADFS,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));
+  pts.position.set(150,0,0);grpBoundary.add(pts);return pts;})();
+
+/* ============================================================
+   GROUP 2 — TRÁI ĐẤT SƠ KHAI (magma → đại dương) + dội bom
+   ============================================================ */
+const grpEarth=new THREE.Group();scene.add(grpEarth);
+const PLR=120;
+const planetMat=new THREE.ShaderMaterial({uniforms:{uT:{value:0},uCool:{value:0}},
+  vertexShader:`varying vec3 vDir;varying vec3 vN;varying vec3 vV;
+   void main(){vDir=normalize(position);vN=normalize(mat3(modelMatrix)*normal);vec4 wp=modelMatrix*vec4(position,1.0);vV=normalize(cameraPosition-wp.xyz);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
+  fragmentShader:`precision highp float;varying vec3 vDir;varying vec3 vN;varying vec3 vV;uniform float uT,uCool;`+SN+`
+   void main(){vec3 d=vDir;
+    float plates=fbm(d*2.1);
+    float detail=fbm(d*6.5+uT*0.02);
+    float flow=fbm(d*3.6-uT*0.05+detail*0.5);
+    float lava=smoothstep(0.18,-0.30,plates+flow*0.4);
+    vec3 rock=mix(vec3(0.10,0.045,0.03),vec3(0.22,0.10,0.07),detail*0.5+0.5);
+    vec3 hot=mix(vec3(0.75,0.12,0.01),vec3(1.0,0.55,0.12),smoothstep(0.2,0.85,lava));
+    hot=mix(hot,vec3(1.0,0.95,0.72),smoothstep(0.78,1.0,lava));
+    vec3 col=mix(rock,hot,smoothstep(0.22,0.55,lava));
+    float emis=0.5+lava*1.9;
+    vec3 coolRock=mix(vec3(0.045,0.04,0.05),vec3(0.16,0.13,0.11),detail*0.5+0.5);
+    float low=smoothstep(0.35,0.02,plates);
+    vec3 ocean=mix(vec3(0.01,0.05,0.11),vec3(0.03,0.13,0.22),flow*0.5+0.5);
+    vec3 cooled=mix(coolRock,ocean,low);
+    col=mix(col,cooled,uCool);
+    float e=mix(emis,0.10,uCool)*(0.35+0.65*lava);
+    float lam=clamp(dot(vN,normalize(vec3(0.6,0.5,0.55))),0.0,1.0);
+    vec3 outc=col*(0.22+0.95*lam)+col*e;
+    float mu=clamp(dot(vN,vV),0.0,1.0);outc*=0.6+0.4*pow(mu,0.5);
+    gl_FragColor=vec4(outc,1.0);}`});
+const planet=new THREE.Mesh(new THREE.SphereGeometry(PLR,96,64),planetMat);grpEarth.add(planet);
+const atmoMat=new THREE.ShaderMaterial({transparent:true,blending:THREE.AdditiveBlending,side:THREE.BackSide,depthWrite:false,
+  uniforms:{uCool:{value:0}},
+  vertexShader:`varying vec3 vN;varying vec3 vV;void main(){vN=normalize(mat3(modelMatrix)*normal);vec4 wp=modelMatrix*vec4(position,1.0);vV=normalize(cameraPosition-wp.xyz);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
+  fragmentShader:`varying vec3 vN;varying vec3 vV;uniform float uCool;void main(){float f=pow(1.0-clamp(dot(vN,vV),0.0,1.0),2.4);vec3 hot=vec3(1.0,0.38,0.12);vec3 cool=vec3(0.32,0.56,1.0);vec3 c=mix(hot,cool,uCool);gl_FragColor=vec4(c*f*1.25,f*0.9);}`});
+const atmo=new THREE.Mesh(new THREE.SphereGeometry(PLR*1.09,64,48),atmoMat);grpEarth.add(atmo);
+const meteorMat=new THREE.ShaderMaterial({transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,
+  uniforms:{uT:{value:0},uPR:{value:PLR},uOp:{value:1}},
+  vertexShader:`attribute float aSeed;uniform float uT,uPR;varying float vB;`+HS+`
+   void main(){float sd=aSeed;float u=hs(sd*12.7),v=hs(sd*3.31);float th=6.2831*u,ph=acos(2.0*v-1.0);
+    vec3 dir=vec3(sin(ph)*cos(th),cos(ph),sin(ph)*sin(th));
+    float period=2.2+hs(sd*5.1)*3.5;float phase=fract(uT/period+sd);
+    float rad=mix(uPR*3.7,uPR*1.0,phase);vec3 pos=dir*rad;
+    vB=smoothstep(0.02,0.3,phase)*smoothstep(1.0,0.72,phase)*(0.5+0.7*phase);
+    vec4 mv=modelViewMatrix*vec4(pos,1.0);gl_PointSize=(2.0+7.0*phase)*(320.0/-mv.z);gl_Position=projectionMatrix*mv;}`,
+  fragmentShader:`varying float vB;uniform float uOp;void main(){vec2 c=gl_PointCoord-0.5;float d=length(c);float a=smoothstep(0.5,0.0,d);vec3 col=mix(vec3(1.0,0.9,0.6),vec3(1.0,0.5,0.2),0.5);gl_FragColor=vec4(col*a*vB,a*vB)*uOp;}`});
+const meteors=(function(){const N=60,P=new Float32Array(N*3),Sd=new Float32Array(N);
+  for(let i=0;i<N;i++){P[i*3]=0;P[i*3+1]=0;P[i*3+2]=0;Sd[i]=rnd();}
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(P,3));g.setAttribute('aSeed',new THREE.BufferAttribute(Sd,1));
+  const pts=new THREE.Points(g,meteorMat);grpEarth.add(pts);return pts;})();
+
+/* ============================================================
+   GROUP 3 — SÚP NGUYÊN THUỶ (phân tử tự lắp ráp)
+   ============================================================ */
+const grpSoup=new THREE.Group();scene.add(grpSoup);
+const soupMols=[];
+for(let i=0;i<18;i++){const m=buildMolecule(7000+i*13);
+  const base=new THREE.Vector3((L()-0.5)*280,(L()-0.5)*150,(L()-0.5)*220);
+  m.position.copy(base);m.scale.setScalar(4.2+L()*2.5);
+  grpSoup.add(m);soupMols.push({mesh:m,base:base,ph:L()*6.28,sp:0.3+L()*0.5,ap:0.3+L()*0.6});}
+
+/* ============================================================
+   GROUP 4 — MIỆNG PHUN THUỶ NHIỆT (black smoker)
+   ============================================================ */
+const grpVent=new THREE.Group();scene.add(grpVent);
+const seaFloor=new THREE.Mesh(new THREE.CircleGeometry(700,48),new THREE.MeshStandardMaterial({color:0x0a1418,roughness:1.0,metalness:0.0}));
+seaFloor.rotation.x=-Math.PI/2;seaFloor.position.y=-10;grpVent.add(seaFloor);
+function ventChimney(x,z,h,rTop,rBot,sc){const g=new THREE.Group();
+  const m=new THREE.Mesh(new THREE.CylinderGeometry(rTop,rBot,h,20,1,true),new THREE.MeshStandardMaterial({color:0x161014,roughness:0.95,metalness:0.05,side:THREE.DoubleSide}));
+  m.position.y=h/2;g.add(m);
+  const gl=glowSprite(DOT_WARM,rBot*2.4,0.9);gl.position.y=4;g.add(gl);
+  g.position.set(x,0,z);g.scale.setScalar(sc||1);grpVent.add(g);return {grp:g,topY:h};}
+const ventMain=ventChimney(0,0,150,14,30,1);
+ventChimney(-140,-60,90,9,18,1);ventChimney(120,-90,70,8,15,1);ventChimney(60,80,55,6,12,1);
+const smokeMat=new THREE.ShaderMaterial({transparent:true,depthWrite:false,blending:THREE.NormalBlending,
+  uniforms:{uT:{value:0},uOp:{value:1},uTop:{value:150},uH:{value:220},uR:{value:38}},
+  vertexShader:`attribute float aSeed;uniform float uT,uTop,uH,uR;varying float vA;varying float vR;`+HS+`
+   void main(){float sd=aSeed;float period=4.0+hs(sd*2.1)*3.0;float phase=fract(uT/period+sd);
+    float rise=phase;float ang=6.2831*hs(sd*1.7)+uT*0.12;float spread=rise*uR*(0.5+hs(sd*7.7));
+    vec3 pos=vec3(cos(ang)*spread,uTop+rise*uH,sin(ang)*spread);vR=rise;
+    vA=smoothstep(0.0,0.12,phase)*smoothstep(1.0,0.55,phase);
+    vec4 mv=modelViewMatrix*vec4(pos,1.0);gl_PointSize=(10.0+46.0*rise)*(320.0/-mv.z);gl_Position=projectionMatrix*mv;}`,
+  fragmentShader:`varying float vA;varying float vR;uniform float uOp;void main(){vec2 c=gl_PointCoord-0.5;float d=length(c);float a=smoothstep(0.5,0.05,d);vec3 col=mix(vec3(0.34,0.20,0.13),vec3(0.05,0.045,0.05),vR);gl_FragColor=vec4(col,a*vA*0.55)*uOp;}`});
+const ventSmoke=(function(){const N=240,P=new Float32Array(N*3),Sd=new Float32Array(N);
+  for(let i=0;i<N;i++){Sd[i]=rnd();}
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(P,3));g.setAttribute('aSeed',new THREE.BufferAttribute(Sd,1));
+  const pts=new THREE.Points(g,smokeMat);pts.renderOrder=3;grpVent.add(pts);return pts;})();
+const mineralGlow=(function(){const N=90,P=new Float32Array(N*3),S=new Float32Array(N),C=new Float32Array(N*3);
+  for(let i=0;i<N;i++){const a=rnd()*6.28,rr=20+rnd()*40;P[i*3]=Math.cos(a)*rr;P[i*3+1]=2+rnd()*20;P[i*3+2]=Math.sin(a)*rr;
+    S[i]=10+rnd()*14;C[i*3]=1.0;C[i*3+1]=0.55+rnd()*0.3;C[i*3+2]=0.2+rnd()*0.25;}
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(P,3));g.setAttribute('aS',new THREE.BufferAttribute(S,1));g.setAttribute('color',new THREE.BufferAttribute(C,3));
+  const pts=new THREE.Points(g,new THREE.ShaderMaterial({vertexColors:true,uniforms:{uOp:{value:1}},vertexShader:BEADVS,fragmentShader:BEADFS,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));
+  grpVent.add(pts);return pts;})();
+
+/* ============================================================
+   GROUP 5 — THẾ GIỚI ARN (xoắn phát sáng + tự sao chép)
+   ============================================================ */
+const grpRNA=new THREE.Group();scene.add(grpRNA);
+const rnaA=buildHelix(46,15,2.7,1);grpRNA.add(rnaA);
+const rnaB=buildHelix(46,15,2.7,1);grpRNA.add(rnaB);
+const rnaDust=(function(){const N=260,P=new Float32Array(N*3),S=new Float32Array(N),C=new Float32Array(N*3);
+  for(let i=0;i<N;i++){P[i*3]=(rnd()-0.5)*380;P[i*3+1]=(rnd()-0.5)*260;P[i*3+2]=(rnd()-0.5)*300;
+    S[i]=5+rnd()*7;const g=0.4+rnd()*0.4;C[i*3]=g*0.5;C[i*3+1]=g;C[i*3+2]=g*0.8;}
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(P,3));g.setAttribute('aS',new THREE.BufferAttribute(S,1));g.setAttribute('color',new THREE.BufferAttribute(C,3));
+  const pts=new THREE.Points(g,new THREE.ShaderMaterial({vertexColors:true,uniforms:{uOp:{value:1}},vertexShader:BEADVS,fragmentShader:BEADFS,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));
+  grpRNA.add(pts);return pts;})();
+
+/* ============================================================
+   GROUP 6 — TỪ HOÁ HỌC ĐẾN TẾ BÀO (màng lipid → tế bào → LUCA)
+   ============================================================ */
+const grpCell=new THREE.Group();scene.add(grpCell);
+const CELLR=46;
+const cellMat=new THREE.ShaderMaterial({transparent:true,depthWrite:false,side:THREE.DoubleSide,blending:THREE.NormalBlending,
+  uniforms:{uT:{value:0},uOp:{value:1}},
+  vertexShader:`varying vec3 vN;varying vec3 vV;void main(){vN=normalize(mat3(modelMatrix)*normal);vec4 wp=modelMatrix*vec4(position,1.0);vV=normalize(cameraPosition-wp.xyz);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
+  fragmentShader:`varying vec3 vN;varying vec3 vV;uniform float uT,uOp;void main(){float f=1.0-clamp(dot(normalize(vN),normalize(vV)),0.0,1.0);float rim=pow(f,2.7);float irid=0.5+0.5*sin(f*11.0+uT*0.5);vec3 col=mix(vec3(0.05,0.13,0.21),vec3(0.28,0.56,0.80),rim)+vec3(0.13,0.07,0.22)*irid*rim;float alpha=clamp(rim*0.68+0.03,0.0,0.6);gl_FragColor=vec4(col*0.9,alpha*uOp);}`});
+const cell1=new THREE.Mesh(new THREE.SphereGeometry(CELLR,64,48),cellMat);grpCell.add(cell1);
+const cell2=new THREE.Mesh(new THREE.SphereGeometry(CELLR,64,48),cellMat.clone());cell2.material.uniforms.uOp.value=0;grpCell.add(cell2);
+const innerRNA=buildHelix(20,5,1.4,1);cell1.add(innerRNA);
+const cellMols=new THREE.Group();cell1.add(cellMols);
+for(let i=0;i<6;i++){const m=buildMolecule(9100+i*7);m.position.set((L()-0.5)*46,(L()-0.5)*46,(L()-0.5)*46);m.scale.setScalar(2.4);cellMols.add(m);}
+const lipidMat=new THREE.ShaderMaterial({transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,
+  uniforms:{uA:{value:0},uOp:{value:1}},
+  vertexShader:`attribute vec3 aStart;attribute float aS;attribute vec3 aCol;uniform float uA;varying vec3 vC;
+   void main(){vC=aCol;vec3 p=mix(aStart,position,uA);vec4 mv=modelViewMatrix*vec4(p,1.0);gl_PointSize=aS*(220.0/-mv.z);gl_Position=projectionMatrix*mv;}`,
+  fragmentShader:`varying vec3 vC;uniform float uOp;void main(){vec2 c=gl_PointCoord-0.5;float d=length(c);float a=smoothstep(0.5,0.0,d);gl_FragColor=vec4(vC*(a+smoothstep(0.2,0.0,d)*0.7),a)*uOp;}`});
+const lipids=(function(){const N=900,P=new Float32Array(N*3),ST=new Float32Array(N*3),S=new Float32Array(N),C=new Float32Array(N*3);
+  for(let i=0;i<N;i++){const u=rnd(),v=rnd(),th=2*Math.PI*u,ph=Math.acos(2*v-1),sp=Math.sin(ph);
+    const tx=sp*Math.cos(th)*CELLR,ty=sp*Math.sin(th)*CELLR,tz=Math.cos(ph)*CELLR;
+    P[i*3]=tx;P[i*3+1]=ty;P[i*3+2]=tz;
+    const rr=120+rnd()*160;ST[i*3]=sp*Math.cos(th)*rr;ST[i*3+1]=sp*Math.sin(th)*rr+(rnd()-0.5)*120;ST[i*3+2]=Math.cos(ph)*rr;
+    S[i]=7+rnd()*5;const w=rnd();C[i*3]=lerp(0.5,1.0,w);C[i*3+1]=lerp(0.75,0.85,w);C[i*3+2]=lerp(1.0,0.55,w);}
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(P,3));g.setAttribute('aStart',new THREE.BufferAttribute(ST,3));g.setAttribute('aS',new THREE.BufferAttribute(S,1));g.setAttribute('aCol',new THREE.BufferAttribute(C,3));
+  const pts=new THREE.Points(g,lipidMat);grpCell.add(pts);return pts;})();
+
+/* ============================================================
+   GROUP 7 — PANSPERMIA (sao chổi băng giá gieo mầm)
+   ============================================================ */
+const grpComet=new THREE.Group();scene.add(grpComet);
+const cometNode=new THREE.Group();grpComet.add(cometNode);
+const nucGeo=new THREE.IcosahedronGeometry(15,2);
+(function(){const pos=nucGeo.attributes.position;const rr=mulberry32(4242);
+  for(let i=0;i<pos.count;i++){const x=pos.getX(i),y=pos.getY(i),z=pos.getZ(i);const l=Math.sqrt(x*x+y*y+z*z);
+    const f=1+(rr()-0.5)*0.34;pos.setXYZ(i,x/l*15*f,y/l*15*f,z/l*15*f);}
+  nucGeo.computeVertexNormals();})();
+const nucleus=new THREE.Mesh(nucGeo,new THREE.MeshStandardMaterial({color:0x9fb4c8,emissive:0x223244,emissiveIntensity:0.4,roughness:0.85,metalness:0.05,flatShading:true}));cometNode.add(nucleus);
+const coma=glowSprite(DOT_TEAL,90,0.85);cometNode.add(coma);
+const cometMols=new THREE.Group();cometNode.add(cometMols);
+for(let i=0;i<4;i++){const m=buildMolecule(9500+i*11);m.position.set((L()-0.5)*22,(L()-0.5)*22,(L()-0.5)*22);m.scale.setScalar(1.7);cometMols.add(m);}
+const tailMat=new THREE.ShaderMaterial({transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,
+  uniforms:{uT:{value:0},uOp:{value:1}},
+  vertexShader:`attribute float aSeed;uniform float uT;varying float vA;`+HS+`
+   void main(){float sd=aSeed;float phase=fract(uT*0.14+sd);float along=phase;
+    float s1=(hs(sd*3.1)-0.5)*10.0*along;float s2=(hs(sd*7.7)-0.5)*10.0*along;
+    vec3 pos=vec3(along*170.0,s1,s2);vA=(1.0-along)*(0.3+0.7*hs(sd*2.2));
+    vec4 mv=modelViewMatrix*vec4(pos,1.0);gl_PointSize=(2.0+6.0*(1.0-along))*(320.0/-mv.z);gl_Position=projectionMatrix*mv;}`,
+  fragmentShader:`varying float vA;uniform float uOp;void main(){vec2 c=gl_PointCoord-0.5;float a=smoothstep(0.5,0.0,length(c));vec3 col=vec3(0.6,0.82,1.0);gl_FragColor=vec4(col*a*vA,a*vA)*uOp;}`});
+const cometTail=(function(){const N=520,P=new Float32Array(N*3),Sd=new Float32Array(N);
+  for(let i=0;i<N;i++){Sd[i]=rnd();}
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(P,3));g.setAttribute('aSeed',new THREE.BufferAttribute(Sd,1));
+  const pts=new THREE.Points(g,tailMat);cometNode.add(pts);return pts;})();
+const seedEarth=new THREE.Mesh(new THREE.SphereGeometry(34,48,36),new THREE.MeshStandardMaterial({color:0x1a4a6e,emissive:0x081826,emissiveIntensity:0.5,roughness:0.7}));
+seedEarth.position.set(-260,-150,-40);grpComet.add(seedEarth);
+const seedAtmo=new THREE.Mesh(new THREE.SphereGeometry(37,40,30),atmoMat.clone());seedAtmo.material.uniforms.uCool.value=1;seedEarth.add(seedAtmo);
+
+/* ---------------- hậu kỳ: bloom + lens (CA + vignette + grain) ---------------- */
+const composer=new THREE.EffectComposer(renderer);composer.addPass(new THREE.RenderPass(scene,camera));
+const bloom=new THREE.UnrealBloomPass(new THREE.Vector2(W,H),0.85,0.55,0.62);composer.addPass(bloom);
+const lensPass=new THREE.ShaderPass({uniforms:{tDiffuse:{value:null},uRes:{value:new THREE.Vector2(W,H)},uT:{value:0}},
+  vertexShader:`varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
+  fragmentShader:`uniform sampler2D tDiffuse;uniform vec2 uRes;uniform float uT;varying vec2 vUv;
+    float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+    void main(){vec2 uv=vUv;vec2 c=uv-0.5;float r2=dot(c,c);float ca=0.0006+r2*0.0020;vec3 col;
+      col.r=texture2D(tDiffuse,uv+c*ca).r;col.g=texture2D(tDiffuse,uv).g;col.b=texture2D(tDiffuse,uv-c*ca).b;
+      float vig=1.0-smoothstep(0.34,0.98,r2*1.85);col*=mix(0.62,1.0,vig);
+      col+=(h(uv*uRes+floor(uT*30.0))-0.5)*0.020;gl_FragColor=vec4(col,1.0);}`});
+lensPass.renderToScreen=true;composer.addPass(lensPass);
+
+/* ============================================================
+   #fx — canvas 2D overlay (kinetic type / sơ đồ / ẩn dụ)
+   ============================================================ */
+const fx=document.getElementById('fx'); fx.width=W; fx.height=H; const X=fx.getContext('2d');
+function clearFx(){X.setTransform(1,0,0,1,0,0);X.clearRect(0,0,W,H);X.textAlign='center';X.textBaseline='middle';X.globalAlpha=1;X.shadowBlur=0;}
+function backdrop(a){if(a<=0)return;X.fillStyle="rgba(1,2,8,"+Math.min(1,a)+")";X.fillRect(0,0,W,H);}
+function F(w,s){return w+' '+s+'px "Segoe UI",Roboto,Arial,sans-serif';}
+function txt(s,x,y,size,weight,col,a,glow,align){if(a<=0.004)return;X.save();X.globalAlpha=Math.min(1,a);X.font=F(weight,size);X.fillStyle=col;X.textAlign=align||'center';X.textBaseline='middle';if(glow){X.shadowColor=glow;X.shadowBlur=size*0.45;}X.fillText(s,x,y);X.restore();}
+function glow2d(x,y,r,cr,cg,cb,a){if(a<=0.004||r<=0)return;X.save();X.globalAlpha=Math.min(1,a);const g=X.createRadialGradient(x,y,0,x,y,r);g.addColorStop(0,`rgba(${cr},${cg},${cb},1)`);g.addColorStop(.35,`rgba(${cr},${cg},${cb},.5)`);g.addColorStop(1,`rgba(${cr},${cg},${cb},0)`);X.fillStyle=g;X.beginPath();X.arc(x,y,r,0,7);X.fill();X.restore();}
+function dot2d(x,y,r,col,a){if(a<=0.004)return;X.save();X.globalAlpha=Math.min(1,a);X.fillStyle=col;X.beginPath();X.arc(x,y,r,0,7);X.fill();X.restore();}
+function ring2d(x,y,r,col,lw,a){if(a<=0.004||r<=0)return;X.save();X.globalAlpha=Math.min(1,a);X.strokeStyle=col;X.lineWidth=lw;X.beginPath();X.arc(x,y,r,0,7);X.stroke();X.restore();}
+function line2d(x0,y0,x1,y1,col,lw,a){if(a<=0.004)return;X.save();X.globalAlpha=Math.min(1,a);X.strokeStyle=col;X.lineWidth=lw;X.lineCap="round";X.beginPath();X.moveTo(x0,y0);X.lineTo(x1,y1);X.stroke();X.restore();}
+function sceneOp(i,t){return win(t,SB[i-1],SB[i],0.6,0.6);}
+const CY='rgba(140,224,255,1)', WH='rgba(240,244,255,1)', AM='rgba(255,196,110,1)', RD='rgba(255,120,96,1)', DIM='rgba(170,190,224,1)', VI='rgba(200,182,255,1)', GR='rgba(130,244,178,1)', BL='rgba(120,180,255,1)';
+
+/* tia sét tất định (jagged) */
+function bolt(x0,y0,x1,y1,seg,jit,col,lw,a){if(a<=0.004)return;X.save();X.globalAlpha=Math.min(1,a);X.strokeStyle=col;X.lineWidth=lw;X.lineCap="round";X.shadowColor=col;X.shadowBlur=18;X.beginPath();X.moveTo(x0,y0);
+  for(let i=1;i<seg;i++){const f=i/seg;const nx=lerp(x0,x1,f)+(Math.sin(i*12.9+x0)*0.5)*jit;const ny=lerp(y0,y1,f)+(Math.cos(i*7.7+y0)*0.5)*jit;X.lineTo(nx,ny);}
+  X.lineTo(x1,y1);X.stroke();X.restore();}
+
+/* precompute cây sự sống (2D, scene 8) */
+const TREE=[],LEAVES=[];
+(function(){function grow(x,y,ang,len,depth,order){
+  const x2=x+Math.cos(ang)*len,y2=y+Math.sin(ang)*len;
+  TREE.push({x0:x,y0:y,x1:x2,y1:y2,order:order,w:Math.max(1,depth*0.9)});
+  if(depth<=1||len<14){LEAVES.push({x:x2,y:y2,order:order+1,ph:rndT()*6.28});return;}
+  const nb=2+(rndT()<0.35?1:0);
+  for(let b=0;b<nb;b++){const na=ang+(rndT()-0.5)*0.95;grow(x2,y2,na,len*0.71,depth-1,order+1);}}
+  grow(W/2,H*0.94,-Math.PI/2,150,7,0);})();
+const TREE_MAXO=7;
+
+/* ============================================================
+   CẢNH 1 — RANH GIỚI SỐNG/CHẾT
+   ============================================================ */
+function fxScene1(t,op){
+  /* C01 0-16.87 câu hỏi mở */
+  const a1=win(t,1.4,16.87,2.2,1.6)*op;
+  if(a1>0.01){txt("BẠN ĐANG SỐNG.",W/2,H*0.36,72,"800",WH,a1,"rgba(120,240,178,0.4)");
+    txt("Hòn đá dưới chân bạn thì không.",W/2,H*0.5,40,"500",DIM,win(t,5,16.87,1.6,1.6)*op);
+    txt("Ranh giới giữa hai thứ ấy — nằm ở đâu?",W/2,H*0.68,34,"600",CY,win(t,10,16.87,1.4,1.6)*op);}
+  /* C02 16.87 cùng một hộp vật liệu */
+  const a2=win(t,17.8,41,1.5,1.5)*op;
+  if(a2>0.01){txt("CÙNG MỘT HỘP VẬT LIỆU",W/2,H*0.16,46,"700",WH,a2,"rgba(120,180,255,0.4)");
+    const items=["CARBON","NƯỚC","NITƠ","PHỐT PHO"];
+    for(let k=0;k<4;k++)txt(items[k],W*(0.22+k*0.19),H*0.85,30,"700",[CY,BL,VI,AM][k],win(t,22+k*2,41,1.2,1.4)*op);
+    txt("bạn và hòn đá được nặn ra từ cùng những nguyên tử đó",W/2,H*0.77,30,"400",DIM,win(t,30,41,1.4,1.4)*op);}
+  /* C03 41 nguyên tử vô tri tự sắp xếp */
+  const a3=win(t,42,63.27,1.5,1.5)*op;
+  if(a3>0.01){txt("NHỮNG NGUYÊN TỬ VÔ TRI",W/2,H*0.3,44,"700",WH,a3,"rgba(120,240,178,0.35)");
+    txt("đã tự sắp xếp lại thành một thứ BIẾT GIỮ MÌNH SỐNG",W/2,H*0.42,38,"700",GR,win(t,47,63.27,1.4,1.5)*op,"rgba(120,240,178,0.35)");
+    txt("không phép màu · chỉ hoá học, thời gian, và một hành tinh đang sôi sục",W/2,H*0.72,30,"500",DIM,win(t,55,63.27,1.4,1.5)*op);}
+  /* C04 63.27 câu hỏi khoa học */
+  const a4=win(t,64.3,85.8,1.5,1.5)*op;
+  if(a4>0.01){txt("LÀM SAO VẬT CHẤT KHÔNG SỐNG",W/2,H*0.34,42,"700",WH,a4,"rgba(120,180,255,0.35)");
+    txt("vượt qua ranh giới ấy — để trở thành thứ ĐẦU TIÊN có thể gọi là SỐNG?",W/2,H*0.48,34,"600",CY,win(t,70,85.8,1.4,1.5)*op);
+    txt("một câu hỏi khoa học, có thật",W/2,H*0.7,30,"500",DIM,win(t,78,85.8,1.3,1.5)*op);}
+  /* C05 85.8 chưa dựng lại được */
+  const a5=win(t,86.8,104.53,1.4,1.4)*op;
+  if(a5>0.01){txt("CHƯA AI TỪNG TẠO RA SỰ SỐNG TỪ VẬT CHẤT CHẾT",W/2,H*0.34,40,"700",WH,a5,"rgba(255,196,110,0.35)");
+    txt("nhưng ta đã lần ra từng mảnh ghép — và câu chuyện hiện lên, đẹp đến sững sờ",W/2,H*0.68,32,"500",DIM,win(t,93,104.53,1.4,1.4)*op);}
+  /* C06 104.53 đưa bạn về một nơi */
+  const a6=win(t,105.5,121.93,1.4,1.6)*op;
+  if(a6>0.01){txt("VỀ MỘT TRÁI ĐẤT",W/2,H*0.4,52,"800",WH,a6,"rgba(255,120,80,0.4)");
+    txt("nếu đứng lên đó, bạn sẽ chết trong vài giây — trẻ, hung dữ, không sự sống",W/2,H*0.56,32,"500",RD,win(t,111,121.93,1.4,1.6)*op);}
+}
+
+/* ============================================================
+   CẢNH 2 — TRÁI ĐẤT SƠ KHAI
+   ============================================================ */
+function fxScene2(t,op){
+  /* C07 121.93 tua ngược 4 tỷ năm */
+  const a7=win(t,122.9,139.8,1.4,1.2)*op;
+  if(a7>0.01){txt("TUA NGƯỢC · BỐN TỶ NĂM",W/2,H*0.14,46,"800",AM,a7,"rgba(255,160,80,0.4)");
+    txt("một quả cầu non trẻ, vừa thành hình từ bụi và đá của hệ mặt trời hỗn loạn",W/2,H*0.88,32,"500",DIM,win(t,131,139.8,1.4,1.2)*op);}
+  /* C08 139.8 đại dương magma */
+  const a8=win(t,140.8,159.07,1.3,1.2)*op;
+  if(a8>0.01){txt("ĐẠI DƯƠNG MAGMA",W/2,H*0.15,50,"800",RD,a8,"rgba(255,90,40,0.45)");
+    txt("đá nóng chảy đỏ rực tới tận chân trời · đủ để nung chảy kim loại · không một hơi oxy",W/2,H*0.88,31,"500",DIM,win(t,148,159.07,1.3,1.2)*op);}
+  /* C09 159.07 dội bom thiên thạch */
+  const a9=win(t,160,182.94,1.3,1.3)*op;
+  if(a9>0.01){txt("BẦU TRỜI LIÊN TỤC RƠI XUỐNG",W/2,H*0.14,44,"800",WH,a9,"rgba(255,160,80,0.4)");
+    txt("thiên thạch to bằng cả một thành phố · một quốc gia — đâm xuống hết đợt này tới đợt khác",W/2,H*0.88,31,"500",AM,win(t,169,182.94,1.3,1.3)*op);}
+  /* C10 182.94 nơi chết chóc */
+  const a10=win(t,183.9,200.21,1.3,1.2)*op;
+  if(a10>0.01){txt("MỘT NƠI CHẾT CHÓC THEO ĐÚNG NGHĨA ĐEN",W/2,H*0.34,40,"700",WH,a10,"rgba(255,120,80,0.35)");
+    txt("nơi sự sống chưa từng, và dường như không thể, tồn tại",W/2,H*0.66,32,"500",DIM,win(t,191,200.21,1.3,1.2)*op);}
+  /* C11 200.21 nguội dần, mưa */
+  const a11=win(t,201.2,220.88,1.3,1.2)*op;
+  if(a11>0.01){txt("HÀNH TINH BẮT ĐẦU NGUỘI ĐI",W/2,H*0.16,44,"700",BL,a11,"rgba(120,180,255,0.4)");
+    txt("hơi nước ngưng tụ · những cơn mưa kéo dài hàng nghìn, hàng triệu năm, xối xả không ngừng",W/2,H*0.88,31,"500",DIM,win(t,209,220.88,1.3,1.2)*op);}
+  /* C12 220.88 đại dương đầu tiên */
+  const a12=win(t,221.9,242.28,1.3,1.2)*op;
+  if(a12>0.01){txt("LẦN ĐẦU TIÊN · TRÁI ĐẤT CÓ BIỂN",W/2,H*0.15,46,"800",BL,a12,"rgba(120,180,255,0.45)");
+    txt("một đại dương ấm và nông, đục ngầu, chứa đầy chất hoà tan từ đá, từ khí, từ thiên thạch",W/2,H*0.88,31,"500",DIM,win(t,230,242.28,1.3,1.2)*op);}
+  /* C13 242.28 cái nồi khổng lồ */
+  const a13=win(t,243.3,265.95,1.3,1.5)*op;
+  if(a13>0.01){txt("MỘT CÁI NỒI KHỔNG LỒ",W/2,H*0.34,48,"800",AM,a13,"rgba(255,160,80,0.4)");
+    txt("chứa đầy nguyên liệu, đun bằng năng lượng của cả một hành tinh non trẻ",W/2,H*0.66,32,"500",WH,win(t,252,265.95,1.3,1.5)*op);}
+}
+
+/* ============================================================
+   CẢNH 3 — SÚP NGUYÊN THUỶ (Miller-Urey 1953)
+   ============================================================ */
+function fxScene3(t,op){
+  /* tia sét tất định, nhá theo nhịp */
+  const sparkA=win(t,266,449.48,2,3)*op;
+  if(sparkA>0.01){const strike=Math.sin(t*2.3)*Math.sin(t*0.7);const fl=strike>0.86?1:0;
+    if(fl){bolt(W*0.5+Math.sin(t*3)*260,H*0.1,W*0.5+Math.sin(t*5)*120,H*0.55,7,60,"rgba(200,225,255,0.95)",4,sparkA);}
+    const strike2=Math.sin(t*1.7+2)*Math.sin(t*0.9+1);if(strike2>0.9)bolt(W*0.3,H*0.12,W*0.4,H*0.5,6,50,"rgba(180,210,255,0.85)",3,sparkA*0.8);}
+  /* C14 265.95 một thí nghiệm */
+  const a14=win(t,266.9,282.55,1.4,1.2)*op;
+  if(a14>0.01){txt("MỘT THÍ NGHIỆM · NĂM 1953",W/2,H*0.14,48,"800",AM,a14,"rgba(255,160,80,0.4)");
+    txt("nhỏ, gọn, trong một căn phòng — nhưng làm rung chuyển cách ta nghĩ về nguồn gốc mình",W/2,H*0.88,31,"500",DIM,win(t,274,282.55,1.4,1.2)*op);}
+  /* C15 282.55 bình thuỷ tinh + khí */
+  const a15=win(t,283.5,308.62,1.3,1.2)*op;
+  if(a15>0.01){txt("MILLER · UREY",W/2,H*0.14,52,"800",WH,a15,"rgba(140,224,255,0.4)");
+    txt("một bình thuỷ tinh · những khí của hành tinh trẻ · nước đun bốc hơi = đại dương thu nhỏ",W/2,H*0.88,31,"500",CY,win(t,291,308.62,1.3,1.2)*op);}
+  /* C16 308.62 tia lửa điện = sấm sét */
+  const a16=win(t,309.6,327.75,1.2,1.2)*op;
+  if(a16>0.01){txt("TIA LỬA ĐIỆN = SẤM SÉT",W/2,H*0.3,46,"800",BL,a16,"rgba(120,180,255,0.45)");
+    txt("phóng qua hỗn hợp khí, ngày này qua ngày khác — tái tạo sấm sét trong một cái bình",W/2,H*0.7,32,"500",DIM,win(t,317,327.75,1.2,1.2)*op);}
+  /* C17 327.75 nước đổi màu, phân tử hữu cơ */
+  const a17=win(t,328.7,349.55,1.2,1.2)*op;
+  if(a17>0.01){txt("NƯỚC CHUYỂN HỒNG ĐỤC · RỒI NÂU",W/2,H*0.15,42,"700",AM,a17,"rgba(255,160,80,0.35)");
+    txt("đã xuất hiện những PHÂN TỬ HỮU CƠ — và không phải phân tử tầm thường",W/2,H*0.88,32,"600",GR,win(t,337,349.55,1.2,1.2)*op);}
+  /* C18 349.55 axit amin */
+  const a18=win(t,350.5,372.48,1.2,1.2)*op;
+  if(a18>0.01){txt("AXIT AMIN",W/2,H*0.14,58,"800",GR,a18,"rgba(120,240,178,0.5)");
+    txt("những viên gạch để xây nên PROTEIN — cơ bắp, enzyme, bộ máy vận hành sự sống",W/2,H*0.88,32,"500",WH,win(t,358,372.48,1.2,1.2)*op);}
+  /* C19 372.48 tất yếu */
+  const a19=win(t,373.5,394.95,1.2,1.2)*op;
+  if(a19>0.01){txt("KHÔNG AI LẮP RÁP CHÚNG",W/2,H*0.32,44,"700",WH,a19,"rgba(120,240,178,0.35)");
+    txt("có đúng nguyên liệu + đúng năng lượng → hoá học TỰ đi về phía phức tạp. Gần như tất yếu.",W/2,H*0.68,32,"500",GR,win(t,381,394.95,1.2,1.2)*op);}
+  /* C20 394.95 súp nguyên thuỷ */
+  const a20=win(t,395.9,419.35,1.2,1.2)*op;
+  if(a20>0.01){txt("SÚP NGUYÊN THUỶ",W/2,H*0.16,54,"800",AM,a20,"rgba(255,160,80,0.45)");
+    txt("đại dương loãng, ấm, đục ngầu những viên gạch của sự sống — hết mẻ này tới mẻ khác",W/2,H*0.88,32,"500",DIM,win(t,405,419.35,1.2,1.2)*op);}
+  /* C21 419.35 gạch chưa phải nhà */
+  const a21=win(t,420.4,449.48,1.2,1.6)*op;
+  if(a21>0.01){txt("MỘT ĐỐNG GẠCH — CHƯA PHẢI MỘT TOÀ LÂU ĐÀI",W/2,H*0.34,40,"700",WH,a21,"rgba(255,160,80,0.3)");
+    txt("cần thứ sắp xếp chúng lại · cần NĂNG LƯỢNG · cần một NƠI CHỐN. Ở đâu?",W/2,H*0.66,34,"600",CY,win(t,430,449.48,1.2,1.6)*op);}
+}
+
+/* ============================================================
+   CẢNH 4 — MIỆNG PHUN THUỶ NHIỆT
+   ============================================================ */
+function fxScene4(t,op){
+  /* C22 449.48 sự sống trong bóng tối */
+  const a22=win(t,450.5,471.75,1.4,1.2)*op;
+  if(a22>0.01){txt("SỰ SỐNG BẮT ĐẦU TRONG BÓNG TỐI",W/2,H*0.14,44,"800",WH,a22,"rgba(120,180,255,0.4)");
+    txt("không phải dưới ánh sáng — mà dưới tận đáy biển sâu",W/2,H*0.88,32,"500",DIM,win(t,459,471.75,1.4,1.2)*op);}
+  /* C23 471.75 miệng phun thuỷ nhiệt */
+  const a23=win(t,472.7,495.55,1.3,1.2)*op;
+  if(a23>0.01){txt("MIỆNG PHUN THUỶ NHIỆT",W/2,H*0.14,48,"800",AM,a23,"rgba(255,150,70,0.4)");
+    txt("những ống khói bằng đá, cao như toà tháp, phun dòng nước nóng đục ngầu khoáng chất",W/2,H*0.88,31,"500",DIM,win(t,481,495.55,1.3,1.2)*op);}
+  /* C24 495.55 năng lượng */
+  const a24=win(t,496.5,522.35,1.3,1.2)*op;
+  if(a24>0.01){txt("KHÔNG ÁNH MẶT TRỜI — NHƯNG CÓ NĂNG LƯỢNG",W/2,H*0.14,42,"700",AM,a24,"rgba(255,160,80,0.35)");
+    txt("một dòng năng lượng ổn định, không bao giờ tắt, tuôn ra từ trái tim nóng bỏng của hành tinh",W/2,H*0.88,31,"500",DIM,win(t,506,522.35,1.3,1.2)*op);}
+  /* C25 522.35 sự sống là năng lượng */
+  const a25=win(t,523.3,543.95,1.2,1.2)*op;
+  if(a25>0.01){txt("SỰ SỐNG, Ở TẦNG SÂU NHẤT, CHÍNH LÀ NĂNG LƯỢNG",W/2,H*0.32,38,"700",GR,a25,"rgba(120,240,178,0.35)");
+    txt("liên tục lấy năng lượng từ môi trường để tự duy trì trật tự của mình",W/2,H*0.68,32,"500",WH,win(t,531,543.95,1.2,1.2)*op);}
+  /* C26 543.95 gradient hoá học */
+  const a26=win(t,544.9,567.62,1.2,1.2)*op;
+  if(a26>0.01){txt("GRADIENT HOÁ HỌC",W/2,H*0.15,48,"800",CY,a26,"rgba(140,224,255,0.4)");
+    txt("nước nóng giàu khoáng gặp nước biển lạnh → chênh lệch → một dòng năng lượng khai thác được",W/2,H*0.88,31,"500",DIM,win(t,553,567.62,1.2,1.2)*op);}
+  /* C27 567.62 tổ ong buồng phản ứng */
+  const a27=win(t,568.6,591.82,1.2,1.2)*op;
+  if(a27>0.01){txt("HÀNG TRIỆU BUỒNG PHẢN ỨNG TÍ HON",W/2,H*0.15,42,"700",WH,a27,"rgba(255,160,80,0.35)");
+    txt("những lỗ nhỏ như tổ ong — nơi phân tử tụ lại, cô đặc, không bị đại dương cuốn đi",W/2,H*0.88,31,"500",AM,win(t,577,591.82,1.2,1.2)*op);}
+  /* C28 591.82 đủ thời gian */
+  const a28=win(t,592.8,615.35,1.2,1.2)*op;
+  if(a28>0.01){txt("MỘT SÂN KHẤU HOÀN HẢO CHO HOÁ HỌC THỬ ĐI THỬ LẠI",W/2,H*0.32,36,"700",WH,a28,"rgba(255,160,80,0.3)");
+    txt("với đủ thời gian, đủ thử nghiệm — điều rất hiếm cũng trở nên gần như chắc chắn xảy ra",W/2,H*0.68,32,"500",DIM,win(t,601,615.35,1.2,1.2)*op);}
+  /* C29 615.35 vẫn thiếu tự sao chép */
+  const a29=win(t,616.3,648.68,1.2,1.6)*op;
+  if(a29>0.01){txt("VẪN THIẾU ĐIỀU QUAN TRỌNG NHẤT",W/2,H*0.32,42,"700",WH,a29,"rgba(120,240,178,0.35)");
+    txt("hòn đá không tạo ra hòn đá con — nhưng SỰ SỐNG BIẾT TỰ SAO CHÉP",W/2,H*0.66,36,"700",GR,win(t,626,648.68,1.2,1.6)*op,"rgba(120,240,178,0.35)");}
+}
+
+/* ============================================================
+   CẢNH 5 — THẾ GIỚI ARN
+   ============================================================ */
+function fxScene5(t,op){
+  /* C30 648.68 nghịch lý ADN/protein */
+  const a30=win(t,649.7,671.48,1.4,1.2)*op;
+  if(a30>0.01){txt("ADN",W*0.3,H*0.3,54,"800",BL,a30,"rgba(120,180,255,0.4)");txt("bản thiết kế · lưu thông tin",W*0.3,H*0.4,26,"500",DIM,a30);
+    txt("PROTEIN",W*0.7,H*0.3,54,"800",AM,win(t,655,671.48,1.3,1.2)*op,"rgba(255,160,80,0.4)");txt("thợ xây · thực thi công việc",W*0.7,H*0.4,26,"500",DIM,win(t,655,671.48,1.3,1.2)*op);}
+  /* C31 671.48 con gà quả trứng */
+  const a31=win(t,672.5,698.81,1.2,1.2)*op;
+  if(a31>0.01){txt("ADN cần PROTEIN để tự sao chép",W/2,H*0.3,34,"600",WH,a31);
+    txt("PROTEIN cần ADN chỉ đường để ra đời",W/2,H*0.4,34,"600",WH,win(t,679,698.81,1.2,1.2)*op);
+    txt("CÁI NÀO CÓ TRƯỚC? — câu đố gà & trứng, viết bằng phân tử",W/2,H*0.66,36,"700",VI,win(t,686,698.81,1.2,1.2)*op,"rgba(200,182,255,0.35)");}
+  /* C32 698.81 chỉ cần một phân tử */
+  const a32=win(t,699.8,720.21,1.2,1.2)*op;
+  if(a32>0.01){txt("CHỈ CẦN MỘT PHÂN TỬ · LÀM CẢ HAI VIỆC",W/2,H*0.14,42,"700",GR,a32,"rgba(120,240,178,0.35)");
+    txt("vừa là bản thiết kế, vừa là thợ xây. Nó tên là ARN.",W/2,H*0.88,36,"700",GR,win(t,708,720.21,1.2,1.2)*op,"rgba(120,240,178,0.4)");}
+  /* C33 720.21 ARN vừa mang chữ vừa đọc */
+  const a33=win(t,721.2,745.88,1.2,1.2)*op;
+  if(a33>0.01){txt("ARN",W/2,H*0.14,60,"800",GR,a33,"rgba(120,240,178,0.5)");
+    txt("lưu thông tin như ADN · lại tự gập thành cỗ máy thúc đẩy phản ứng như protein",W/2,H*0.88,31,"500",WH,win(t,729,745.88,1.2,1.2)*op);}
+  /* C34 745.88 thế giới ARN */
+  const a34=win(t,746.9,769.75,1.2,1.2)*op;
+  if(a34>0.01){txt("THẾ GIỚI ARN",W/2,H*0.16,54,"800",GR,a34,"rgba(120,240,178,0.45)");
+    txt("một thứ VỪA LÀ GÀ VỪA LÀ TRỨNG — mang thông tin về chính nó và tự tạo bản sao",W/2,H*0.88,31,"500",DIM,win(t,755,769.75,1.2,1.2)*op);}
+  /* C35 745->769 tự lắp bản sao */
+  const a35=win(t,770.7,790.75,1.2,1.2)*op;
+  if(a35>0.01){txt("RỒI CÓ HAI",W/2,H*0.32,52,"800",WH,a35,"rgba(120,240,178,0.4)");
+    txt("một chuỗi ARN dùng những viên gạch trôi nổi để lắp nên bản sao của chính mình",W/2,H*0.66,32,"500",GR,win(t,777,790.75,1.2,1.2)*op);}
+  /* C36 790.75 sao chép có lỗi */
+  const a36=win(t,791.7,816.35,1.2,1.2)*op;
+  if(a36>0.01){txt("SAO CHÉP · CÓ SAI SÓT · KẺ GIỎI HƠN NHÂN LÊN",W/2,H*0.32,38,"700",WH,a36,"rgba(120,240,178,0.35)");
+    txt("chuỗi sao chép nhanh hơn, bền hơn sẽ lấn át phần còn lại",W/2,H*0.68,32,"500",DIM,win(t,800,816.35,1.2,1.2)*op);}
+  /* C37 816.35 đó chính là tiến hoá */
+  const a37=win(t,817.3,845.88,1.2,1.6)*op;
+  if(a37>0.01){txt("ĐÓ CHÍNH XÁC LÀ TIẾN HOÁ",W/2,H*0.34,48,"800",GR,a37,"rgba(120,240,178,0.45)");
+    txt("chọn lọc tự nhiên trên những phân tử trần trụi — hàng tỷ năm trước con vật đầu tiên",W/2,H*0.66,32,"500",WH,win(t,826,845.88,1.2,1.6)*op);}
+}
+
+/* ============================================================
+   CẢNH 6 — TỪ HOÁ HỌC ĐẾN TẾ BÀO
+   ============================================================ */
+function fxScene6(t,op){
+  /* C38 845.88 cần một bức tường */
+  const a38=win(t,846.9,868.15,1.4,1.2)*op;
+  if(a38>0.01){txt("MỘT CHUỖI ARN TRẦN TRỤI VẪN RẤT MONG MANH",W/2,H*0.14,40,"700",WH,a38,"rgba(120,180,255,0.35)");
+    txt("nó cần một BỨC TƯỜNG — ranh giới giữa “tôi” và phần còn lại của thế giới",W/2,H*0.88,32,"500",CY,win(t,855,868.15,1.4,1.2)*op);}
+  /* C39 868.15 lipid */
+  const a39=win(t,869.1,890.75,1.3,1.2)*op;
+  if(a39>0.01){txt("LIPID",W/2,H*0.14,54,"800",VI,a39,"rgba(200,182,255,0.45)");
+    txt("một đầu ưa nước, một đầu ghét nước — khi thả vào nước, chúng làm điều đáng kinh ngạc",W/2,H*0.88,31,"500",DIM,win(t,877,890.75,1.3,1.2)*op);}
+  /* C40 890.75 tự khép thành bong bóng */
+  const a40=win(t,891.7,917.28,1.3,1.2)*op;
+  if(a40>0.01){txt("TỰ KHÉP THÀNH MỘT QUẢ BÓNG",W/2,H*0.14,44,"700",WH,a40,"rgba(200,182,255,0.35)");
+    txt("một tấm màng mỏng tự cong lại, khép kín — bên trong là một khoảng nước riêng",W/2,H*0.88,31,"500",VI,win(t,901,917.28,1.3,1.2)*op);}
+  /* C41 917.28 tế bào đầu tiên */
+  const a41=win(t,918.3,941.68,1.2,1.2)*op;
+  if(a41>0.01){txt("HÌNH HÀI ĐẦU TIÊN CỦA MỘT TẾ BÀO",W/2,H*0.16,44,"800",GR,a41,"rgba(120,240,178,0.4)");
+    txt("một cái túi màng · mang thông tin của chính mình · giữ nguyên liệu cô đặc bên trong",W/2,H*0.88,31,"500",WH,win(t,927,941.68,1.2,1.2)*op);}
+  /* C42 941.68 phân đôi */
+  const a42=win(t,942.7,962.28,1.2,1.2)*op;
+  if(a42>0.01){txt("MỘT TẾ BÀO MẸ → HAI TẾ BÀO CON",W/2,H*0.32,42,"700",WH,a42,"rgba(120,240,178,0.35)");
+    txt("túi lớn dần, tự vỡ làm hai — mỗi nửa mang theo một bản sao thông tin. Nó SINH SÔI.",W/2,H*0.68,32,"500",GR,win(t,951,962.28,1.2,1.2)*op);}
+  /* C43 962.28 phân công ADN/ARN/protein */
+  const a43=win(t,963.3,988.55,1.2,1.2)*op;
+  if(a43>0.01){txt("PHÂN CÔNG LAO ĐỘNG",W/2,H*0.14,40,"700",WH,a43,"rgba(120,180,255,0.35)");
+    const it=["ADN — lưu trữ lâu dài","PROTEIN — thực thi","ARN — trung gian truyền tin"];
+    for(let k=0;k<3;k++)txt(it[k],W/2,H*0.82+k*0-30+k*32,28,"600",[BL,AM,GR][k],win(t,970+k*2,988.55,1.2,1.2)*op);}
+  /* C44 988.55 LUCA */
+  const a44=win(t,989.5,1015.55,1.2,1.2)*op;
+  if(a44>0.01){txt("LUCA",W/2,H*0.16,64,"800",GR,a44,"rgba(120,240,178,0.5)");
+    txt("tổ tiên chung cuối cùng — điểm mà mọi nhánh của cây sự sống hội tụ về",W/2,H*0.88,32,"500",WH,win(t,997,1015.55,1.2,1.2)*op);}
+  /* C45 1015.55 tất cả là họ hàng */
+  const a45=win(t,1016.5,1044.28,1.2,1.6)*op;
+  if(a45>0.01){txt("TẤT CẢ CHÚNG TA LÀ HỌ HÀNG",W/2,H*0.34,44,"800",GR,a45,"rgba(120,240,178,0.45)");
+    txt("bạn · con mèo · cái cây · vi khuẩn trong ly nước — con cháu của cùng một tế bào bé nhỏ",W/2,H*0.66,32,"500",WH,win(t,1025,1044.28,1.2,1.6)*op);}
+}
+
+/* ============================================================
+   CẢNH 7 — PANSPERMIA
+   ============================================================ */
+function fxScene7(t,op){
+  /* C46 1044.28 đến từ vũ trụ */
+  const a46=win(t,1045.3,1065.01,1.4,1.2)*op;
+  if(a46>0.01){txt("HAY SỰ SỐNG ĐẾN TỪ VŨ TRỤ?",W/2,H*0.14,46,"800",VI,a46,"rgba(200,182,255,0.45)");
+    txt("có lẽ những viên gạch đầu tiên không sinh ra ở đây — mà gieo xuống từ bên ngoài",W/2,H*0.88,32,"500",DIM,win(t,1053,1065.01,1.4,1.2)*op);}
+  /* C47 1065.01 thiên thạch mang axit amin */
+  const a47=win(t,1066,1090.94,1.3,1.2)*op;
+  if(a47>0.01){txt("TRONG THIÊN THẠCH · CÓ AXIT AMIN",W/2,H*0.14,44,"800",GR,a47,"rgba(120,240,178,0.4)");
+    txt("đúng những viên gạch xây protein — có sẵn, nằm trong đá, đến từ không gian",W/2,H*0.88,31,"500",WH,win(t,1075,1090.94,1.3,1.2)*op);}
+  /* C48 1090.94 hoá học sự sống khắp vũ trụ */
+  const a48=win(t,1092,1116.27,1.3,1.2)*op;
+  if(a48>0.01){txt("HOÁ HỌC CỦA SỰ SỐNG · KHẮP THIÊN HÀ",W/2,H*0.32,40,"700",VI,a48,"rgba(200,182,255,0.35)");
+    txt("trong mây bụi giữa các vì sao, trong nhân băng sao chổi — phân tử hữu cơ vẫn âm thầm hình thành",W/2,H*0.68,31,"500",DIM,win(t,1101,1116.27,1.3,1.2)*op);}
+  /* C49 1116.27 panspermia */
+  const a49=win(t,1117.3,1138.54,1.2,1.2)*op;
+  if(a49>0.01){txt("PANSPERMIA",W/2,H*0.15,54,"800",WH,a49,"rgba(200,182,255,0.4)");
+    txt("“hạt giống gieo khắp nơi” — mầm hoá học của sự sống, gieo xuống hành tinh từ bầu trời",W/2,H*0.88,31,"500",VI,win(t,1125,1138.54,1.2,1.2)*op);}
+  /* C50 1138.54 phiên bản táo bạo */
+  const a50=win(t,1139.5,1167.87,1.2,1.3)*op;
+  if(a50>0.01){txt("MỘT PHIÊN BẢN TÁO BẠO HƠN",W/2,H*0.32,40,"700",WH,a50,"rgba(200,182,255,0.3)");
+    txt("cả vi sinh vật sống có thể du hành giữa các hành tinh? — ta chưa có bằng chứng cho điều ấy",W/2,H*0.68,31,"500",DIM,win(t,1149,1167.87,1.2,1.3)*op);}
+  /* C51 1167.87 vươn ra tận vì sao */
+  const a51=win(t,1168.9,1192.27,1.2,1.2)*op;
+  if(a51>0.01){txt("CÂU CHUYỆN NGUỒN GỐC · VƯƠN RA TẬN NHỮNG VÌ SAO",W/2,H*0.32,38,"700",VI,a51,"rgba(200,182,255,0.35)");
+    txt("những nguyên tử làm nên bạn được rèn trong lòng các ngôi sao đã chết từ lâu",W/2,H*0.68,32,"500",WH,win(t,1177,1192.27,1.2,1.2)*op);}
+  /* C52 1192.27 mọi con đường về cùng kết cục */
+  const a52=win(t,1193.3,1218.27,1.2,1.6)*op;
+  if(a52>0.01){txt("MỌI CON ĐƯỜNG · MỘT KẾT CỤC KỲ DIỆU",W/2,H*0.34,42,"800",GR,a52,"rgba(120,240,178,0.4)");
+    txt("ranh giới giữa vật chất chết và sống đã bị vượt qua — và không bao giờ quay lại nữa",W/2,H*0.66,32,"500",WH,win(t,1203,1218.27,1.2,1.6)*op);}
+}
+
+/* ============================================================
+   CẢNH 8 — KẾT · CHÚNG TA LÀ HẬU DUỆ (cây sự sống 2D)
+   ============================================================ */
+function fxScene8(t,op){
+  backdrop(clamp(op*1.2,0,0.5));
+  const grow=ss(1219,1300,t);
+  const revO=grow*(TREE_MAXO+1);
+  for(const s of TREE){if(s.order>revO)continue;
+    const seg=clamp(revO-s.order,0,1);
+    const x1=lerp(s.x0,s.x1,seg),y1=lerp(s.y0,s.y1,seg);
+    const a=clamp((1-s.order/(TREE_MAXO+1))*0.6+0.35,0,1)*op;
+    line2d(s.x0,s.y0,x1,y1,`rgba(${120+s.order*14},${230-s.order*6},${170+s.order*8},1)`,s.w,a);}
+  const leafO=win(t,1240,1426.66,10,6)*op;
+  for(const lf of LEAVES){if(lf.order>revO+0.2)continue;const pu=0.6+0.4*Math.sin(t*1.4+lf.ph);
+    glow2d(lf.x,lf.y,7,150,255,190,leafO*pu*0.6);dot2d(lf.x,lf.y,2.4,"rgba(200,255,220,1)",leafO*pu);}
+  /* root spark */
+  glow2d(W/2,H*0.94,30+8*Math.sin(t*2),150,255,190,op*0.7);
+  /* C53 1218.27 con đường tóm tắt */
+  const a53=win(t,1219.3,1247.2,1.4,1.3)*op;
+  if(a53>0.01){txt("GIỜ TA ĐÃ THẤY CON ĐƯỜNG",W/2,H*0.16,44,"800",WH,a53,"rgba(120,240,178,0.4)");
+    txt("từ hành tinh nóng chảy → đại dương đầy gạch → tia lửa → buồng đá → phân tử tự sao chép → tế bào",W/2,H*0.24,26,"500",DIM,win(t,1227,1247.2,1.3,1.3)*op);}
+  /* C54 1247.2 vùng chuyển tiếp mờ ảo */
+  const a54=win(t,1248.2,1271.27,1.3,1.3)*op;
+  if(a54>0.01){txt("KHÔNG PHẢI MỘT LẰN KẺ SẮC NÉT",W/2,H*0.16,40,"700",WH,a54,"rgba(120,180,255,0.35)");
+    txt("một vùng chuyển tiếp mờ ảo — tới một lúc, ta không gọi nó là hoá học nữa. Ta gọi là SỰ SỐNG.",W/2,H*0.24,26,"500",GR,win(t,1257,1271.27,1.3,1.3)*op);}
+  /* C55 1271.27 chưa chạm bước cuối */
+  const a55=win(t,1272.3,1300.94,1.3,1.3)*op;
+  if(a55>0.01){txt("BƯỚC CUỐI CÙNG · TA VẪN CHƯA CHẠM TỚI",W/2,H*0.16,40,"700",AM,a55,"rgba(255,160,80,0.35)");
+    txt("ta tạo được axit amin, túi màng, chuỗi ARN tự sao chép một phần — nhưng chưa thổi thành sự sống",W/2,H*0.24,25,"500",DIM,win(t,1281,1300.94,1.3,1.3)*op);}
+  /* C56 1300.94 vậy mà nó đã làm được */
+  const a56=win(t,1301.9,1327.67,1.3,1.3)*op;
+  if(a56>0.01){txt("KHÔNG NHÀ KHOA HỌC · KHÔNG KẾ HOẠCH",W/2,H*0.16,40,"700",WH,a56,"rgba(120,240,178,0.35)");
+    txt("chỉ một hành tinh trẻ, một ít hoá học, và thời gian — và bằng cách nào đó, nó đã làm được",W/2,H*0.24,26,"500",GR,win(t,1310,1327.67,1.3,1.3)*op);}
+  /* C57 1327.67 ít nhất một nơi */
+  const a57=win(t,1328.7,1351.07,1.3,1.3)*op;
+  if(a57>0.01){txt("ÍT NHẤT MỘT NƠI · ÍT NHẤT MỘT KHOẢNH KHẮC",W/2,H*0.16,38,"700",VI,a57,"rgba(200,182,255,0.35)");
+    txt("vật chất tự sắp xếp thành thứ có thể NHÌN NGẮM chính vũ trụ đã sinh ra nó",W/2,H*0.24,27,"500",WH,win(t,1337,1351.07,1.3,1.3)*op);}
+  /* C58 1351.07 sợi chỉ sống chưa bao giờ đứt */
+  const a58=win(t,1352.1,1372.4,1.3,1.3)*op;
+  if(a58>0.01){txt("MỘT SỢI CHỈ SỐNG · CHƯA BAO GIỜ ĐỨT",W/2,H*0.78,40,"800",GR,a58,"rgba(120,240,178,0.45)");
+    txt("nối thẳng từ cái túi màng đầu tiên tới trái tim đang đập trong lồng ngực bạn",W/2,H*0.85,28,"500",WH,win(t,1360,1372.4,1.3,1.3)*op);}
+  /* C59 1372.4 bạn là mắt xích mới nhất */
+  const a59=win(t,1373.4,1397.13,1.3,1.3)*op;
+  if(a59>0.01){txt("BẠN LÀ MẮT XÍCH MỚI NHẤT CỦA GẦN BỐN TỶ NĂM",W/2,H*0.78,38,"700",WH,a59,"rgba(120,240,178,0.35)");
+    txt("bạn là bằng chứng sống động rằng ranh giới ấy đã được vượt qua",W/2,H*0.85,28,"500",GR,win(t,1382,1397.13,1.3,1.3)*op);}
+  /* C60 1397.13 kết */
+  const a60=win(t,1398.1,1426.66,1.5,3.5)*op;
+  if(a60>0.01){txt("BẠN LÀ VẬT CHẤT ĐÃ HỌC ĐƯỢC CÁCH TỰ SỐNG",W/2,H*0.74,38,"700",WH,a60,"rgba(120,240,178,0.4)");
+    txt("bạn là BỤI SAO đã học được cách ĐẶT CÂU HỎI",W/2,H*0.82,34,"700",GR,win(t,1408,1426.66,1.4,3.5)*op,"rgba(120,240,178,0.4)");}
+}
+
+const FX=[null,fxScene1,fxScene2,fxScene3,fxScene4,fxScene5,fxScene6,fxScene7,fxScene8];
+
+/* ---------------- phụ đề (540 CUES) ---------------- */
+const subEl=document.getElementById('sub'), chapEl=document.getElementById('chap');
+const CUES=/*CUES*/[{"t":0,"s":"Tôi muốn bắt đầu bằng một câu hỏi mà thoạt"},{"t":2.81,"s":"nghe có vẻ đơn giản, nhưng càng nghĩ, bạn"},{"t":5.62,"s":"sẽ càng thấy nó là một trong những câu hỏi"},{"t":8.44,"s":"kỳ lạ nhất mà con người từng dám hỏi. Bạn"},{"t":11.25,"s":"đang sống. Hòn đá dưới chân bạn thì không."},{"t":14.06,"s":"Vậy ranh giới giữa hai thứ ấy nằm ở đâu?"},{"t":16.87,"s":"Hãy cầm một nắm đất lên. Trong nắm đất ấy"},{"t":19.55,"s":"có carbon, có nước, có nguyên tử của đủ"},{"t":22.23,"s":"mọi nguyên tố. Cơ thể bạn cũng được làm từ"},{"t":24.91,"s":"chính những nguyên tử đó. Không có một"},{"t":27.59,"s":"chất liệu bí mật nào chỉ dành riêng cho sự"},{"t":30.28,"s":"sống. Bạn và hòn đá được nặn ra từ cùng"},{"t":32.96,"s":"một hộp vật liệu. Vậy mà bạn thở, bạn lớn"},{"t":35.64,"s":"lên, bạn tự chữa lành, bạn sinh ra thế hệ"},{"t":38.32,"s":"sau. Còn hòn đá thì chỉ nằm đó."},{"t":41,"s":"Vậy điều gì đã xảy ra? Ở một nơi nào đó,"},{"t":43.47,"s":"vào một thời điểm nào đó, những nguyên tử"},{"t":45.95,"s":"vô tri, không hề biết mình tồn tại, đã tự"},{"t":48.42,"s":"sắp xếp lại thành một thứ biết giữ mình"},{"t":50.9,"s":"sống. Một thứ biết tự sao chép. Một thứ có"},{"t":53.37,"s":"thể tiến hoá. Không có phép màu, không có"},{"t":55.85,"s":"bàn tay nào can thiệp. Chỉ có hoá học,"},{"t":58.32,"s":"thời gian, và một hành tinh trẻ đang sôi"},{"t":60.8,"s":"sục."},{"t":63.27,"s":"Đây là câu hỏi mà tôi muốn cùng bạn đi tìm"},{"t":65.77,"s":"suốt hành trình này. Làm sao vật chất"},{"t":68.28,"s":"không sống lại vượt qua được cái ranh giới"},{"t":70.78,"s":"ấy, để trở thành thứ đầu tiên có thể gọi"},{"t":73.28,"s":"là sống? Đó không phải một câu hỏi tôn"},{"t":75.79,"s":"giáo, cũng không phải một câu hỏi triết"},{"t":78.29,"s":"học suông. Đó là một câu hỏi khoa học, có"},{"t":80.79,"s":"thật, và ta đang từng ngày tiến gần hơn"},{"t":83.3,"s":"tới lời đáp."},{"t":85.8,"s":"Tôi cần nói trước với bạn một điều thành"},{"t":88.48,"s":"thật. Ta chưa dựng lại được trọn vẹn"},{"t":91.15,"s":"khoảnh khắc ấy trong phòng thí nghiệm."},{"t":93.83,"s":"Chưa ai từng tạo ra sự sống từ vật chất"},{"t":96.5,"s":"chết. Nhưng ta đã lần ra được từng mảnh"},{"t":99.18,"s":"ghép của con đường, và khi ghép chúng lại,"},{"t":101.85,"s":"một câu chuyện hiện lên, đẹp đến sững sờ."},{"t":104.53,"s":"Và để bắt đầu câu chuyện ấy, tôi cần đưa"},{"t":106.93,"s":"bạn về một nơi không giống bất cứ đâu bạn"},{"t":109.33,"s":"từng biết. Về một Trái Đất mà nếu đứng lên"},{"t":111.73,"s":"đó, bạn sẽ chết trong vài giây. Một hành"},{"t":114.13,"s":"tinh trẻ, hung dữ, và hoàn toàn không có"},{"t":116.53,"s":"sự sống."},{"t":121.93,"s":"Hãy tua ngược thời gian lại, bốn tỷ năm."},{"t":124.48,"s":"Xa hơn cả loài người, xa hơn khủng long,"},{"t":127.04,"s":"xa hơn cây cối, xa hơn mọi sinh vật đầu"},{"t":129.59,"s":"tiên bạn có thể tưởng tượng. Về tới lúc"},{"t":132.14,"s":"Trái Đất mới chỉ là một quả cầu non trẻ,"},{"t":134.69,"s":"vừa mới thành hình từ bụi và đá của một hệ"},{"t":137.25,"s":"mặt trời còn hỗn loạn."},{"t":139.8,"s":"Nơi ấy không có màu xanh. Không có biển"},{"t":142.21,"s":"hiền hoà, không có bầu trời trong. Bề mặt"},{"t":144.62,"s":"hành tinh là một đại dương magma, đá nóng"},{"t":147.03,"s":"chảy đỏ rực trải dài tới tận chân trời,"},{"t":149.44,"s":"sủi bọt và cuộn trào. Nhiệt độ đủ để nung"},{"t":151.84,"s":"chảy kim loại. Bầu khí quyển đặc quánh"},{"t":154.25,"s":"những khí độc, không một hơi oxy nào để"},{"t":156.66,"s":"thở."},{"t":159.07,"s":"Và bầu trời thì liên tục rơi xuống. Đây là"},{"t":161.72,"s":"thời kỳ mà những mảnh vỡ còn sót lại của"},{"t":164.37,"s":"hệ mặt trời vẫn đang lao vào nhau. Thiên"},{"t":167.03,"s":"thạch, tiểu hành tinh, có cái to bằng cả"},{"t":169.68,"s":"một thành phố, có cái to bằng cả một quốc"},{"t":172.33,"s":"gia, đâm xuống Trái Đất hết đợt này tới"},{"t":174.98,"s":"đợt khác. Mỗi cú va có thể làm bốc hơi cả"},{"t":177.64,"s":"một vùng biển, nung chảy lại cả một mảng"},{"t":180.29,"s":"vỏ hành tinh vừa mới nguội."},{"t":182.94,"s":"Đây là một nơi chết chóc theo đúng nghĩa"},{"t":185.41,"s":"đen. Không phải nơi sự sống đã chết, mà là"},{"t":187.87,"s":"nơi sự sống chưa từng, và dường như không"},{"t":190.34,"s":"thể, tồn tại. Nếu tôi thả bạn xuống đó,"},{"t":192.81,"s":"bạn sẽ không có một cơ hội nào. Vậy mà"},{"t":195.28,"s":"chính từ cái địa ngục này, một điều gì đó"},{"t":197.74,"s":"sẽ nảy sinh."},{"t":200.21,"s":"Bởi vì địa ngục không kéo dài mãi. Những"},{"t":202.79,"s":"cú va đập thưa dần. Hành tinh, rất chậm"},{"t":205.38,"s":"rãi, bắt đầu nguội đi. Và khi bề mặt hạ"},{"t":207.96,"s":"nhiệt đủ, hơi nước khổng lồ trong bầu khí"},{"t":210.55,"s":"quyển bắt đầu ngưng tụ. Trời đổ mưa. Không"},{"t":213.13,"s":"phải một cơn mưa, mà là những cơn mưa kéo"},{"t":215.71,"s":"dài hàng nghìn năm, có thể hàng triệu năm,"},{"t":218.3,"s":"xối xả không ngừng."},{"t":220.88,"s":"Nước rơi xuống, đọng lại trong những lòng"},{"t":223.56,"s":"chảo, rồi lan ra, dâng lên, cho tới khi"},{"t":226.23,"s":"phần lớn hành tinh chìm dưới một đại dương"},{"t":228.91,"s":"ấm và nông. Lần đầu tiên, Trái Đất có"},{"t":231.58,"s":"biển. Không phải màu xanh trong như biển"},{"t":234.25,"s":"hôm nay, mà đục ngầu, ấm nóng, và chứa đầy"},{"t":236.93,"s":"những chất hoà tan từ đá, từ khí, từ chính"},{"t":239.6,"s":"những thiên thạch đã rơi xuống."},{"t":242.28,"s":"Và chính trong thứ nước ấm đục ngầu ấy,"},{"t":244.86,"s":"câu chuyện của chúng ta thực sự bắt đầu."},{"t":247.45,"s":"Bởi đại dương sơ khai không chỉ là nước."},{"t":250.03,"s":"Nó là một cái nồi. Một cái nồi khổng lồ,"},{"t":252.62,"s":"chứa đầy nguyên liệu, được đun bằng năng"},{"t":255.2,"s":"lượng của cả một hành tinh non trẻ. Và"},{"t":257.78,"s":"trong cái nồi ấy, hoá học sắp sửa làm một"},{"t":260.37,"s":"điều mà không ai ngờ tới."},{"t":265.95,"s":"Để hiểu điều sắp xảy ra, tôi cần kể cho"},{"t":268.32,"s":"bạn nghe về một thí nghiệm. Một thí nghiệm"},{"t":270.69,"s":"nhỏ, gọn, thực hiện trong một căn phòng,"},{"t":273.06,"s":"nhưng đã làm rung chuyển cách con người"},{"t":275.44,"s":"nghĩ về nguồn gốc của chính mình. Nó diễn"},{"t":277.81,"s":"ra vào năm một nghìn chín trăm năm mươi"},{"t":280.18,"s":"ba."},{"t":282.55,"s":"Một nhà khoa học trẻ đặt ra một câu hỏi"},{"t":285.16,"s":"liều lĩnh. Nếu Trái Đất sơ khai chỉ có"},{"t":287.76,"s":"những khí đơn giản và nước, liệu ta có thể"},{"t":290.37,"s":"tái tạo lại nó trong phòng thí nghiệm"},{"t":292.98,"s":"không? Và nếu ta cho nó chút năng lượng,"},{"t":295.59,"s":"liệu có gì thú vị xảy ra? Anh lấy một bình"},{"t":298.19,"s":"thuỷ tinh, cho vào đó những khí mà người"},{"t":300.8,"s":"ta tin là có mặt trên hành tinh trẻ. Rồi"},{"t":303.41,"s":"anh đun nước cho bốc hơi, để mô phỏng đại"},{"t":306.01,"s":"dương và bầu khí quyển."},{"t":308.62,"s":"Rồi anh làm điều then chốt. Anh cho những"},{"t":311.35,"s":"tia lửa điện phóng qua hỗn hợp khí ấy,"},{"t":314.09,"s":"ngày này qua ngày khác. Những tia lửa ấy"},{"t":316.82,"s":"đóng vai một thứ mà Trái Đất sơ khai có"},{"t":319.55,"s":"thừa: sấm chớp. Bầu trời thuở ấy chắc chắn"},{"t":322.28,"s":"dày đặc những cơn giông. Anh chỉ đơn giản"},{"t":325.02,"s":"tái tạo lại sấm sét, trong một cái bình."},{"t":327.75,"s":"Và anh chờ. Chỉ vài ngày sau, nước trong"},{"t":330.48,"s":"bình bắt đầu đổi màu. Nó chuyển sang một"},{"t":333.2,"s":"sắc hồng đục, rồi nâu. Khi anh phân tích"},{"t":335.93,"s":"thứ nước ấy, anh phát hiện một điều khiến"},{"t":338.65,"s":"anh gần như không tin nổi. Trong cái bình"},{"t":341.38,"s":"chỉ chứa những khí đơn giản và vài tia"},{"t":344.1,"s":"lửa, giờ đây đã xuất hiện những phân tử"},{"t":346.82,"s":"hữu cơ. Và không phải phân tử tầm thường."},{"t":349.55,"s":"Anh tìm thấy axit amin. Bạn cần nhớ cái"},{"t":352.1,"s":"tên này, vì nó quan trọng. Axit amin là"},{"t":354.65,"s":"những viên gạch để xây nên protein. Và"},{"t":357.19,"s":"protein là thứ làm gần như mọi công việc"},{"t":359.74,"s":"trong cơ thể sống của bạn, ngay lúc này."},{"t":362.29,"s":"Chúng là cơ bắp, là enzyme, là bộ máy vận"},{"t":364.84,"s":"hành sự sống. Những viên gạch nền tảng ấy"},{"t":367.38,"s":"vừa mới tự hình thành, từ hư không, chỉ"},{"t":369.93,"s":"nhờ khí và tia lửa."},{"t":372.48,"s":"Hãy dừng lại và cảm nhận sức nặng của điều"},{"t":374.98,"s":"này. Không ai đặt những axit amin ấy vào"},{"t":377.47,"s":"bình. Không ai lắp ráp chúng. Chúng tự"},{"t":379.97,"s":"xuất hiện, bởi vì khi bạn có đúng nguyên"},{"t":382.47,"s":"liệu và đúng năng lượng, hoá học tự nó đi"},{"t":384.96,"s":"về phía sự phức tạp. Những viên gạch của"},{"t":387.46,"s":"sự sống, hoá ra, không hiếm, không khó,"},{"t":389.96,"s":"không cần phép màu. Chúng gần như là điều"},{"t":392.45,"s":"tất yếu."},{"t":394.95,"s":"Và điều ấy có nghĩa là đại dương sơ khai"},{"t":397.66,"s":"của chúng ta, được đun bằng sấm sét, bằng"},{"t":400.37,"s":"nhiệt núi lửa, bằng tia cực tím gay gắt"},{"t":403.08,"s":"của Mặt Trời trẻ, hẳn cũng đã làm đúng"},{"t":405.79,"s":"điều mà cái bình thuỷ tinh đã làm. Nó tạo"},{"t":408.51,"s":"ra những phân tử hữu cơ, hết mẻ này tới mẻ"},{"t":411.22,"s":"khác, rồi hoà tan tất cả vào biển. Người"},{"t":413.93,"s":"ta đặt cho thứ nước ấy một cái tên rất gợi"},{"t":416.64,"s":"hình. Họ gọi nó là súp nguyên thuỷ."},{"t":419.35,"s":"Một đại dương loãng, ấm, đục ngầu những"},{"t":422.06,"s":"viên gạch của sự sống. Nhưng ở đây, tôi"},{"t":424.78,"s":"phải thành thật với bạn một lần nữa. Một"},{"t":427.49,"s":"nồi súp đầy gạch thì vẫn chưa phải một"},{"t":430.2,"s":"ngôi nhà. Có sẵn axit amin không có nghĩa"},{"t":432.92,"s":"là có sự sống, cũng như có sẵn một đống"},{"t":435.63,"s":"gạch không có nghĩa là có một toà lâu đài."},{"t":438.34,"s":"Cần có thứ gì đó sắp xếp chúng lại. Và để"},{"t":441.05,"s":"làm được điều đó, cần năng lượng, cần một"},{"t":443.77,"s":"nơi chốn. Câu hỏi tiếp theo là: ở đâu?"},{"t":449.48,"s":"Trong nhiều năm, người ta hình dung sự"},{"t":451.95,"s":"sống bắt đầu ở đâu đó gần mặt nước, dưới"},{"t":454.43,"s":"ánh sấm chớp, trong một cái ao ấm áp nào"},{"t":456.9,"s":"đó. Nhưng có một giả thuyết khác, và với"},{"t":459.38,"s":"tôi, nó là một trong những ý tưởng đẹp"},{"t":461.85,"s":"nhất trong toàn bộ câu chuyện này. Nó nói"},{"t":464.33,"s":"rằng sự sống không bắt đầu dưới ánh sáng."},{"t":466.8,"s":"Nó bắt đầu trong bóng tối, dưới tận đáy"},{"t":469.28,"s":"biển sâu."},{"t":471.75,"s":"Hãy đi xuống cùng tôi, xuống nơi ánh mặt"},{"t":474.39,"s":"trời không bao giờ với tới, nơi nước lạnh"},{"t":477.04,"s":"giá và tối đen như mực. Ở dưới đó, nơi lớp"},{"t":479.68,"s":"vỏ hành tinh nứt ra, có những cấu trúc kỳ"},{"t":482.33,"s":"lạ nhô lên từ đáy biển. Chúng như những"},{"t":484.97,"s":"ống khói bằng đá, cao như những toà tháp,"},{"t":487.62,"s":"không ngừng phun ra dòng nước nóng bỏng,"},{"t":490.26,"s":"đục ngầu khoáng chất. Người ta gọi chúng"},{"t":492.91,"s":"là miệng phun thuỷ nhiệt."},{"t":495.55,"s":"Nước biển thấm xuống qua các khe nứt, chạm"},{"t":498.23,"s":"tới lớp đá nóng bỏng gần lòng magma bên"},{"t":500.91,"s":"dưới, rồi phun ngược trở lên, mang theo"},{"t":503.59,"s":"nhiệt, mang theo khoáng chất, mang theo đủ"},{"t":506.27,"s":"loại nguyên tố hoà tan từ lòng đất. Ở đó"},{"t":508.95,"s":"không có ánh mặt trời, nhưng có một thứ"},{"t":511.63,"s":"khác còn quý giá hơn với sự sống sơ khai."},{"t":514.31,"s":"Có năng lượng. Một dòng năng lượng ổn"},{"t":516.99,"s":"định, không bao giờ tắt, tuôn ra từ chính"},{"t":519.67,"s":"trái tim nóng bỏng của hành tinh."},{"t":522.35,"s":"Và đây là điều tinh tế mà tôi muốn bạn"},{"t":524.75,"s":"hiểu. Sự sống, ở tầng sâu nhất, chính là"},{"t":527.15,"s":"năng lượng. Cơ thể bạn ngay lúc này đang"},{"t":529.55,"s":"sống được là nhờ nó liên tục lấy năng"},{"t":531.95,"s":"lượng từ môi trường và dùng nó để tự duy"},{"t":534.35,"s":"trì trật tự của mình. Không có dòng năng"},{"t":536.75,"s":"lượng ấy, mọi thứ tan rã. Và miệng phun"},{"t":539.15,"s":"thuỷ nhiệt cung cấp đúng loại dòng chảy"},{"t":541.55,"s":"ấy."},{"t":543.95,"s":"Tại nơi dòng nước nóng, giàu khoáng, gặp"},{"t":546.58,"s":"nước biển lạnh xung quanh, có một sự chênh"},{"t":549.21,"s":"lệch. Chênh lệch về nhiệt độ. Chênh lệch"},{"t":551.84,"s":"về thành phần hoá học. Một bên nhiều thứ"},{"t":554.47,"s":"này, bên kia nhiều thứ kia. Và trong tự"},{"t":557.1,"s":"nhiên, hễ có chênh lệch là có một dòng"},{"t":559.73,"s":"chảy muốn san bằng nó, một dòng năng lượng"},{"t":562.36,"s":"có thể được khai thác. Các nhà khoa học"},{"t":564.99,"s":"gọi đó là gradient hoá học."},{"t":567.62,"s":"Điều tuyệt vời là chính những ống khói đá"},{"t":570.31,"s":"này lại đầy những lỗ nhỏ li ti, những"},{"t":573,"s":"khoang rỗng như tổ ong. Mỗi khoang nhỏ như"},{"t":575.69,"s":"một cái phòng thí nghiệm tí hon, một buồng"},{"t":578.38,"s":"phản ứng tự nhiên, nơi các phân tử hữu cơ"},{"t":581.06,"s":"có thể tụ lại, va vào nhau, kết hợp, mà"},{"t":583.75,"s":"không bị đại dương mênh mông cuốn đi và"},{"t":586.44,"s":"pha loãng. Chúng bị giữ lại, cô đặc, nuôi"},{"t":589.13,"s":"bằng dòng năng lượng không ngừng."},{"t":591.82,"s":"Hãy hình dung xem. Một hệ thống với hàng"},{"t":594.43,"s":"triệu buồng nhỏ, mỗi buồng chứa đầy nguyên"},{"t":597.05,"s":"liệu, được sưởi ấm, được cấp năng lượng"},{"t":599.66,"s":"liên tục qua hàng chục nghìn, hàng trăm"},{"t":602.28,"s":"nghìn năm không nghỉ. Đó là một sân khấu"},{"t":604.89,"s":"hoàn hảo cho hoá học thử đi thử lại vô số"},{"t":607.51,"s":"tổ hợp. Và với đủ thời gian, đủ thử"},{"t":610.12,"s":"nghiệm, những điều rất hiếm gặp cũng trở"},{"t":612.74,"s":"nên gần như chắc chắn xảy ra."},{"t":615.35,"s":"Vậy nên giờ ta đã có nguyên liệu, từ súp"},{"t":617.88,"s":"nguyên thuỷ. Ta đã có năng lượng và nơi"},{"t":620.4,"s":"chốn, từ miệng phun thuỷ nhiệt. Nhưng vẫn"},{"t":622.93,"s":"còn thiếu điều quan trọng nhất, cái điều"},{"t":625.46,"s":"thực sự tách sự sống ra khỏi mọi thứ hoá"},{"t":627.99,"s":"học đơn thuần khác. Một hòn đá không tự"},{"t":630.51,"s":"tạo ra hòn đá con. Một tia lửa không sinh"},{"t":633.04,"s":"ra tia lửa khác giống hệt nó. Sự sống thì"},{"t":635.57,"s":"làm được điều đó. Sự sống biết tự sao"},{"t":638.1,"s":"chép. Và bước nhảy tới khả năng ấy, có lẽ"},{"t":640.63,"s":"là bước kỳ diệu nhất trong toàn bộ câu"},{"t":643.15,"s":"chuyện."},{"t":648.68,"s":"Để hiểu bước nhảy này, tôi cần chỉ cho bạn"},{"t":651.21,"s":"một nghịch lý nằm ngay trong lõi của mọi"},{"t":653.75,"s":"sự sống hôm nay. Trong mỗi tế bào của bạn"},{"t":656.28,"s":"có hai loại phân tử lớn đóng hai vai khác"},{"t":658.81,"s":"nhau. Một loại là bản thiết kế, lưu giữ"},{"t":661.35,"s":"thông tin, đó là ADN, thứ mang mã di"},{"t":663.88,"s":"truyền của bạn. Loại kia là thợ xây, thực"},{"t":666.41,"s":"thi công việc, đó là protein, những cỗ máy"},{"t":668.95,"s":"làm mọi thứ."},{"t":671.48,"s":"Nhưng đây là chỗ hóc búa. Bản thiết kế ADN"},{"t":674.21,"s":"không thể tự sao chép chính nó, nó cần"},{"t":676.95,"s":"protein tới giúp. Còn protein thì không"},{"t":679.68,"s":"thể tự xuất hiện, nó cần bản thiết kế ADN"},{"t":682.41,"s":"chỉ đường. Cái này cần cái kia mới ra đời"},{"t":685.14,"s":"được. Vậy thì thuở ban đầu, cái nào có"},{"t":687.88,"s":"trước? Nếu cần cả hai mới hoạt động, làm"},{"t":690.61,"s":"sao một trong hai lại tự khởi sinh khi cái"},{"t":693.34,"s":"còn lại chưa có mặt? Đó như một câu đố về"},{"t":696.08,"s":"con gà và quả trứng, viết bằng phân tử."},{"t":698.81,"s":"Lời giải, và đây là ý tưởng làm tôi thực"},{"t":701.48,"s":"sự rùng mình vì vẻ đẹp của nó, là có lẽ"},{"t":704.16,"s":"thuở đầu không cần cả hai. Có lẽ chỉ cần"},{"t":706.83,"s":"một phân tử duy nhất, biết làm cả hai việc"},{"t":709.51,"s":"cùng lúc. Vừa là bản thiết kế, vừa là thợ"},{"t":712.18,"s":"xây. Vừa lưu thông tin, vừa tự thực hiện"},{"t":714.86,"s":"phản ứng. Và một phân tử như thế, hoá ra,"},{"t":717.53,"s":"thực sự tồn tại. Nó tên là ARN."},{"t":720.21,"s":"ARN là một họ hàng gần của ADN. Nó cũng có"},{"t":722.78,"s":"thể lưu giữ thông tin di truyền, giống như"},{"t":725.34,"s":"một bản thiết kế thu nhỏ. Nhưng nó còn làm"},{"t":727.91,"s":"được điều mà ADN không làm được. Nó có thể"},{"t":730.48,"s":"tự gập lại thành những hình dạng phức tạp,"},{"t":733.05,"s":"và ở những hình dạng ấy, nó hoạt động như"},{"t":735.61,"s":"một cỗ máy, thúc đẩy các phản ứng hoá học,"},{"t":738.18,"s":"y như protein. Nó vừa mang chữ, vừa biết"},{"t":740.75,"s":"đọc chữ. Vừa là cuốn sách, vừa là người"},{"t":743.31,"s":"thợ."},{"t":745.88,"s":"Bạn có thấy điều này giải quyết câu đố như"},{"t":748.53,"s":"thế nào không? Nếu phân tử đầu tiên là"},{"t":751.18,"s":"ARN, ta không cần con gà và quả trứng nữa."},{"t":753.84,"s":"Ta chỉ cần một thứ vừa là gà vừa là trứng."},{"t":756.49,"s":"Một phân tử duy nhất có thể mang thông tin"},{"t":759.14,"s":"về chính nó, và đồng thời tự thực hiện"},{"t":761.79,"s":"phản ứng để tạo ra một bản sao của chính"},{"t":764.45,"s":"mình. Các nhà khoa học gọi cái thời kỳ giả"},{"t":767.1,"s":"định ấy là thế giới ARN."},{"t":769.75,"s":"Hãy tưởng tượng khoảnh khắc ấy trong một"},{"t":772.38,"s":"buồng đá nhỏ dưới đáy biển. Một chuỗi ARN,"},{"t":775,"s":"tình cờ có đúng trình tự, bắt đầu làm cái"},{"t":777.63,"s":"điều chưa từng có trong lịch sử vật chất."},{"t":780.25,"s":"Nó dùng những viên gạch trôi nổi quanh"},{"t":782.88,"s":"mình để lắp ráp nên một bản sao của chính"},{"t":785.5,"s":"nó. Và rồi có hai. Hai chuỗi giống nhau, ở"},{"t":788.13,"s":"nơi vừa nãy chỉ có một."},{"t":790.75,"s":"Và đây là chỗ mọi thứ thay đổi mãi mãi. Vì"},{"t":793.31,"s":"một khi có thứ biết tự sao chép, một cánh"},{"t":795.87,"s":"cửa mở ra. Bản sao không phải lúc nào cũng"},{"t":798.43,"s":"hoàn hảo. Thỉnh thoảng có một lỗi nhỏ, một"},{"t":800.99,"s":"thay đổi. Đa số thay đổi là vô dụng. Nhưng"},{"t":803.55,"s":"thi thoảng, có một thay đổi khiến chuỗi"},{"t":806.11,"s":"ARN sao chép nhanh hơn, bền hơn, giỏi hơn"},{"t":808.67,"s":"những chuỗi xung quanh. Và chuỗi giỏi hơn"},{"t":811.23,"s":"ấy sẽ nhân lên nhiều hơn, lấn át phần còn"},{"t":813.79,"s":"lại."},{"t":816.35,"s":"Bạn có nhận ra ta vừa chạm tới cái gì"},{"t":819,"s":"không? Sao chép, có sai sót, kẻ giỏi hơn"},{"t":821.66,"s":"thắng. Đó chính xác là tiến hoá. Đó là"},{"t":824.31,"s":"chọn lọc tự nhiên, đang diễn ra không phải"},{"t":826.96,"s":"trên loài vật, mà trên những phân tử trần"},{"t":829.62,"s":"trụi, hàng tỷ năm trước khi có con vật đầu"},{"t":832.27,"s":"tiên. Ngay khoảnh khắc vật chất học được"},{"t":834.92,"s":"cách tự sao chép, nó cũng học được cách tự"},{"t":837.57,"s":"cải thiện. Và từ đó, không gì có thể ngăn"},{"t":840.23,"s":"nó tiến về phía trước nữa."},{"t":845.88,"s":"Nhưng một chuỗi ARN trần trụi trôi nổi"},{"t":848.35,"s":"trong biển vẫn còn rất mong manh. Nó dễ bị"},{"t":850.83,"s":"dòng nước cuốn đi, bị pha loãng, bị các"},{"t":853.3,"s":"phân tử khác phá hỏng. Nó cần một thứ mà"},{"t":855.78,"s":"mọi sự sống hôm nay đều có. Nó cần một bức"},{"t":858.25,"s":"tường. Một ranh giới để phân biệt cái bên"},{"t":860.73,"s":"trong với cái bên ngoài, để nói rằng đây"},{"t":863.2,"s":"là tôi, còn kia là phần còn lại của thế"},{"t":865.68,"s":"giới."},{"t":868.15,"s":"Và tự nhiên đã có sẵn một mẹo tuyệt vời"},{"t":870.66,"s":"cho việc này. Có một loại phân tử rất đặc"},{"t":873.17,"s":"biệt, gọi là lipid, thứ tạo nên chất béo"},{"t":875.68,"s":"và dầu. Đặc điểm kỳ lạ của chúng là một"},{"t":878.19,"s":"đầu thì ưa nước, còn đầu kia thì ghét"},{"t":880.71,"s":"nước, luôn muốn tránh xa nước. Khi bạn thả"},{"t":883.22,"s":"thật nhiều phân tử như thế vào nước, chúng"},{"t":885.73,"s":"làm một điều đáng kinh ngạc mà không cần"},{"t":888.24,"s":"ai chỉ bảo."},{"t":890.75,"s":"Chúng tự động xếp thành hàng, quay những"},{"t":893.4,"s":"cái đầu ghét nước vào nhau để trốn khỏi"},{"t":896.06,"s":"nước, và tạo thành một tấm màng mỏng. Rồi"},{"t":898.71,"s":"tấm màng ấy tự cong lại, khép kín thành"},{"t":901.36,"s":"một quả bóng nhỏ li ti, một cái túi rỗng"},{"t":904.01,"s":"có màng bao quanh. Bên trong túi là một"},{"t":906.67,"s":"khoảng nước riêng, tách biệt hẳn với đại"},{"t":909.32,"s":"dương bên ngoài. Không ai lắp ráp nó. Nó"},{"t":911.97,"s":"tự hình thành, chỉ vì đó là cách các phân"},{"t":914.63,"s":"tử ấy ổn định nhất trong nước."},{"t":917.28,"s":"Giờ hãy ghép hai điều lại. Một cái túi"},{"t":919.99,"s":"màng tự khép kín. Và bên trong nó, một"},{"t":922.7,"s":"chuỗi ARN biết tự sao chép. Đột nhiên, bạn"},{"t":925.41,"s":"có một thứ hoàn toàn mới. Một khoang nhỏ"},{"t":928.12,"s":"mang trong lòng nó thông tin của chính"},{"t":930.84,"s":"mình, được che chở bởi một bức tường, giữ"},{"t":933.55,"s":"nguyên liệu cô đặc bên trong, tách khỏi sự"},{"t":936.26,"s":"hỗn loạn bên ngoài. Đó là hình hài đầu"},{"t":938.97,"s":"tiên của một thứ ta có thể gọi là tế bào."},{"t":941.68,"s":"Và khi cái túi ấy lớn dần, khi ARN bên"},{"t":944.25,"s":"trong tự nhân đôi, tới một lúc cái túi trở"},{"t":946.83,"s":"nên quá lớn và tự vỡ ra làm hai, mỗi nửa"},{"t":949.4,"s":"mang theo một bản sao thông tin. Một tế"},{"t":951.98,"s":"bào mẹ vừa sinh ra hai tế bào con. Sự sống"},{"t":954.55,"s":"vừa học được cách không chỉ tự sao chép"},{"t":957.13,"s":"phân tử, mà tự sao chép cả cơ thể. Từ đây,"},{"t":959.7,"s":"nó thực sự sinh sôi."},{"t":962.28,"s":"Rồi theo thời gian, những tế bào nguyên"},{"t":964.91,"s":"thuỷ ấy trở nên tinh vi hơn. Chúng học"},{"t":967.53,"s":"cách phân công. ADN, bền vững và ổn định,"},{"t":970.16,"s":"tiếp quản việc lưu trữ thông tin lâu dài."},{"t":972.79,"s":"Protein, khéo léo và đa năng, tiếp quản"},{"t":975.41,"s":"việc thực thi. Còn ARN lui về làm kẻ trung"},{"t":978.04,"s":"gian truyền tin giữa hai bên. Cái bộ ba"},{"t":980.67,"s":"phân công lao động ấy, sinh ra từ thuở"},{"t":983.3,"s":"hồng hoang, vẫn đang vận hành trong từng"},{"t":985.92,"s":"tế bào của bạn ngay lúc này."},{"t":988.55,"s":"Và đây là một sự thật đẹp đến mức tôi muốn"},{"t":991.25,"s":"bạn dừng lại thật lâu để cảm nhận. Nếu bạn"},{"t":993.95,"s":"lần ngược cây sự sống, từ con người, tới"},{"t":996.65,"s":"muôn thú, tới cây cỏ, tới nấm, tới vi"},{"t":999.35,"s":"khuẩn nhỏ nhất, tất cả những nhánh ấy đều"},{"t":1002.05,"s":"chụm dần lại, hội tụ về một điểm duy nhất"},{"t":1004.75,"s":"ở tận gốc. Một tế bào duy nhất, tổ tiên"},{"t":1007.45,"s":"chung của tất cả những gì đang sống. Người"},{"t":1010.15,"s":"ta gọi nó bằng cái tên LUCA, tổ tiên chung"},{"t":1012.85,"s":"cuối cùng của toàn bộ sự sống."},{"t":1015.55,"s":"LUCA không phải sinh vật đầu tiên. Trước"},{"t":1018.12,"s":"nó hẳn còn nhiều dạng sống sơ khai hơn đã"},{"t":1020.7,"s":"đến rồi đi. Nhưng LUCA là cái nhánh đã"},{"t":1023.27,"s":"sống sót, cái nhánh mà từ đó mọi thứ còn"},{"t":1025.84,"s":"sống hôm nay sinh ra. Nghĩa là bạn, con"},{"t":1028.41,"s":"mèo ngoài sân, cái cây ngoài cửa sổ, và vi"},{"t":1030.99,"s":"khuẩn trong ly nước, tất cả chúng ta là họ"},{"t":1033.56,"s":"hàng. Tất cả đều là con cháu của cùng một"},{"t":1036.13,"s":"tế bào bé nhỏ, đã sống, ở đâu đó, gần bốn"},{"t":1038.71,"s":"tỷ năm trước."},{"t":1044.28,"s":"Nhưng tôi phải kể cho bạn nghe một khả"},{"t":1046.87,"s":"năng khác. Bởi suốt câu chuyện tới giờ, ta"},{"t":1049.46,"s":"đã giả định rằng mọi thứ xảy ra ngay trên"},{"t":1052.05,"s":"Trái Đất, trong nồi súp của chính hành"},{"t":1054.64,"s":"tinh này. Nhưng có một giả thuyết cho rằng"},{"t":1057.24,"s":"những viên gạch đầu tiên, có lẽ, không"},{"t":1059.83,"s":"sinh ra ở đây. Có lẽ chúng đến từ bên"},{"t":1062.42,"s":"ngoài, gieo xuống từ vũ trụ."},{"t":1065.01,"s":"Nghe có vẻ như chuyện viễn tưởng, nhưng nó"},{"t":1067.6,"s":"dựa trên một điều rất thực. Khi các nhà"},{"t":1070.2,"s":"khoa học phân tích những thiên thạch rơi"},{"t":1072.79,"s":"xuống Trái Đất, những mảnh đá lang thang"},{"t":1075.38,"s":"từ thuở hệ mặt trời còn sơ khai, họ tìm"},{"t":1077.97,"s":"thấy trong đó những phân tử hữu cơ. Và"},{"t":1080.57,"s":"không phải phân tử tầm thường. Họ tìm thấy"},{"t":1083.16,"s":"axit amin, đúng những viên gạch xây"},{"t":1085.75,"s":"protein mà ta đã nói tới. Có sẵn, nằm"},{"t":1088.35,"s":"trong đá, đến từ không gian."},{"t":1090.94,"s":"Điều đó có nghĩa là hoá học của sự sống"},{"t":1093.47,"s":"không phải chuyện riêng của Trái Đất. Nó"},{"t":1096.01,"s":"đang diễn ra khắp nơi trong vũ trụ. Trong"},{"t":1098.54,"s":"những đám mây bụi giữa các vì sao, trong"},{"t":1101.07,"s":"nhân băng giá của những sao chổi, trong"},{"t":1103.61,"s":"lòng những tiểu hành tinh, các phân tử hữu"},{"t":1106.14,"s":"cơ vẫn đang tự hình thành, âm thầm, ở khắp"},{"t":1108.67,"s":"thiên hà. Vũ trụ, hoá ra, là một cỗ máy"},{"t":1111.2,"s":"khổng lồ chuyên chế tạo các viên gạch của"},{"t":1113.74,"s":"sự sống."},{"t":1116.27,"s":"Và Trái Đất sơ khai, như ta đã thấy, liên"},{"t":1118.74,"s":"tục bị dội bom bởi thiên thạch và sao"},{"t":1121.22,"s":"chổi. Mỗi mảnh rơi xuống có thể mang theo"},{"t":1123.69,"s":"một tải trọng phân tử hữu cơ, trút vào đại"},{"t":1126.17,"s":"dương non trẻ. Người ta gọi ý tưởng này là"},{"t":1128.64,"s":"panspermia, hạt giống gieo khắp nơi. Ý"},{"t":1131.12,"s":"rằng mầm mống hoá học của sự sống, có thể"},{"t":1133.59,"s":"đã được gieo xuống hành tinh này từ bầu"},{"t":1136.07,"s":"trời."},{"t":1138.54,"s":"Có một phiên bản táo bạo hơn của ý tưởng"},{"t":1141.21,"s":"này, cho rằng không chỉ các viên gạch, mà"},{"t":1143.87,"s":"cả những vi sinh vật sống hoàn chỉnh, cũng"},{"t":1146.54,"s":"có thể du hành giữa các hành tinh, ẩn"},{"t":1149.21,"s":"trong đá, chịu được cái lạnh và bức xạ của"},{"t":1151.87,"s":"không gian, rồi rơi xuống và bén rễ ở một"},{"t":1154.54,"s":"thế giới mới. Ta chưa có bằng chứng cho"},{"t":1157.2,"s":"phiên bản mạnh mẽ ấy. Nhưng ngay cả phiên"},{"t":1159.87,"s":"bản khiêm tốn, rằng vũ trụ gieo xuống ta"},{"t":1162.54,"s":"những viên gạch, cũng đã đủ làm thay đổi"},{"t":1165.2,"s":"cách ta nhìn về chính mình."},{"t":1167.87,"s":"Bởi nếu điều đó đúng, thì câu chuyện nguồn"},{"t":1170.58,"s":"gốc của ta không kết thúc ở đại dương Trái"},{"t":1173.29,"s":"Đất. Nó vươn ra tận những vì sao. Những"},{"t":1176,"s":"nguyên tử làm nên bạn được rèn trong lòng"},{"t":1178.71,"s":"các ngôi sao đã chết từ lâu. Và có lẽ,"},{"t":1181.43,"s":"những phân tử đầu tiên khởi động sự sống"},{"t":1184.14,"s":"trong bạn, đã từng lang thang qua khoảng"},{"t":1186.85,"s":"không giữa các thế giới, trước khi tìm"},{"t":1189.56,"s":"thấy một hành tinh ấm áp để đáp xuống."},{"t":1192.27,"s":"Dù sự sống nhen lên ngay trong biển của"},{"t":1194.83,"s":"ta, hay dưới đáy những miệng phun tối tăm,"},{"t":1197.38,"s":"hay được gieo mầm từ một sao chổi lạc, tất"},{"t":1199.94,"s":"cả những con đường ấy đều dẫn về cùng một"},{"t":1202.49,"s":"kết cục kỳ diệu. Ở một nơi nào đó, vào một"},{"t":1205.05,"s":"thời khắc nào đó, ranh giới giữa vật chất"},{"t":1207.6,"s":"chết và vật chất sống đã bị vượt qua. Và"},{"t":1210.16,"s":"một khi đã vượt qua, nó không bao giờ quay"},{"t":1212.71,"s":"lại nữa."},{"t":1218.27,"s":"Vậy nên hãy quay lại, một lần cuối, với"},{"t":1220.9,"s":"câu hỏi ta bắt đầu. Ranh giới giữa hòn đá"},{"t":1223.53,"s":"và bạn nằm ở đâu? Giờ đây ta đã thấy con"},{"t":1226.16,"s":"đường, dẫu vẫn còn nhiều khoảng mờ. Từ một"},{"t":1228.79,"s":"hành tinh nóng chảy, tới một đại dương ấm"},{"t":1231.42,"s":"đầy những viên gạch. Từ tia lửa và sấm"},{"t":1234.05,"s":"sét, tới những buồng đá dưới đáy biển được"},{"t":1236.68,"s":"nuôi bằng năng lượng. Từ một phân tử biết"},{"t":1239.31,"s":"tự sao chép, tới một cái túi màng biết giữ"},{"t":1241.94,"s":"mình. Cho tới một tế bào đầu tiên biết"},{"t":1244.57,"s":"sinh ra tế bào khác."},{"t":1247.2,"s":"Không có một khoảnh khắc duy nhất nào mà"},{"t":1249.87,"s":"ta có thể chỉ vào và nói, đây, chính lúc"},{"t":1252.55,"s":"này vật chất bỗng sống dậy. Ranh giới ấy"},{"t":1255.22,"s":"không phải một lằn kẻ sắc nét. Nó là một"},{"t":1257.9,"s":"vùng chuyển tiếp mờ ảo, nơi hoá học dần"},{"t":1260.57,"s":"dần, từng bước một, trở nên phức tạp hơn,"},{"t":1263.25,"s":"tự duy trì hơn, tự sao chép hơn, cho tới"},{"t":1265.92,"s":"khi tới một lúc, ta không còn gọi nó là"},{"t":1268.6,"s":"hoá học nữa. Ta gọi nó là sự sống."},{"t":1271.27,"s":"Và tôi phải thành thật với bạn tới cùng."},{"t":1273.97,"s":"Ta vẫn chưa dựng lại được trọn vẹn khoảnh"},{"t":1276.66,"s":"khắc ấy. Trong các phòng thí nghiệm hôm"},{"t":1279.36,"s":"nay, con người đã làm được những điều phi"},{"t":1282.06,"s":"thường. Ta tạo ra được axit amin. Ta khiến"},{"t":1284.76,"s":"các viên gạch tự nối thành chuỗi. Ta chế"},{"t":1287.45,"s":"được những túi màng tự khép, những chuỗi"},{"t":1290.15,"s":"ARN tự sao chép một phần. Nhưng cái bước"},{"t":1292.85,"s":"cuối cùng, thổi tất cả những mảnh ấy thành"},{"t":1295.55,"s":"một thứ sống thực sự, tự đứng dậy và tự"},{"t":1298.24,"s":"tiến hoá, ta vẫn chưa chạm tới."},{"t":1300.94,"s":"Nhưng cái khoảng trống ấy, cái điều ta"},{"t":1303.61,"s":"chưa làm được, không làm tôi nản lòng. Nó"},{"t":1306.29,"s":"làm tôi kinh ngạc. Bởi nếu ngay cả với tất"},{"t":1308.96,"s":"cả trí tuệ, tất cả phòng thí nghiệm tối"},{"t":1311.63,"s":"tân của loài người, ta vẫn còn chật vật để"},{"t":1314.31,"s":"tái tạo nó, thì hãy nghĩ về điều đã thực"},{"t":1316.98,"s":"sự xảy ra. Không có nhà khoa học nào."},{"t":1319.65,"s":"Không có kế hoạch nào. Chỉ có một hành"},{"t":1322.32,"s":"tinh trẻ, một ít hoá học, và thời gian. Và"},{"t":1325,"s":"bằng cách nào đó, nó đã làm được."},{"t":1327.67,"s":"Điều làm tôi trở đi trở lại với câu chuyện"},{"t":1330.27,"s":"này không phải là chúng ta còn chưa biết"},{"t":1332.87,"s":"gì. Mà là việc nó đã xảy ra, dù chỉ một"},{"t":1335.47,"s":"lần. Trong toàn bộ vũ trụ mênh mông, lạnh"},{"t":1338.07,"s":"lẽo, phần lớn là đá và lửa và khoảng không"},{"t":1340.67,"s":"trống rỗng, đã có ít nhất một nơi, ít nhất"},{"t":1343.27,"s":"một khoảnh khắc, khi vật chất tự sắp xếp"},{"t":1345.87,"s":"lại thành thứ có thể nhìn ngắm chính vũ"},{"t":1348.47,"s":"trụ đã sinh ra nó."},{"t":1351.07,"s":"Và cái khoảnh khắc ấy chưa bao giờ dừng"},{"t":1353.74,"s":"lại. Cái tế bào đầu tiên ấy đã sao chép,"},{"t":1356.4,"s":"rồi sao chép nữa, không ngừng nghỉ, qua"},{"t":1359.07,"s":"gần bốn tỷ năm, không đứt đoạn một lần"},{"t":1361.73,"s":"nào. Một sợi chỉ sống mảnh mai nhưng chưa"},{"t":1364.4,"s":"bao giờ đứt, nối thẳng từ cái túi màng đầu"},{"t":1367.07,"s":"tiên trong biển sơ khai, tới trái tim đang"},{"t":1369.73,"s":"đập trong lồng ngực bạn lúc này."},{"t":1372.4,"s":"Nghĩa là bạn không chỉ đang sống. Bạn là"},{"t":1374.87,"s":"mắt xích mới nhất của một chuỗi chưa bao"},{"t":1377.35,"s":"giờ gián đoạn, kéo dài suốt gần bốn tỷ"},{"t":1379.82,"s":"năm. Mỗi tổ tiên của bạn, không sót một"},{"t":1382.29,"s":"ai, đều đã sống đủ lâu để truyền sự sống"},{"t":1384.77,"s":"đi tiếp. Cái ranh giới giữa vật chất chết"},{"t":1387.24,"s":"và vật chất sống, được vượt qua chỉ một"},{"t":1389.71,"s":"lần, ở đâu đó thuở hồng hoang, và bạn là"},{"t":1392.18,"s":"bằng chứng sống động rằng nó đã được vượt"},{"t":1394.66,"s":"qua."},{"t":1397.13,"s":"Vậy nên lần tới, khi bạn cầm một nắm đất"},{"t":1399.81,"s":"lên, hãy nhớ rằng nó và bạn được làm từ"},{"t":1402.5,"s":"cùng một thứ. Sự khác biệt duy nhất là bạn"},{"t":1405.18,"s":"được sắp xếp theo một cách đặc biệt đến"},{"t":1407.87,"s":"mức gần như không thể, một cách mà một"},{"t":1410.55,"s":"hành tinh trẻ đã mất hàng triệu năm để dò"},{"t":1413.24,"s":"tìm ra. Bạn là vật chất đã học được cách"},{"t":1415.92,"s":"tự sống. Bạn là bụi sao đã học được cách"},{"t":1418.61,"s":"đặt câu hỏi. Và câu hỏi ấy, câu hỏi về nơi"},{"t":1421.29,"s":"tất cả bắt đầu, chính là cách đẹp nhất mà"},{"t":1423.98,"s":"vũ trụ tìm để tự hiểu lấy mình."}];
+function subAt(t){let idx=0;for(let i=0;i<CUES.length;i++){if(CUES[i].t<=t+1e-6)idx=i;else break;}return CUES[idx]?CUES[idx].s:"";}
+
+/* ---------------- camera helper ---------------- */
+function cam(px,py,pz,lx,ly,lz){camera.position.set(px,py,pz);camera.lookAt(lx||0,ly||0,lz||0);}
+function orbit(d,elev,speed,t,lookY){const a=t*speed;camera.position.set(Math.sin(a)*d,elev,Math.cos(a)*d);camera.lookAt(0,lookY||0,0);}
+
+/* ============================================================
+   renderAtTime(t) — hàm thuần, mọi chuyển động là hàm của t
+   (KHÔNG remap: hình dựng thẳng trên timeline giọng)
+   ============================================================ */
+function renderAtTime(tReal){
+  const t=clamp(tReal,0,TOTAL);
+  /* scene index */
+  let A=1;for(let i=1;i<=8;i++){if(t>=SB[i-1])A=i;}
+  /* shared uniforms */
+  stars.rotation.y=t*0.0006;
+  planetMat.uniforms.uT.value=t; smokeMat.uniforms.uT.value=t; meteorMat.uniforms.uT.value=t;
+  cellMat.uniforms.uT.value=t; cell2.material.uniforms.uT.value=t; tailMat.uniforms.uT.value=t;
+  lensPass.uniforms.uT.value=t;
+  /* reset visibility */
+  grpBoundary.visible=false;grpEarth.visible=false;grpSoup.visible=false;grpVent.visible=false;
+  grpRNA.visible=false;grpCell.visible=false;grpComet.visible=false;
+  stars.visible=true;starOp.value=1;camera.fov=50;camera.up.set(0,1,0);
+  renderer.setClearColor(0x02040a,1);
+
+  if(A===1){
+    renderer.setClearColor(0x03040c,1);starOp.value=0.55;
+    grpBoundary.visible=true;
+    const br=0.85+0.35*Math.sin(t*1.6);lifeCore.material.opacity=br;lifeCore.scale.setScalar(110+18*Math.sin(t*1.6));
+    lifeOrbit.rotation.y=t*0.5;lifeOrbit.rotation.x=t*0.3;
+    dustClump.rotation.y=t*0.05;
+    const dr=lerp(430,360,ss(0,121.93,t));
+    cam(Math.sin(t*0.03)*40,24,dr,0,0,0);
+  }else if(A===2){
+    renderer.setClearColor(0x0a0304,1);starOp.value=0.4;
+    grpEarth.visible=true;
+    const cool=ss(196,265,t);/* nguội & tạo đại dương từ ~C11 */
+    planetMat.uniforms.uCool.value=cool;atmoMat.uniforms.uCool.value=cool;
+    planet.rotation.y=t*0.06;
+    meteorMat.uniforms.uOp.value=1-ss(196,232,t)*0.92;/* dội bom thưa dần khi nguội */
+    orbit(360,lerp(38,60,ss(121.93,265,t)),0.02,t,0);
+  }else if(A===3){
+    renderer.setClearColor(0x0a0603,1);starOp.value=0;
+    grpSoup.visible=true;
+    for(let i=0;i<soupMols.length;i++){const s=soupMols[i];const appear=ss(266+i*4,290+i*4,t);
+      s.mesh.visible=appear>0.02;s.mesh.scale.setScalar((4.2)*(0.4+0.6*appear));
+      s.mesh.position.set(s.base.x+Math.sin(t*s.ap+s.ph)*16,s.base.y+Math.cos(t*s.ap*0.8+s.ph)*12,s.base.z+Math.sin(t*s.ap*0.6)*14);
+      s.mesh.rotation.y=t*s.sp;s.mesh.rotation.x=t*s.sp*0.6;}
+    orbit(300,20,0.012,t,0);
+  }else if(A===4){
+    renderer.setClearColor(0x01060a,1);starOp.value=0;
+    grpVent.visible=true;
+    smokeMat.uniforms.uOp.value=win(t,449.48,648.68,3,4)*1.35;
+    mineralGlow.material.uniforms.uOp.value=0.95+0.25*Math.sin(t*2);
+    const a=(t-449.48)*0.02;
+    camera.position.set(Math.sin(a)*220,52+34*Math.sin((t-449.48)*0.03),Math.cos(a)*220);
+    camera.lookAt(0,78,0);
+  }else if(A===5){
+    renderer.setClearColor(0x03050e,1);starOp.value=0;
+    grpRNA.visible=true;
+    rnaDust.rotation.y=t*0.02;
+    const rep=ss(770,830,t);/* tự sao chép: tách đôi */
+    rnaA.rotation.y=t*0.28;rnaB.rotation.y=t*0.28;
+    rnaA.position.x=-lerp(0,42,rep);rnaB.position.x=lerp(0,42,rep);
+    rnaB.visible=rep>0.02;rnaB.userData.pts.material.uniforms.uOp.value=rep;rnaB.userData.lines.material.opacity=0.75*rep;
+    orbit(150,10,0.05,t,0);
+  }else if(A===6){
+    renderer.setClearColor(0x03060c,1);starOp.value=0;
+    grpCell.visible=true;
+    const asm=ss(869,905,t);lipidMat.uniforms.uA.value=asm;lipidMat.uniforms.uOp.value=win(t,869,1044,3,3)*(1-ss(940,975,t)*0.6);
+    cellMat.uniforms.uOp.value=ss(895,925,t);
+    innerRNA.rotation.y=t*0.4;cellMols.rotation.y=-t*0.2;
+    cell1.rotation.y=t*0.15;
+    const div=ss(945,975,t);/* phân đôi */
+    cell1.position.x=-lerp(0,40,div);cell2.position.x=lerp(0,40,div);
+    cell2.material.uniforms.uOp.value=div*ss(895,925,t);cell2.rotation.y=-t*0.15;
+    orbit(lerp(210,265,div),30,0.025,t,0);
+  }else if(A===7){
+    renderer.setClearColor(0x02030c,1);starOp.value=1;
+    grpComet.visible=true;
+    /* sao chổi bay từ phải-trên xuống trái-dưới, gieo xuống Trái Đất nhỏ */
+    const jr=ss(1044.28,1210,t);
+    cometNode.position.set(lerp(230,-200,jr),lerp(170,-110,jr),lerp(20,-30,jr));
+    cometNode.rotation.z=0.3;cometNode.rotation.y=t*0.2;nucleus.rotation.y=t*0.5;nucleus.rotation.x=t*0.3;
+    coma.material.opacity=0.85;cometMols.rotation.y=t*0.4;
+    const seed=ss(1195,1214,t);seedEarth.scale.setScalar(1+seed*0.15);
+    seedAtmo.material.uniforms.uCool.value=1;
+    seedEarth.rotation.y=t*0.1;
+    cam(0,10,470,0,0,0);
+  }else if(A===8){
+    renderer.setClearColor(0x03040c,1);starOp.value=0.5;
+    /* 3D chỉ là sao nền + đốm gốc; cây vẽ ở 2D */
+    grpBoundary.visible=true;dustClump.visible=false;
+    lifeCore.material.opacity=0.0;lifeOrbit.material.uniforms.uOp.value=0;
+    cam(0,0,600,0,0,0);
+  }
+
+  camera.updateProjectionMatrix();camera.updateMatrixWorld();
+  composer.render();
+
+  /* ---- 2D overlay ---- */
+  clearFx();
+  for(let i=1;i<=8;i++){const o=sceneOp(i,t);if(o>0.004)FX[i](t,o);}
+  const fb=(t<1.4?(1-t/1.4):0)+(t>TOTAL-3?clamp((t-(TOTAL-3))/2.8,0,1):0);
+  if(fb>0){X.fillStyle="rgba(1,2,8,"+clamp(fb,0,1)+")";X.fillRect(0,0,W,H);}
+
+  /* ---- tiêu đề chương + phụ đề ---- */
+  const chapO=win(t,SB[A-1],SB[A-1]+6.5,0.8,1.5);
+  chapEl.textContent=CHAP[A-1];chapEl.style.opacity=(chapO*clamp(1-fb,0,1)).toFixed(3);
+  subEl.textContent=subAt(t);subEl.style.opacity=clamp(1-fb,0,1).toFixed(3);
+
+  /* reset các thứ đã tắt tạm cho scene 8 */
+  if(A!==8){dustClump.visible=true;lifeOrbit.material.uniforms.uOp.value=1;}
+}
+
+/* ---------------- timeline TẤT ĐỊNH ---------------- */
+window.__timelines=window.__timelines||{};
+const tl=gsap.timeline({paused:true});
+const clk={t:0};
+tl.to(clk,{t:TOTAL,duration:TOTAL,ease:"none",onUpdate:()=>renderAtTime(clk.t)},0);
+window.__timelines["tap-05-su-song"]=tl;
+renderAtTime(0);
+</script>
+</body>
+</html>

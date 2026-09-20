@@ -1,0 +1,864 @@
+{
+  "slug": "nuoc-co-hon-mat-troi",
+  "fps": 30,
+  "totalDuration": 1030.31,
+  "dryRun": true,
+  "narration": null,
+  "voice": {
+    "provider": "aimax-minimax",
+    "voice_id": "uv_5cee29af",
+    "voice_name": "uv_5cee29af",
+    "model": "speech-2.8-hd",
+    "speed": 0.96
+  },
+  "cues": [
+    {
+      "id": "C01",
+      "chapter": "CHƯƠNG 1 — THỨ TÔI CẦM TRONG TAY",
+      "text": "Tôi vừa rót cho mình một cốc nước.",
+      "file": null,
+      "start": 0,
+      "duration": 2.27
+    },
+    {
+      "id": "C02",
+      "chapter": null,
+      "text": "Không có gì đặc biệt trong hành động đó. Tôi làm nó mỗi ngày, nhiều lần, mà gần như không nghĩ.",
+      "file": null,
+      "start": 2.27,
+      "duration": 6.33
+    },
+    {
+      "id": "C03",
+      "chapter": null,
+      "text": "Nhưng tối nay tôi giữ cốc nước trong tay lâu hơn bình thường. Tôi cảm thấy sức nặng của nó. Tôi thấy mặt nước run lên theo nhịp tim của chính mình.",
+      "file": null,
+      "start": 10.1,
+      "duration": 9.8
+    },
+    {
+      "id": "C04",
+      "chapter": null,
+      "text": "Và tôi nghĩ về một câu hỏi mà tôi chưa bao giờ hỏi. Cái này đến từ đâu?",
+      "file": null,
+      "start": 19.9,
+      "duration": 4.73
+    },
+    {
+      "id": "C05",
+      "chapter": null,
+      "text": "Câu trả lời dễ thì ai cũng biết. Từ vòi. Trước đó là nhà máy. Trước đó là dòng sông. Trước đó là một đám mây, một cơn mưa, một đại dương bốc hơi dưới nắng.",
+      "file": null,
+      "start": 24.63,
+      "duration": 10.33
+    },
+    {
+      "id": "C06",
+      "chapter": null,
+      "text": "Nhưng tôi không hỏi nó vừa ở đâu. Tôi hỏi nó được làm ra ở đâu. Cái khoảnh khắc mà hai nguyên tử hydro gắn vào một nguyên tử oxy và trở thành nước. Khoảnh khắc đó xảy ra ở đâu, và khi nào?",
+      "file": null,
+      "start": 34.96,
+      "duration": 12.53
+    },
+    {
+      "id": "C07",
+      "chapter": null,
+      "text": "Trái Đất không làm ra nước. Trái Đất chưa bao giờ làm ra nước.",
+      "file": null,
+      "start": 49.49,
+      "duration": 4.13
+    },
+    {
+      "id": "C08",
+      "chapter": null,
+      "text": "Không có nhà máy nào dưới lòng đất chế tạo phân tử nước. Không có phản ứng nào trong lòng đại dương sinh ra chúng. Đại dương không tự lớn lên. Nó chỉ chảy vòng quanh, bốc hơi rồi rơi xuống, bốc hơi rồi rơi xuống, qua bốn tỉ năm, với gần như cùng một lượng phân tử.",
+      "file": null,
+      "start": 53.62,
+      "duration": 17.6
+    },
+    {
+      "id": "C09",
+      "chapter": null,
+      "text": "Nước tới đây khi đã thành hình. Nó được lắp ráp ở một nơi khác, rất xa, rất lâu trước đó, rồi được chở tới.",
+      "file": null,
+      "start": 71.22,
+      "duration": 7.13
+    },
+    {
+      "id": "C10",
+      "chapter": null,
+      "text": "Và khi tôi nói rất lâu trước đó, tôi không nói bốn tỉ năm. Tôi nói xa hơn thế.",
+      "file": null,
+      "start": 78.35,
+      "duration": 5.2
+    },
+    {
+      "id": "C11",
+      "chapter": null,
+      "text": "Một phần nước trong cốc này già hơn Mặt Trời.",
+      "file": null,
+      "start": 83.55,
+      "duration": 3
+    },
+    {
+      "id": "C12",
+      "chapter": null,
+      "text": "Tôi muốn bạn nghe kỹ câu đó, vì rất dễ nghe nhầm. Tôi không nói các nguyên tử già hơn Mặt Trời. Chuyện đó thì ai cũng đoán được, nguyên tử vốn có từ lâu lắm rồi.",
+      "file": null,
+      "start": 89.05,
+      "duration": 10.73
+    },
+    {
+      "id": "C13",
+      "chapter": null,
+      "text": "Tôi nói chính phân tử. Chính cái liên kết giữ hai nguyên tử hydro vào một nguyên tử oxy. Cái cấu trúc hình chữ V bé xíu đó. Nó được ráp lại trước khi Mặt Trời bật sáng, và nó chưa bao giờ bị tháo ra kể từ đó.",
+      "file": null,
+      "start": 99.78,
+      "duration": 13.87
+    },
+    {
+      "id": "C14",
+      "chapter": null,
+      "text": "Nó ra đời trước ngôi sao đang nuôi sống tôi. Nó ra đời trước hành tinh đang đỡ dưới chân tôi. Và tối nay nó đi qua cổ họng tôi mà không phát ra một tiếng động nào.",
+      "file": null,
+      "start": 113.65,
+      "duration": 10.87
+    },
+    {
+      "id": "C15",
+      "chapter": null,
+      "text": "Tôi muốn kể cho bạn nghe nó được làm ra ở đâu. Và làm sao con người biết được điều đó, khi không ai từng ở đó để xem.",
+      "file": null,
+      "start": 124.52,
+      "duration": 7.8
+    },
+    {
+      "id": "C16",
+      "chapter": "CHƯƠNG 2 — CÁI XƯỞNG LẠNH",
+      "text": "Tôi muốn đưa bạn tới nơi làm ra nước. Nhưng tôi phải báo trước. Nó không giống bất cứ thứ gì bạn hình dung khi nghe hai chữ vũ trụ.",
+      "file": null,
+      "start": 134.32,
+      "duration": 8.73
+    },
+    {
+      "id": "C17",
+      "chapter": null,
+      "text": "Không có ngôi sao nào ở đây. Không có ánh sáng, không có màu sắc, không có hơi ấm. Tôi đang ở giữa một đám mây tối nằm lơ lửng giữa các vì sao. Trong ngành thiên văn người ta gọi nó là đám mây phân tử.",
+      "file": null,
+      "start": 143.05,
+      "duration": 13.4
+    },
+    {
+      "id": "C18",
+      "chapter": null,
+      "text": "Từ xa nhìn lại, nó chỉ là một vết đen trên nền trời đầy sao. Một mảng mà ánh sáng không đi qua được. Nhìn từ Trái Đất, nó trông như có ai lấy mực bôi lên một góc dải Ngân Hà.",
+      "file": null,
+      "start": 156.45,
+      "duration": 11.6
+    },
+    {
+      "id": "C19",
+      "chapter": null,
+      "text": "Ở đây lạnh. Lạnh hơn mọi thứ tôi từng chạm vào.",
+      "file": null,
+      "start": 168.05,
+      "duration": 3.13
+    },
+    {
+      "id": "C20",
+      "chapter": null,
+      "text": "Khoảng mười độ trên không độ tuyệt đối. Nếu bạn cần một con số dễ hình dung, đó là âm hai trăm sáu mươi ba độ C. Lạnh hơn bề mặt Diêm Vương Tinh. Lạnh gần tới cái giới hạn mà tự nhiên cho phép.",
+      "file": null,
+      "start": 171.18,
+      "duration": 12.87
+    },
+    {
+      "id": "C21",
+      "chapter": null,
+      "text": "Và ở đây trống rỗng tới mức buồn cười. Mỗi centimet khối chỗ này chứa vài chục nghìn hạt. Nghe thì nhiều. Nhưng một centimet khối không khí trong phòng tôi chứa nhiều gấp mười tỉ tỉ lần.",
+      "file": null,
+      "start": 184.05,
+      "duration": 12.4
+    },
+    {
+      "id": "C22",
+      "chapter": null,
+      "text": "Phòng thí nghiệm tốt nhất trên Trái Đất, với những máy bơm chân không đắt nhất từng chế tạo, vẫn không hút ra nổi một khoảng trống rỗng như chỗ này.",
+      "file": null,
+      "start": 196.45,
+      "duration": 9.87
+    },
+    {
+      "id": "C23",
+      "chapter": null,
+      "text": "Vậy mà đây chính là nơi nước ra đời. Trong cái lạnh đó. Trong cái trống rỗng đó. Trong bóng tối hoàn toàn.",
+      "file": null,
+      "start": 207.82,
+      "duration": 7.07
+    },
+    {
+      "id": "C24",
+      "chapter": null,
+      "text": "Câu hỏi đặt ra ngay lập tức. Làm sao hai nguyên tử gặp được nhau ở một nơi mà chúng gần như không bao giờ va vào nhau?",
+      "file": null,
+      "start": 214.89,
+      "duration": 7.87
+    },
+    {
+      "id": "C25",
+      "chapter": null,
+      "text": "Trong không gian trống như thế, một nguyên tử hydro có thể trôi hàng trăm năm trước khi đụng phải một nguyên tử khác. Và ngay cả khi đụng, chúng thường bật ra. Để dính vào nhau, hai nguyên tử phải nhả bớt năng lượng đi đâu đó. Mà giữa chân không thì chẳng có chỗ nào để nhả.",
+      "file": null,
+      "start": 222.76,
+      "duration": 18.27
+    },
+    {
+      "id": "C26",
+      "chapter": null,
+      "text": "Hoá học kiểu chúng ta biết cần một cái bàn. Cần một môi trường đông đúc, nơi các phân tử chen chúc và va đập liên tục. Ở đây không có gì cả.",
+      "file": null,
+      "start": 241.03,
+      "duration": 9.33
+    },
+    {
+      "id": "C27",
+      "chapter": null,
+      "text": "Trừ một thứ. Bụi.",
+      "file": null,
+      "start": 251.86,
+      "duration": 1.13
+    },
+    {
+      "id": "C28",
+      "chapter": null,
+      "text": "Rải rác trong đám mây là những hạt rắn tí hon. Lõi của chúng là silicat hoặc cacbon, thứ tàn dư mà những ngôi sao chết trước đó đã thổi ra. Mỗi hạt nhỏ cỡ một phần mười micromet. Nhỏ hơn hạt khói thuốc lá. Nhỏ tới mức một triệu hạt gộp lại vẫn không đủ để bạn nhìn thấy bằng mắt.",
+      "file": null,
+      "start": 252.99,
+      "duration": 18.6
+    },
+    {
+      "id": "C29",
+      "chapter": null,
+      "text": "Nhưng với một nguyên tử, hạt bụi đó là cả một lục địa.",
+      "file": null,
+      "start": 271.59,
+      "duration": 3.6
+    },
+    {
+      "id": "C30",
+      "chapter": null,
+      "text": "Và đây là chuyện xảy ra. Một nguyên tử oxy trôi qua, chạm vào bề mặt lạnh của hạt bụi, và dính lại. Ở mười độ trên không tuyệt đối, nó không có đủ năng lượng để bật ra nữa. Nó nằm đó. Bị bắt.",
+      "file": null,
+      "start": 275.19,
+      "duration": 12.73
+    },
+    {
+      "id": "C31",
+      "chapter": null,
+      "text": "Rồi một nguyên tử hydro trôi tới, và cũng dính. Nhưng hydro nhẹ, nó không nằm yên. Nó trườn trên bề mặt hạt bụi, đi lang thang từ chỗ lồi này sang chỗ lõm kia, như một con kiến bò quanh một hòn đá.",
+      "file": null,
+      "start": 287.92,
+      "duration": 13.13
+    },
+    {
+      "id": "C32",
+      "chapter": null,
+      "text": "Và sớm muộn gì con kiến đó cũng bò tới chỗ nguyên tử oxy đang nằm.",
+      "file": null,
+      "start": 301.05,
+      "duration": 4.4
+    },
+    {
+      "id": "C33",
+      "chapter": null,
+      "text": "Chúng gắn vào nhau. Phần năng lượng dư thừa được hạt bụi hấp thụ và tản đi. Hạt bụi chính là cái bàn. Nó là nơi phản ứng đứng, và là nơi đổ nhiệt.",
+      "file": null,
+      "start": 305.45,
+      "duration": 9.73
+    },
+    {
+      "id": "C34",
+      "chapter": null,
+      "text": "Thêm một nguyên tử hydro nữa bò tới. Gắn tiếp. Và bây giờ, trên bề mặt một hạt bụi giữa hư không, có một phân tử nước.",
+      "file": null,
+      "start": 315.18,
+      "duration": 7.87
+    },
+    {
+      "id": "C35",
+      "chapter": null,
+      "text": "Chuyện đó lặp lại. Trong hàng triệu năm, lặp đi lặp lại trên từng hạt bụi trong đám mây. Mỗi hạt dần dần bọc trong một lớp băng. Một lớp áo dày vài chục, có khi vài trăm phân tử.",
+      "file": null,
+      "start": 325.05,
+      "duration": 11.87
+    },
+    {
+      "id": "C36",
+      "chapter": null,
+      "text": "Không có lửa. Không có tia chớp. Không có ngôi sao nào thắp sáng cảnh này. Chỉ có bóng tối, cái lạnh, và sự kiên nhẫn.",
+      "file": null,
+      "start": 336.92,
+      "duration": 7.87
+    },
+    {
+      "id": "C37",
+      "chapter": null,
+      "text": "Tôi thấy có gì đó rất lạ ở chuyện này. Chúng ta quen nghĩ vũ trụ tạo ra mọi thứ trong lửa. Trong lò hạt nhân của các ngôi sao, trong vụ nổ siêu tân tinh, trong nhiệt độ hàng tỉ độ.",
+      "file": null,
+      "start": 344.79,
+      "duration": 12
+    },
+    {
+      "id": "C38",
+      "chapter": null,
+      "text": "Nhưng thứ quan trọng nhất với sự sống lại không sinh ra trong lửa. Nó sinh ra trong cái lạnh. Trên một bề mặt tối. Từng nguyên tử một.",
+      "file": null,
+      "start": 356.79,
+      "duration": 8.93
+    },
+    {
+      "id": "C39",
+      "chapter": null,
+      "text": "Bây giờ tới phần tôi thấy khó tin nhất. Không phải chuyện nước hình thành ở đó. Mà chuyện làm sao chúng ta biết được.",
+      "file": null,
+      "start": 367.72,
+      "duration": 7.8
+    },
+    {
+      "id": "C40",
+      "chapter": null,
+      "text": "Không ai đứng trong đám mây đó để xem. Không có máy quay. Chuyện xảy ra trước khi Mặt Trời tồn tại, ở một nơi không còn nữa. Vậy mà con người vẫn nói được, một cách khá tự tin, rằng một phần nước biển được làm ra ở đấy.",
+      "file": null,
+      "start": 375.52,
+      "duration": 14.6
+    },
+    {
+      "id": "C41",
+      "chapter": null,
+      "text": "Lý do là vì nước mang theo một cái nhãn. Và cái nhãn đó ghi nhiệt độ nơi nó ra đời.",
+      "file": null,
+      "start": 390.12,
+      "duration": 5.53
+    },
+    {
+      "id": "C42",
+      "chapter": "CHƯƠNG 3 — DẤU VÂN TAY TRONG MỖI GIỌT",
+      "text": "Hydro có hai phiên bản.",
+      "file": null,
+      "start": 397.65,
+      "duration": 1.53
+    },
+    {
+      "id": "C43",
+      "chapter": null,
+      "text": "Phiên bản thường chỉ là một proton trần trụi, một hạt nhân đơn độc với một electron quay quanh. Đó là loại phổ biến áp đảo.",
+      "file": null,
+      "start": 399.18,
+      "duration": 8.2
+    },
+    {
+      "id": "C44",
+      "chapter": null,
+      "text": "Phiên bản thứ hai có thêm một neutron đi kèm. Vẫn là hydro, vẫn hành xử hoá học gần như y hệt, nhưng nặng gấp đôi. Nó tên là deuteri.",
+      "file": null,
+      "start": 407.38,
+      "duration": 8.87
+    },
+    {
+      "id": "C45",
+      "chapter": null,
+      "text": "Deuteri có từ vũ trụ sơ khai, được đúc ra trong những phút đầu tiên sau Big Bang, và từ đó tới nay gần như không ai làm thêm được nữa. Nó hiếm. Trong vũ trụ, cứ khoảng bốn mươi nghìn nguyên tử hydro thì có một nguyên tử deuteri.",
+      "file": null,
+      "start": 416.25,
+      "duration": 15.2
+    },
+    {
+      "id": "C46",
+      "chapter": null,
+      "text": "Nhưng tôi không quan tâm deuteri được làm ra thế nào. Tôi quan tâm nó làm được gì cho tôi bây giờ. Và nó làm được một việc rất cụ thể. Nó là một cái nhiệt kế.",
+      "file": null,
+      "start": 431.45,
+      "duration": 10.53
+    },
+    {
+      "id": "C47",
+      "chapter": null,
+      "text": "Nếu một phân tử nước có một nguyên tử deuteri thay cho hydro thường, nó nặng hơn một chút. Và ở nhiệt độ rất thấp, cái chút nặng hơn đó thay đổi mọi thứ.",
+      "file": null,
+      "start": 441.98,
+      "duration": 10.2
+    },
+    {
+      "id": "C48",
+      "chapter": null,
+      "text": "Liên kết với deuteri chắc hơn liên kết với hydro thường một chút xíu. Trong phòng ấm, sự khác biệt đó không đáng gì, nhiệt độ làm mọi thứ xáo trộn đủ để nó biến mất trong nhiễu.",
+      "file": null,
+      "start": 452.18,
+      "duration": 11.8
+    },
+    {
+      "id": "C49",
+      "chapter": null,
+      "text": "Nhưng ở mười độ trên không tuyệt đối, không còn nhiễu nữa. Không có gì để xáo trộn. Và cái khác biệt nhỏ xíu đó trở thành quy luật. Deuteri được ưu tiên. Nó bị giữ lại nhiều hơn, gắn vào nước nhiều hơn.",
+      "file": null,
+      "start": 463.98,
+      "duration": 13.47
+    },
+    {
+      "id": "C50",
+      "chapter": null,
+      "text": "Kết quả là nước hình thành trong cái lạnh cực độ chứa nhiều deuteri hơn hẳn mức trung bình của vũ trụ. Có khi nhiều gấp hàng chục, hàng trăm lần.",
+      "file": null,
+      "start": 477.45,
+      "duration": 9.67
+    },
+    {
+      "id": "C51",
+      "chapter": null,
+      "text": "Còn nước hình thành ở nơi ấm hơn thì không. Nó giữ tỉ lệ gần với mức nền.",
+      "file": null,
+      "start": 487.12,
+      "duration": 4.87
+    },
+    {
+      "id": "C52",
+      "chapter": null,
+      "text": "Nghĩa là mỗi khối nước trong vũ trụ mang trong nó một con số. Tỉ lệ deuteri trên hydro. Và con số đó chính là nhiệt độ của cái nơi nó được ráp lại, đóng dấu vào từ ngày đầu và không phai đi.",
+      "file": null,
+      "start": 491.99,
+      "duration": 12.67
+    },
+    {
+      "id": "C53",
+      "chapter": null,
+      "text": "Đó là dấu vân tay. Và nếu tôi có dấu vân tay, tôi có thể đi truy nguồn gốc.",
+      "file": null,
+      "start": 504.66,
+      "duration": 5
+    },
+    {
+      "id": "C54",
+      "chapter": null,
+      "text": "Việc đầu tiên là lấy mẫu ở nhà. Người ta đo nước biển Trái Đất, và đặt cho nó một cái tên chuẩn để cả thế giới dùng chung làm mốc so sánh.",
+      "file": null,
+      "start": 511.16,
+      "duration": 9.2
+    },
+    {
+      "id": "C55",
+      "chapter": null,
+      "text": "Con số là thế này. Trong nước biển, cứ khoảng sáu nghìn tư nguyên tử hydro thì có một nguyên tử deuteri.",
+      "file": null,
+      "start": 520.36,
+      "duration": 6.93
+    },
+    {
+      "id": "C56",
+      "chapter": null,
+      "text": "So với mức nền của vũ trụ, nước biển giàu deuteri hơn khoảng sáu, bảy lần. Nó không phải thứ nước được lắp ráp ở nơi ấm áp. Nó mang dấu của cái lạnh.",
+      "file": null,
+      "start": 527.29,
+      "duration": 9.93
+    },
+    {
+      "id": "C57",
+      "chapter": null,
+      "text": "Đại dương của chúng ta mang chữ ký hoá học của một nơi mà Trái Đất chưa bao giờ đi qua.",
+      "file": null,
+      "start": 537.22,
+      "duration": 5.8
+    },
+    {
+      "id": "C58",
+      "chapter": null,
+      "text": "Việc thứ hai là ra ngoài kia lấy mẫu của hàng xóm. Và chuyện này thì con người đã làm thật, bằng những con tàu gửi đi hàng chục năm.",
+      "file": null,
+      "start": 545.02,
+      "duration": 8.8
+    },
+    {
+      "id": "C59",
+      "chapter": null,
+      "text": "Sao chổi là ứng viên đầu tiên ai cũng nghĩ tới. Chúng gần như là những tảng băng bẩn được cất trong tủ đông từ ngày hệ Mặt Trời mới hình thành. Nếu có thứ gì còn giữ nguyên nước cổ, thì là chúng.",
+      "file": null,
+      "start": 553.82,
+      "duration": 13
+    },
+    {
+      "id": "C60",
+      "chapter": null,
+      "text": "Năm hai nghìn mười bốn, một con tàu của châu Âu tên Rosetta đuổi kịp một sao chổi sau mười năm bay, rồi bay kèm bên cạnh nó như một người bạn đồng hành. Sao chổi đó có cái tên khó đọc, Churyumov-Gerasimenko, nhưng ai cũng gọi tắt là sáu bảy P.",
+      "file": null,
+      "start": 566.82,
+      "duration": 16.2
+    },
+    {
+      "id": "C61",
+      "chapter": null,
+      "text": "Nó trông như hai củ khoai tây dính vào nhau, dài chừng bốn cây số, đen như than. Tàu Rosetta có một cái máy ngửi được hơi nước bốc ra từ bề mặt sao chổi, và đo được tỉ lệ deuteri trong đó.",
+      "file": null,
+      "start": 583.02,
+      "duration": 12.53
+    },
+    {
+      "id": "C62",
+      "chapter": null,
+      "text": "Kết quả không khớp.",
+      "file": null,
+      "start": 595.55,
+      "duration": 1.27
+    },
+    {
+      "id": "C63",
+      "chapter": null,
+      "text": "Nước của sáu bảy P giàu deuteri gấp khoảng ba lần nước biển Trái Đất. Ba lần là rất nhiều với loại phép đo này. Nếu đại dương của chúng ta được rót đầy bởi những sao chổi như thế, nó đã phải nặng hơn nhiều so với thực tế.",
+      "file": null,
+      "start": 596.82,
+      "duration": 14.73
+    },
+    {
+      "id": "C64",
+      "chapter": null,
+      "text": "Ngọn nguồn ai cũng đinh ninh bỗng nhiên bị loại ra.",
+      "file": null,
+      "start": 611.55,
+      "duration": 3.4
+    },
+    {
+      "id": "C65",
+      "chapter": null,
+      "text": "Tôi phải nói thẳng ở đây, vì đây là khoa học thật chứ không phải chuyện kể cho gọn. Câu chuyện sao chổi chưa khép lại.",
+      "file": null,
+      "start": 616.45,
+      "duration": 7.87
+    },
+    {
+      "id": "C66",
+      "chapter": null,
+      "text": "Những sao chổi khác đo ra những con số khác nhau, có cái gần nước biển hơn hẳn. Cách đo hơi nước bốc ra từ một khối băng đang tan cũng khó, và các nhóm nghiên cứu vẫn đang cãi nhau về chuyện bụi mang băng bay lẫn trong hơi có làm lệch kết quả hay không.",
+      "file": null,
+      "start": 624.32,
+      "duration": 16.87
+    },
+    {
+      "id": "C67",
+      "chapter": null,
+      "text": "Không ai có một câu trả lời sạch sẽ. Nhưng bức tranh nghiêng dần về một hướng khác.",
+      "file": null,
+      "start": 641.19,
+      "duration": 5.53
+    },
+    {
+      "id": "C68",
+      "chapter": null,
+      "text": "Có một loại thiên thạch tên là chondrite cacbon. Chúng là những mảnh đá đen, xốp, vỡ ra từ các tiểu hành tinh, và bên trong đá đó có nước, khoá trong cấu trúc khoáng vật.",
+      "file": null,
+      "start": 646.72,
+      "duration": 11.33
+    },
+    {
+      "id": "C69",
+      "chapter": null,
+      "text": "Người ta nhặt được chúng ở Nam Cực, ở sa mạc, đôi khi nhặt được ngay sau khi tận mắt thấy chúng rơi. Và khi đo deuteri trong nước bị khoá trong những viên đá đó, con số ra gần với nước biển Trái Đất hơn nhiều.",
+      "file": null,
+      "start": 658.05,
+      "duration": 13.93
+    },
+    {
+      "id": "C70",
+      "chapter": null,
+      "text": "Nghĩa là phần lớn nước có lẽ không tới đây trên những cái đuôi sáng rực mà ta hay vẽ trong sách. Nó tới trên những tảng đá đen xấu xí, lặng lẽ, chẳng ai ngước lên nhìn.",
+      "file": null,
+      "start": 671.98,
+      "duration": 11.2
+    },
+    {
+      "id": "C71",
+      "chapter": null,
+      "text": "Nhưng câu hỏi quan trọng nhất vẫn chưa được trả lời. Và nó không phải là nước tới đây bằng phương tiện gì.",
+      "file": null,
+      "start": 685.18,
+      "duration": 7.07
+    },
+    {
+      "id": "C72",
+      "chapter": null,
+      "text": "Câu hỏi là, cái đám nước đó, dù đi bằng sao chổi hay bằng đá, được ráp lại lúc nào? Trước khi Mặt Trời hình thành, hay sau đó?",
+      "file": null,
+      "start": 692.25,
+      "duration": 8.4
+    },
+    {
+      "id": "C73",
+      "chapter": null,
+      "text": "Bởi vì có một khả năng làm hỏng toàn bộ câu chuyện tôi vừa kể. Khi một ngôi sao hình thành, đám mây lạnh sụp đổ vào chính nó. Nhiệt độ vọt lên. Một cái đĩa vật chất khổng lồ quay tròn quanh ngôi sao mới sinh, và ở vòng trong của cái đĩa đó, mọi thứ nóng đến mức bốc hơi hết.",
+      "file": null,
+      "start": 700.65,
+      "duration": 18.27
+    },
+    {
+      "id": "C74",
+      "chapter": null,
+      "text": "Bức xạ cực tím xé toang các liên kết hoá học. Phân tử nước bị đập ra thành nguyên tử rời, rồi ráp lại từ đầu trong điều kiện hoàn toàn mới.",
+      "file": null,
+      "start": 718.92,
+      "duration": 9.27
+    },
+    {
+      "id": "C75",
+      "chapter": null,
+      "text": "Nếu chuyện đó xảy ra với tất cả, thì mọi phân tử nước trên Trái Đất đều trẻ hơn Mặt Trời. Chúng sẽ là hàng mới, làm lại trong đĩa, và cái đám mây lạnh kia chỉ còn là một chương mở đầu không để lại dấu vết gì.",
+      "file": null,
+      "start": 728.19,
+      "duration": 13.87
+    },
+    {
+      "id": "C76",
+      "chapter": null,
+      "text": "Năm hai nghìn mười bốn, một nhóm nghiên cứu ngồi xuống và hỏi ngược lại câu đó. Được, cứ cho là nước bị phá hết và làm lại trong đĩa. Vậy cái đĩa đó có làm nổi không?",
+      "file": null,
+      "start": 743.56,
+      "duration": 11.07
+    },
+    {
+      "id": "C77",
+      "chapter": null,
+      "text": "Bởi vì để ráp ra nước giàu deuteri như nước biển của chúng ta, cần một chuỗi phản ứng rất kén. Nó cần lạnh, và nó cần một lượng ion nhất định để khởi động. Không có đủ ion thì dây chuyền đó chạy chậm như rùa.",
+      "file": null,
+      "start": 754.63,
+      "duration": 13.87
+    },
+    {
+      "id": "C78",
+      "chapter": null,
+      "text": "Họ dựng một mô hình đầy đủ về mức ion hoá trong đĩa tiền hành tinh. Ngôi sao trẻ chắn bớt tia vũ trụ từ bên ngoài. Các nguyên tố phóng xạ trong đĩa chỉ đóng góp một phần nhỏ. Khi cộng hết lại, họ đếm ra mức ion quá thấp.",
+      "file": null,
+      "start": 768.5,
+      "duration": 14.67
+    },
+    {
+      "id": "C79",
+      "chapter": null,
+      "text": "Cái đĩa không kịp làm ra đủ nước nặng trong quãng thời gian nó có. Ngay cả khi cho nó chạy hết công suất trong cả triệu năm, nó vẫn không giải thích nổi lượng deuteri đang nằm trong đại dương.",
+      "file": null,
+      "start": 783.17,
+      "duration": 12.8
+    },
+    {
+      "id": "C80",
+      "chapter": null,
+      "text": "Nghĩa là một phần nước ấy không được làm trong đĩa. Nó đã có sẵn từ trước, và nó sống sót.",
+      "file": null,
+      "start": 795.97,
+      "duration": 6
+    },
+    {
+      "id": "C81",
+      "chapter": null,
+      "text": "Con số họ đưa ra là khoảng từ ba mươi tới năm mươi phần trăm.",
+      "file": null,
+      "start": 803.97,
+      "duration": 4.07
+    },
+    {
+      "id": "C82",
+      "chapter": null,
+      "text": "Từ một phần ba đến một nửa lượng nước trên Trái Đất được lắp ráp trong đám mây lạnh, trước khi Mặt Trời tồn tại, và chưa bao giờ bị tháo ra.",
+      "file": null,
+      "start": 808.04,
+      "duration": 9.33
+    },
+    {
+      "id": "C83",
+      "chapter": null,
+      "text": "Những phân tử đó đi qua toàn bộ quá trình sinh ra một ngôi sao mà không bị phá. Chúng nấp trong lớp băng bọc quanh các hạt bụi, ở vùng ngoài lạnh giá của đĩa, nơi nhiệt không với tới. Rồi bụi dính vào nhau thành viên sỏi, sỏi thành đá, đá thành tiểu hành tinh.",
+      "file": null,
+      "start": 817.37,
+      "duration": 17.33
+    },
+    {
+      "id": "C84",
+      "chapter": null,
+      "text": "Và rồi, hàng triệu năm sau, một trong những tảng đá đó rơi xuống một hành tinh nóng chảy còn chưa có tên.",
+      "file": null,
+      "start": 834.7,
+      "duration": 7
+    },
+    {
+      "id": "C85",
+      "chapter": null,
+      "text": "Nước bên trong nó thoát ra thành hơi, bay lên thành khí quyển, nguội đi, và rơi xuống thành mưa. Một cơn mưa kéo dài, người ta nghĩ là hàng nghìn năm không dứt.",
+      "file": null,
+      "start": 841.7,
+      "duration": 10.67
+    },
+    {
+      "id": "C86",
+      "chapter": null,
+      "text": "Đó là lần đầu tiên nước đó rơi. Nhưng nó đã già hơn cả ngôi sao đang chiếu sáng lên cơn mưa ấy.",
+      "file": null,
+      "start": 852.37,
+      "duration": 6.33
+    },
+    {
+      "id": "C87",
+      "chapter": "CHƯƠNG 4 — NGỤM NƯỚC",
+      "text": "Tôi quay về căn phòng của mình. Cốc nước vẫn ở đó, trên bàn, và nó đã ấm lên một chút trong tay tôi.",
+      "file": null,
+      "start": 861.2,
+      "duration": 6.67
+    },
+    {
+      "id": "C88",
+      "chapter": null,
+      "text": "Trong cốc này có khoảng tám triệu tỉ tỉ phân tử nước. Tôi không dừng lại ở con số đó lâu, vì nó lớn đến mức vô nghĩa với cảm giác của con người.",
+      "file": null,
+      "start": 867.87,
+      "duration": 9.6
+    },
+    {
+      "id": "C89",
+      "chapter": null,
+      "text": "Điều tôi dừng lại là chuyện này. Trong số đó, có những phân tử chưa bao giờ bị tháo rời kể từ cái ngày chúng được ráp trên một hạt bụi trong bóng tối, cách đây hơn bốn tỉ sáu trăm triệu năm.",
+      "file": null,
+      "start": 877.47,
+      "duration": 12.67
+    },
+    {
+      "id": "C90",
+      "chapter": null,
+      "text": "Tôi thử nghĩ xem chúng đã ở những đâu trong quãng thời gian đó.",
+      "file": null,
+      "start": 890.14,
+      "duration": 4.2
+    },
+    {
+      "id": "C91",
+      "chapter": null,
+      "text": "Chúng đã nằm trong lòng một tiểu hành tinh. Đã rơi xuống một hành tinh còn đang cháy. Đã bốc lên thành mây, rơi xuống thành mưa, hàng tỉ lần.",
+      "file": null,
+      "start": 894.34,
+      "duration": 9.4
+    },
+    {
+      "id": "C92",
+      "chapter": null,
+      "text": "Chúng đã ở trong một đại dương chưa có sinh vật nào. Rồi ở trong tế bào đầu tiên biết tự nhân đôi. Rồi trong máu của một con cá. Trong nhựa của một cái cây. Trong băng ở đỉnh một ngọn núi suốt mười nghìn năm, rồi tan ra và chảy đi tiếp.",
+      "file": null,
+      "start": 903.74,
+      "duration": 15.73
+    },
+    {
+      "id": "C93",
+      "chapter": null,
+      "text": "Chúng đã đi qua cơ thể của những sinh vật mà không ai còn nhớ tên. Và chúng vẫn nguyên như vậy. Cùng một nguyên tử oxy. Cùng hai nguyên tử hydro. Cùng cái góc chữ V đó.",
+      "file": null,
+      "start": 919.47,
+      "duration": 11.2
+    },
+    {
+      "id": "C94",
+      "chapter": null,
+      "text": "Tôi thấy có một điều rất kỳ ở nước, mà tôi chưa từng để ý trước đây.",
+      "file": null,
+      "start": 932.67,
+      "duration": 4.53
+    },
+    {
+      "id": "C95",
+      "chapter": null,
+      "text": "Cơ thể tôi không giữ nước lại. Nó chỉ cho nước mượn đường đi qua. Phần lớn lượng nước trong người tôi được thay mới trong vòng vài tuần. Tôi không sở hữu nó. Tôi chỉ là một chặng.",
+      "file": null,
+      "start": 937.2,
+      "duration": 11.93
+    },
+    {
+      "id": "C96",
+      "chapter": null,
+      "text": "Cái cây ngoài kia cũng là một chặng. Đám mây là một chặng. Con sông là một chặng. Không ai giữ được nước, ai cũng chỉ mượn nó một lúc rồi trả lại.",
+      "file": null,
+      "start": 949.13,
+      "duration": 9.73
+    },
+    {
+      "id": "C97",
+      "chapter": null,
+      "text": "Và trong cái vòng tuần hoàn đó, phân tử nước là thứ duy nhất không đổi. Chúng ta thay nhau đến rồi đi. Chúng thì ở lại.",
+      "file": null,
+      "start": 958.86,
+      "duration": 7.93
+    },
+    {
+      "id": "C98",
+      "chapter": null,
+      "text": "Lần tới nếu bạn đứng dưới mưa, tôi muốn bạn thử một chuyện.",
+      "file": null,
+      "start": 968.79,
+      "duration": 3.93
+    },
+    {
+      "id": "C99",
+      "chapter": null,
+      "text": "Đừng nghĩ về cơn mưa. Nghĩ về một giọt thôi. Một giọt đang chạm vào mu bàn tay bạn.",
+      "file": null,
+      "start": 972.72,
+      "duration": 5.53
+    },
+    {
+      "id": "C100",
+      "chapter": null,
+      "text": "Giọt đó vừa rơi từ một đám mây cách mặt đất một cây số. Nhưng những phân tử trong nó thì vừa đi một quãng đường dài hơn thế rất nhiều, và bạn không nghe thấy gì cả. Nước không kể chuyện. Nó chỉ mang lịch sử theo trong cách nó được ráp lại.",
+      "file": null,
+      "start": 978.25,
+      "duration": 15.93
+    },
+    {
+      "id": "C101",
+      "chapter": null,
+      "text": "Chúng hình thành trong cái lạnh, trong bóng tối, trên một hạt bụi, ở một nơi chưa có ngôi sao nào.",
+      "file": null,
+      "start": 994.18,
+      "duration": 6.53
+    },
+    {
+      "id": "C102",
+      "chapter": null,
+      "text": "Rồi Mặt Trời bật sáng. Rồi các hành tinh kết lại. Rồi đại dương đầy lên. Rồi sự sống bắt đầu. Rồi bốn tỉ năm trôi qua với tất cả những gì xảy ra trong đó.",
+      "file": null,
+      "start": 1000.71,
+      "duration": 10.27
+    },
+    {
+      "id": "C103",
+      "chapter": null,
+      "text": "Và bây giờ nó đang nằm trên mu bàn tay bạn, và sắp trượt xuống.",
+      "file": null,
+      "start": 1010.98,
+      "duration": 4.2
+    },
+    {
+      "id": "C104",
+      "chapter": null,
+      "text": "Tôi cầm cốc nước lên và uống một ngụm.",
+      "file": null,
+      "start": 1017.18,
+      "duration": 2.53
+    },
+    {
+      "id": "C105",
+      "chapter": null,
+      "text": "Nó mát. Nó không có vị gì. Nó đi xuống và tôi gần như không cảm thấy.",
+      "file": null,
+      "start": 1019.71,
+      "duration": 4.6
+    },
+    {
+      "id": "C106",
+      "chapter": null,
+      "text": "Một phần trong đó già hơn Mặt Trời. Và tôi vừa uống nó trong lúc đang nghĩ về chuyện khác.",
+      "file": null,
+      "start": 1024.31,
+      "duration": 6
+    }
+  ]
+}

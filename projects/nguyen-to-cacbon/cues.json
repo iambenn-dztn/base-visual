@@ -1,0 +1,994 @@
+{
+  "total": 584.05,
+  "count": 247,
+  "cues": [
+    {
+      "t": 0,
+      "s": "Tôi hít vào một hơi thật sâu."
+    },
+    {
+      "t": 2.18,
+      "s": "Giữ lại một nhịp."
+    },
+    {
+      "t": 4.08,
+      "s": "Rồi thở ra."
+    },
+    {
+      "t": 6.12,
+      "s": "Cái hơi tôi vừa thở ra ấy — nó không rỗng"
+    },
+    {
+      "t": 8.96,
+      "s": "không."
+    },
+    {
+      "t": 9.37,
+      "s": "Nó mang theo cacbon."
+    },
+    {
+      "t": 11.53,
+      "s": "Những nguyên tử cacbon vừa mới rời khỏi cơ"
+    },
+    {
+      "t": 14.58,
+      "s": "thể tôi, tan vào không khí quanh tôi."
+    },
+    {
+      "t": 17.25,
+      "s": "Và tôi muốn kể cho bạn nghe về những"
+    },
+    {
+      "t": 19.53,
+      "s": "nguyên tử ấy."
+    },
+    {
+      "t": 20.36,
+      "s": "Bởi vì chúng già hơn Trái Đất."
+    },
+    {
+      "t": 22.9,
+      "s": "Chúng già hơn cả Mặt Trời."
+    },
+    {
+      "t": 27.19,
+      "s": "Hãy nhìn vào bàn tay mình."
+    },
+    {
+      "t": 28.92,
+      "s": "Xương của tôi, da của tôi, từng sợi tóc."
+    },
+    {
+      "t": 33.15,
+      "s": "Bộ não đang lưu giữ mọi kỷ niệm của tôi."
+    },
+    {
+      "t": 36.52,
+      "s": "Tất cả đều được dựng lên từ cùng một viên"
+    },
+    {
+      "t": 39.5,
+      "s": "gạch nền tảng: nguyên tử cacbon."
+    },
+    {
+      "t": 41.82,
+      "s": "Cứ mỗi năm nguyên tử trong cơ thể tôi thì"
+    },
+    {
+      "t": 44.58,
+      "s": "có gần một nguyên tử là cacbon."
+    },
+    {
+      "t": 46.67,
+      "s": "Nó là bộ khung xương của mọi thứ làm nên"
+    },
+    {
+      "t": 49.89,
+      "s": "sự sống."
+    },
+    {
+      "t": 50.52,
+      "s": "Nhưng đây mới là điều khiến tôi lặng"
+    },
+    {
+      "t": 52.77,
+      "s": "người."
+    },
+    {
+      "t": 53.14,
+      "s": "Không một nguyên tử cacbon nào trong tôi"
+    },
+    {
+      "t": 55.87,
+      "s": "được sinh ra ở đây."
+    },
+    {
+      "t": 57.16,
+      "s": "Không một nguyên tử nào ra đời trên hành"
+    },
+    {
+      "t": 60.34,
+      "s": "tinh này."
+    },
+    {
+      "t": 61.05,
+      "s": "Chúng được nung, được rèn, trong lò lửa"
+    },
+    {
+      "t": 64.15,
+      "s": "của những ngôi sao."
+    },
+    {
+      "t": 65.66,
+      "s": "Những ngôi sao đã sống, đã cháy, và đã"
+    },
+    {
+      "t": 68.46,
+      "s": "chết — từ rất lâu trước khi Mặt Trời của"
+    },
+    {
+      "t": 71.41,
+      "s": "chúng ta kịp thắp sáng."
+    },
+    {
+      "t": 73.1,
+      "s": "Tôi, theo đúng nghĩa đen của từng con chữ,"
+    },
+    {
+      "t": 76.34,
+      "s": "là tàn tro của các vì sao."
+    },
+    {
+      "t": 78.35,
+      "s": "Và tôi muốn dẫn bạn về tận nơi khởi đầu,"
+    },
+    {
+      "t": 81.84,
+      "s": "để hiểu vì sao."
+    },
+    {
+      "t": 85.16,
+      "s": "Hãy trôi ngược cùng tôi về mười ba tỉ năm"
+    },
+    {
+      "t": 88,
+      "s": "trước."
+    },
+    {
+      "t": 88.42,
+      "s": "Về những khoảnh khắc đầu tiên sau Big"
+    },
+    {
+      "t": 91.34,
+      "s": "Bang."
+    },
+    {
+      "t": 91.73,
+      "s": "Vũ trụ lúc ấy nóng bỏng và đơn giản đến kỳ"
+    },
+    {
+      "t": 95.24,
+      "s": "lạ."
+    },
+    {
+      "t": 95.49,
+      "s": "Nó chỉ biết làm ra hai thứ."
+    },
+    {
+      "t": 97.83,
+      "s": "Hydro, nguyên tố nhẹ nhất."
+    },
+    {
+      "t": 100.55,
+      "s": "Và một chút heli."
+    },
+    {
+      "t": 102.9,
+      "s": "Chỉ có thế."
+    },
+    {
+      "t": 104.22,
+      "s": "Không có oxy để thở."
+    },
+    {
+      "t": 106.34,
+      "s": "Không có sắt để đúc."
+    },
+    {
+      "t": 108.22,
+      "s": "Và tuyệt nhiên, không có một nguyên tử"
+    },
+    {
+      "t": 111.38,
+      "s": "cacbon nào."
+    },
+    {
+      "t": 112.3,
+      "s": "Không có gì để làm nên tôi."
+    },
+    {
+      "t": 115.09,
+      "s": "Một vũ trụ chỉ toàn hydro và heli là một"
+    },
+    {
+      "t": 118.43,
+      "s": "vũ trụ chết."
+    },
+    {
+      "t": 119.43,
+      "s": "Một vũ trụ không thể mơ tới sự sống."
+    },
+    {
+      "t": 122.56,
+      "s": "Vậy thì cacbon đã đến từ đâu?"
+    },
+    {
+      "t": 125.54,
+      "s": "Câu trả lời nằm trong bụng của những ngôi"
+    },
+    {
+      "t": 128.05,
+      "s": "sao."
+    },
+    {
+      "t": 128.3,
+      "s": "Ngôi sao là một cái lò luyện kim khổng lồ."
+    },
+    {
+      "t": 131.51,
+      "s": "Ở tâm nó, trọng lực nghiến các nguyên tử"
+    },
+    {
+      "t": 134.29,
+      "s": "vào nhau với sức ép không thể tưởng tượng"
+    },
+    {
+      "t": 137.14,
+      "s": "nổi."
+    },
+    {
+      "t": 137.43,
+      "s": "Suốt hàng tỉ năm, một ngôi sao đốt hydro"
+    },
+    {
+      "t": 140.68,
+      "s": "thành heli."
+    },
+    {
+      "t": 141.58,
+      "s": "Đó là cả cuộc đời bình yên của nó."
+    },
+    {
+      "t": 144.6,
+      "s": "Nhưng rồi nhiên liệu cạn."
+    },
+    {
+      "t": 147.02,
+      "s": "Và đây là lúc câu chuyện thật sự bắt đầu."
+    },
+    {
+      "t": 150.65,
+      "s": "Ngôi sao phồng lên."
+    },
+    {
+      "t": 152.31,
+      "s": "Nó biến thành một quái vật đỏ rực gọi là"
+    },
+    {
+      "t": 155.09,
+      "s": "sao khổng lồ đỏ, lớn đến mức có thể nuốt"
+    },
+    {
+      "t": 157.87,
+      "s": "trọn cả quỹ đạo của những hành tinh."
+    },
+    {
+      "t": 160.37,
+      "s": "Và trong cái lõi đang co lại của nó, nhiệt"
+    },
+    {
+      "t": 163.55,
+      "s": "độ vọt lên hàng trăm triệu độ."
+    },
+    {
+      "t": 165.82,
+      "s": "Nóng đến mức đó, những hạt nhân heli bắt"
+    },
+    {
+      "t": 168.3,
+      "s": "đầu lao vào nhau."
+    },
+    {
+      "t": 169.35,
+      "s": "Và ở đây, tôi phải kể cho bạn nghe một"
+    },
+    {
+      "t": 172.31,
+      "s": "phép màu ẩn trong vật lý."
+    },
+    {
+      "t": 174.25,
+      "s": "Để làm ra một nguyên tử cacbon, cần ba hạt"
+    },
+    {
+      "t": 177.34,
+      "s": "nhân heli hợp lại làm một."
+    },
+    {
+      "t": 179.25,
+      "s": "Người ta gọi đó là phản ứng ba-alpha."
+    },
+    {
+      "t": 182.64,
+      "s": "Nhưng có một trục trặc chết người."
+    },
+    {
+      "t": 185.17,
+      "s": "Khi hai hạt heli đầu tiên dính vào nhau,"
+    },
+    {
+      "t": 187.91,
+      "s": "chúng tạo ra một mảnh ghép cực kỳ mong"
+    },
+    {
+      "t": 190.51,
+      "s": "manh."
+    },
+    {
+      "t": 190.85,
+      "s": "Nó tồn tại trong khoảng thời gian ngắn đến"
+    },
+    {
+      "t": 193.96,
+      "s": "vô lý — một phần tỉ tỉ của giây rồi vỡ"
+    },
+    {
+      "t": 196.78,
+      "s": "tan."
+    },
+    {
+      "t": 197.09,
+      "s": "Vậy làm sao hạt heli thứ ba kịp lao tới và"
+    },
+    {
+      "t": 200.18,
+      "s": "dính vào, trong cái khoảnh khắc mong manh"
+    },
+    {
+      "t": 203.2,
+      "s": "đến thế?"
+    },
+    {
+      "t": 203.79,
+      "s": "Về lý thuyết, gần như là không thể."
+    },
+    {
+      "t": 207.05,
+      "s": "Cacbon lẽ ra không nên tồn tại."
+    },
+    {
+      "t": 209.81,
+      "s": "Và tôi lẽ ra cũng không nên tồn tại."
+    },
+    {
+      "t": 214.59,
+      "s": "Bảy mươi năm trước, một nhà thiên văn tên"
+    },
+    {
+      "t": 217.83,
+      "s": "Fred Hoyle nhìn vào nghịch lý này."
+    },
+    {
+      "t": 220.51,
+      "s": "Ông thấy rõ: nếu phép tính đúng, sẽ chẳng"
+    },
+    {
+      "t": 224.4,
+      "s": "có cacbon nào cả."
+    },
+    {
+      "t": 226.01,
+      "s": "Nhưng cacbon rõ ràng đang tồn tại."
+    },
+    {
+      "t": 229.03,
+      "s": "Nó nằm trong chính cơ thể ông."
+    },
+    {
+      "t": 231.64,
+      "s": "Thế là Hoyle đưa ra một tiên đoán táo bạo"
+    },
+    {
+      "t": 234.23,
+      "s": "đến mức liều lĩnh."
+    },
+    {
+      "t": 235.36,
+      "s": "Ông nói: hẳn phải có một cánh cửa bí mật."
+    },
+    {
+      "t": 239.34,
+      "s": "Một điểm cộng hưởng."
+    },
+    {
+      "t": 241.46,
+      "s": "Ông tính ra rằng hạt nhân cacbon phải sở"
+    },
+    {
+      "t": 244.8,
+      "s": "hữu một mức năng lượng rất riêng, ở đúng"
+    },
+    {
+      "t": 248.15,
+      "s": "một con số: bảy phẩy sáu năm triệu"
+    },
+    {
+      "t": 250.99,
+      "s": "electron-vôn."
+    },
+    {
+      "t": 252.08,
+      "s": "Không hơn, không kém."
+    },
+    {
+      "t": 255.22,
+      "s": "Nếu tồn tại đúng cái mức năng lượng ấy, nó"
+    },
+    {
+      "t": 257.93,
+      "s": "sẽ hoạt động như một tần số cộng hưởng."
+    },
+    {
+      "t": 260.44,
+      "s": "Giống như khi bạn đẩy xích đu đúng nhịp,"
+    },
+    {
+      "t": 263.4,
+      "s": "một cú đẩy nhỏ cũng làm nó bay cao."
+    },
+    {
+      "t": 265.99,
+      "s": "Cái mức năng lượng ấy sẽ khiến ba hạt heli"
+    },
+    {
+      "t": 268.64,
+      "s": "khớp vào nhau một cách nhịp nhàng, và"
+    },
+    {
+      "t": 270.97,
+      "s": "cacbon được tạo ra hiệu quả hơn hàng chục"
+    },
+    {
+      "t": 273.56,
+      "s": "triệu lần."
+    },
+    {
+      "t": 274.18,
+      "s": "Đây là điều tôi thấy kinh ngạc nhất."
+    },
+    {
+      "t": 276.52,
+      "s": "Hoyle chưa hề nhìn thấy mức năng lượng đó."
+    },
+    {
+      "t": 280.01,
+      "s": "Chưa aai đo được nó."
+    },
+    {
+      "t": 282.17,
+      "s": "Ông tiên đoán nó phải tồn tại, chỉ vì một"
+    },
+    {
+      "t": 285.67,
+      "s": "lẽ đơn giản: vì chúng ta đang ở đây để đặt"
+    },
+    {
+      "t": 289.26,
+      "s": "câu hỏi."
+    },
+    {
+      "t": 289.94,
+      "s": "Rồi người ta mang ông vào phòng thí"
+    },
+    {
+      "t": 291.95,
+      "s": "nghiệm."
+    },
+    {
+      "t": 292.35,
+      "s": "Họ đo."
+    },
+    {
+      "t": 293.76,
+      "s": "Và cánh cửa bí mật ấy có thật."
+    },
+    {
+      "t": 296.93,
+      "s": "Nằm gần như chính xác ở nơi Hoyle đã chỉ."
+    },
+    {
+      "t": 300.56,
+      "s": "Hãy dừng lại một nhịp mà cảm nhận điều"
+    },
+    {
+      "t": 303.48,
+      "s": "này."
+    },
+    {
+      "t": 303.79,
+      "s": "Nếu cái mức năng lượng đó chỉ lệch đi một"
+    },
+    {
+      "t": 306.51,
+      "s": "chút xíu thôi, một phần rất nhỏ, thì phản"
+    },
+    {
+      "t": 309.22,
+      "s": "ứng sẽ tắt ngấm."
+    },
+    {
+      "t": 310.28,
+      "s": "Vũ trụ sẽ gần như trống trơn cacbon."
+    },
+    {
+      "t": 313.71,
+      "s": "Không cacbon, thì không có phân tử của sự"
+    },
+    {
+      "t": 317.21,
+      "s": "sống."
+    },
+    {
+      "t": 317.64,
+      "s": "Không có cây."
+    },
+    {
+      "t": 319.35,
+      "s": "Không có bạn."
+    },
+    {
+      "t": 320.77,
+      "s": "Không có tôi đang thở ra hơi này."
+    },
+    {
+      "t": 323.56,
+      "s": "Vũ trụ của chúng ta dường như được tinh"
+    },
+    {
+      "t": 326.14,
+      "s": "chỉnh đến mức hoàn hảo, chỉ vừa đủ để làm"
+    },
+    {
+      "t": 328.86,
+      "s": "ra những nguyên tử tạo nên chúng ta."
+    },
+    {
+      "t": 331.24,
+      "s": "Tôi không biết gọi đó là may mắn, là tình"
+    },
+    {
+      "t": 334.22,
+      "s": "cờ, hay là điều gì đó sâu xa hơn."
+    },
+    {
+      "t": 336.61,
+      "s": "Nhưng tôi biết một điều: chính trong cái"
+    },
+    {
+      "t": 339.59,
+      "s": "khe hẹp mong manh ấy của vật lý, sự sống"
+    },
+    {
+      "t": 342.57,
+      "s": "đã lách qua."
+    },
+    {
+      "t": 345.47,
+      "s": "Nhưng cacbon nằm sâu trong bụng một ngôi"
+    },
+    {
+      "t": 348.38,
+      "s": "sao thì đâu thể làm nên tôi."
+    },
+    {
+      "t": 350.41,
+      "s": "Nó phải thoát ra."
+    },
+    {
+      "t": 352.24,
+      "s": "Nó phải được gieo đi."
+    },
+    {
+      "t": 354.41,
+      "s": "Và những ngôi sao, khi về già, chính là"
+    },
+    {
+      "t": 357.22,
+      "s": "những kẻ gieo hạt hào phóng nhất vũ trụ."
+    },
+    {
+      "t": 360.1,
+      "s": "Ngôi sao khổng lồ đỏ bắt đầu run rẩy, phập"
+    },
+    {
+      "t": 363.62,
+      "s": "phồng."
+    },
+    {
+      "t": 364.12,
+      "s": "Nó thổi bay những lớp vỏ ngoài của chính"
+    },
+    {
+      "t": 366.97,
+      "s": "mình vào không gian."
+    },
+    {
+      "t": 368.4,
+      "s": "Từng đợt, từng đợt gió sao mang cacbon rời"
+    },
+    {
+      "t": 371.5,
+      "s": "khỏi lò lửa, trải vào bóng tối."
+    },
+    {
+      "t": 373.79,
+      "s": "Có ngôi sao lớn hơn thì kết thúc bằng một"
+    },
+    {
+      "t": 376.47,
+      "s": "tiếng nổ chói lòa, phóng vật chất của mình"
+    },
+    {
+      "t": 379.22,
+      "s": "đi khắp thiên hà."
+    },
+    {
+      "t": 380.33,
+      "s": "Cái chết của một ngôi sao trở thành một vụ"
+    },
+    {
+      "t": 383.3,
+      "s": "mùa."
+    },
+    {
+      "t": 383.58,
+      "s": "Nó gieo cacbon thành những đám mây bụi"
+    },
+    {
+      "t": 386.59,
+      "s": "mênh mông, tối đen, trôi lững lờ giữa các"
+    },
+    {
+      "t": 389.84,
+      "s": "vì sao."
+    },
+    {
+      "t": 391.9,
+      "s": "Nếu bạn bay cùng tôi qua những đám mây bụi"
+    },
+    {
+      "t": 394.74,
+      "s": "ấy, bạn sẽ ngạc nhiên vì chúng sống động"
+    },
+    {
+      "t": 397.45,
+      "s": "đến nhường nào."
+    },
+    {
+      "t": 398.47,
+      "s": "Trong đó có những hạt bụi cacbon li ti,"
+    },
+    {
+      "t": 401.09,
+      "s": "giống như bồ hóng của vũ trụ, nhuộm đen cả"
+    },
+    {
+      "t": 403.92,
+      "s": "những đám mây giữa các vì sao."
+    },
+    {
+      "t": 405.94,
+      "s": "Có những phân tử hữu cơ đang lặng lẽ hình"
+    },
+    {
+      "t": 408.7,
+      "s": "thành trong lạnh giá."
+    },
+    {
+      "t": 410.11,
+      "s": "Ở đó, thậm chí có cả những viên kim cương"
+    },
+    {
+      "t": 413.21,
+      "s": "nhỏ xíu trôi nổi."
+    },
+    {
+      "t": 414.49,
+      "s": "Và có những phân tử cacbon kết thành hình"
+    },
+    {
+      "t": 417.69,
+      "s": "quả cầu rỗng hoàn hảo, như những trái bóng"
+    },
+    {
+      "t": 420.96,
+      "s": "tí hon."
+    },
+    {
+      "t": 421.51,
+      "s": "Vũ trụ, hóa ra, là một phòng thí nghiệm"
+    },
+    {
+      "t": 425.21,
+      "s": "hóa học cacbon vĩ đại."
+    },
+    {
+      "t": 427.3,
+      "s": "Rồi một ngày, một đám mây như thế co lại"
+    },
+    {
+      "t": 430.3,
+      "s": "dưới trọng lực."
+    },
+    {
+      "t": 431.43,
+      "s": "Ở trung tâm nó, một mặt trời mới bừng"
+    },
+    {
+      "t": 434.92,
+      "s": "sáng."
+    },
+    {
+      "t": 435.39,
+      "s": "Quanh đó, từ chính đám bụi cacbon ấy,"
+    },
+    {
+      "t": 438.51,
+      "s": "những hành tinh ngưng tụ lại."
+    },
+    {
+      "t": 440.95,
+      "s": "Một trong số đó là Trái Đất."
+    },
+    {
+      "t": 443.68,
+      "s": "Và bây giờ, hãy để tôi hỏi bạn một câu tôi"
+    },
+    {
+      "t": 447.3,
+      "s": "luôn tự hỏi."
+    },
+    {
+      "t": 448.33,
+      "s": "Trong cả trăm nguyên tố của vũ trụ, vì sao"
+    },
+    {
+      "t": 451.51,
+      "s": "lại là cacbon được chọn để xây nên sự"
+    },
+    {
+      "t": 454.31,
+      "s": "sống?"
+    },
+    {
+      "t": 454.69,
+      "s": "Bí mật nằm ở chỗ này."
+    },
+    {
+      "t": 456.8,
+      "s": "Mỗi nguyên tử cacbon có bốn cánh tay để"
+    },
+    {
+      "t": 459.72,
+      "s": "nắm lấy những nguyên tử khác."
+    },
+    {
+      "t": 461.89,
+      "s": "Bốn cánh tay linh hoạt, không quá tham lam"
+    },
+    {
+      "t": 465.43,
+      "s": "cũng không quá hờ hững."
+    },
+    {
+      "t": 467.37,
+      "s": "Với bốn cánh tay ấy, cacbon xây được những"
+    },
+    {
+      "t": 470.25,
+      "s": "chuỗi dài vô tận."
+    },
+    {
+      "t": 471.42,
+      "s": "Nó cuộn thành vòng."
+    },
+    {
+      "t": 473.34,
+      "s": "Nó đan thành mạng."
+    },
+    {
+      "t": 475.02,
+      "s": "Nó ghép nên những kiến trúc phức tạp không"
+    },
+    {
+      "t": 477.84,
+      "s": "nguyên tố nào khác sánh được."
+    },
+    {
+      "t": 479.78,
+      "s": "Chính vì thế mà cacbon là bộ xương của mọi"
+    },
+    {
+      "t": 482.74,
+      "s": "thứ trong tôi."
+    },
+    {
+      "t": 483.73,
+      "s": "Nó là xương sống của chuỗi DNA lưu giữ bản"
+    },
+    {
+      "t": 487.28,
+      "s": "thiết kế của tôi."
+    },
+    {
+      "t": 488.72,
+      "s": "Nó dựng nên protein, nên đường, nên chất"
+    },
+    {
+      "t": 492.97,
+      "s": "béo."
+    },
+    {
+      "t": 493.4,
+      "s": "Người ta nói, hóa học của sự sống chính là"
+    },
+    {
+      "t": 496.87,
+      "s": "hóa học của cacbon."
+    },
+    {
+      "t": 498.44,
+      "s": "Và tôi thấy câu đó đúng đến tận từng tế"
+    },
+    {
+      "t": 501.69,
+      "s": "bào."
+    },
+    {
+      "t": 504.02,
+      "s": "Vậy nên bây giờ, tôi lại hít vào một hơi"
+    },
+    {
+      "t": 507.24,
+      "s": "thật sâu."
+    },
+    {
+      "t": 507.97,
+      "s": "Và tôi nghĩ về hành trình của những nguyên"
+    },
+    {
+      "t": 510.8,
+      "s": "tử này."
+    },
+    {
+      "t": 511.28,
+      "s": "Từ một lò lửa sao đã tắt hàng tỉ năm"
+    },
+    {
+      "t": 514.22,
+      "s": "trước."
+    },
+    {
+      "t": 514.71,
+      "s": "Qua gió sao và bóng tối lạnh giá."
+    },
+    {
+      "t": 517.81,
+      "s": "Qua đám bụi, qua Trái Đất non trẻ, qua"
+    },
+    {
+      "t": 521.23,
+      "s": "đất, qua cây, qua thức ăn tôi từng ăn."
+    },
+    {
+      "t": 524.64,
+      "s": "Cho đến khoảnh khắc này, khi chúng đang là"
+    },
+    {
+      "t": 528.54,
+      "s": "chính tôi."
+    },
+    {
+      "t": 529.46,
+      "s": "Và câu chuyện chưa dừng lại."
+    },
+    {
+      "t": 531.32,
+      "s": "Cacbon trong tôi chỉ đang mượn đường qua"
+    },
+    {
+      "t": 534.09,
+      "s": "tôi mà thôi."
+    },
+    {
+      "t": 534.92,
+      "s": "Một ngày kia, nó sẽ trở về với đất, tan"
+    },
+    {
+      "t": 538.14,
+      "s": "vào không khí, được một cái cây khác hít"
+    },
+    {
+      "t": 541.44,
+      "s": "lấy, thành một sinh vật khác."
+    },
+    {
+      "t": 543.83,
+      "s": "Và trong một tương lai xa xôi không thể"
+    },
+    {
+      "t": 546.61,
+      "s": "hình dung, khi cả Mặt Trời cũng lụi tàn,"
+    },
+    {
+      "t": 549.46,
+      "s": "những nguyên tử này có thể lại trôi vào"
+    },
+    {
+      "t": 552.24,
+      "s": "không gian, và một ngày nào đó, lại được"
+    },
+    {
+      "t": 555.1,
+      "s": "góp vào một ngôi sao mới."
+    },
+    {
+      "t": 556.88,
+      "s": "Tôi không tách rời khỏi vũ trụ."
+    },
+    {
+      "t": 559.1,
+      "s": "Tôi không phải là kẻ đứng ngoài ngắm nhìn"
+    },
+    {
+      "t": 561.65,
+      "s": "những vì sao."
+    },
+    {
+      "t": 562.46,
+      "s": "Tôi được làm ra từ chúng."
+    },
+    {
+      "t": 565.06,
+      "s": "Tôi là một cách để vũ trụ, trong một"
+    },
+    {
+      "t": 567.55,
+      "s": "khoảnh khắc ngắn ngủi, tự chiêm ngưỡng"
+    },
+    {
+      "t": 570.18,
+      "s": "chính mình."
+    },
+    {
+      "t": 570.95,
+      "s": "Nên lần tới, khi bạn thở ra, hãy nhớ."
+    },
+    {
+      "t": 574.18,
+      "s": "Hơi thở ấy mang theo tàn tro của những vì"
+    },
+    {
+      "t": 577.35,
+      "s": "sao."
+    },
+    {
+      "t": 577.66,
+      "s": "Và bạn, cũng chính là một vì sao — chỉ là"
+    },
+    {
+      "t": 581.15,
+      "s": "đang thở, đang nghĩ, và đang sống."
+    }
+  ]
+}

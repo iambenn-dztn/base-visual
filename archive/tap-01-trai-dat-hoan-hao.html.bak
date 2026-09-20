@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, height=1080">
+<title>Tập 1 — Trái Đất Hoàn Hảo — HyperFrames</title>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{width:1920px;height:1080px;overflow:hidden;background:#03040a;font-family:-apple-system,Segoe UI,Roboto,sans-serif;}
+  #root{position:relative;width:1920px;height:1080px;}
+  #c{position:absolute;inset:0;display:block;}
+  #vig{position:absolute;inset:0;pointer-events:none;z-index:5;background:radial-gradient(ellipse at center,rgba(0,0,0,0) 58%,rgba(2,2,8,.42) 100%);}
+  #sub{position:absolute;left:50%;bottom:9%;transform:translateX(-50%);z-index:20;width:min(1400px,86%);text-align:center;color:#f4f1ff;font-size:40px;font-weight:600;line-height:1.4;text-shadow:0 2px 18px rgba(0,0,0,.95),0 0 3px rgba(0,0,0,.95);}
+  #err{position:absolute;left:12px;top:12px;z-index:99;color:#ff9090;background:rgba(0,0,0,.8);padding:8px 10px;font:12px/1.5 monospace;max-width:90%;white-space:pre-wrap;border-radius:8px;display:none;}
+</style>
+</head>
+<body>
+<div data-hf-id="hf-m1d3" id="root" data-composition-id="tap-01-trai-dat" data-start="0" data-duration="808.74" data-width="1920" data-height="1080">
+  <canvas data-hf-id="hf-pspp" id="c" class="clip" data-start="0" data-duration="808.74" data-track-index="0"></canvas>
+  <div data-hf-id="hf-xl8p" id="vig"></div>
+  <div data-hf-id="hf-2tmp" id="sub"></div>
+  <div data-hf-id="hf-mp26" id="err"></div>
+  <audio data-hf-id="hf-yy5y" id="narr" class="clip" data-start="0" data-duration="808.74" data-track-index="1" src="../projects/hoan-hao-trai-dat/voice/narration_mixed.mp3"></audio>
+</div>
+
+<script>
+window.addEventListener('error',function(e){var d=document.getElementById('err');if(!d)return;d.style.display='block';
+  d.textContent='LỖI: '+(e.message||e.type)+(e.filename?('\n@ '+e.filename.split('/').pop()+':'+e.lineno):'');});
+// ===================== composition TẤT ĐỊNH theo t =====================
+const TOTAL=808.74, W=1920, H=1080, R=10, EO=180, VN_ROT=2.40;
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return ((t^t>>>14)>>>0)/4294967296;};}
+const rnd=mulberry32(20260704);
+const renderer=new THREE.WebGLRenderer({canvas:document.getElementById('c'),antialias:true});
+renderer.setPixelRatio(1); renderer.setSize(W,H);
+renderer.outputEncoding=THREE.sRGBEncoding; renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.15;
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(50,W/H,0.1,16000);
+const SUNPOS=new THREE.Vector3(-EO,0,0), SUN=SUNPOS.clone().normalize();
+const maxAniso=renderer.capabilities.getMaxAnisotropy();
+const TB='https://cdn.jsdelivr.net/gh/turban/webgl-earth@master/images/';
+const PX='https://cdn.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/';
+const loader=new THREE.TextureLoader(); loader.setCrossOrigin('anonymous');
+function tex(u,s){const t=loader.load(u);if(s)t.encoding=THREE.sRGBEncoding;t.anisotropy=maxAniso;return t;}
+const earthDay=tex(TB+'2_no_clouds_4k.jpg',true),earthWater=tex(TB+'water_4k.png',false),earthBump=tex(TB+'elev_bump_4k.jpg',false),earthCloud=tex(PX+'earthcloudmap.jpg',false),
+  moonTex=tex(PX+'moonmap1k.jpg',true),mercTex=tex(PX+'mercurymap.jpg',true),venusTex=tex(PX+'venusmap.jpg',true),marsTex=tex(PX+'marsmap1k.jpg',true),
+  jupTex=tex(PX+'jupitermap.jpg',true),satTex=tex(PX+'saturnmap.jpg',true),satRingTex=tex(PX+'saturnringcolor.jpg',true),
+  uranTex=tex(PX+'uranusmap.jpg',true),nepTex=tex(PX+'neptunemap.jpg',true),plutoTex=tex(PX+'plutomap1k.jpg',true),galaxyTex=tex(PX+'galaxy_starfield.png',true);
+galaxyTex.mapping=THREE.EquirectangularReflectionMapping; scene.background=galaxyTex;
+const sunLight=new THREE.DirectionalLight(0xfff3e0,1.7); sunLight.position.copy(SUNPOS); scene.add(sunLight);
+scene.add(new THREE.AmbientLight(0x2a3a52,0.30));
+const DOT=(function(){const s=64,cv=document.createElement('canvas');cv.width=cv.height=s;const g=cv.getContext('2d');
+  const gr=g.createRadialGradient(s/2,s/2,0,s/2,s/2,s/2);gr.addColorStop(0,'#fff');gr.addColorStop(.3,'rgba(255,255,255,.4)');gr.addColorStop(.6,'rgba(255,255,255,.08)');gr.addColorStop(1,'rgba(255,255,255,0)');
+  g.fillStyle=gr;g.fillRect(0,0,s,s);const t=new THREE.Texture(cv);t.needsUpdate=true;return t;})();
+(function(){const N=2200,P=new Float32Array(N*3),S=new Float32Array(N);
+  for(let i=0;i<N;i++){const u=rnd(),v=rnd(),th=2*Math.PI*u,ph=Math.acos(2*v-1),sp=Math.sin(ph),r=11000;
+    P[i*3]=sp*Math.cos(th)*r;P[i*3+1]=Math.cos(ph)*r;P[i*3+2]=sp*Math.sin(th)*r;S[i]=Math.pow(rnd(),2.5)*24+3;}
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(P,3));g.setAttribute('aS',new THREE.BufferAttribute(S,1));
+  scene.add(new THREE.Points(g,new THREE.ShaderMaterial({vertexShader:`attribute float aS;void main(){vec4 mv=modelViewMatrix*vec4(position,1.0);gl_PointSize=aS*(11000.0/-mv.z);gl_Position=projectionMatrix*mv;}`,
+    fragmentShader:`void main(){vec2 c=gl_PointCoord-0.5;float a=smoothstep(0.5,0.0,length(c));gl_FragColor=vec4(vec3(0.95,0.96,1.0)*a,a);}`,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false})));})();
+const earthTilt=new THREE.Group(); earthTilt.rotation.z=0.409; scene.add(earthTilt);
+const earthMesh=new THREE.Mesh(new THREE.SphereGeometry(R,96,96),new THREE.MeshPhongMaterial({map:earthDay,specularMap:earthWater,bumpMap:earthBump,bumpScale:0.3,specular:new THREE.Color(0x2a4d68),shininess:18}));
+earthTilt.add(earthMesh);
+const cloudMesh=new THREE.Mesh(new THREE.SphereGeometry(R*1.015,64,64),new THREE.MeshPhongMaterial({map:earthCloud,alphaMap:earthCloud,color:0xffffff,transparent:true,opacity:0.9,depthWrite:false})); earthTilt.add(cloudMesh);
+const atmMat=new THREE.ShaderMaterial({uniforms:{uSun:{value:SUN}},transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,
+  vertexShader:`varying vec3 vVN;varying vec3 vNW;void main(){vVN=normalize(normalMatrix*normal);vNW=normalize(mat3(modelMatrix)*normal);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
+  fragmentShader:`precision highp float;varying vec3 vVN;varying vec3 vNW;uniform vec3 uSun;void main(){float rim=pow(clamp(1.0-vVN.z,0.0,1.0),3.0);float day=smoothstep(-0.25,0.55,dot(normalize(vNW),normalize(uSun)));gl_FragColor=vec4(vec3(0.32,0.56,1.0)*rim*(0.25+0.85*day),1.0);}`});
+scene.add(new THREE.Mesh(new THREE.SphereGeometry(R*1.06,48,48),atmMat));
+function latLon(lat,lon,r){const phi=(90-lat)*Math.PI/180,th=(lon+180)*Math.PI/180;return new THREE.Vector3(-r*Math.sin(phi)*Math.cos(th),r*Math.cos(phi),r*Math.sin(phi)*Math.sin(th));}
+function mkLabel(txt,col,px){const cv=document.createElement('canvas');let g=cv.getContext('2d');const f='600 '+(px||26)+'px Segoe UI, Arial';
+  g.font=f;const w=Math.ceil(g.measureText(txt).width)+18;cv.width=w;cv.height=(px||26)+14;g=cv.getContext('2d');g.font=f;g.textAlign='center';g.textBaseline='middle';g.fillStyle=col;g.fillText(txt,w/2,cv.height/2);
+  const t=new THREE.Texture(cv);t.needsUpdate=true;const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:t,transparent:true,opacity:0,depthWrite:false,depthTest:false}));sp.userData.w=w;sp.userData.h=cv.height;return sp;}
+function place(lat,lon,txt,dc,tc,ly){const p=latLon(lat,lon,R*1.02);
+  const d=new THREE.Sprite(new THREE.SpriteMaterial({map:DOT,color:dc,transparent:true,depthTest:true,depthWrite:false,blending:THREE.AdditiveBlending}));d.position.copy(p);d.scale.set(0.55,0.55,1);earthMesh.add(d);
+  const l=mkLabel(txt,tc,26);l.material.opacity=1;l.material.depthTest=true;l.scale.set(l.userData.w*0.013,l.userData.h*0.013,1);l.position.copy(p.clone().multiplyScalar(1.03));l.position.y+=(ly||0);earthMesh.add(l);}
+place(16.2,108,'Việt Nam',0xffffff,'rgba(255,255,255,0.96)',-0.4);
+place(16.5,112,'Hoàng Sa',0xffd23f,'rgba(255,226,120,0.98)',0.8);
+place(9.5,114,'Trường Sa',0xffd23f,'rgba(255,226,120,0.98)',-0.3);
+function archipelago(clat,clon,dlat,dlon,n){const P=new Float32Array(n*3);
+  for(let i=0;i<n;i++){const p=latLon(clat+(rnd()-0.5)*dlat,clon+(rnd()-0.5)*dlon,R*1.006);P[i*3]=p.x;P[i*3+1]=p.y;P[i*3+2]=p.z;}
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(P,3));
+  earthMesh.add(new THREE.Points(g,new THREE.PointsMaterial({map:DOT,color:0xfff0cb,size:0.24,sizeAttenuation:true,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending})));}
+archipelago(16.5,112,1.6,2.4,26); archipelago(9.5,114,5.6,5.6,50);
+const moon=new THREE.Mesh(new THREE.SphereGeometry(R*0.27,48,48),new THREE.MeshPhongMaterial({map:moonTex,shininess:3})); scene.add(moon);
+const solar=new THREE.Group(); solar.position.copy(SUNPOS); scene.add(solar);
+// ===== MẶT TRỜI CHÂN THỰC: quang cầu (granulation+limb darkening+vết đen) + sắc cầu + nhật hoa =====
+const SUN_NOISE=`
+vec3 mod289(vec3 x){return x-floor(x*(1.0/289.0))*289.0;}
+vec4 mod289(vec4 x){return x-floor(x*(1.0/289.0))*289.0;}
+vec4 permute(vec4 x){return mod289(((x*34.0)+1.0)*x);}
+vec4 taylorInvSqrt(vec4 r){return 1.79284291400159-0.85373472095314*r;}
+float snoise(vec3 v){const vec2 C=vec2(1.0/6.0,1.0/3.0);const vec4 D=vec4(0.0,0.5,1.0,2.0);
+ vec3 i=floor(v+dot(v,C.yyy));vec3 x0=v-i+dot(i,C.xxx);
+ vec3 g=step(x0.yzx,x0.xyz);vec3 l=1.0-g;vec3 i1=min(g.xyz,l.zxy);vec3 i2=max(g.xyz,l.zxy);
+ vec3 x1=x0-i1+C.xxx;vec3 x2=x0-i2+C.yyy;vec3 x3=x0-D.yyy;i=mod289(i);
+ vec4 p=permute(permute(permute(i.z+vec4(0.0,i1.z,i2.z,1.0))+i.y+vec4(0.0,i1.y,i2.y,1.0))+i.x+vec4(0.0,i1.x,i2.x,1.0));
+ float n_=0.142857142857;vec3 ns=n_*D.wyz-D.xzx;vec4 j=p-49.0*floor(p*ns.z*ns.z);
+ vec4 x_=floor(j*ns.z);vec4 y_=floor(j-7.0*x_);vec4 x=x_*ns.x+ns.yyyy;vec4 y=y_*ns.x+ns.yyyy;vec4 h=1.0-abs(x)-abs(y);
+ vec4 b0=vec4(x.xy,y.xy);vec4 b1=vec4(x.zw,y.zw);vec4 s0=floor(b0)*2.0+1.0;vec4 s1=floor(b1)*2.0+1.0;vec4 sh=-step(h,vec4(0.0));
+ vec4 a0=b0.xzyw+s0.xzyw*sh.xxyy;vec4 a1=b1.xzyw+s1.xzyw*sh.zzww;
+ vec3 p0=vec3(a0.xy,h.x);vec3 p1=vec3(a0.zw,h.y);vec3 p2=vec3(a1.xy,h.z);vec3 p3=vec3(a1.zw,h.w);
+ vec4 norm=taylorInvSqrt(vec4(dot(p0,p0),dot(p1,p1),dot(p2,p2),dot(p3,p3)));p0*=norm.x;p1*=norm.y;p2*=norm.z;p3*=norm.w;
+ vec4 m=max(0.6-vec4(dot(x0,x0),dot(x1,x1),dot(x2,x2),dot(x3,x3)),0.0);m=m*m;
+ return 42.0*dot(m*m,vec4(dot(p0,x0),dot(p1,x1),dot(p2,x2),dot(p3,x3)));}
+float fbm(vec3 p){float f=0.0,a=0.5;for(int i=0;i<5;i++){f+=a*snoise(p);p=p*2.03+7.1;a*=0.5;}return f;}
+`;
+const sunMat=new THREE.ShaderMaterial({uniforms:{uT:{value:0}},
+  vertexShader:`varying vec3 vDir;varying vec3 vN;varying vec3 vV;void main(){vDir=normalize(position);vN=normalize(normalMatrix*normal);vec4 mv=modelViewMatrix*vec4(position,1.0);vV=-mv.xyz;gl_Position=projectionMatrix*mv;}`,
+  fragmentShader:`precision highp float;varying vec3 vDir;varying vec3 vN;varying vec3 vV;uniform float uT;`+SUN_NOISE+`
+   void main(){vec3 d=normalize(vDir);
+    vec3 q=d*7.0+vec3(uT*0.02,uT*0.015,-uT*0.02);
+    float gran=fbm(q);float fine=fbm(d*22.0+uT*0.05);
+    float cells=gran*0.72+fine*0.28;float bri=smoothstep(-0.5,0.7,cells);
+    float sp=fbm(d*1.7+3.3);float spot=smoothstep(0.56,0.76,sp);
+    vec3 cDark=vec3(0.72,0.20,0.02),cMid=vec3(1.0,0.60,0.16),cHot=vec3(1.0,0.93,0.72);
+    vec3 col=mix(cDark,cMid,smoothstep(0.15,0.6,bri));
+    col=mix(col,cHot,smoothstep(0.62,1.0,bri));
+    col=mix(col,vec3(0.26,0.07,0.02),spot*0.92);
+    float mu=clamp(dot(normalize(vN),normalize(vV)),0.0,1.0);
+    col*=(0.30+0.70*pow(mu,0.6));
+    col+=cHot*pow(1.0-mu,3.0)*bri*0.35;
+    col*=1.4;
+    gl_FragColor=vec4(col,1.0);}`});
+const sunMesh=new THREE.Mesh(new THREE.SphereGeometry(74,96,96),sunMat); solar.add(sunMesh);
+const chromoMat=new THREE.ShaderMaterial({transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.FrontSide,
+  vertexShader:`varying vec3 vN;varying vec3 vV;void main(){vN=normalize(normalMatrix*normal);vec4 mv=modelViewMatrix*vec4(position,1.0);vV=-mv.xyz;gl_Position=projectionMatrix*mv;}`,
+  fragmentShader:`precision highp float;varying vec3 vN;varying vec3 vV;void main(){float f=pow(1.0-max(dot(normalize(vN),normalize(vV)),0.0),3.2);gl_FragColor=vec4(vec3(1.0,0.42,0.16)*f*1.7,1.0);}`});
+solar.add(new THREE.Mesh(new THREE.SphereGeometry(74*1.028,64,64),chromoMat));
+// nhật hoa: texture mềm + tia mờ (PRNG riêng để không xê dịch layout vành đai)
+const rndc=mulberry32(99);
+function coronaTex(size,rays){const cv=document.createElement('canvas');cv.width=cv.height=size;const g=cv.getContext('2d');const c=size/2;
+  const gr=g.createRadialGradient(c,c,0,c,c,c);gr.addColorStop(0,'rgba(255,246,222,1)');gr.addColorStop(.06,'rgba(255,238,190,.96)');gr.addColorStop(.16,'rgba(255,206,120,.55)');gr.addColorStop(.34,'rgba(255,150,60,.17)');gr.addColorStop(.66,'rgba(255,120,40,.05)');gr.addColorStop(1,'rgba(0,0,0,0)');
+  g.fillStyle=gr;g.fillRect(0,0,size,size);g.globalCompositeOperation='lighter';
+  for(let i=0;i<rays;i++){const a=rndc()*Math.PI*2,len=c*(0.45+rndc()*0.5),wid=(1.5+rndc()*3.0)*(size/256);
+    g.save();g.translate(c,c);g.rotate(a);const rg=g.createLinearGradient(0,0,len,0);rg.addColorStop(0,'rgba(255,220,150,0.18)');rg.addColorStop(1,'rgba(255,180,90,0)');
+    g.fillStyle=rg;g.beginPath();g.moveTo(0,-wid);g.lineTo(len,0);g.lineTo(0,wid);g.closePath();g.fill();g.restore();}
+  const t=new THREE.Texture(cv);t.needsUpdate=true;return t;}
+const SUNTEX=coronaTex(512,44);
+const solarGlow=new THREE.Sprite(new THREE.SpriteMaterial({map:SUNTEX,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:0.95})); solar.add(solarGlow);
+const coronaFar=new THREE.Sprite(new THREE.SpriteMaterial({map:coronaTex(512,30),blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:0.5})); solar.add(coronaFar);
+const orbitMats=[], labelSprites=[], planets=[];
+function orbitRing(r){const pts=[];for(let i=0;i<=160;i++){const a=i/160*Math.PI*2;pts.push(new THREE.Vector3(Math.cos(a)*r,0,Math.sin(a)*r));}
+  const g=new THREE.BufferGeometry().setFromPoints(pts);const m=new THREE.LineBasicMaterial({color:0x6f86b0,transparent:true,opacity:0,depthWrite:false});orbitMats.push(m);return new THREE.LineLoop(g,m);}
+function addPlanet(tx,orbit,size,a0,spd,tilt,spin,name){solar.add(orbitRing(orbit));
+  const m=new THREE.Mesh(new THREE.SphereGeometry(size,40,40),new THREE.MeshPhongMaterial({map:tx,shininess:4}));if(tilt)m.rotation.z=tilt;solar.add(m);
+  const lab=mkLabel(name,'rgba(205,228,255,0.95)',30);lab.scale.set(lab.userData.w*0.06,lab.userData.h*0.06,1);labelSprites.push(lab);solar.add(lab);
+  const p={mesh:m,orbit:orbit,a0:a0,spd:spd,size:size,lab:lab,spin:spin||1};planets.push(p);return p;}
+// bán kính hành tinh theo TỈ LỆ THẬT so với Trái Đất (R=10): kích cỡ tương đối giữa các hành tinh luôn đúng ở mọi góc nhìn
+addPlanet(mercTex,100,3.83,0.5,0.12,0,1,'Sao Thủy');      // 0.383 R⊕
+addPlanet(venusTex,140,9.50,2.1,0.09,0.05,-1,'Sao Kim');  // 0.950 R⊕ (tự quay ngược)
+addPlanet(marsTex,250,5.32,5.2,0.06,0.44,1,'Sao Hỏa');    // 0.532 R⊕
+solar.add(orbitRing(EO));
+const earthLab=mkLabel('Trái Đất','rgba(205,228,255,0.95)',30);earthLab.scale.set(earthLab.userData.w*0.06,earthLab.userData.h*0.06,1);earthLab.position.set(EO,16,0);labelSprites.push(earthLab);solar.add(earthLab);
+const jup=addPlanet(jupTex,560,109.7,1.2,0.03,0.05,1,'Sao Mộc');   // 10.97 R⊕
+const sat=addPlanet(satTex,880,91.4,4.4,0.022,0.47,1,'Sao Thổ');   // 9.14 R⊕
+addPlanet(uranTex,1180,39.8,2.0,0.015,1.71,-1,'Sao Thiên Vương');  // 3.98 R⊕ (nghiêng 98°)
+addPlanet(nepTex,1450,38.6,0.7,0.011,0.49,1,'Sao Hải Vương');      // 3.86 R⊕
+addPlanet(moonTex,320,0.74,1.0,0.05,0.05,1,'Ceres');              // 0.074 R⊕
+addPlanet(plutoTex,1600,1.86,2.0,0.009,0.008,1,'Sao Diêm Vương');  // 0.186 R⊕
+addPlanet(moonTex,1690,1.83,4.0,0.007,0.007,1,'Eris');            // 0.183 R⊕
+const ringGeo=new THREE.RingGeometry(105,210,120,1);
+(function(){const pos=ringGeo.attributes.position,uv=ringGeo.attributes.uv,v=new THREE.Vector3();for(let i=0;i<pos.count;i++){v.fromBufferAttribute(pos,i);const d=v.length();uv.setXY(i,(d-105)/105,0.5);}})();
+const satRing=new THREE.Mesh(ringGeo,new THREE.MeshBasicMaterial({map:satRingTex,alphaMap:satRingTex,transparent:true,opacity:0.9,side:THREE.DoubleSide,depthWrite:false}));satRing.rotation.x=Math.PI/2.4;sat.mesh.add(satRing);
+const hzMat=new THREE.MeshBasicMaterial({color:0x58d090,transparent:true,opacity:0,side:THREE.DoubleSide,blending:THREE.AdditiveBlending,depthWrite:false});
+const hz=new THREE.Mesh(new THREE.RingGeometry(EO-22,EO+25,120),hzMat);hz.rotation.x=Math.PI/2;solar.add(hz);
+const beltMats=[];
+function beltLayer(grp,N,rmin,rmax,yj,size,col,op){const P=new Float32Array(N*3);
+  for(let i=0;i<N;i++){const a=rnd()*Math.PI*2,r=rmin+rnd()*(rmax-rmin),y=(rnd()-0.5)*yj;P[i*3]=Math.cos(a)*r;P[i*3+1]=y;P[i*3+2]=Math.sin(a)*r;}
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(P,3));
+  const m=new THREE.PointsMaterial({color:col,size:size*1.7,map:DOT,sizeAttenuation:true,transparent:true,opacity:op,depthWrite:false,blending:THREE.AdditiveBlending});beltMats.push({m:m,base:op});grp.add(new THREE.Points(g,m));}
+const belt=new THREE.Group();beltLayer(belt,3200,290,360,9,1.5,0x9a8f7a,0.8);beltLayer(belt,340,292,358,9,4.0,0xb9ad94,0.95);solar.add(belt);
+const kb=new THREE.Group();beltLayer(kb,3000,1540,1770,30,1.4,0x8aa0b8,0.55);beltLayer(kb,300,1540,1770,30,3.6,0xaebfce,0.7);solar.add(kb);
+const composer=new THREE.EffectComposer(renderer);composer.addPass(new THREE.RenderPass(scene,camera));
+const bloom=new THREE.UnrealBloomPass(new THREE.Vector2(W,H),0.45,0.6,0.55);composer.addPass(bloom);
+const lensPass=new THREE.ShaderPass({uniforms:{tDiffuse:{value:null},uRes:{value:new THREE.Vector2(W,H)},uT:{value:0}},
+  vertexShader:`varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
+  fragmentShader:`uniform sampler2D tDiffuse;uniform vec2 uRes;uniform float uT;varying vec2 vUv;
+    float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+    void main(){vec2 uv=vUv,c=uv-0.5;float r2=dot(c,c),ca=0.0006+r2*0.0022;vec3 col;
+      col.r=texture2D(tDiffuse,uv+c*ca).r;col.g=texture2D(tDiffuse,uv).g;col.b=texture2D(tDiffuse,uv-c*ca).b;
+      float vig=1.0-smoothstep(0.34,0.95,r2*1.8);col*=mix(0.6,1.0,vig);col+=(h(uv*uRes+floor(uT*30.0))-0.5)*0.03;gl_FragColor=vec4(col,1.0);}`});
+lensPass.renderToScreen=true;composer.addPass(lensPass);
+function smooth(a){return a*a*a*(a*(a*6-15)+10);}
+function track(t,k){if(t<=k[0].t)return k[0].v;if(t>=k[k.length-1].t)return k[k.length-1].v;
+  for(let i=0;i<k.length-1;i++){if(t>=k[i].t&&t<=k[i+1].t){const a=smooth((t-k[i].t)/(k[i+1].t-k[i].t)),v0=k[i].v,v1=k[i+1].v;
+    if(Array.isArray(v0))return v0.map((x,j)=>x+(v1[j]-x)*a);return v0+(v1-v0)*a;}}return k[k.length-1].v;}
+// ===== camera choreography — 18 nhịp theo 16 chương (TOTAL 967.83s) =====
+const camPos=[
+ {t:0,v:[-70,55,760]},{t:15,v:[-40,28,300]},{t:30,v:[-16,7,34]},{t:58,v:[-16,7,34]},
+ {t:70,v:[-180,2200,3600]},{t:132,v:[-60,90,360]},{t:188,v:[-180,620,1050]},{t:263,v:[-180,620,1050]},
+ {t:296,v:[-16,7,34]},{t:325,v:[-16,7,34]},{t:371,v:[-180,1050,1750]},{t:416,v:[-24,13,68]},{t:540,v:[-24,13,68]},
+ {t:543,v:[-16,7,34]},{t:615,v:[-16,7,34]},{t:661,v:[-16,7,34]},{t:715,v:[-16,7,34]},{t:745,v:[-16,7,34]},
+ {t:784,v:[-180,2200,3600]},{t:816,v:[-16,7,34]},{t:864,v:[-14,6,30]},{t:906,v:[-70,55,720]},{t:967.83,v:[-85,60,880]}];
+const camLook=[
+ {t:0,v:[0,0,0]},{t:60,v:[0,0,0]},{t:70,v:[-180,0,0]},{t:266,v:[-180,0,0]},{t:294,v:[0,0,0]},
+ {t:368,v:[0,0,0]},{t:371,v:[-180,0,0]},{t:414,v:[-180,0,0]},{t:418,v:[0,0,0]},{t:782,v:[0,0,0]},
+ {t:784,v:[-180,0,0]},{t:814,v:[-180,0,0]},{t:817,v:[0,0,0]},{t:967.83,v:[0,0,0]}];
+const camFov=[
+ {t:0,v:32},{t:15,v:42},{t:30,v:52},{t:58,v:52},{t:70,v:62},{t:132,v:46},{t:188,v:56},{t:263,v:56},
+ {t:296,v:52},{t:325,v:52},{t:371,v:56},{t:416,v:50},{t:540,v:50},{t:543,v:52},{t:615,v:52},{t:661,v:52},
+ {t:715,v:52},{t:745,v:52},{t:784,v:62},{t:816,v:52},{t:864,v:52},{t:906,v:40},{t:967.83,v:32}];
+const diagramOp=[
+ {t:0,v:0},{t:64,v:0},{t:70,v:1},{t:290,v:1},{t:296,v:0},{t:368,v:0},{t:371,v:1},{t:414,v:1},
+ {t:420,v:0},{t:780,v:0},{t:784,v:1},{t:814,v:1},{t:820,v:0},{t:967.83,v:0}];
+const CUES=[
+ {t:0,s:"Hãy tưởng tượng bạn tung một đồng xu, và"},
+ {t:2.82,s:"nó ngửa."},
+ {t:3.89,s:"Rồi tung lại, ngửa."},
+ {t:5.99,s:"Rồi tung thêm hai mươi lần nữa — và tất"},
+ {t:8.9,s:"cả, không sót một lần, đều ngửa."},
+ {t:11.76,s:"Xác suất cho điều đó nhỏ đến mức gần như"},
+ {t:14.71,s:"không thể."},
+ {t:15.95,s:"Vậy mà, đó gần như chính là cảm giác khi"},
+ {t:18.41,s:"ta nhìn kỹ vào những điều kiện đã tạo nên"},
+ {t:20.94,s:"Trái Đất."},
+ {t:23.95,s:"Không phải một phép màu duy nhất, mà là cả"},
+ {t:26.63,s:"một chuỗi dài những trùng hợp — mỗi cái"},
+ {t:29.13,s:"đều có thể đã diễn ra khác đi, mỗi cái đều"},
+ {t:31.82,s:"có thể đã giết chết mọi khả năng sống."},
+ {t:34.75,s:"Nhưng từng cái một, chúng lại rơi đúng vào"},
+ {t:37.48,s:"chỗ hoàn hảo."},
+ {t:38.81,s:"Đây là câu chuyện về những thứ tình cờ ấy."},
+ {t:41.66,s:"Về việc một hành tinh đá nhỏ bé, trôi"},
+ {t:43.85,s:"trong bóng tối, đã trở thành nơi duy nhất"},
+ {t:46.27,s:"mà ta biết chắc có sự sống — và có cả"},
+ {t:48.45,s:"những sinh vật biết ngước lên hỏi vì sao."},
+ {t:53.85,s:"Trùng hợp đầu tiên nằm ở quy mô lớn đến"},
+ {t:56.55,s:"choáng ngợp: vị trí của chúng ta trong dải"},
+ {t:59.47,s:"Ngân Hà."},
+ {t:60.52,s:"Mặt Trời không nằm gần tâm thiên hà."},
+ {t:63.38,s:"Ở đó, các ngôi sao chen chúc, bức xạ dữ"},
+ {t:65.8,s:"dội, và những vụ nổ siêu tân tinh có thể"},
+ {t:68.28,s:"quét sạch bầu khí quyển của bất kỳ hành"},
+ {t:70.7,s:"tinh nào chỉ trong khoảnh khắc."},
+ {t:73.11,s:"Nhưng ta cũng không trôi dạt ở vùng rìa xa"},
+ {t:76.06,s:"xôi, nơi vật chất quá nghèo nàn để nặn nên"},
+ {t:79.01,s:"một hành tinh đá giàu sắt, giàu carbon,"},
+ {t:81.76,s:"giàu những nguyên tố mà sự sống cần."},
+ {t:84.76,s:"Thậm chí, Mặt Trời còn nằm giữa hai nhánh"},
+ {t:87.15,s:"xoắn của thiên hà, tránh được những đám"},
+ {t:89.44,s:"mây khí khổng lồ và những vùng hình thành"},
+ {t:91.83,s:"sao dữ dội nhất — nơi bức xạ có thể bóp"},
+ {t:94.11,s:"nghẹt sự sống non trẻ."},
+ {t:95.86,s:"Ta nằm trong một dải yên bình ở giữa — đủ"},
+ {t:98.55,s:"giàu nguyên tố để hình thành, đủ tĩnh lặng"},
+ {t:101.3,s:"để tồn tại."},
+ {t:102.52,s:"Một khu phố an toàn hiếm hoi trong một"},
+ {t:104.69,s:"thiên hà phần lớn là khắc nghiệt."},
+ {t:109.03,s:"Trùng hợp thứ hai chính là ngôi sao của"},
+ {t:110.89,s:"chúng ta."},
+ {t:111.82,s:"Mặt Trời là một sao lùn vàng loại G — và"},
+ {t:114.58,s:"loại sao ấy hóa ra vừa vặn đến kỳ lạ."},
+ {t:117.61,s:"Những ngôi sao khổng lồ cháy sáng rực rỡ,"},
+ {t:120.1,s:"nhưng chúng đốt hết nhiên liệu chỉ sau vài"},
+ {t:122.64,s:"triệu năm rồi nổ tung — quá ngắn ngủi để"},
+ {t:125.07,s:"sự sống phức tạp kịp hình thành."},
+ {t:127.5,s:"Còn những sao lùn đỏ nhỏ bé thì sống rất"},
+ {t:129.97,s:"lâu, nhưng lại hay cáu kỉnh, thường xuyên"},
+ {t:132.5,s:"phun ra những đợt bão lửa có thể thiêu"},
+ {t:134.85,s:"trụi khí quyển của các hành tinh quay"},
+ {t:137.14,s:"quanh."},
+ {t:137.99,s:"Mặt Trời nằm đúng ở điểm cân bằng: đủ lớn"},
+ {t:140.89,s:"để ấm áp và ổn định, đủ nhỏ để sống thọ"},
+ {t:143.65,s:"khoảng mười tỷ năm."},
+ {t:145.49,s:"Một ngọn lửa kiên nhẫn, đều đặn, đủ dài để"},
+ {t:148.28,s:"cả một câu chuyện tiến hóa có thời gian"},
+ {t:150.86,s:"diễn ra."},
+ {t:153.87,s:"Rồi đến khoảng cách."},
+ {t:155.37,s:"Trái Đất nằm đúng trong cái mà các nhà"},
+ {t:158.05,s:"khoa học gọi là \"vùng ở được\" — dải hẹp"},
+ {t:160.8,s:"quanh một ngôi sao nơi nước có thể tồn tại"},
+ {t:163.76,s:"ở thể lỏng trên bề mặt."},
+ {t:165.85,s:"Và nước lỏng chính là chìa khóa."},
+ {t:168.78,s:"Nó là dung môi cho gần như mọi phản ứng"},
+ {t:171.11,s:"hóa học của sự sống, là phương tiện vận"},
+ {t:173.44,s:"chuyển, là bộ điều hòa nhiệt khổng lồ."},
+ {t:176.2,s:"Gần hơn một chút, hãy nhìn Sao Kim."},
+ {t:179.05,s:"Cùng kích thước với Trái Đất, nhưng hiệu"},
+ {t:181.65,s:"ứng nhà kính mất kiểm soát đã biến nó"},
+ {t:184.06,s:"thành một lò nung hơn bốn trăm sáu mươi"},
+ {t:186.6,s:"độ, đủ nóng để nung chảy chì."},
+ {t:188.97,s:"Xa hơn một chút, hãy nhìn Sao Hỏa."},
+ {t:191.83,s:"Từng có sông, có hồ, nhưng giờ chỉ còn một"},
+ {t:194.77,s:"sa mạc đóng băng, lạnh lẽo và trơ trụi."},
+ {t:197.99,s:"Trái Đất rơi đúng vào dải mỏng manh ở giữa"},
+ {t:200.89,s:"hai số phận ấy."},
+ {t:202.39,s:"Điều kỳ lạ hơn nữa: dải ấy không cố định."},
+ {t:205.75,s:"Khi Mặt Trời già đi và sáng dần, vùng ở"},
+ {t:208.61,s:"được cũng trôi ra xa."},
+ {t:210.64,s:"Trái Đất vẫn còn nằm trong đó — nhưng đó"},
+ {t:213.39,s:"là một cửa sổ có hạn, và ta đang sống đúng"},
+ {t:216.27,s:"vào lúc nó còn mở."},
+ {t:219.96,s:"Nhưng chỉ đúng khoảng cách trung bình thôi"},
+ {t:222.36,s:"vẫn chưa đủ."},
+ {t:223.54,s:"Trùng hợp tiếp theo là hình dạng quỹ đạo"},
+ {t:226.03,s:"của Trái Đất — nó gần như tròn."},
+ {t:228.44,s:"Nhiều hành tinh khác lao theo những quỹ"},
+ {t:231.38,s:"đạo hình bầu dục méo mó, khi thì cháy khét"},
+ {t:234.55,s:"vì quá gần sao, khi thì đóng băng vì trôi"},
+ {t:237.64,s:"ra quá xa."},
+ {t:238.9,s:"Trái Đất thì giữ một khoảng cách gần như"},
+ {t:241.14,s:"không đổi, nên nhiệt độ cũng ổn định quanh"},
+ {t:243.5,s:"năm."},
+ {t:246.19,s:"Ngay cả kích thước của Trái Đất cũng vừa"},
+ {t:248.62,s:"vặn đến khó tin."},
+ {t:250.1,s:"Đủ lớn để lực hấp dẫn giữ chặt một bầu khí"},
+ {t:252.8,s:"quyển, và để lõi bên trong còn nóng, còn"},
+ {t:255.38,s:"chuyển động suốt hàng tỷ năm."},
+ {t:257.74,s:"Nhưng cũng không quá lớn đến mức trở thành"},
+ {t:260.36,s:"một quả cầu khí ngột ngạt như Sao Mộc, nơi"},
+ {t:262.97,s:"không hề có một bề mặt rắn để đứng lên."},
+ {t:265.91,s:"Vừa đủ để có đất, có biển, có bầu trời."},
+ {t:272.17,s:"Chính cái lõi nóng ấy tạo nên một trong"},
+ {t:274.28,s:"những tấm khiên quan trọng nhất của sự"},
+ {t:276.33,s:"sống."},
+ {t:277.1,s:"Sâu trong lòng đất, sắt lỏng cuộn xoáy như"},
+ {t:279.92,s:"một cỗ máy phát điện khổng lồ, sinh ra một"},
+ {t:282.73,s:"từ trường bao trùm cả hành tinh."},
+ {t:285.34,s:"Tấm khiên vô hình ấy làm chệch hướng gió"},
+ {t:287.54,s:"Mặt Trời — dòng hạt tích điện chết người"},
+ {t:289.74,s:"liên tục thổi tới."},
+ {t:291.22,s:"Không có nó, khí quyển của ta sẽ bị bào"},
+ {t:293.46,s:"mòn dần vào không gian."},
+ {t:295.27,s:"Đó chính xác là số phận của Sao Hỏa."},
+ {t:297.94,s:"Khi lõi của nó nguội đi và từ trường tắt"},
+ {t:300.53,s:"lịm, gió Mặt Trời đã lột dần bầu khí quyển"},
+ {t:303.25,s:"của hành tinh đỏ, để lại một thế giới"},
+ {t:305.64,s:"chết."},
+ {t:308.44,s:"Và ở phía ngoài, một người khổng lồ tình"},
+ {t:311.12,s:"cờ đứng canh gác."},
+ {t:312.76,s:"Sao Mộc, với khối lượng lớn gấp hàng trăm"},
+ {t:315.41,s:"lần Trái Đất, có một lực hấp dẫn mãnh"},
+ {t:317.81,s:"liệt."},
+ {t:318.61,s:"Lực hấp dẫn ấy hút vào, hoặc bẻ hướng,"},
+ {t:321.2,s:"nhiều sao chổi và tiểu hành tinh lẽ ra có"},
+ {t:324,s:"thể lao thẳng vào Trái Đất."},
+ {t:326.34,s:"Như một người vệ sĩ đứng chắn ở cửa ngoài,"},
+ {t:328.87,s:"dù chính nó chẳng hề biết mình đang bảo vệ"},
+ {t:331.4,s:"aai."},
+ {t:332.14,s:"Chính Sao Mộc cũng giữ cho vành đai tiểu"},
+ {t:334.73,s:"hành tinh giữa nó và Sao Hỏa không tụ lại"},
+ {t:337.37,s:"thành một hành tinh, và phần nào định hình"},
+ {t:340.08,s:"sự ổn định của cả hệ Mặt Trời quanh ta."},
+ {t:345.55,s:"Nhưng có lẽ, trùng hợp đẹp đẽ nhất trong"},
+ {t:348.17,s:"tất cả — là Mặt Trăng."},
+ {t:350.09,s:"So với hành tinh mẹ, Mặt Trăng của chúng"},
+ {t:352.87,s:"ta lớn một cách bất thường."},
+ {t:355.25,s:"Nó không phải một hòn đá bị bắt giữ, mà"},
+ {t:358.23,s:"sinh ra từ một vụ va chạm khổng lồ thuở"},
+ {t:361.22,s:"Trái Đất còn non trẻ, khi một thiên thể cỡ"},
+ {t:364.44,s:"Sao Hỏa đâm vào ta."},
+ {t:366.36,s:"Chính khối lượng lớn ấy neo giữ trục"},
+ {t:368.39,s:"nghiêng của Trái Đất."},
+ {t:370.07,s:"Nhờ nó, độ nghiêng của ta — và do đó, các"},
+ {t:372.97,s:"mùa — được ổn định qua hàng triệu năm,"},
+ {t:375.66,s:"thay vì chao đảo hỗn loạn như trục của Sao"},
+ {t:378.63,s:"Hỏa."},
+ {t:379.38,s:"Mặt Trăng còn kéo lên những con thủy"},
+ {t:381.29,s:"triều."},
+ {t:382.11,s:"Nhịp lên xuống của biển tạo nên những vùng"},
+ {t:384.37,s:"triều — nơi biển gặp đất, một môi trường"},
+ {t:386.52,s:"biến động mà nhiều giả thuyết xem là chiếc"},
+ {t:388.78,s:"nôi cho những bước đi đầu tiên của sự sống"},
+ {t:391.04,s:"lên cạn."},
+ {t:391.93,s:"Và còn điều này nữa: thuở sơ khai, Trái"},
+ {t:394.75,s:"Đất quay rất nhanh, một ngày chỉ dài vài"},
+ {t:397.64,s:"giờ."},
+ {t:398.43,s:"Chính lực kéo của Mặt Trăng đã dần hãm"},
+ {t:400.65,s:"vòng quay ấy lại, kéo dài ngày ra tới hai"},
+ {t:403.04,s:"mươi tư giờ như hôm nay."},
+ {t:404.92,s:"Một ngày quá ngắn sẽ tạo ra những cơn gió"},
+ {t:407.56,s:"bão khủng khiếp; quá dài sẽ khiến một nửa"},
+ {t:410.2,s:"hành tinh nướng cháy còn nửa kia đóng"},
+ {t:412.58,s:"băng."},
+ {t:413.41,s:"Mặt Trăng đã tình cờ tinh chỉnh nhịp ngày"},
+ {t:416.04,s:"đêm về đúng mức dễ sống."},
+ {t:418.05,s:"Và đây là một trùng hợp thuần túy tình cờ,"},
+ {t:421.21,s:"không mang ý nghĩa sống còn nào, nhưng đẹp"},
+ {t:424.36,s:"đến sững sờ: Mặt Trăng nhỏ hơn Mặt Trời"},
+ {t:427.29,s:"khoảng bốn trăm lần, nhưng cũng ở gần hơn"},
+ {t:430.37,s:"đúng bốn trăm lần."},
+ {t:432.19,s:"Nên khi nhìn từ Trái Đất, hai thiên thể ấy"},
+ {t:434.73,s:"trông vừa khít nhau, cho ta những lần nhật"},
+ {t:437.28,s:"thực toàn phần hoàn hảo."},
+ {t:439.23,s:"Mà Mặt Trăng vẫn đang lùi ra xa từng chút"},
+ {t:441.42,s:"một — nghĩa là ta đang sống đúng vào thời"},
+ {t:443.61,s:"khắc hiếm hoi được chứng kiến điều đó."},
+ {t:448.6,s:"Trở lại với nước."},
+ {t:450.02,s:"Trái Đất có nước — nhưng, một lần nữa, chỉ"},
+ {t:453.82,s:"vừa đủ."},
+ {t:454.92,s:"Phần lớn nước ấy có lẽ đến từ những tiểu"},
+ {t:457.26,s:"hành tinh và sao chổi giàu băng, va vào"},
+ {t:459.55,s:"Trái Đất trong những đợt bắn phá thời kỳ"},
+ {t:461.89,s:"đầu."},
+ {t:462.63,s:"Từng giọt một, qua hàng trăm triệu năm,"},
+ {t:465.33,s:"các đại dương được lấp đầy."},
+ {t:467.69,s:"Nhưng nếu nước quá nhiều, Trái Đất sẽ là"},
+ {t:470.32,s:"một đại dương không đáy, không còn lục địa"},
+ {t:473.08,s:"— và không có đất lộ thiên, sẽ không có"},
+ {t:475.65,s:"phong hóa đá, mắt xích thiết yếu điều hòa"},
+ {t:478.34,s:"khí hậu."},
+ {t:479.37,s:"Vừa đủ nước để có biển, vừa đủ để vẫn có"},
+ {t:482.82,s:"đất."},
+ {t:483.63,s:"Và nước còn giấu một điều bất thường cứu"},
+ {t:486.66,s:"rỗi sự sống: khi đóng băng, nó nở ra và"},
+ {t:489.62,s:"nhẹ hơn, nên băng nổi lên trên."},
+ {t:492.47,s:"Nếu băng chìm xuống, các hồ và đại dương"},
+ {t:495.13,s:"sẽ đóng băng từ dưới lên, giết sạch mọi"},
+ {t:497.72,s:"thứ."},
+ {t:498.46,s:"Thay vào đó, lớp băng nổi trở thành một"},
+ {t:501.3,s:"tấm chăn, giữ cho nước bên dưới vẫn lỏng,"},
+ {t:504.28,s:"vẫn ấm — một nơi trú ẩn cho sự sống vượt"},
+ {t:507.19,s:"qua những kỷ băng hà khắc nghiệt nhất."},
+ {t:512.42,s:"Rồi đến chính bầu không khí ta thở."},
+ {t:515.07,s:"Nó chứa khoảng hai mươi mốt phần trăm oxy"},
+ {t:517.64,s:"— và con số ấy cũng nằm trên một lằn ranh"},
+ {t:520.22,s:"mong manh."},
+ {t:521.33,s:"Nếu oxy cao hơn nhiều, chỉ một tia lửa"},
+ {t:523.71,s:"cũng có thể khiến cả những khu rừng ẩm ướt"},
+ {t:526.34,s:"bùng cháy dữ dội."},
+ {t:527.91,s:"Nếu thấp hơn nhiều, những sinh vật lớn,"},
+ {t:530.31,s:"hoạt động mạnh như chúng ta sẽ không thể"},
+ {t:532.77,s:"tồn tại."},
+ {t:533.74,s:"Phần còn lại phần lớn là nitơ — một chất"},
+ {t:536.23,s:"khí trơ, đóng vai trò tấm đệm pha loãng,"},
+ {t:538.72,s:"giữ cho phản ứng cháy không mất kiểm soát."},
+ {t:541.83,s:"Một công thức khí quyển vừa đủ để đốt cháy"},
+ {t:544.33,s:"thức ăn trong cơ thể, mà không đốt cháy cả"},
+ {t:546.82,s:"thế giới."},
+ {t:549.83,s:"Trên lục địa, Trái Đất vận hành một cơ chế"},
+ {t:552.94,s:"cực kỳ hiếm: kiến tạo mảng."},
+ {t:555.44,s:"Lớp vỏ không phải một khối liền, mà vỡ"},
+ {t:557.85,s:"thành những mảng khổng lồ trôi nổi, va"},
+ {t:560.25,s:"chạm, chìm xuống và trồi lên."},
+ {t:562.56,s:"Quá trình này vận hành một bộ điều nhiệt"},
+ {t:564.57,s:"tự nhiên."},
+ {t:565.52,s:"Khi khí hậu ấm lên, đá phong hóa nhanh"},
+ {t:567.92,s:"hơn, hút bớt khí carbonic và chôn xuống"},
+ {t:570.38,s:"đáy biển, làm hành tinh nguội đi."},
+ {t:572.96,s:"Khi lạnh đi, núi lửa lại thải carbonic ra,"},
+ {t:576.46,s:"và hành tinh ấm lại."},
+ {t:578.62,s:"Nhờ vòng phản hồi ấy, Trái Đất giữ được"},
+ {t:581.02,s:"khí hậu ôn hòa suốt hàng tỷ năm — ngay cả"},
+ {t:583.56,s:"khi Mặt Trời thời trẻ chỉ sáng bằng bảy"},
+ {t:585.97,s:"mươi phần trăm hiện nay."},
+ {t:587.95,s:"Một bộ điều chỉnh tự động mà rất ít hành"},
+ {t:590.37,s:"tinh đá nào ta biết còn sở hữu."},
+ {t:594.7,s:"Và ở tầng nền sâu nhất là carbon — nguyên"},
+ {t:597.47,s:"tố kỳ diệu có thể kết nối với chính nó và"},
+ {t:600.24,s:"với những nguyên tố khác thành vô số chuỗi"},
+ {t:603.08,s:"phân tử phức tạp."},
+ {t:604.7,s:"Chính sự linh hoạt ấy khiến carbon trở"},
+ {t:606.9,s:"thành bộ xương sống của mọi sinh vật ta"},
+ {t:609.16,s:"biết."},
+ {t:609.95,s:"Trên một hành tinh đúng nhiệt độ, đủ nước,"},
+ {t:612.45,s:"giàu carbon — hóa học của sự sống có được"},
+ {t:614.89,s:"sân khấu để bắt đầu."},
+ {t:618.55,s:"Nhưng không phải mọi trùng hợp đều dịu"},
+ {t:620.63,s:"dàng."},
+ {t:621.41,s:"Đôi khi, chính tai họa lại mở đường."},
+ {t:624.57,s:"Sáu mươi sáu triệu năm trước, một tiểu"},
+ {t:626.86,s:"hành tinh khổng lồ đâm vào Trái Đất, xóa"},
+ {t:629.27,s:"sổ loài khủng long thống trị."},
+ {t:631.52,s:"Với chúng, đó là ngày tận thế."},
+ {t:634.31,s:"Nhưng cũng chính khoảng trống ấy đã mở ra"},
+ {t:637.1,s:"cơ hội cho những loài thú nhỏ bé, lông lá"},
+ {t:639.89,s:"sống sót — tổ tiên của loài có vú, và cuối"},
+ {t:642.75,s:"cùng, của chính chúng ta."},
+ {t:644.95,s:"Một thảm họa tình cờ trở thành bước ngoặt"},
+ {t:647.32,s:"dẫn tới con người."},
+ {t:651.3,s:"Hãy dừng lại và nhìn tổng thể."},
+ {t:654.23,s:"Vị trí trong thiên hà."},
+ {t:656.18,s:"Loại sao."},
+ {t:657.29,s:"Khoảng cách."},
+ {t:658.3,s:"Quỹ đạo."},
+ {t:659.36,s:"Kích thước."},
+ {t:660.36,s:"Từ trường."},
+ {t:661.58,s:"Người gác cổng."},
+ {t:662.88,s:"Mặt Trăng."},
+ {t:664.06,s:"Nước."},
+ {t:664.92,s:"Khí quyển."},
+ {t:665.96,s:"Kiến tạo mảng."},
+ {t:667.25,s:"Carbon."},
+ {t:668.58,s:"Từng yếu tố nghe có vẻ tách rời."},
+ {t:671.22,s:"Nhưng chúng phối hợp, giữ cho nhau cân"},
+ {t:673.52,s:"bằng, như những bánh răng ăn khớp trong"},
+ {t:675.88,s:"một cỗ máy tinh vi — một cỗ máy mà không"},
+ {t:678.31,s:"aai thiết kế, chỉ tình cờ vận hành."},
+ {t:682.91,s:"Nhưng có một yếu tố mà ta thường quên, và"},
+ {t:685.66,s:"có lẽ là khắc nghiệt nhất: thời gian."},
+ {t:688.6,s:"Tất cả những điều kiện hoàn hảo ấy không"},
+ {t:691.51,s:"chỉ phải xuất hiện, mà còn phải cùng nhau"},
+ {t:694.49,s:"bền vững, không sụp đổ, suốt hàng tỷ năm"},
+ {t:697.4,s:"liền — đủ dài để những tế bào đơn giản đầu"},
+ {t:700.46,s:"tiên tiến hóa thành rừng, thành cá, thành"},
+ {t:703.44,s:"chim, thành con người."},
+ {t:705.52,s:"Sự sống trên Trái Đất còn tự tay đổi mới"},
+ {t:708,s:"hành tinh."},
+ {t:709.12,s:"Những vi khuẩn học được cách quang hợp đã"},
+ {t:711.81,s:"thải ra oxy, tạo nên bầu không khí ta thở"},
+ {t:714.49,s:"và tầng ozone che chắn tia cực tím."},
+ {t:717.28,s:"Hành tinh nuôi dưỡng sự sống, rồi sự sống"},
+ {t:719.85,s:"quay lại nhào nặn hành tinh."},
+ {t:724.06,s:"Và rồi, từ hành tinh may mắn ấy, một loài"},
+ {t:726.69,s:"bắt đầu ngước nhìn lên bầu trời."},
+ {t:729.24,s:"Học cách trồng trọt, dựng nên thành phố,"},
+ {t:731.73,s:"viết ra chữ nghĩa, và cuối cùng, phóng"},
+ {t:734.1,s:"những con tàu ra khỏi chính bầu khí quyển"},
+ {t:736.66,s:"đã sinh ra mình."},
+ {t:738.14,s:"Nền văn minh không chỉ là kết quả của"},
+ {t:740.35,s:"những trùng hợp ấy."},
+ {t:741.99,s:"Nó là bằng chứng sống động rằng tất cả đã"},
+ {t:744.73,s:"thực sự khớp nhau — rằng chuỗi may mắn dài"},
+ {t:747.54,s:"đằng đẵng kia đã dẫn tới một điều gì đó"},
+ {t:750.14,s:"biết suy nghĩ, biết yêu thương, và biết tự"},
+ {t:752.95,s:"hỏi về nguồn gốc của mình."},
+ {t:758.14,s:"Ta vẫn chưa biết liệu những thế giới như"},
+ {t:760.76,s:"thế này là cực kỳ hiếm, hay chỉ là ta chưa"},
+ {t:763.51,s:"tìm ra."},
+ {t:764.47,s:"Có thể trong một vũ trụ với hàng nghìn tỷ"},
+ {t:766.63,s:"hành tinh, đâu đó cũng có những Trái Đất"},
+ {t:768.74,s:"khác."},
+ {t:769.5,s:"Ta chưa biết."},
+ {t:770.87,s:"Nhưng có một điều ta biết chắc."},
+ {t:772.8,s:"Cho đến nay, trong toàn bộ vũ trụ mà ta"},
+ {t:775.06,s:"quan sát được, đây là nơi duy nhất ta biết"},
+ {t:777.49,s:"chắc có sự sống."},
+ {t:778.91,s:"Và mọi trùng hợp hoàn hảo ấy cũng đồng"},
+ {t:781.66,s:"nghĩa với sự mong manh."},
+ {t:783.82,s:"Một cỗ máy tinh vi đến vậy, cân bằng đến"},
+ {t:786.53,s:"vậy, cũng có thể bị xô lệch."},
+ {t:788.92,s:"Từng bánh răng giữ cho sự sống tồn tại đều"},
+ {t:791.7,s:"có thể lung lay."},
+ {t:795.72,s:"Có lẽ, hiểu được Trái Đất may mắn đến"},
+ {t:797.98,s:"nhường nào cũng chính là hiểu vì sao chúng"},
+ {t:800.56,s:"ta phải nâng niu nó."},
+ {t:802.28,s:"Bởi trong tất cả những chấm sáng lạnh lẽo"},
+ {t:804.81,s:"ngoài kia, cho đến giờ này, chỉ một chấm"},
+ {t:807.28,s:"duy nhất là nhà."}
+];
+const elSub=document.getElementById('sub'); let curCue=-1;
+const _NEWT=[0,11.757,23.946,38.81,53.845,60.521,73.11,84.757,95.863,109.033,117.613,127.496,137.991,153.868,165.846,176.2,188.969,202.39,219.961,228.441,246.192,257.739,272.173,285.343,295.266,308.437,318.611,332.142,345.553,350.094,366.362,379.382,391.931,404.921,418.052,432.195,448.603,454.918,467.687,483.634,498.459,512.421,521.332,533.741,549.828,562.558,578.615,594.702,604.696,618.548,624.572,634.315,651.304,668.584,682.907,688.601,705.52,724.063,738.136,758.142,770.872,783.822,795.72,808.74],_OLDT=[0,11.83,25.83,44.25,63.58,71.17,86.92,100.42,115.92,132,142.67,155.83,169.67,187.75,201.58,214.17,229.5,244.17,263.33,274,294.67,308.92,324.67,341.58,355.25,370.92,382.92,399.42,415.67,420.92,438.5,454.08,472.58,488.5,504.67,520.17,542.08,547.75,563.92,582.25,598.75,614.17,625,640.75,661.08,675.92,694.83,715.08,727.08,744.92,751.67,763.33,783.58,798.17,815.75,822.33,841.58,863.75,881.5,905.5,921.67,937.83,951.08,967.83];
+function realToDry(t){if(t<=_NEWT[0])return _OLDT[0];for(let i=0;i<_NEWT.length-1;i++){if(t<=_NEWT[i+1]){const a=(t-_NEWT[i])/((_NEWT[i+1]-_NEWT[i])||1);return _OLDT[i]+(_OLDT[i+1]-_OLDT[i])*a;}}return _OLDT[_OLDT.length-1];}
+function renderAtTime(t){
+  const td=realToDry(t);
+  earthMesh.rotation.y=VN_ROT+t*0.02; cloudMesh.rotation.y=t*0.026;
+  const ma=t*0.2; moon.position.set(Math.cos(ma)*40,Math.sin(ma*0.6)*6,-Math.sin(ma)*40); moon.rotation.y=ma;
+  for(let i=0;i<planets.length;i++){const p=planets[i],a=p.a0+t*p.spd,x=Math.cos(a)*p.orbit,z=-Math.sin(a)*p.orbit;
+    p.mesh.position.set(x,0,z); p.mesh.rotation.y=t*0.3*p.spin; p.lab.position.set(x,p.size+9,z);}
+  belt.rotation.y=t*0.03; kb.rotation.y=t*0.015;
+  const diag=track(td,diagramOp);
+  for(let i=0;i<orbitMats.length;i++)orbitMats[i].opacity=0.30*diag;
+  for(let i=0;i<labelSprites.length;i++){labelSprites[i].material.opacity=diag;labelSprites[i].visible=diag>0.02;}
+  hzMat.opacity=0.14*diag;
+  const wide=0.12+0.88*diag; for(let i=0;i<beltMats.length;i++)beltMats[i].m.opacity=beltMats[i].base*wide;
+  const p=track(td,camPos), l=track(td,camLook), fov=track(td,camFov);
+  const dsun=Math.hypot(p[0]-SUNPOS.x,p[1]-SUNPOS.y,p[2]-SUNPOS.z); const gs=Math.max(200,dsun*0.16); solarGlow.scale.set(gs,gs,1);
+  sunMat.uniforms.uT.value=t; sunMesh.rotation.y=t*0.004; coronaFar.scale.set(gs*1.9,gs*1.9,1);
+  lensPass.uniforms.uT.value=t;
+  camera.position.set(p[0]+Math.sin(t*0.18)*1.5,p[1]+Math.cos(t*0.15)*1.2,p[2]);
+  camera.fov=fov; camera.updateProjectionMatrix(); camera.lookAt(l[0],l[1],l[2]);
+  let idx=-1; for(let i=0;i<CUES.length;i++){if(t>=CUES[i].t)idx=i;else break;}
+  if(idx!==curCue){curCue=idx; elSub.textContent=idx>=0?CUES[idx].s:'';}
+  composer.render();
+}
+renderAtTime(0);
+window.__timelines=window.__timelines||{};
+const tl=gsap.timeline({paused:true}); const clk={t:0};
+tl.to(clk,{t:TOTAL,duration:TOTAL,ease:'none',onUpdate:()=>renderAtTime(clk.t)},0);
+window.__timelines['tap-01-trai-dat']=tl;
+</script>
+</body>
+</html>

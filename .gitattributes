@@ -1,0 +1,10 @@
+# Giữ nguyên line ending — KHÔNG để git tự đổi LF/CRLF.
+# Composition .html bị StaticGuard quét theo VĂN BẢN; script .mjs chạy trực tiếp.
+# Git đổi line ending = diff rác và rủi ro guard đếm sai.
+* -text
+
+# File nhị phân — không bao giờ diff/merge theo dòng.
+*.mp3 binary
+*.mp4 binary
+*.jpg binary
+*.png binary

@@ -1,0 +1,480 @@
+{
+  "slug": "vat-chat-toi",
+  "fps": 30,
+  "totalDuration": 714.19,
+  "dryRun": false,
+  "narration": "voice/narration.mp3",
+  "voice": {
+    "provider": "aimax-minimax",
+    "voice_id": "uv_5cee29af",
+    "voice_name": "uv_5cee29af",
+    "model": "speech-2.8-hd",
+    "speed": 0.96
+  },
+  "cues": [
+    {
+      "id": "C01",
+      "chapter": "CHƯƠNG 1 — Đại dương vô hình",
+      "text": "Tôi muốn bạn nhắm mắt lại một chút. Và tôi muốn bạn nghĩ về mọi thứ mình từng chạm vào.",
+      "file": "voice/seg-00.mp3",
+      "start": 0,
+      "duration": 6.27
+    },
+    {
+      "id": "C02",
+      "chapter": null,
+      "text": "Bàn tay của người tôi yêu. Ly cà phê ấm buổi sáng. Ánh nắng rọi qua khung cửa. Ngôi sao xa nhất mà mắt tôi từng nhìn thấy trong đêm.",
+      "file": "voice/seg-01.mp3",
+      "start": 6.27,
+      "duration": 11.7
+    },
+    {
+      "id": "C03",
+      "chapter": null,
+      "text": "Tất cả những thứ đó. Tất cả. Chỉ là mười lăm phần trăm của vũ trụ.",
+      "file": "voice/seg-02.mp3",
+      "start": 17.97,
+      "duration": 6.43
+    },
+    {
+      "id": "C04",
+      "chapter": null,
+      "text": "Tám mươi lăm phần trăm còn lại thì vô hình. Nó không phát sáng. Nó không phản chiếu. Nó không tỏa ra một tia nào để mắt tôi hay bất cứ chiếc kính viễn vọng nào bắt được.",
+      "file": "voice/seg-04.mp3",
+      "start": 25.9,
+      "duration": 12.72
+    },
+    {
+      "id": "C05",
+      "chapter": null,
+      "text": "Nhưng nó ở đây. Ngay lúc này. Nó xuyên qua căn phòng của tôi, xuyên qua cơ thể tôi, xuyên qua chính bạn, không một tiếng động, không một cảm giác.",
+      "file": "voice/seg-05.mp3",
+      "start": 38.63,
+      "duration": 11.58
+    },
+    {
+      "id": "C06",
+      "chapter": null,
+      "text": "Người ta gọi nó là vật chất tối. Và tôi thì thích gọi nó là một đại dương. Một đại dương vô hình mà cả tôi, cả Trái Đất, cả Mặt Trời, đều đang lặng lẽ bơi trong đó.",
+      "file": "voice/seg-06.mp3",
+      "start": 50.21,
+      "duration": 12.54
+    },
+    {
+      "id": "C07",
+      "chapter": null,
+      "text": "Tối nay, tôi sẽ lặn xuống đại dương ấy cùng bạn. Không phải để nhìn nó, vì không ai nhìn được. Mà để cảm nhận sức nặng của một điều mà con người biết chắc là có thật, nhưng vẫn chưa hề biết nó là gì.",
+      "file": "voice/seg-07.mp3",
+      "start": 62.75,
+      "duration": 14.47
+    },
+    {
+      "id": "C08",
+      "chapter": null,
+      "text": "Câu chuyện này bắt đầu không phải trong bóng tối. Nó bắt đầu từ một điều rất đỗi bình thường. Một chuyển động quay.",
+      "file": "voice/seg-08.mp3",
+      "start": 77.22,
+      "duration": 8
+    },
+    {
+      "id": "C09",
+      "chapter": null,
+      "text": "Hãy tưởng tượng cùng tôi một hệ mặt trời quen thuộc. Ở giữa là ngôi sao khổng lồ, nặng trịch. Xung quanh là các hành tinh quay tròn.",
+      "file": "voice/seg-10.mp3",
+      "start": 86.23,
+      "duration": 10.45
+    },
+    {
+      "id": "C10",
+      "chapter": null,
+      "text": "Có một quy luật tôi được dạy từ nhỏ. Hành tinh càng ở gần trung tâm thì quay càng nhanh. Càng ra xa, càng chậm rãi, uể oải. Sao Thủy lao vun vút, còn Sao Hải Vương thì lững thững đi hết một vòng mất gần một trăm sáu mươi lăm năm.",
+      "file": "voice/seg-11.mp3",
+      "start": 96.68,
+      "duration": 17.36
+    },
+    {
+      "id": "C11",
+      "chapter": null,
+      "text": "Đó là logic. Ở xa thì lực hút yếu đi, nên chuyển động phải chậm lại. Nếu không, mọi thứ sẽ văng ra ngoài. Trực giác của tôi bảo rằng cả một thiên hà cũng phải vận hành như vậy.",
+      "file": "voice/seg-12.mp3",
+      "start": 114.04,
+      "duration": 13.56
+    },
+    {
+      "id": "C12",
+      "chapter": null,
+      "text": "Nhưng vũ trụ, hóa ra, không đọc cùng một cuốn sách với tôi.",
+      "file": "voice/seg-13.mp3",
+      "start": 127.6,
+      "duration": 4.52
+    },
+    {
+      "id": "C13",
+      "chapter": "CHƯƠNG 2 — Người phụ nữ đọc ánh sáng",
+      "text": "Những năm nhen nhóm của thế kỷ hai mươi, có một người phụ nữ ngồi hàng đêm trong đài quan sát, tên là Vera Rubin.",
+      "file": "voice/seg-14.mp3",
+      "start": 132.12,
+      "duration": 7.99
+    },
+    {
+      "id": "C14",
+      "chapter": null,
+      "text": "Bà không săn tìm điều gì kỳ vĩ. Bà chỉ làm một việc tưởng như buồn tẻ. Đo tốc độ quay của những ngôi sao ở rìa các thiên hà xoắn ốc, những ngôi sao nằm mãi tít ngoài mép, xa trung tâm sáng rực.",
+      "file": "voice/seg-15.mp3",
+      "start": 140.12,
+      "duration": 14.36
+    },
+    {
+      "id": "C15",
+      "chapter": null,
+      "text": "Bà chờ đợi điều mà tôi cũng sẽ chờ đợi. Rằng những ngôi sao ngoài rìa ấy sẽ quay chậm hơn. Chúng ở xa mà, lực hút phải yếu đi.",
+      "file": "voice/seg-16.mp3",
+      "start": 154.48,
+      "duration": 10.98
+    },
+    {
+      "id": "C16",
+      "chapter": null,
+      "text": "Nhưng không. Những ngôi sao ở rìa quay nhanh y hệt những ngôi sao ở trong. Nhanh đến mức đáng lẽ chúng phải bị hất tung ra khỏi thiên hà từ lâu, như bùn văng khỏi một bánh xe quay quá đà.",
+      "file": "voice/seg-17.mp3",
+      "start": 165.46,
+      "duration": 13.07
+    },
+    {
+      "id": "C17",
+      "chapter": null,
+      "text": "Thế nhưng chúng vẫn ở đó. Bám chặt. Quay đều. Bình thản. Như thể có một bàn tay khổng lồ vô hình đang giữ lấy chúng.",
+      "file": "voice/seg-18.mp3",
+      "start": 178.53,
+      "duration": 10.76
+    },
+    {
+      "id": "C18",
+      "chapter": null,
+      "text": "Vera Rubin nhìn vào con số ấy và hiểu ra một điều làm lạnh sống lưng. Để giữ những ngôi sao này lại, thiên hà phải nặng hơn rất nhiều so với tất cả những gì phát sáng trong nó.",
+      "file": "voice/seg-19.mp3",
+      "start": 189.29,
+      "duration": 11.59
+    },
+    {
+      "id": "C19",
+      "chapter": null,
+      "text": "Phải có một khối lượng ẩn. Một thứ gì đó có trọng lực, có sức hút, mà lại hoàn toàn tối. Nhiều gấp năm, gấp sáu lần thứ chúng ta trông thấy.",
+      "file": "voice/seg-20.mp3",
+      "start": 200.89,
+      "duration": 11.21
+    },
+    {
+      "id": "C20",
+      "chapter": null,
+      "text": "Và điều khiến tôi rùng mình nhất là thế này. Bà không phải người đầu tiên chạm vào bóng ma đó.",
+      "file": "voice/seg-21.mp3",
+      "start": 212.1,
+      "duration": 6.57
+    },
+    {
+      "id": "C21",
+      "chapter": null,
+      "text": "Nhiều thập kỷ trước bà, một nhà thiên văn tính khí ngang tàng tên Fritz Zwicky đã ngẩng lên nhìn một cụm thiên hà. Không phải một thiên hà, mà cả một đàn thiên hà đang quần tụ, bay vòng quanh nhau.",
+      "file": "voice/seg-23.mp3",
+      "start": 219.67,
+      "duration": 13.52
+    },
+    {
+      "id": "C22",
+      "chapter": null,
+      "text": "Ông đo tốc độ chúng lao đi, và ông sững người. Chúng bay nhanh khủng khiếp. Nhanh đến mức toàn bộ ánh sáng, toàn bộ những ngôi sao ông đếm được, không đủ trọng lực để giữ cả đàn lại với nhau.",
+      "file": "voice/seg-24.mp3",
+      "start": 233.19,
+      "duration": 12.69
+    },
+    {
+      "id": "C23",
+      "chapter": null,
+      "text": "Cụm thiên hà lẽ ra đã phải tan tác, mỗi thiên hà bay đi một hướng vào cõi trống. Vậy mà nó vẫn nguyên vẹn. Cái gì đó đang ghì nó lại.",
+      "file": "voice/seg-25.mp3",
+      "start": 245.88,
+      "duration": 10.61
+    },
+    {
+      "id": "C24",
+      "chapter": null,
+      "text": "Zwicky đặt cho thứ vô hình ấy một cái tên trong tiếng Đức. Dunkle Materie. Vật chất tối. Cái tên ra đời khi ta còn chưa hề nhìn thấy mặt mũi nó, và đến hôm nay ta vẫn thế.",
+      "file": "voice/seg-26.mp3",
+      "start": 256.5,
+      "duration": 14.23
+    },
+    {
+      "id": "C25",
+      "chapter": null,
+      "text": "Từ một ngôi sao ngoài rìa cho đến cả một đàn thiên hà, cùng một bàn tay vô hình lặp đi lặp lại lời thì thầm. Có nhiều thứ ở đây hơn những gì các người thấy. Nhiều hơn rất nhiều.",
+      "file": "voice/seg-27.mp3",
+      "start": 270.73,
+      "duration": 13.26
+    },
+    {
+      "id": "C26",
+      "chapter": "CHƯƠNG 3 — Ánh sáng bị bẻ cong",
+      "text": "Đến đây, tôi phải thú thật một điều. Chỉ nghe những con số quay nhanh, tôi vẫn thấy hoài nghi. Tôi vẫn muốn tự hỏi, biết đâu chúng ta chỉ tính sai đâu đó thì sao?",
+      "file": "voice/seg-28.mp3",
+      "start": 283.99,
+      "duration": 11.75
+    },
+    {
+      "id": "C27",
+      "chapter": null,
+      "text": "Thế rồi vũ trụ đưa cho tôi một bằng chứng khác. Lần này không phải bằng chuyển động. Lần này bằng chính ánh sáng.",
+      "file": "voice/seg-29.mp3",
+      "start": 295.74,
+      "duration": 8.8
+    },
+    {
+      "id": "C28",
+      "chapter": null,
+      "text": "Có một điều kỳ diệu mà trọng lực làm được. Nó không chỉ hút các vật thể. Nó bẻ cong cả không gian. Và khi không gian cong, thì tia sáng đi ngang qua nó cũng bị cong theo.",
+      "file": "voice/seg-30.mp3",
+      "start": 304.55,
+      "duration": 13.81
+    },
+    {
+      "id": "C29",
+      "chapter": null,
+      "text": "Hãy hình dung một tia sáng từ một thiên hà xa tít tắp đang lao thẳng về phía tôi. Trên đường đi, nó lướt ngang một vùng có khối lượng khổng lồ. Và tia sáng ấy bị uốn. Bị lệch. Như một cây bút chì cắm vào ly nước trông gãy khúc.",
+      "file": "voice/seg-31.mp3",
+      "start": 318.36,
+      "duration": 18.2
+    },
+    {
+      "id": "C30",
+      "chapter": null,
+      "text": "Người ta gọi hiện tượng đó là thấu kính hấp dẫn. Cả một vùng không gian trở thành một thấu kính khổng lồ, phóng đại, kéo giãn, nhân đôi hình ảnh của những thiên hà nằm phía sau.",
+      "file": "voice/seg-32.mp3",
+      "start": 336.56,
+      "duration": 11.91
+    },
+    {
+      "id": "C31",
+      "chapter": null,
+      "text": "Và đây mới là khoảnh khắc làm tôi nổi da gà. Các nhà khoa học nhìn vào độ cong của ánh sáng, rồi tính ngược lại xem cần bao nhiêu khối lượng để bẻ cong nó đến mức ấy.",
+      "file": "voice/seg-33.mp3",
+      "start": 348.47,
+      "duration": 11.24
+    },
+    {
+      "id": "C32",
+      "chapter": null,
+      "text": "Con số hiện ra lớn hơn nhiều, nhiều lần so với tất cả những ngôi sao, những đám khí phát sáng trong vùng đó. Lại một lần nữa, phần lớn khối lượng là vô hình.",
+      "file": "voice/seg-34.mp3",
+      "start": 359.72,
+      "duration": 10.72
+    },
+    {
+      "id": "C33",
+      "chapter": null,
+      "text": "Nhưng lần này ta làm được một việc phi thường. Ta lần theo chỗ ánh sáng bị bẻ cong nhiều, chỗ bẻ ít, và vẽ ra một tấm bản đồ. Một tấm bản đồ của cái vô hình.",
+      "file": "voice/seg-35.mp3",
+      "start": 370.44,
+      "duration": 12.42
+    },
+    {
+      "id": "C34",
+      "chapter": null,
+      "text": "Lần đầu tiên, con người nhìn thấy hình dáng của vật chất tối. Không phải bản thân nó, mà cái bóng trọng lực nó để lại trên vũ trụ. Những đám mây khổng lồ của thứ chẳng ai chạm được, bao trùm quanh mỗi thiên hà như một cái kén.",
+      "file": "voice/seg-36.mp3",
+      "start": 382.86,
+      "duration": 15.5
+    },
+    {
+      "id": "C35",
+      "chapter": null,
+      "text": "Vậy thì, cái đại dương vô hình này rốt cuộc làm từ gì? Đây là lúc câu chuyện của tôi rẽ vào phần lạ lùng nhất.",
+      "file": "voice/seg-38.mp3",
+      "start": 399.36,
+      "duration": 9.16
+    },
+    {
+      "id": "C36",
+      "chapter": null,
+      "text": "Tôi từng đoán, hay là phản vật chất? Không phải. Hay những hố đen ẩn mình trong bóng tối? Người ta đã tìm, và cũng không đủ. Hay chỉ là những đám khí, những hành tinh lang thang lạnh lẽo không phát sáng? Vẫn không đủ, không thấm vào đâu.",
+      "file": "voice/seg-39.mp3",
+      "start": 408.52,
+      "duration": 18.74
+    },
+    {
+      "id": "C37",
+      "chapter": null,
+      "text": "Câu trả lời được nhiều người ngờ tới còn kỳ lạ hơn thế. Vật chất tối có lẽ không làm từ bất cứ thứ gì ta đã biết. Nó là một loại hạt hoàn toàn mới. Một loại hạt chưa từng có tên trong sách vở của tôi.",
+      "file": "voice/seg-40.mp3",
+      "start": 427.27,
+      "duration": 14.86
+    },
+    {
+      "id": "C38",
+      "chapter": null,
+      "text": "Các nhà vật lý gọi những ứng viên ấy bằng những cái tên nghe như mật mã. Hạt WIMP, những hạt nặng tương tác cực yếu. Hay axion, những hạt nhẹ đến mức gần như hư ảo.",
+      "file": "voice/seg-41.mp3",
+      "start": 442.13,
+      "duration": 13.21
+    },
+    {
+      "id": "C39",
+      "chapter": null,
+      "text": "Điểm chung của chúng là gì? Là chúng gần như không thèm để ý đến chúng ta. Chúng bay xuyên qua vật chất thường như thể vật chất thường không hề tồn tại. Xuyên qua đá, qua sắt, qua cả hành tinh này, không va chạm, không dừng lại.",
+      "file": "voice/seg-42.mp3",
+      "start": 455.34,
+      "duration": 15.93
+    },
+    {
+      "id": "C40",
+      "chapter": null,
+      "text": "Để bắt lấy dù chỉ một bóng ma như thế, con người đã làm một điều gần như tuyệt vọng. Chúng ta đào sâu xuống dưới lòng đất, hàng cây số, chui vào những đường hầm mỏ cũ, những lòng núi.",
+      "file": "voice/seg-43.mp3",
+      "start": 471.28,
+      "duration": 13.26
+    },
+    {
+      "id": "C41",
+      "chapter": null,
+      "text": "Ở đó, trong bóng tối tuyệt đối, ta đặt những bể chất lỏng siêu tinh khiết, lạnh đến tận cùng, canh chừng suốt ngày đêm. Chờ đợi một cú va chạm duy nhất. Một tia lóe li ti của một hạt vật chất tối vô tình đâm trúng.",
+      "file": "voice/seg-44.mp3",
+      "start": 484.54,
+      "duration": 15.29
+    },
+    {
+      "id": "C42",
+      "chapter": null,
+      "text": "Và bạn biết những cỗ máy tinh vi ấy đã thấy gì suốt bao năm ròng không?",
+      "file": "voice/seg-45.mp3",
+      "start": 499.83,
+      "duration": 4.97
+    },
+    {
+      "id": "C43",
+      "chapter": null,
+      "text": "Im lặng.",
+      "file": "voice/seg-47.mp3",
+      "start": 506.8,
+      "duration": 1.23
+    },
+    {
+      "id": "C44",
+      "chapter": null,
+      "text": "Sự im lặng gần như hoàn toàn. Đại dương ấy chảy xuyên qua ta mỗi giây mỗi phút, mà chưa một lần chịu vỗ vào bờ đủ mạnh để ta nghe thấy. Nó ở khắp nơi, và nó vẫn cứ trốn tránh.",
+      "file": "voice/seg-48.mp3",
+      "start": 508.03,
+      "duration": 14.13
+    },
+    {
+      "id": "C45",
+      "chapter": "CHƯƠNG 4 — Giàn giáo của các vì sao",
+      "text": "Nghe đến đây, có thể bạn sẽ thấy hơi lạnh lẽo. Một thứ vô hình, câm lặng, phần lớn vũ trụ mà ta chẳng nắm bắt được. Nhưng tôi lại muốn kể cho bạn nghe mặt dịu dàng của nó.",
+      "file": "voice/seg-49.mp3",
+      "start": 522.17,
+      "duration": 13.23
+    },
+    {
+      "id": "C46",
+      "chapter": null,
+      "text": "Bởi vì nếu không có vật chất tối, rất có thể sẽ chẳng có tôi. Chẳng có bạn. Chẳng có một câu chuyện nào để kể tối nay.",
+      "file": "voice/seg-50.mp3",
+      "start": 535.4,
+      "duration": 9.71
+    },
+    {
+      "id": "C47",
+      "chapter": null,
+      "text": "Hãy quay ngược về thuở vũ trụ còn non trẻ. Khi ấy mọi thứ gần như là một làn sương phẳng lặng, khí bụi rải đều, loãng và mờ. Chưa một ngôi sao. Chưa một thiên hà.",
+      "file": "voice/seg-51.mp3",
+      "start": 545.11,
+      "duration": 13.39
+    },
+    {
+      "id": "C48",
+      "chapter": null,
+      "text": "Vật chất thường, tự nó, tụ lại quá chậm. Nó cần một điều gì đó đi trước, một khung xương để bám vào. Và vật chất tối, im lặng, đã lặng lẽ làm điều đó trước tiên.",
+      "file": "voice/seg-52.mp3",
+      "start": 558.5,
+      "duration": 13.35
+    },
+    {
+      "id": "C49",
+      "chapter": null,
+      "text": "Nó co cụm lại thành những sợi khổng lồ, đan chéo nhau, phủ khắp vũ trụ như một mạng nhện ánh sáng mà ta không nhìn thấy. Người ta gọi đó là mạng lưới vũ trụ. Một giàn giáo vô hình trải rộng đến vô cùng.",
+      "file": "voice/seg-53.mp3",
+      "start": 571.85,
+      "duration": 15.38
+    },
+    {
+      "id": "C50",
+      "chapter": null,
+      "text": "Rồi khí bụi thường mới trôi theo, tụ về những nút thắt dày nhất của tấm lưới ấy. Ở đó, chúng nén lại, nóng lên, bùng cháy. Và ngôi sao đầu tiên bừng sáng.",
+      "file": "voice/seg-54.mp3",
+      "start": 587.24,
+      "duration": 12.73
+    },
+    {
+      "id": "C51",
+      "chapter": null,
+      "text": "Mỗi thiên hà, kể cả dải Ngân Hà của chúng ta, đã lớn lên trong lòng một cái kén vật chất tối. Nó là cái nôi. Là bộ giàn giáo lặng thầm dựng nên toàn bộ ngôi nhà rực rỡ mà ta gọi là vũ trụ nhìn thấy được.",
+      "file": "voice/seg-55.mp3",
+      "start": 599.97,
+      "duration": 15.6
+    },
+    {
+      "id": "C52",
+      "chapter": null,
+      "text": "Vậy nên mỗi lần ngước lên một bầu trời đầy sao, tôi nhắc mình nhớ điều này. Những vì sao đẹp đẽ ấy chỉ là lớp trang trí sáng lấp lánh. Còn bộ khung đỡ lấy tất cả thì chìm trong bóng tối, khiêm nhường, không đòi một tia sáng nào cho riêng mình.",
+      "file": "voice/seg-56.mp3",
+      "start": 615.57,
+      "duration": 16.74
+    },
+    {
+      "id": "C53",
+      "chapter": null,
+      "text": "Và đây là điều tôi yêu nhất ở câu chuyện này. Chúng ta biết chắc vật chất tối tồn tại. Ta đo được sức nặng của nó, vẽ được bản đồ cái bóng của nó, thấy nó nắn cong cả ánh sáng. Nhưng ta vẫn chưa hề biết nó thật sự là gì.",
+      "file": "voice/seg-58.mp3",
+      "start": 633.82,
+      "duration": 16.14
+    },
+    {
+      "id": "C54",
+      "chapter": null,
+      "text": "Tám mươi lăm phần trăm vũ trụ vẫn là một câu hỏi để ngỏ. Một bí ẩn khổng lồ nằm ngay trước mũi ta, xuyên qua ta, mỗi ngày.",
+      "file": "voice/seg-59.mp3",
+      "start": 649.96,
+      "duration": 10.92
+    },
+    {
+      "id": "C55",
+      "chapter": null,
+      "text": "Có người thấy điều đó thật đáng sợ. Riêng tôi, tôi thấy nó thật đẹp. Nó nhắc tôi rằng con người bé nhỏ đến nhường nào, mà cũng dũng cảm đến nhường nào, khi dám gọi tên một thứ mình chưa từng trông thấy.",
+      "file": "voice/seg-60.mp3",
+      "start": 660.88,
+      "duration": 15.39
+    },
+    {
+      "id": "C56",
+      "chapter": null,
+      "text": "Nên tối nay, trước khi bạn rời đi, tôi chỉ xin bạn một điều nhỏ. Hãy đặt tay lên chính mình. Cảm nhận hơi ấm quen thuộc ấy.",
+      "file": "voice/seg-61.mp3",
+      "start": 676.27,
+      "duration": 9.49
+    },
+    {
+      "id": "C57",
+      "chapter": null,
+      "text": "Rồi khẽ nhớ rằng, ngay giây phút này, một đại dương vô hình đang lặng lẽ trôi xuyên qua bạn. Câm lặng. Dịu dàng. Và chính nó đã giữ cho cả bầu trời không văng ra tan tác, để bạn còn ở đây, đủ đầy, để ngước lên và tự hỏi.",
+      "file": "voice/seg-62.mp3",
+      "start": 685.76,
+      "duration": 18.15
+    },
+    {
+      "id": "C58",
+      "chapter": null,
+      "text": "Chúng ta đang bơi trong điều mình không thấy. Và có lẽ, chính điều không thấy ấy mới đang nâng đỡ tất cả.",
+      "file": "voice/seg-63.mp3",
+      "start": 703.92,
+      "duration": 7.27
+    }
+  ]
+}

@@ -1,0 +1,824 @@
+{
+  "slug": "dai-oxy-hoa",
+  "fps": 30,
+  "totalDuration": 996.94,
+  "dryRun": true,
+  "narration": null,
+  "voice": {
+    "provider": "aimax-minimax",
+    "voice_id": "uv_5cee29af",
+    "voice_name": "uv_5cee29af",
+    "model": "speech-2.8-hd",
+    "speed": 0.96
+  },
+  "cues": [
+    {
+      "id": "C01",
+      "chapter": "CHƯƠNG 1 — BIỂN KHÔNG AI THỞ",
+      "text": "Tôi đang đứng trong nước biển ngang thắt lưng, và điều đầu tiên tôi nhận ra không phải là thứ tôi thấy. Là thứ tôi không nghe.",
+      "file": null,
+      "start": 0,
+      "duration": 8.4
+    },
+    {
+      "id": "C02",
+      "chapter": null,
+      "text": "Không có tiếng chim. Không có tiếng côn trùng. Không có tiếng lá. Chỉ có nước liếm vào chân tôi, đều đặn, và một khoảng trống âm thanh rộng đến mức tai tôi bắt đầu tự bịa ra tiếng động để lấp vào.",
+      "file": null,
+      "start": 8.4,
+      "duration": 13.07
+    },
+    {
+      "id": "C03",
+      "chapter": null,
+      "text": "Đây là Trái Đất, hai tỉ tư trăm triệu năm trước. Cùng một hành tinh. Cùng chỗ tôi đang đứng, có khi. Nhưng nếu tôi tháo mặt nạ dưỡng khí ra lúc này, tôi sẽ chết trong khoảng ba phút.",
+      "file": null,
+      "start": 22.97,
+      "duration": 12.13
+    },
+    {
+      "id": "C04",
+      "chapter": null,
+      "text": "Không phải vì khí quyển độc. Mà vì nó thiếu một thứ. Bầu trời trên đầu tôi có nitơ, có khí cacbonic, có metan nhiều đến mức ánh nắng xuyên qua nó ngả sang màu cam đục như nhìn qua một lớp khói cũ.",
+      "file": null,
+      "start": 35.1,
+      "duration": 13.07
+    },
+    {
+      "id": "C05",
+      "chapter": null,
+      "text": "Và oxy tự do thì gần như bằng không. Không phải ít. Gần như bằng không. Nếu đo cả bầu khí quyển này, lượng oxy trong đó chưa tới một phần trăm nghìn so với cái tôi hít vào mỗi sáng.",
+      "file": null,
+      "start": 48.17,
+      "duration": 12.07
+    },
+    {
+      "id": "C06",
+      "chapter": null,
+      "text": "Tôi vẫn nghĩ oxy là thứ mặc định. Là cái nền. Là thứ có sẵn từ khi hành tinh này nguội đi, cứ thế nằm đó chờ sự sống tới hít. Tôi đã nghĩ sai theo cách lớn nhất mà một người có thể nghĩ sai về ngôi nhà của mình.",
+      "file": null,
+      "start": 60.24,
+      "duration": 14.07
+    },
+    {
+      "id": "C07",
+      "chapter": null,
+      "text": "Oxy trong không khí không phải là phông nền của sự sống. Nó là sản phẩm của sự sống. Nó do một sinh vật làm ra. Và cái sinh vật ấy đang ở ngay dưới chân tôi.",
+      "file": null,
+      "start": 76.31,
+      "duration": 10.47
+    },
+    {
+      "id": "C08",
+      "chapter": null,
+      "text": "Tôi cúi xuống, luồn tay vào nước. Ngón tay tôi chạm phải một thứ không giống bùn. Nó dai. Nó có lớp. Nó trơn theo kiểu có tổ chức, như một tấm thảm ai đó trải xuống đáy biển rồi để quên hàng triệu năm.",
+      "file": null,
+      "start": 86.78,
+      "duration": 13.4
+    },
+    {
+      "id": "C09",
+      "chapter": null,
+      "text": "Tôi kéo một mảnh lên khỏi mặt nước. Nó có màu xanh lục ngả lam, dày chừng một đốt ngón tay, và khi tôi bóp nhẹ, nước từ trong nó chảy ra kèm theo những hạt bong bóng li ti bám dọc mặt ngoài.",
+      "file": null,
+      "start": 100.18,
+      "duration": 12.67
+    },
+    {
+      "id": "C10",
+      "chapter": null,
+      "text": "Những hạt bong bóng đó là oxy. Là những phân tử oxy tự do đầu tiên mà hành tinh này từng có với số lượng đáng kể. Và tôi đang cầm trong tay kẻ đã làm ra chúng.",
+      "file": null,
+      "start": 112.85,
+      "duration": 10.6
+    },
+    {
+      "id": "C11",
+      "chapter": null,
+      "text": "Vi khuẩn lam. Một sinh vật đơn bào nhỏ đến mức xếp một nghìn con nối đuôi nhau cũng chưa dài bằng một milimet. Không có não. Không có mắt. Không có ý định gì cả.",
+      "file": null,
+      "start": 124.95,
+      "duration": 10.73
+    },
+    {
+      "id": "C12",
+      "chapter": null,
+      "text": "Nhưng nó vừa làm được một việc mà chưa sinh vật nào trên Trái Đất làm được: nó học cách tách nước.",
+      "file": null,
+      "start": 135.68,
+      "duration": 6.53
+    },
+    {
+      "id": "C13",
+      "chapter": null,
+      "text": "Trước nó, sự sống vẫn quang hợp. Nhưng để quang hợp, người ta cần một thứ để lấy electron. Các vi khuẩn thời đó lấy electron từ hydro sunfua, từ sắt hoà tan, từ những hoá chất phải đi tìm, phải tranh nhau, phải chờ núi lửa phun ra.",
+      "file": null,
+      "start": 142.21,
+      "duration": 15.4
+    },
+    {
+      "id": "C14",
+      "chapter": null,
+      "text": "Vi khuẩn lam bỏ qua tất cả. Nó nhìn quanh và chọn thứ dồi dào nhất hành tinh. Nó chọn nước.",
+      "file": null,
+      "start": 157.61,
+      "duration": 6.07
+    },
+    {
+      "id": "C15",
+      "chapter": null,
+      "text": "Tách một phân tử nước để lấy electron là việc cực khó. Liên kết trong phân tử nước rất bền. Vi khuẩn lam giải bài toán đó bằng một cụm bốn nguyên tử mangan xếp quanh một nguyên tử canxi, hoạt động như một cái kìm phân tử, giữ phân tử nước lại và bẻ nó ra bằng năng lượng ánh sáng.",
+      "file": null,
+      "start": 163.68,
+      "duration": 18.67
+    },
+    {
+      "id": "C16",
+      "chapter": null,
+      "text": "Cụm mangan đó ra đời một lần, trong một dòng dõi, và từ đó tới nay chưa từng được phát minh lại. Mọi chiếc lá bạn từng thấy đều đang mượn lại đúng cái kìm ấy.",
+      "file": null,
+      "start": 182.35,
+      "duration": 10.53
+    },
+    {
+      "id": "C17",
+      "chapter": null,
+      "text": "Nhưng khi bạn bẻ nước ra để lấy phần bạn cần, bạn còn lại một phần bạn không cần. Hydro thì giữ. Electron thì dùng. Còn oxy thì sao?",
+      "file": null,
+      "start": 194.38,
+      "duration": 8.8
+    },
+    {
+      "id": "C18",
+      "chapter": null,
+      "text": "Vi khuẩn lam vứt nó đi.",
+      "file": null,
+      "start": 203.18,
+      "duration": 1.53
+    },
+    {
+      "id": "C19",
+      "chapter": null,
+      "text": "Oxy không phải là mục tiêu của nó. Oxy không phải món quà nó tặng cho tương lai. Oxy là rác. Là thứ còn lại sau khi lấy đi phần có giá trị. Và nó thải thứ rác đó ra nước, từng bong bóng một, mỗi ngày, mỗi mùa, trong hàng trăm triệu năm.",
+      "file": null,
+      "start": 204.71,
+      "duration": 15.73
+    },
+    {
+      "id": "C20",
+      "chapter": null,
+      "text": "Tôi thả mảnh thảm xanh trở lại mặt nước. Nó chìm xuống chậm rãi, trôi về chỗ cũ trong đám đồng loại trải dài tới tận đường chân trời. Và tôi đứng đó, giữa biển nông ấm áp, biết một điều mà không sinh vật nào quanh tôi biết.",
+      "file": null,
+      "start": 220.44,
+      "duration": 14.87
+    },
+    {
+      "id": "C21",
+      "chapter": null,
+      "text": "Cái thứ rác đó sắp giết gần hết mọi thứ đang sống trên hành tinh này.",
+      "file": null,
+      "start": 235.31,
+      "duration": 4.6
+    },
+    {
+      "id": "C22",
+      "chapter": "CHƯƠNG 2 — CHẤT ĐỘC MANG TÊN KHÔNG KHÍ",
+      "text": "Tôi cần bạn quên đi trong mười phút cái cảm giác rằng oxy là thứ tốt lành.",
+      "file": null,
+      "start": 242.41,
+      "duration": 4.93
+    },
+    {
+      "id": "C23",
+      "chapter": null,
+      "text": "Vì oxy không tốt lành. Oxy là một trong những chất phản ứng mạnh nhất còn tồn tại được ở dạng khí trên bề mặt một hành tinh. Chúng ta gọi việc nó ăn kim loại là gỉ sét. Chúng ta gọi việc nó ăn gỗ là cháy. Chúng ta gọi việc nó ăn thức ăn là ôi thiu.",
+      "file": null,
+      "start": 247.34,
+      "duration": 16.53
+    },
+    {
+      "id": "C24",
+      "chapter": null,
+      "text": "Ba từ khác nhau. Cùng một hành vi. Oxy giật electron ra khỏi bất cứ thứ gì nó chạm vào.",
+      "file": null,
+      "start": 263.87,
+      "duration": 5.8
+    },
+    {
+      "id": "C25",
+      "chapter": null,
+      "text": "Một ngọn lửa và một miếng táo cắt dở để quên trên bàn đang làm cùng một việc, chỉ khác tốc độ. Cái mà chúng ta gọi là lửa chỉ là quá trình đó chạy đủ nhanh để phát sáng.",
+      "file": null,
+      "start": 269.67,
+      "duration": 11.27
+    },
+    {
+      "id": "C26",
+      "chapter": null,
+      "text": "Và giờ hãy nghĩ tới những sinh vật đang sống trong biển dưới chân tôi. Chúng đã tiến hoá suốt hơn một tỉ năm trong một thế giới hoàn toàn không có chất đó.",
+      "file": null,
+      "start": 280.94,
+      "duration": 10.33
+    },
+    {
+      "id": "C27",
+      "chapter": null,
+      "text": "Enzyme của chúng, những cỗ máy phân tử làm mọi việc trong tế bào, được xây quanh các nguyên tử sắt và lưu huỳnh nằm phơi ra ngoài. Phơi ra, vì trong một thế giới không oxy thì chẳng có gì để phải che.",
+      "file": null,
+      "start": 291.27,
+      "duration": 13.33
+    },
+    {
+      "id": "C28",
+      "chapter": null,
+      "text": "Oxy len vào tế bào. Nó tìm thấy những cụm sắt lưu huỳnh đó. Và nó giật.",
+      "file": null,
+      "start": 304.6,
+      "duration": 4.73
+    },
+    {
+      "id": "C29",
+      "chapter": null,
+      "text": "Enzyme gãy. Một cỗ máy phân tử đã chạy hoàn hảo suốt một tỉ năm bỗng dưng không chạy nữa, không phải vì hỏng hóc, mà vì thế giới bên ngoài vừa đổi luật.",
+      "file": null,
+      "start": 309.33,
+      "duration": 10.13
+    },
+    {
+      "id": "C30",
+      "chapter": null,
+      "text": "Và sắt bị giật ra không nằm yên. Nó trôi trong tế bào, gặp các phân tử oxy dở dang, rồi biến chúng thành thứ tệ hơn nữa: gốc hydroxyl. Một mảnh phân tử mất cân bằng đến mức nó phá bất cứ thứ gì trong tầm với. Màng tế bào. Protein. Chuỗi thông tin di truyền.",
+      "file": null,
+      "start": 319.46,
+      "duration": 17.13
+    },
+    {
+      "id": "C31",
+      "chapter": null,
+      "text": "Không có thuốc giải. Không có tường chắn. Không có nơi nào để trốn trong một đại dương đang từ từ chuyển sang chứa một chất mà cơ thể bạn chưa từng gặp trong toàn bộ lịch sử dòng dõi mình.",
+      "file": null,
+      "start": 336.59,
+      "duration": 12.53
+    },
+    {
+      "id": "C32",
+      "chapter": null,
+      "text": "Tôi muốn dừng lại ở một chi tiết, vì nó đổi hẳn cách tôi nhìn chuyện này.",
+      "file": null,
+      "start": 350.62,
+      "duration": 4.87
+    },
+    {
+      "id": "C33",
+      "chapter": null,
+      "text": "Cuộc tuyệt chủng này không có thủ phạm bên ngoài. Không có thiên thạch lao tới. Không có siêu núi lửa. Không có tia bức xạ từ vũ trụ.",
+      "file": null,
+      "start": 355.49,
+      "duration": 8.87
+    },
+    {
+      "id": "C34",
+      "chapter": null,
+      "text": "Thủ phạm là sự sống. Sự sống làm ra một chất thải. Chất thải đó tích lại. Và nó giết chính cái nền đã sinh ra nó.",
+      "file": null,
+      "start": 364.36,
+      "duration": 7.53
+    },
+    {
+      "id": "C35",
+      "chapter": null,
+      "text": "Chúng ta thường tưởng tượng tự nhiên như một hệ thống cân bằng, nơi mọi thứ tự điều chỉnh về chỗ đúng. Hai tỉ năm trước, hành tinh này cho thấy điều ngược lại. Một sinh vật tìm ra cách làm ăn tốt hơn mọi đối thủ, nó nhân lên, nó lan ra, nó không dừng lại, và sản phẩm phụ của thành công đó đầu độc cả thế giới.",
+      "file": null,
+      "start": 371.89,
+      "duration": 20.67
+    },
+    {
+      "id": "C36",
+      "chapter": null,
+      "text": "Vi khuẩn lam không ác. Nó thậm chí không biết mình đang làm gì. Nó chỉ giỏi. Đó là toàn bộ tội của nó.",
+      "file": null,
+      "start": 392.56,
+      "duration": 6.8
+    },
+    {
+      "id": "C37",
+      "chapter": null,
+      "text": "Nhưng có một chuyện lạ. Oxy được thải ra suốt hàng trăm triệu năm, vậy mà khí quyển vẫn trống trơn. Tôi nhìn lên bầu trời cam đục kia và tự hỏi: oxy đi đâu mất?",
+      "file": null,
+      "start": 401.36,
+      "duration": 10.67
+    },
+    {
+      "id": "C38",
+      "chapter": null,
+      "text": "Nó không đi đâu cả. Nó bị nuốt. Và kẻ nuốt nó nằm ngay trong nước quanh tôi.",
+      "file": null,
+      "start": 412.03,
+      "duration": 5.07
+    },
+    {
+      "id": "C39",
+      "chapter": null,
+      "text": "Tôi múc một vốc nước biển lên. Trong ánh sáng cam, nó có màu hơi lục nhạt, và vị của nó, nếu tôi dám nếm, sẽ có vị tanh của kim loại.",
+      "file": null,
+      "start": 417.1,
+      "duration": 8.87
+    },
+    {
+      "id": "C40",
+      "chapter": null,
+      "text": "Đại dương thời này chứa sắt hoà tan. Rất nhiều sắt. Trong một thế giới không oxy, sắt tan trong nước dễ như muối. Núi lửa dưới đáy biển phun nó ra suốt hàng tỉ năm, và nó cứ nằm đó, hoà tan, không có gì làm nó kết tủa.",
+      "file": null,
+      "start": 425.97,
+      "duration": 14.53
+    },
+    {
+      "id": "C41",
+      "chapter": null,
+      "text": "Cho tới khi oxy xuất hiện.",
+      "file": null,
+      "start": 440.5,
+      "duration": 1.73
+    },
+    {
+      "id": "C42",
+      "chapter": null,
+      "text": "Mỗi phân tử oxy vi khuẩn lam thả ra chưa kịp nổi lên mặt nước đã bị một nguyên tử sắt tóm lấy. Sắt gỉ ngay trong lòng biển. Và sắt gỉ thì không tan. Nó nặng. Nó chìm.",
+      "file": null,
+      "start": 442.23,
+      "duration": 11.07
+    },
+    {
+      "id": "C43",
+      "chapter": null,
+      "text": "Tôi nhìn xuống chân mình và thấy nước đang đục dần. Không phải bùn khuấy lên. Là những hạt gỉ sét mới hình thành, đang rơi qua cột nước, chậm rãi, từ mặt biển xuống đáy, như một trận tuyết màu đỏ nâu.",
+      "file": null,
+      "start": 453.3,
+      "duration": 13.33
+    },
+    {
+      "id": "C44",
+      "chapter": null,
+      "text": "Đại dương là một cái thùng rác khổng lồ. Và trong hàng trăm triệu năm, nó nuốt gọn mọi thứ oxy mà sự sống ném vào.",
+      "file": null,
+      "start": 466.63,
+      "duration": 7.6
+    },
+    {
+      "id": "C45",
+      "chapter": null,
+      "text": "Nhưng thùng rác nào cũng có đáy.",
+      "file": null,
+      "start": 476.23,
+      "duration": 2.13
+    },
+    {
+      "id": "C46",
+      "chapter": "CHƯƠNG 3 — KHI CÁI THÙNG ĐẦY",
+      "text": "Tôi bước lên bờ, và mặt đất dưới chân tôi đổi màu.",
+      "file": null,
+      "start": 480.86,
+      "duration": 3.33
+    },
+    {
+      "id": "C47",
+      "chapter": null,
+      "text": "Trước mặt tôi là một vách đá cao bằng toà nhà mười tầng, cắt ngang qua cả thung lũng. Và nó có sọc.",
+      "file": null,
+      "start": 484.19,
+      "duration": 6.6
+    },
+    {
+      "id": "C48",
+      "chapter": null,
+      "text": "Từ dưới lên trên, đều đặn: một lớp đỏ sẫm, một lớp xám ánh kim, một lớp đỏ sẫm, một lớp xám ánh kim. Hàng nghìn lớp. Mỏng như trang giấy. Xếp chồng lên nhau tới tận đỉnh vách.",
+      "file": null,
+      "start": 490.79,
+      "duration": 11.67
+    },
+    {
+      "id": "C49",
+      "chapter": null,
+      "text": "Tôi đặt tay lên mặt đá. Nó lạnh và nhẵn, và những đường sọc chạy qua dưới lòng bàn tay tôi như vân gỗ của một cái cây quá lớn để hiểu nổi.",
+      "file": null,
+      "start": 502.46,
+      "duration": 9.2
+    },
+    {
+      "id": "C50",
+      "chapter": null,
+      "text": "Mỗi cặp sọc là một chu kỳ. Một mùa vi khuẩn lam nở rộ, thải oxy, sắt trong nước kết tủa và rơi xuống đáy. Rồi một mùa lặng, sắt mới trôi tới, không có gì kết tủa, chỉ có bùn silic lắng xuống.",
+      "file": null,
+      "start": 511.66,
+      "duration": 12.73
+    },
+    {
+      "id": "C51",
+      "chapter": null,
+      "text": "Tôi đang chạm vào một cuốn lịch. Mỗi vạch là một nhịp thở của cả một hành tinh, và cuốn lịch này dày hàng trăm mét.",
+      "file": null,
+      "start": 524.39,
+      "duration": 7.67
+    },
+    {
+      "id": "C52",
+      "chapter": null,
+      "text": "Và giờ là phần khiến tôi lặng người.",
+      "file": null,
+      "start": 533.56,
+      "duration": 2.4
+    },
+    {
+      "id": "C53",
+      "chapter": null,
+      "text": "Những vách đá sọc này có tên: dải sắt phân lớp. Chúng nằm ở Tây Úc, ở Brazil, ở Nam Phi, ở vùng Hồ Lớn Bắc Mỹ. Và chúng chiếm phần lớn quặng sắt mà loài người từng khai thác.",
+      "file": null,
+      "start": 535.96,
+      "duration": 11.6
+    },
+    {
+      "id": "C54",
+      "chapter": null,
+      "text": "Con dao trong bếp nhà bạn. Khung thép của toà nhà bạn đang ngồi bên trong. Thân xe, đường ray, cây cầu, chiếc đinh đóng lên tường.",
+      "file": null,
+      "start": 547.56,
+      "duration": 8.67
+    },
+    {
+      "id": "C55",
+      "chapter": null,
+      "text": "Tất cả đến từ đây. Từ những lớp gỉ sét lắng xuống đáy một đại dương đang bị đầu độc, hai tỉ năm trước.",
+      "file": null,
+      "start": 556.23,
+      "duration": 6.8
+    },
+    {
+      "id": "C56",
+      "chapter": null,
+      "text": "Cả nền văn minh công nghiệp của chúng ta được dựng trên xác của một cuộc khủng hoảng sinh thái mà không ai sống sót kể lại.",
+      "file": null,
+      "start": 563.03,
+      "duration": 8.2
+    },
+    {
+      "id": "C57",
+      "chapter": null,
+      "text": "Nhưng sắt trong đại dương không phải vô hạn. Qua hàng trăm triệu năm, từng nguyên tử một, nó bị dùng hết.",
+      "file": null,
+      "start": 573.23,
+      "duration": 7
+    },
+    {
+      "id": "C58",
+      "chapter": null,
+      "text": "Và rồi tới một ngày, trong một vùng biển nào đó, một phân tử oxy được thải ra và không có gì tóm lấy nó. Nó nổi lên. Nó chạm mặt nước. Nó thoát vào không khí.",
+      "file": null,
+      "start": 580.23,
+      "duration": 10.53
+    },
+    {
+      "id": "C59",
+      "chapter": null,
+      "text": "Rồi một phân tử nữa. Rồi một nghìn. Rồi hàng tỉ tỉ. Cái thùng rác đã đầy, và lần đầu tiên trong lịch sử hành tinh, oxy bắt đầu chất lên trời.",
+      "file": null,
+      "start": 590.76,
+      "duration": 9.4
+    },
+    {
+      "id": "C60",
+      "chapter": null,
+      "text": "Tôi ngửa mặt lên nhìn. Bầu trời cam đục đang nhạt đi. Không phải trong một ngày, không phải trong một đời, mà tôi đang xem nó tua nhanh: lớp khói metan dày đặc kia đang loãng ra từng chút một.",
+      "file": null,
+      "start": 600.16,
+      "duration": 12.8
+    },
+    {
+      "id": "C61",
+      "chapter": null,
+      "text": "Vì oxy không chỉ chất lên trời. Nó lên tới đó và bắt đầu ăn.",
+      "file": null,
+      "start": 612.96,
+      "duration": 4
+    },
+    {
+      "id": "C62",
+      "chapter": null,
+      "text": "Metan là khí nhà kính rất mạnh. Mạnh hơn khí cacbonic nhiều lần trên cùng một lượng. Suốt hơn một tỉ năm, chính lớp metan đó đã giữ ấm cho Trái Đất, vì Mặt Trời thời trẻ mờ hơn bây giờ chừng hai mươi phần trăm.",
+      "file": null,
+      "start": 616.96,
+      "duration": 14
+    },
+    {
+      "id": "C63",
+      "chapter": null,
+      "text": "Hành tinh này đang được sưởi bằng một cái chăn khí. Và oxy vừa bắt đầu đốt thủng cái chăn đó.",
+      "file": null,
+      "start": 630.96,
+      "duration": 6.2
+    },
+    {
+      "id": "C64",
+      "chapter": null,
+      "text": "Gió đổi. Tôi cảm thấy nó trên mặt trước khi hiểu chuyện gì đang xảy ra. Nó lạnh. Không phải lạnh của đêm. Là lạnh của một thứ đang tới và sẽ không đi.",
+      "file": null,
+      "start": 638.66,
+      "duration": 10
+    },
+    {
+      "id": "C65",
+      "chapter": null,
+      "text": "Nhiệt độ toàn cầu bắt đầu rơi. Băng hình thành ở hai cực, lan xuống. Và băng thì trắng, mà trắng thì hắt ánh nắng ngược lại vũ trụ. Càng nhiều băng, càng ít nhiệt được giữ. Càng ít nhiệt, càng nhiều băng.",
+      "file": null,
+      "start": 648.66,
+      "duration": 13.6
+    },
+    {
+      "id": "C66",
+      "chapter": null,
+      "text": "Cái vòng đó không có phanh.",
+      "file": null,
+      "start": 662.26,
+      "duration": 1.8
+    },
+    {
+      "id": "C67",
+      "chapter": null,
+      "text": "Kỷ băng hà Huronian. Kéo dài khoảng ba trăm triệu năm. Một trong những đợt lạnh dài nhất và nghiêm trọng nhất hành tinh từng trải qua. Có bằng chứng cho thấy băng đã lan xuống tới tận vùng gần xích đạo.",
+      "file": null,
+      "start": 664.06,
+      "duration": 13.47
+    },
+    {
+      "id": "C68",
+      "chapter": null,
+      "text": "Tôi đứng trên lớp băng đang dày lên dưới chân, trên đúng cái vùng biển ấm nơi tôi vừa nhặt mảnh thảm xanh lên tay, và tôi nghĩ về chuỗi sự việc vừa xảy ra.",
+      "file": null,
+      "start": 677.53,
+      "duration": 10.33
+    },
+    {
+      "id": "C69",
+      "chapter": null,
+      "text": "Một sinh vật học được cách tách nước. Nó thải ra rác. Rác đó giết phần lớn sự sống đang có. Rác đó ăn hết sắt trong đại dương. Rác đó đốt thủng lớp chăn giữ ấm. Và hành tinh đóng băng.",
+      "file": null,
+      "start": 687.86,
+      "duration": 12.27
+    },
+    {
+      "id": "C70",
+      "chapter": null,
+      "text": "Sự sống suýt tự xoá sổ mình bằng chính thứ nó vứt đi.",
+      "file": null,
+      "start": 700.13,
+      "duration": 3.53
+    },
+    {
+      "id": "C71",
+      "chapter": null,
+      "text": "Nhưng nó không xoá xong. Núi lửa vẫn phun, khí cacbonic vẫn tích lại dưới lớp băng, và qua hàng triệu năm, hiệu ứng nhà kính quay lại đủ để phá tan lớp vỏ trắng. Băng rút. Nước chảy. Biển mở ra lần nữa.",
+      "file": null,
+      "start": 706.16,
+      "duration": 13.47
+    },
+    {
+      "id": "C72",
+      "chapter": null,
+      "text": "Và những gì bò ra khỏi thảm hoạ đó đã khác. Rất khác.",
+      "file": null,
+      "start": 719.63,
+      "duration": 3.53
+    },
+    {
+      "id": "C73",
+      "chapter": "CHƯƠNG 4 — MÓN QUÀ MANG HÌNH CHẤT ĐỘC",
+      "text": "Có một điều tôi chưa nói, và nó là lý do tôi và bạn đang tồn tại.",
+      "file": null,
+      "start": 725.16,
+      "duration": 4.33
+    },
+    {
+      "id": "C74",
+      "chapter": null,
+      "text": "Oxy phá mạnh, vì nó giật electron mạnh. Nhưng chính cái đặc tính khiến nó là chất độc cũng khiến nó là thứ tốt nhất để lấy năng lượng.",
+      "file": null,
+      "start": 729.49,
+      "duration": 8.93
+    },
+    {
+      "id": "C75",
+      "chapter": null,
+      "text": "Trước Đại Oxy hoá, sự sống lấy năng lượng bằng lên men. Bẻ một phân tử đường ra, lấy được hai đơn vị năng lượng. Hai. Rồi vứt phần còn lại đi, vì không có cách nào bẻ tiếp.",
+      "file": null,
+      "start": 738.42,
+      "duration": 11.47
+    },
+    {
+      "id": "C76",
+      "chapter": null,
+      "text": "Một tế bào biết dùng oxy bẻ cùng phân tử đường đó, đốt nó tới tận cùng, và thu về khoảng ba mươi đơn vị.",
+      "file": null,
+      "start": 749.89,
+      "duration": 6.93
+    },
+    {
+      "id": "C77",
+      "chapter": null,
+      "text": "Gấp mười lăm lần. Từ cùng một miếng ăn.",
+      "file": null,
+      "start": 756.82,
+      "duration": 2.6
+    },
+    {
+      "id": "C78",
+      "chapter": null,
+      "text": "Đó là khoản chênh lệch quyết định mọi thứ đến sau. Vì một tế bào chỉ có hai đơn vị năng lượng thì không nuôi nổi bộ máy phức tạp. Nó không xây được cơ. Không xây được thần kinh. Không đủ để làm gì lớn hơn chính nó.",
+      "file": null,
+      "start": 759.42,
+      "duration": 14.27
+    },
+    {
+      "id": "C79",
+      "chapter": null,
+      "text": "Cái giá của sự phức tạp là năng lượng. Và trong hơn một tỉ năm, sự sống không đủ tiền trả.",
+      "file": null,
+      "start": 773.69,
+      "duration": 6
+    },
+    {
+      "id": "C80",
+      "chapter": null,
+      "text": "Một số vi khuẩn không chết trong cuộc khủng hoảng. Chúng làm điều ngược lại: chúng học cách xử lý chất độc. Rồi học cách dùng nó. Rồi trở nên giỏi dùng nó tới mức đó thành nghề của chúng.",
+      "file": null,
+      "start": 781.19,
+      "duration": 12.47
+    },
+    {
+      "id": "C81",
+      "chapter": null,
+      "text": "Và rồi một tế bào lớn hơn nuốt một trong những con vi khuẩn đó vào bụng. Vì lý do nào đó, nó không tiêu hoá con mồi. Nó giữ lại. Con vi khuẩn sống tiếp bên trong, tiếp tục đốt oxy, và chia phần năng lượng cho chủ nhà.",
+      "file": null,
+      "start": 793.66,
+      "duration": 14.47
+    },
+    {
+      "id": "C82",
+      "chapter": null,
+      "text": "Cuộc thương lượng đó chưa bao giờ kết thúc. Nó vẫn đang diễn ra ngay lúc này, trong bạn.",
+      "file": null,
+      "start": 808.13,
+      "duration": 5.87
+    },
+    {
+      "id": "C83",
+      "chapter": null,
+      "text": "Mỗi tế bào trong cơ thể bạn chứa hàng trăm tới hàng nghìn ty thể. Chúng có màng riêng. Chúng có bộ gen riêng, tách biệt với bộ gen trong nhân tế bào bạn. Chúng tự nhân đôi theo lịch của riêng chúng.",
+      "file": null,
+      "start": 814,
+      "duration": 13.2
+    },
+    {
+      "id": "C84",
+      "chapter": null,
+      "text": "Chúng là hậu duệ của những con vi khuẩn từng bị nuốt vào hai tỉ năm trước. Bạn không chỉ có một dòng dõi. Bạn đang chở theo một dòng dõi khác bên trong mình, và nó đang làm việc.",
+      "file": null,
+      "start": 827.2,
+      "duration": 11.87
+    },
+    {
+      "id": "C85",
+      "chapter": null,
+      "text": "Tôi quay về. Không còn băng, không còn bầu trời cam, không còn biển nông ấm. Tôi đang ngồi ở một nơi có ghế và có tường và có người khác thở cùng phòng.",
+      "file": null,
+      "start": 841.07,
+      "duration": 10.13
+    },
+    {
+      "id": "C86",
+      "chapter": null,
+      "text": "Và tôi hít vào.",
+      "file": null,
+      "start": 851.2,
+      "duration": 1
+    },
+    {
+      "id": "C87",
+      "chapter": null,
+      "text": "Cái tôi vừa kéo vào ngực không phải là không khí trong lành. Nó là chất thải. Là phần bỏ đi của một phản ứng xảy ra trong những sinh vật đơn bào không có ý định gì với tôi, không biết tôi tồn tại, và đã chết cách đây hai tỉ năm.",
+      "file": null,
+      "start": 854.2,
+      "duration": 15.2
+    },
+    {
+      "id": "C88",
+      "chapter": null,
+      "text": "Chất thải đó từng là vũ khí giết người hàng loạt lớn nhất mà hành tinh này từng chứng kiến. Nó xoá sổ phần lớn sự sống đương thời. Nó rút cạn cả một đại dương sắt. Nó đóng băng cả thế giới.",
+      "file": null,
+      "start": 869.4,
+      "duration": 12.6
+    },
+    {
+      "id": "C89",
+      "chapter": null,
+      "text": "Và nó cũng là thứ duy nhất đủ mạnh để trả giá cho một bộ não.",
+      "file": null,
+      "start": 882,
+      "duration": 4.07
+    },
+    {
+      "id": "C90",
+      "chapter": null,
+      "text": "Tôi từng nghĩ lịch sử sự sống có thảm hoạ và có bước tiến, và hai thứ đó là hai loại sự kiện khác nhau. Đại Oxy hoá dạy tôi rằng đôi khi chúng là cùng một sự kiện, chỉ khác chỗ bạn đứng trên trục thời gian mà nhìn.",
+      "file": null,
+      "start": 887.57,
+      "duration": 14.27
+    },
+    {
+      "id": "C91",
+      "chapter": null,
+      "text": "Nếu tôi đứng ở năm hai tỉ tư trăm triệu năm trước, đó là tận thế. Nếu tôi đứng ở đây, hôm nay, với hai lá phổi đang làm việc, đó là điều tốt nhất từng xảy ra với sự sống trên Trái Đất.",
+      "file": null,
+      "start": 901.84,
+      "duration": 12.27
+    },
+    {
+      "id": "C92",
+      "chapter": null,
+      "text": "Không ai chọn được. Không có ai ngồi cân nhắc. Chỉ có một sinh vật nhỏ xíu làm việc của nó quá giỏi, và một hành tinh phải sống với hậu quả.",
+      "file": null,
+      "start": 914.11,
+      "duration": 9.33
+    },
+    {
+      "id": "C93",
+      "chapter": null,
+      "text": "Vi khuẩn lam vẫn còn đó, bằng cách này hay cách khác. Chúng vẫn nở rộ trong các hồ nước ấm mỗi mùa hè, thành những vệt xanh lục mà chúng ta lấy que gạt đi và gọi là tảo bẩn.",
+      "file": null,
+      "start": 925.44,
+      "duration": 11.53
+    },
+    {
+      "id": "C94",
+      "chapter": null,
+      "text": "Và những mảnh của chúng, bị nuốt vào rồi ở lại, đang nằm trong từng chiếc lá xanh ngoài cửa sổ bạn, vẫn tách nước, vẫn thải oxy, vẫn làm đúng cái việc đã suýt kết liễu mọi thứ.",
+      "file": null,
+      "start": 936.97,
+      "duration": 11.73
+    },
+    {
+      "id": "C95",
+      "chapter": null,
+      "text": "Lần tới khi bạn thở sâu, và cảm thấy cái nhẹ nhõm quen thuộc khi lồng ngực đầy lên, tôi muốn bạn giữ lại một ý này trong khoảng ba giây.",
+      "file": null,
+      "start": 950.7,
+      "duration": 9.07
+    },
+    {
+      "id": "C96",
+      "chapter": null,
+      "text": "Thứ đang nuôi bạn từng là thứ đã giết gần hết họ hàng xa của bạn.",
+      "file": null,
+      "start": 959.77,
+      "duration": 4.33
+    },
+    {
+      "id": "C97",
+      "chapter": null,
+      "text": "Không có gì trong hai tỉ năm qua làm nó bớt độc đi. Nó vẫn gỉ sắt, vẫn đốt gỗ, vẫn làm hỏng tế bào của bạn từng chút một mỗi ngày.",
+      "file": null,
+      "start": 964.1,
+      "duration": 8.67
+    },
+    {
+      "id": "C98",
+      "chapter": null,
+      "text": "Cái thay đổi không phải là oxy. Cái thay đổi là bạn. Cơ thể bạn được xây từ đầu tới cuối như một cỗ máy chịu đựng chất độc đó, khai thác nó, và sống bằng nó.",
+      "file": null,
+      "start": 972.77,
+      "duration": 10.47
+    },
+    {
+      "id": "C99",
+      "chapter": null,
+      "text": "Hít vào.",
+      "file": null,
+      "start": 985.24,
+      "duration": 0.8
+    },
+    {
+      "id": "C100",
+      "chapter": null,
+      "text": "Đó là hai tỉ năm đàm phán giữa sự sống và thứ nó từng ném đi.",
+      "file": null,
+      "start": 988.04,
+      "duration": 4.07
+    },
+    {
+      "id": "C101",
+      "chapter": null,
+      "text": "Và bạn vừa thắng thêm một hiệp nữa.",
+      "file": null,
+      "start": 994.61,
+      "duration": 2.33
+    }
+  ]
+}

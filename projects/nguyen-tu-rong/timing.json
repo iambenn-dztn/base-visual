@@ -1,0 +1,376 @@
+{
+  "slug": "nguyen-tu-rong",
+  "fps": 30,
+  "totalDuration": 745.49,
+  "dryRun": false,
+  "narration": "voice/narration.mp3",
+  "voice": {
+    "provider": "aimax-minimax",
+    "voice_id": "uv_5cee29af",
+    "voice_name": "uv_5cee29af",
+    "model": "speech-2.8-hd",
+    "speed": 0.96
+  },
+  "cues": [
+    {
+      "id": "C01",
+      "chapter": "CHƯƠNG 1 — Cái chạm không có thật",
+      "text": "Tôi đang đặt bàn tay mình lên mặt bàn. Tôi cảm thấy nó. Cứng, mát, đặc, có thật.",
+      "file": "voice/seg-00.mp3",
+      "start": 0,
+      "duration": 8.94
+    },
+    {
+      "id": "C02",
+      "chapter": null,
+      "text": "Tôi gõ nhẹ ngón tay xuống. Có tiếng vang. Có lực cản. Mặt bàn đẩy lại tay tôi, chắc chắn và thật thà. Không đời nào tay tôi lún xuyên qua nó cả.",
+      "file": "voice/seg-01.mp3",
+      "start": 8.94,
+      "duration": 12.35
+    },
+    {
+      "id": "C03",
+      "chapter": null,
+      "text": "Cả đời, tôi tin vào cái cảm giác ấy. Vật rắn thì đặc. Đặc nghĩa là bên trong nó chật kín vật chất. Nhưng tối nay, tôi muốn kể cho bạn nghe một bí mật khiến chính tôi phải nhìn lại bàn tay mình bằng đôi mắt hoàn toàn khác.",
+      "file": "voice/seg-02.mp3",
+      "start": 21.29,
+      "duration": 16.97
+    },
+    {
+      "id": "C04",
+      "chapter": null,
+      "text": "Sự thật là, mặt bàn này gần như trống rỗng. Bàn tay tôi cũng gần như trống rỗng. Và ngay lúc này, tôi chưa hề chạm vào mặt bàn. Tôi chưa bao giờ thật sự chạm vào bất cứ thứ gì trong đời.",
+      "file": "voice/seg-04.mp3",
+      "start": 39.77,
+      "duration": 14.79
+    },
+    {
+      "id": "C05",
+      "chapter": null,
+      "text": "Mọi vật rắn quanh tôi, chiếc ghế, sàn nhà, cơ thể tôi, cả Trái Đất dưới chân, hơn chín mươi chín phẩy chín chín chín chín phần trăm của chúng, là khoảng không. Là hư vô được sắp đặt.",
+      "file": "voice/seg-05.mp3",
+      "start": 54.56,
+      "duration": 14.68
+    },
+    {
+      "id": "C06",
+      "chapter": null,
+      "text": "Nghe thật vô lý. Nếu vật chất rỗng đến thế, vì sao tôi không rơi xuyên qua sàn? Vì sao mặt bàn vẫn đẩy lại tay tôi? Để trả lời, trước hết tôi phải dẫn bạn đi vào bên trong một hạt nhỏ nhất của thế giới. Đi vào một nguyên tử.",
+      "file": "voice/seg-06.mp3",
+      "start": 69.24,
+      "duration": 18.14
+    },
+    {
+      "id": "C07",
+      "chapter": null,
+      "text": "Và những gì chúng ta thấy bên trong đó, tin tôi đi, sẽ lớn hơn, trống hơn, và kỳ lạ hơn tất cả những gì bạn từng hình dung.",
+      "file": "voice/seg-07.mp3",
+      "start": 87.39,
+      "duration": 7.88
+    },
+    {
+      "id": "C08",
+      "chapter": "CHƯƠNG 2 — Một hạt đậu giữa sân vận động",
+      "text": "Bạn thử tưởng tượng cùng tôi. Tôi cầm lên một nguyên tử duy nhất, và phóng to nó lên khổng lồ, cho tới khi nó lớn bằng cả một sân vận động. Cả một sân bóng đá với khán đài vòng quanh.",
+      "file": "voice/seg-08.mp3",
+      "start": 95.27,
+      "duration": 13
+    },
+    {
+      "id": "C09",
+      "chapter": null,
+      "text": "Ở chính giữa sân, ngay chấm phạt đền, có một thứ chứa gần như toàn bộ trọng lượng của nguyên tử này. Đó là hạt nhân. Trái tim của nó. Và bạn có biết nó to cỡ nào không, khi cả nguyên tử đã lớn bằng một sân vận động?",
+      "file": "voice/seg-09.mp3",
+      "start": 108.27,
+      "duration": 16.72
+    },
+    {
+      "id": "C10",
+      "chapter": null,
+      "text": "Nó chỉ nhỏ bằng một hạt đậu. Một hạt đậu lẻ loi nằm giữa sân. Còn lại, toàn bộ mặt sân, toàn bộ không gian mênh mông chạy tới tận hàng ghế xa nhất trên khán đài, gần như là trống trơn.",
+      "file": "voice/seg-10.mp3",
+      "start": 124.99,
+      "duration": 13.98
+    },
+    {
+      "id": "C11",
+      "chapter": null,
+      "text": "Vậy còn electron thì sao? Bạn có thể đã hình dung chúng như những viên bi tí hon quay vòng quanh hạt nhân, gọn gàng như các hành tinh quay quanh Mặt Trời. Đó là bức tranh mà tôi cũng từng tin. Nhưng nó sai.",
+      "file": "voice/seg-11.mp3",
+      "start": 138.97,
+      "duration": 15.87
+    },
+    {
+      "id": "C12",
+      "chapter": null,
+      "text": "Electron không phải là những viên bi chạy trên quỹ đạo cố định. Chúng không đi theo một đường tròn nào cả. Thật ra, tôi không thể chỉ đích xác cho bạn một electron đang ở đâu, vào lúc nào.",
+      "file": "voice/seg-12.mp3",
+      "start": 154.85,
+      "duration": 13.03
+    },
+    {
+      "id": "C13",
+      "chapter": null,
+      "text": "Cái tôi có, chỉ là một đám mây xác suất. Một làn sương mờ trải quanh hạt nhân, dày hơn ở chỗ này, loãng hơn ở chỗ kia. Đám mây ấy cho biết khả năng electron xuất hiện ở mỗi nơi. Nó ở khắp nơi và không ở đâu cả, cho tới đúng khoảnh khắc ta cố nhìn nó.",
+      "file": "voice/seg-13.mp3",
+      "start": 167.88,
+      "duration": 21.05
+    },
+    {
+      "id": "C14",
+      "chapter": null,
+      "text": "Nên trong cái sân vận động của chúng ta, electron không phải mấy viên bi lăn quanh. Nó là một làn sương mỏng tang, mờ ảo, phảng phất tận ngoài khán đài xa xôi. Và giữa làn sương ấy với hạt đậu ở giữa sân, không có gì hết. Chỉ có khoảng không.",
+      "file": "voice/seg-14.mp3",
+      "start": 188.93,
+      "duration": 17.93
+    },
+    {
+      "id": "C15",
+      "chapter": null,
+      "text": "Hãy để tôi cho bạn một con số để thấy cái trống rỗng ấy khủng khiếp đến đâu. Hạt nhân nhỏ hơn cả nguyên tử khoảng một trăm nghìn lần. Một trăm nghìn.",
+      "file": "voice/seg-15.mp3",
+      "start": 206.87,
+      "duration": 10.28
+    },
+    {
+      "id": "C16",
+      "chapter": null,
+      "text": "Mà kích thước chỉ là một chiều. Khi tính tới cả thể tích, cái khoảng trống ấy phình lên thành con số gần như không thể tin nổi. Thể tích của hạt nhân so với thể tích của cả nguyên tử, chỉ vào cỡ một phần của một triệu tỉ. Phần vật chất đặc, chỉ chiếm ngần ấy. Tất cả phần còn lại là hư không.",
+      "file": "voice/seg-16.mp3",
+      "start": 217.15,
+      "duration": 20.72
+    },
+    {
+      "id": "C17",
+      "chapter": null,
+      "text": "Và đây mới là điều làm tôi rùng mình. Cái nguyên tử rỗng tuếch đó không phải trường hợp hiếm. Nó là mọi thứ. Mọi nguyên tử trong cơ thể tôi đều rỗng như thế. Nên nếu gộp lại, cơ thể tôi, mặt bàn này, cả Trái Đất, tất cả đều là những lâu đài dựng lên gần như hoàn toàn từ khoảng trống.",
+      "file": "voice/seg-17.mp3",
+      "start": 237.87,
+      "duration": 22.82
+    },
+    {
+      "id": "C18",
+      "chapter": null,
+      "text": "Hãy thử làm một thí nghiệm trong tưởng tượng. Nếu tôi có thể ép hết khoảng trống trong mọi nguyên tử ra ngoài, dồn tất cả các hạt nhân lại sát nhau, thì toàn bộ nhân loại, gần tám tỉ con người, sẽ nén lại nhỏ đến mức nào?",
+      "file": "voice/seg-18.mp3",
+      "start": 260.7,
+      "duration": 15.38
+    },
+    {
+      "id": "C19",
+      "chapter": null,
+      "text": "Nhỏ cỡ một viên đường. Cả loài người, mọi giấc mơ, mọi cơ thể, dồn vừa vặn trong một khối lập phương bé xíu bạn có thể đặt gọn trong lòng bàn tay. Đó chính xác là thứ vật chất tạo nên một ngôi sao neutron, nơi khoảng trống đã bị trọng lực nghiền nát hết. Đặc đến mức một thìa nhỏ nặng bằng cả một ngọn núi.",
+      "file": "voice/seg-19.mp3",
+      "start": 276.08,
+      "duration": 21.31
+    },
+    {
+      "id": "C20",
+      "chapter": null,
+      "text": "Nhưng khoan đã. Nếu tôi rỗng đến thế, nếu mặt bàn cũng rỗng đến thế, thì tại sao hai cái rỗng ấy không xuyên thẳng qua nhau? Tại sao tay tôi không lọt qua bàn như một bóng ma đi xuyên tường?",
+      "file": "voice/seg-21.mp3",
+      "start": 298.89,
+      "duration": 13.45
+    },
+    {
+      "id": "C21",
+      "chapter": null,
+      "text": "Câu hỏi này dẫn tôi tới điều bất ngờ nhất của cả câu chuyện. Bởi vì câu trả lời không phải là vì vật chất đầy. Câu trả lời là lực.",
+      "file": "voice/seg-22.mp3",
+      "start": 312.34,
+      "duration": 10.86
+    },
+    {
+      "id": "C22",
+      "chapter": "CHƯƠNG 3 — Vì sao tôi không rơi xuyên sàn",
+      "text": "Trước hết, để tôi kể cho bạn nghe làm sao con người biết được rằng nguyên tử rỗng đến vậy. Nó bắt đầu từ hơn một trăm năm trước, với một thí nghiệm trông rất đơn giản.",
+      "file": "voice/seg-23.mp3",
+      "start": 323.21,
+      "duration": 11.62
+    },
+    {
+      "id": "C23",
+      "chapter": null,
+      "text": "Người ta lấy một lá vàng, dát mỏng đến mức gần như trong suốt, chỉ dày vài nghìn nguyên tử. Rồi họ bắn vào nó một chùm hạt tí hon, gọi là hạt alpha, nhanh và nặng. Ý tưởng là xem chùm hạt ấy xuyên qua lá vàng thế nào.",
+      "file": "voice/seg-24.mp3",
+      "start": 334.83,
+      "duration": 16.27
+    },
+    {
+      "id": "C24",
+      "chapter": null,
+      "text": "Nếu nguyên tử là những khối đặc, chùm hạt hẳn sẽ khựng lại, bật ra tứ tung. Nhưng gần như toàn bộ số hạt alpha bay xuyên thẳng qua lá vàng, như thể nó chẳng hề tồn tại. Như thể chúng bay qua một khoảng không.",
+      "file": "voice/seg-25.mp3",
+      "start": 351.1,
+      "duration": 14.61
+    },
+    {
+      "id": "C25",
+      "chapter": null,
+      "text": "Nhưng thi thoảng, rất hiếm khi, một hạt alpha lại nảy bật ngược trở lại. Bật hẳn về phía sau, như vừa đâm vào một bức tường vô hình. Nhà khoa học chỉ huy thí nghiệm, Ernest Rutherford, sau này nói rằng đó là điều khó tin nhất đời ông. Như thể bắn một viên đại bác vào một tờ giấy mỏng, và viên đạn dội ngược lại trúng mình.",
+      "file": "voice/seg-26.mp3",
+      "start": 365.71,
+      "duration": 23.81
+    },
+    {
+      "id": "C26",
+      "chapter": null,
+      "text": "Và từ đó, ông hiểu ra sự thật. Toàn bộ khối lượng, toàn bộ điện tích dương của nguyên tử, phải dồn hết vào một điểm cực nhỏ ở trung tâm. Một hạt nhân. Các hạt bay qua khoảng trống thì lọt tuột, còn hạt nào tình cờ nhắm trúng cái nhân bé xíu ấy thì mới bị đẩy bật ngược. Đó là khoảnh khắc con người phát hiện ra rằng nguyên tử gần như hoàn toàn là khoảng không.",
+      "file": "voice/seg-27.mp3",
+      "start": 389.53,
+      "duration": 25.46
+    },
+    {
+      "id": "C27",
+      "chapter": null,
+      "text": "Vậy thì, quay lại câu hỏi day dứt của tôi. Nếu nguyên tử rỗng thế, sao tay tôi không xuyên qua bàn? Tại sao hai đám mây trống rỗng lại đẩy nhau chắc nịch như hai khối đặc?",
+      "file": "voice/seg-28.mp3",
+      "start": 414.99,
+      "duration": 12.9
+    },
+    {
+      "id": "C28",
+      "chapter": null,
+      "text": "Điều giữ tay tôi lại không phải vật chất đâm vào vật chất. Không hề có va chạm giữa các viên bi cứng. Cái giữ tay tôi lại là lực. Cụ thể là lực đẩy điện từ giữa các electron.",
+      "file": "voice/seg-29.mp3",
+      "start": 427.89,
+      "duration": 13.14
+    },
+    {
+      "id": "C29",
+      "chapter": null,
+      "text": "Lớp ngoài cùng của mọi nguyên tử là đám mây electron, mang điện tích âm. Khi tôi ấn tay xuống bàn, đám mây electron ở đầu ngón tay tôi tiến lại gần đám mây electron trên mặt bàn. Và hai điện tích âm thì luôn đẩy nhau. Càng ép sát, lực đẩy càng mạnh, mạnh đến vô cùng.",
+      "file": "voice/seg-30.mp3",
+      "start": 441.04,
+      "duration": 21.11
+    },
+    {
+      "id": "C30",
+      "chapter": null,
+      "text": "Nên cái cảm giác cứng, cái lực cản chắc chắn khi tôi gõ ngón tay xuống bàn, không phải là tôi chạm vào gỗ. Đó là hai trường điện từ đang xô đẩy nhau, cách nhau một khoảng cực nhỏ. Hai đám mây electron không bao giờ để mình chạm vào nhau.",
+      "file": "voice/seg-31.mp3",
+      "start": 462.15,
+      "duration": 17.07
+    },
+    {
+      "id": "C31",
+      "chapter": null,
+      "text": "Nhưng còn một lực thứ hai, kỳ lạ hơn nhiều, cũng đang giữ tôi lại. Nó không phải lực đẩy điện thông thường. Nó là một luật lệ sâu thẳm của thế giới lượng tử, mang tên nguyên lý loại trừ Pauli.",
+      "file": "voice/seg-32.mp3",
+      "start": 479.22,
+      "duration": 13.64
+    },
+    {
+      "id": "C32",
+      "chapter": null,
+      "text": "Nguyên lý này nói rằng, không có hai electron nào được phép cùng ở chung một trạng thái, cùng một chỗ, với cùng một mức năng lượng. Mỗi electron đòi cho riêng mình một ô riêng. Chúng từ chối chồng lên nhau. Chúng khước từ việc bị nhồi vào cùng một không gian.",
+      "file": "voice/seg-33.mp3",
+      "start": 492.87,
+      "duration": 18.39
+    },
+    {
+      "id": "C33",
+      "chapter": null,
+      "text": "Nên khi tôi cố ép đám mây electron của tay mình vào đám mây electron của mặt bàn, tôi không chỉ đối đầu với lực đẩy điện. Tôi còn đâm vào một sự chống cự tuyệt đối. Các electron thà đẩy ngược lại còn hơn phải chen chúc chung một trạng thái. Cái đẩy ấy cứng đến mức chính nó chống đỡ cho cả những ngôi sao khỏi sụp đổ.",
+      "file": "voice/seg-34.mp3",
+      "start": 511.26,
+      "duration": 21.08
+    },
+    {
+      "id": "C34",
+      "chapter": null,
+      "text": "Vậy nên, sự thật là thế này. Tôi chưa bao giờ thật sự chạm vào mặt bàn. Chưa bao giờ trong đời tôi chạm vào bất cứ thứ gì theo đúng nghĩa hai bề mặt kề sát nhau. Luôn có một khe hở tí hon, và trong khe hở ấy, chỉ có lực. Cái mà tôi gọi là chạm, thật ra là hai trường đang đẩy nhau, mãi mãi không cho phép sự tiếp xúc xảy ra.",
+      "file": "voice/seg-35.mp3",
+      "start": 532.34,
+      "duration": 23.84
+    },
+    {
+      "id": "C35",
+      "chapter": "CHƯƠNG 4 — Khoảng trống làm nên tôi",
+      "text": "Tôi ngồi lặng đi một lúc sau khi hiểu ra tất cả những điều này. Và tôi bắt đầu nhìn mọi thứ quanh mình bằng một đôi mắt khác hẳn.",
+      "file": "voice/seg-36.mp3",
+      "start": 556.19,
+      "duration": 9
+    },
+    {
+      "id": "C36",
+      "chapter": null,
+      "text": "Có một điều tôi muốn nói cho rõ, để bạn không hiểu lầm. Cái khoảng trống trong nguyên tử không phải là hư vô tuyệt đối. Nó không phải là con số không lạnh lẽo, không có gì cả.",
+      "file": "voice/seg-37.mp3",
+      "start": 565.19,
+      "duration": 13.61
+    },
+    {
+      "id": "C37",
+      "chapter": null,
+      "text": "Vì cái khoảng trống ấy tràn ngập trường. Trường điện từ, và những trường lượng tử khác, chăng khắp không gian ấy như một tấm lưới vô hình đang rung. Đám mây electron chính là những gợn sóng của một trong các trường đó. Nên nguyên tử không rỗng như một căn phòng trống. Nó rỗng như một cây đàn đang ngân, đầy ắp những rung động mà mắt ta không thấy.",
+      "file": "voice/seg-38.mp3",
+      "start": 578.8,
+      "duration": 22.23
+    },
+    {
+      "id": "C38",
+      "chapter": null,
+      "text": "Và cái làm nên tôi, cái giữ cho tôi có hình hài, không phải là vật chất đặc. Đó là những lực này. Là các trường ghì lấy nhau, đẩy nhau, cân bằng nhau, dệt nên cái cảm giác vững chắc mà tôi vẫn tin là cơ thể mình.",
+      "file": "voice/seg-39.mp3",
+      "start": 601.03,
+      "duration": 16.47
+    },
+    {
+      "id": "C39",
+      "chapter": null,
+      "text": "Bàn tay tôi gần như trọn vẹn là khoảng không. Nhưng khoảng không ấy được sắp đặt tinh vi đến khó tin. Từng hạt nhân, từng đám mây electron, từng trường, được giữ ở đúng vị trí của nó bằng một sự cân bằng lực chính xác đến tuyệt đối. Và chính cái trật tự của khoảng trống ấy, chứ không phải sự đặc, mới là thứ làm nên tôi.",
+      "file": "voice/seg-40.mp3",
+      "start": 617.51,
+      "duration": 21.56
+    },
+    {
+      "id": "C40",
+      "chapter": null,
+      "text": "Nên bây giờ, hãy tưởng tượng cùng tôi một điều rất đỗi con người. Một cái ôm. Hai người ôm lấy nhau thật chặt.",
+      "file": "voice/seg-42.mp3",
+      "start": 641.07,
+      "duration": 8.74
+    },
+    {
+      "id": "C41",
+      "chapter": null,
+      "text": "Trong khoảnh khắc ấy, ta cảm thấy mình đang chạm vào nhau, gần gũi nhất có thể. Nhưng ở tầng sâu nhất của thế giới, hai vòng tay đó chưa từng thật sự chạm. Đó là hai đám mây trường mênh mông, đang đẩy nhẹ vào nhau, giữ một khoảng cách vô cùng nhỏ mà không bao giờ khép lại được hoàn toàn.",
+      "file": "voice/seg-43.mp3",
+      "start": 649.81,
+      "duration": 18.9
+    },
+    {
+      "id": "C42",
+      "chapter": null,
+      "text": "Hai con người gần như hoàn toàn trống rỗng, ôm lấy nhau bằng lực. Nghe thì có vẻ cô đơn. Nhưng tôi lại thấy điều ngược lại. Tôi thấy nó đẹp đến nghẹn ngào.",
+      "file": "voice/seg-44.mp3",
+      "start": 668.72,
+      "duration": 11.72
+    },
+    {
+      "id": "C43",
+      "chapter": null,
+      "text": "Bởi vì cái khoảng trống ấy không hề là sự thiếu vắng. Nó là cái cho phép mọi thứ tồn tại. Nếu không có khoảng trống trong nguyên tử, sẽ không có hóa học, không có ánh sáng luồn qua, không có sự mềm mại, không có cả sự sống. Chính cái rỗng được sắp đặt tinh vi ấy mới là nơi tôi trú ngụ.",
+      "file": "voice/seg-45.mp3",
+      "start": 680.44,
+      "duration": 21.19
+    },
+    {
+      "id": "C44",
+      "chapter": null,
+      "text": "Tôi từng nghĩ mình là một khối vật chất đặc, chắc nịch, có thật. Giờ tôi biết mình gần như trọn vẹn là khoảng không, được giữ thành hình hài bằng những lực vô hình. Và bằng cách nào đó, sự thật ấy không làm tôi thấy mình mong manh hơn. Nó làm tôi thấy mình kỳ diệu hơn.",
+      "file": "voice/seg-46.mp3",
+      "start": 701.63,
+      "duration": 19.6
+    },
+    {
+      "id": "C45",
+      "chapter": null,
+      "text": "Nên lần tới, khi bạn đặt tay lên một mặt bàn, hay nắm lấy tay một người mình thương, hãy khẽ nhớ điều này. Bạn chưa bao giờ thật sự chạm vào nó. Đó là hai vùng khoảng không mênh mông, đang thì thầm với nhau bằng lực. Và chính cái khoảng trống được sắp đặt tinh vi ấy, ngay lúc này, đang làm nên bạn.",
+      "file": "voice/seg-47.mp3",
+      "start": 721.24,
+      "duration": 21.25
+    }
+  ]
+}

@@ -1,0 +1,416 @@
+{
+  "slug": "hat-neutrino",
+  "fps": 30,
+  "totalDuration": 806.14,
+  "dryRun": false,
+  "narration": "voice/narration.mp3",
+  "voice": {
+    "provider": "aimax-minimax",
+    "voice_id": "uv_5cee29af",
+    "voice_name": "uv_5cee29af",
+    "model": "speech-2.8-hd",
+    "speed": 0.96
+  },
+  "cues": [
+    {
+      "id": "C01",
+      "chapter": "CHƯƠNG 1 — Cơn mưa vô hình",
+      "text": "Tôi muốn bạn ngồi thật yên một chút. Nhắm mắt lại nếu có thể. Và lắng nghe.",
+      "file": "voice/seg-00.mp3",
+      "start": 0,
+      "duration": 6.26
+    },
+    {
+      "id": "C02",
+      "chapter": null,
+      "text": "Vì ngay lúc này, một cơn mưa đang xuyên qua bạn. Một cơn mưa mà bạn không thấy, không nghe, không hề cảm nhận được. Nhưng nó chưa từng ngừng lại, dù chỉ một khoảnh khắc.",
+      "file": "voice/seg-01.mp3",
+      "start": 6.26,
+      "duration": 13.78
+    },
+    {
+      "id": "C03",
+      "chapter": null,
+      "text": "Trong đúng một giây bạn vừa nghe câu này, khoảng một trăm nghìn tỉ hạt đã đi xuyên qua cơ thể bạn. Xuyên qua da, qua xương, qua trái tim đang đập. Và không một hạt nào chạm vào bất cứ thứ gì trong người bạn.",
+      "file": "voice/seg-02.mp3",
+      "start": 20.04,
+      "duration": 13.89
+    },
+    {
+      "id": "C04",
+      "chapter": null,
+      "text": "Những hạt ấy có một cái tên nghe như bước ra từ truyện ma. Neutrino. Hạt trung hòa nhỏ bé. Và người ta thường gọi nó bằng một biệt danh khác, đúng hơn với bản chất của nó. Hạt ma.",
+      "file": "voice/seg-04.mp3",
+      "start": 35.43,
+      "duration": 15.11
+    },
+    {
+      "id": "C05",
+      "chapter": null,
+      "text": "Chúng đến từ Mặt Trời. Từ tận trong lõi của ngôi sao ấy, cách chúng ta một trăm năm mươi triệu cây số. Và chúng vừa lao một mạch qua khoảng không vũ trụ, để rồi đi thẳng qua bạn như thể bạn không hề tồn tại.",
+      "file": "voice/seg-05.mp3",
+      "start": 50.54,
+      "duration": 14.61
+    },
+    {
+      "id": "C06",
+      "chapter": null,
+      "text": "Nhưng đây mới là điều khiến tôi lặng người. Chúng không chỉ xuyên qua bạn. Chúng xuyên qua cả Trái Đất.",
+      "file": "voice/seg-06.mp3",
+      "start": 65.15,
+      "duration": 7.83
+    },
+    {
+      "id": "C07",
+      "chapter": null,
+      "text": "Ngay lúc này là ban đêm ở đâu đó bên kia hành tinh. Với những người ở đó, Mặt Trời đang nằm dưới chân họ, bị cả một khối cầu đất đá dày mười hai nghìn cây số che khuất. Vậy mà cơn mưa neutrino vẫn đang tưới lên họ, y hệt như tưới lên bạn giữa ban ngày.",
+      "file": "voice/seg-07.mp3",
+      "start": 72.98,
+      "duration": 19.15
+    },
+    {
+      "id": "C08",
+      "chapter": null,
+      "text": "Với neutrino, cả Trái Đất trong suốt như một tấm kính. Cả hành tinh của chúng ta chỉ là một làn sương mà nó đi xuyên qua mà không hề chậm lại. Và tôi muốn dẫn bạn đi tìm hiểu, làm sao một hạt lại có thể vô hình đến mức đó.",
+      "file": "voice/seg-08.mp3",
+      "start": 92.13,
+      "duration": 16.21
+    },
+    {
+      "id": "C09",
+      "chapter": "CHƯƠNG 2 — Hạt gần như không tồn tại",
+      "text": "Để hiểu neutrino, trước hết tôi phải kể cho bạn nghe về nơi nó ra đời. Về cái lò đã sinh ra nó.",
+      "file": "voice/seg-09.mp3",
+      "start": 108.34,
+      "duration": 7.78
+    },
+    {
+      "id": "C10",
+      "chapter": null,
+      "text": "Sâu trong lõi Mặt Trời, trọng lực nghiến các hạt nhân hydro vào nhau với sức ép khủng khiếp, ép chúng hợp lại thành heli. Đó chính là phản ứng nuôi sống Mặt Trời, thứ đã thắp sáng bầu trời của chúng ta suốt bốn tỉ rưỡi năm.",
+      "file": "voice/seg-10.mp3",
+      "start": 116.12,
+      "duration": 15.39
+    },
+    {
+      "id": "C11",
+      "chapter": null,
+      "text": "Và mỗi lần các hạt nhân ấy hợp nhất, chúng nhả ra hai thứ. Một là ánh sáng. Hai là những hạt ma. Neutrino sinh ra ngay trong khoảnh khắc lửa hạt nhân bùng lên ở trái tim ngôi sao.",
+      "file": "voice/seg-11.mp3",
+      "start": 131.51,
+      "duration": 15.09
+    },
+    {
+      "id": "C12",
+      "chapter": null,
+      "text": "Nhưng số phận của hai thứ đó khác nhau một trời một vực. Ánh sáng thì bị nhốt lại. Nó va vào vô số hạt trên đường, bị hấp thụ rồi nhả ra, hết lần này đến lần khác. Một hạt ánh sáng sinh ra trong lõi Mặt Trời phải mất hàng chục nghìn năm mới lết được ra tới bề mặt.",
+      "file": "voice/seg-12.mp3",
+      "start": 146.6,
+      "duration": 20.49
+    },
+    {
+      "id": "C13",
+      "chapter": null,
+      "text": "Còn neutrino thì khác hẳn. Vừa sinh ra, nó phóng thẳng ra khỏi Mặt Trời. Không va vào gì. Không bị cản lại. Cả một ngôi sao đặc quánh vật chất, với nó, cũng gần như là hư không. Chỉ hai giây sau khi ra đời, nó đã thoát ra tới bề mặt và lao về phía chúng ta.",
+      "file": "voice/seg-13.mp3",
+      "start": 167.09,
+      "duration": 21.51
+    },
+    {
+      "id": "C14",
+      "chapter": null,
+      "text": "Vậy điều gì làm cho neutrino trơn tuột đến thế? Vì sao nó có thể phớt lờ cả một ngôi sao, cả một hành tinh, cả cơ thể bạn?",
+      "file": "voice/seg-14.mp3",
+      "start": 188.6,
+      "duration": 10.11
+    },
+    {
+      "id": "C15",
+      "chapter": null,
+      "text": "Bí mật nằm ở chỗ này. Trong vũ trụ có bốn lực cơ bản chi phối mọi thứ. Nhưng neutrino gần như làm ngơ tất cả. Nó không mang điện, nên lực điện từ không níu được nó. Nó gần như không có khối lượng, nên trọng lực gần như bỏ quên nó.",
+      "file": "voice/seg-15.mp3",
+      "start": 198.71,
+      "duration": 19.07
+    },
+    {
+      "id": "C16",
+      "chapter": null,
+      "text": "Nó chỉ trò chuyện với thế giới qua đúng một kênh duy nhất, một lực gọi là tương tác yếu. Và đúng như tên gọi, lực ấy yếu đến mức chỉ khi neutrino đâm sầm trực diện vào tâm một hạt nhân, may ra mới có chuyện xảy ra.",
+      "file": "voice/seg-16.mp3",
+      "start": 217.78,
+      "duration": 14.71
+    },
+    {
+      "id": "C17",
+      "chapter": null,
+      "text": "Nhưng hạt nhân thì bé đến vô lý, còn khoảng trống giữa chúng thì mênh mông. Với neutrino, vật chất mà chúng ta thấy đặc cứng lại chủ yếu là khoảng không. Nó cứ thế len qua những kẽ hở khổng lồ giữa các nguyên tử.",
+      "file": "voice/seg-17.mp3",
+      "start": 232.49,
+      "duration": 15.47
+    },
+    {
+      "id": "C18",
+      "chapter": null,
+      "text": "Các nhà vật lý đã tính ra một con số làm tôi choáng váng. Nếu bạn muốn chặn đứng một dòng neutrino, bạn cần một bức tường chì. Nhưng không phải dày vài mét. Mà là một bức tường chì dày cỡ một năm ánh sáng.",
+      "file": "voice/seg-18.mp3",
+      "start": 247.96,
+      "duration": 15.73
+    },
+    {
+      "id": "C19",
+      "chapter": null,
+      "text": "Một bức tường chì dài bằng quãng đường ánh sáng đi trong trọn một năm, mới có thể chặn được một nửa số neutrino lao tới. Vậy thì một hạt gần như không bao giờ chạm vào gì, làm sao ta có thể bắt được nó? Làm sao ta biết nó có thật?",
+      "file": "voice/seg-19.mp3",
+      "start": 263.69,
+      "duration": 15.96
+    },
+    {
+      "id": "C20",
+      "chapter": null,
+      "text": "Và đây là nghịch lý đẹp nhất của câu chuyện này. Chính vì neutrino trơn tuột đến thế, nó lại trở thành một sứ giả trung thực đến tuyệt đối.",
+      "file": "voice/seg-21.mp3",
+      "start": 281.15,
+      "duration": 9.7
+    },
+    {
+      "id": "C21",
+      "chapter": null,
+      "text": "Ánh sáng Mặt Trời mà tôi nhìn thấy là ánh sáng của bề mặt, đã bị nhào nặn suốt hàng chục nghìn năm trước khi thoát ra. Nó không kể cho tôi nghe gì về cái lõi. Nhưng neutrino thì bay thẳng từ lõi ra, không hề bị bóp méo. Nó là tấm ảnh chụp trực tiếp trái tim Mặt Trời, chụp cách đây chỉ tám phút.",
+      "file": "voice/seg-22.mp3",
+      "start": 290.85,
+      "duration": 19.72
+    },
+    {
+      "id": "C22",
+      "chapter": "CHƯƠNG 3 — Săn hạt ma dưới lòng đất",
+      "text": "Vậy là con người quyết tâm bắt cho được một hạt ma. Và cách chúng ta làm điều đó, với tôi, là một trong những kỳ tích điên rồ nhất của khoa học.",
+      "file": "voice/seg-23.mp3",
+      "start": 310.57,
+      "duration": 9.44
+    },
+    {
+      "id": "C23",
+      "chapter": null,
+      "text": "Nếu neutrino chỉ va chạm cực kỳ hiếm hoi, thì cách duy nhất là gom thật nhiều nguyên tử lại một chỗ, rồi kiên nhẫn chờ. Chờ cái khoảnh khắc một trong hàng tỉ tỉ hạt bay qua tình cờ đâm trúng một hạt nhân.",
+      "file": "voice/seg-24.mp3",
+      "start": 320.01,
+      "duration": 15.21
+    },
+    {
+      "id": "C24",
+      "chapter": null,
+      "text": "Thế là người ta xây những cỗ máy dò khổng lồ. Không phải trên mặt đất, mà chôn sâu dưới lòng đất, dưới cả một ngọn núi. Bởi chỉ có lớp đá dày hàng cây số mới chặn được mọi thứ khác, mọi hạt ồn ào của vũ trụ. Chỉ có neutrino, kẻ xuyên thấu mọi thứ, mới lọt được xuống tận đó.",
+      "file": "voice/seg-25.mp3",
+      "start": 335.22,
+      "duration": 20.83
+    },
+    {
+      "id": "C25",
+      "chapter": null,
+      "text": "Hãy hình dung cùng tôi một trong những cỗ máy ấy, ở Nhật Bản. Nó là một bể chứa khổng lồ nằm sâu một cây số dưới một ngọn núi, đựng năm mươi nghìn tấn nước siêu tinh khiết. Thành bể phủ kín hàng chục nghìn con mắt điện tử, im lìm chờ đợi trong bóng tối tuyệt đối.",
+      "file": "voice/seg-26.mp3",
+      "start": 356.05,
+      "duration": 18.19
+    },
+    {
+      "id": "C26",
+      "chapter": null,
+      "text": "Rồi thi thoảng, rất thi thoảng, một hạt ma trong hàng tỉ tỉ hạt đâm trúng một nguyên tử trong bể nước. Và trong tích tắc va chạm đó, một tia sáng xanh mờ lóe lên trong nước, một vòng ánh sáng lan ra như gợn sóng. Những con mắt điện tử bắt lấy nó.",
+      "file": "voice/seg-27.mp3",
+      "start": 374.24,
+      "duration": 19.02
+    },
+    {
+      "id": "C27",
+      "chapter": null,
+      "text": "Cái chớp sáng xanh li ti ấy chính là dấu chân của một hạt ma. Lần đầu tiên, con người nhìn thấy bóng dáng của thứ tưởng như vô hình. Và họ có thể lần theo vòng sáng để biết hạt ấy đến từ đâu. Nó chỉ thẳng về phía Mặt Trời.",
+      "file": "voice/seg-28.mp3",
+      "start": 393.26,
+      "duration": 17.44
+    },
+    {
+      "id": "C28",
+      "chapter": null,
+      "text": "Nhưng khi con người bắt đầu đếm những hạt ma từ Mặt Trời, một bí ẩn kỳ lạ hiện ra. Một bí ẩn ám ảnh các nhà khoa học suốt mấy chục năm.",
+      "file": "voice/seg-30.mp3",
+      "start": 412.2,
+      "duration": 9.63
+    },
+    {
+      "id": "C29",
+      "chapter": null,
+      "text": "Một nhà khoa học tên Ray Davis đã dựng một máy dò và cần mẫn đếm neutrino Mặt Trời qua từng năm tháng. Ông biết rõ Mặt Trời phải phun ra bao nhiêu hạt. Lý thuyết đã tính rất chắc chắn. Vậy mà ông đếm đi đếm lại, chỉ thấy khoảng một phần ba con số ấy.",
+      "file": "voice/seg-31.mp3",
+      "start": 421.83,
+      "duration": 18.09
+    },
+    {
+      "id": "C30",
+      "chapter": null,
+      "text": "Hai phần ba số neutrino đã biến đi đâu mất trên đường từ Mặt Trời đến Trái Đất. Người ta gọi đó là bài toán neutrino Mặt Trời. Hoặc là chúng ta hiểu sai về Mặt Trời. Hoặc là chúng ta hiểu sai về chính hạt ma này.",
+      "file": "voice/seg-32.mp3",
+      "start": 439.92,
+      "duration": 16.38
+    },
+    {
+      "id": "C31",
+      "chapter": null,
+      "text": "Và sự thật hóa ra còn lạ lùng hơn cả hai khả năng đó. Những hạt neutrino ấy chưa hề biến mất. Chúng chỉ đã hóa trang.",
+      "file": "voice/seg-33.mp3",
+      "start": 456.3,
+      "duration": 9.49
+    },
+    {
+      "id": "C32",
+      "chapter": null,
+      "text": "Bạn thấy đấy, neutrino không chỉ có một loại. Nó có ba khuôn mặt, ba hương vị khác nhau, mà các nhà khoa học gọi là ba hương. Có neutrino electron, neutrino muon, và neutrino tau. Mặt Trời chỉ sinh ra loại thứ nhất. Còn máy dò của Ray Davis cũng chỉ đếm được đúng loại thứ nhất ấy.",
+      "file": "voice/seg-34.mp3",
+      "start": 465.79,
+      "duration": 22.8
+    },
+    {
+      "id": "C33",
+      "chapter": null,
+      "text": "Điều kỳ diệu là thế này. Trên đường bay từ Mặt Trời đến Trái Đất, mỗi hạt neutrino liên tục thay đổi khuôn mặt của mình. Nó rời Mặt Trời với một hương, rồi hóa thành hương thứ hai, rồi thứ ba, rồi quay lại, cứ thế đổi qua đổi lại suốt hành trình. Người ta gọi hiện tượng này là dao động neutrino.",
+      "file": "voice/seg-35.mp3",
+      "start": 488.59,
+      "duration": 22.78
+    },
+    {
+      "id": "C34",
+      "chapter": null,
+      "text": "Thế nên khi những hạt ma ấy tới được Trái Đất, chỉ còn khoảng một phần ba đang khoác đúng khuôn mặt mà máy của Davis nhìn thấy được. Hai phần ba kia không hề mất. Chúng chỉ đang đội một hương khác. Bài toán được giải, không phải bằng cách sửa Mặt Trời, mà bằng cách hé lộ một bí mật sâu thẳm của chính hạt ma.",
+      "file": "voice/seg-36.mp3",
+      "start": 511.37,
+      "duration": 20.69
+    },
+    {
+      "id": "C35",
+      "chapter": null,
+      "text": "Và bí mật ấy còn đi xa hơn. Bởi vì để đổi được khuôn mặt như vậy, một hạt buộc phải có khối lượng. Dù cực kỳ nhỏ bé. Suốt bao năm, người ta cứ ngỡ neutrino hoàn toàn không có khối lượng. Nhưng chính sự hóa trang này đã chứng minh điều ngược lại.",
+      "file": "voice/seg-37.mp3",
+      "start": 532.06,
+      "duration": 18.18
+    },
+    {
+      "id": "C36",
+      "chapter": null,
+      "text": "Neutrino có khối lượng. Nhỏ đến mức gần như không thể tin nổi, nhỏ hơn cả một phần triệu khối lượng một electron, nhưng khác không. Khám phá ấy làm rung chuyển vật lý, và mang về một giải Nobel cho hai nhà khoa học đã vén được tấm màn. Một hạt trơn tuột và vô hình, hóa ra lại giấu trong mình một bí mật về bản chất của vật chất.",
+      "file": "voice/seg-38.mp3",
+      "start": 550.24,
+      "duration": 22.75
+    },
+    {
+      "id": "C37",
+      "chapter": "CHƯƠNG 4 — Sứ giả của những ngôi sao đã chết",
+      "text": "Nhưng neutrino không chỉ mang tin từ Mặt Trời. Nó còn là sứ giả của những sự kiện dữ dội nhất trong cả vũ trụ. Và tôi muốn kể cho bạn nghe về một đêm đặc biệt.",
+      "file": "voice/seg-39.mp3",
+      "start": 572.99,
+      "duration": 11.84
+    },
+    {
+      "id": "C38",
+      "chapter": null,
+      "text": "Khi một ngôi sao khổng lồ chết đi trong một vụ nổ siêu tân tinh, lõi của nó sụp đổ trong tích tắc. Và trong khoảnh khắc kinh hoàng ấy, nó giải phóng một cơn lũ neutrino không thể tưởng tượng nổi. Gần như toàn bộ năng lượng của cái chết ấy tuôn ra dưới dạng hạt ma.",
+      "file": "voice/seg-40.mp3",
+      "start": 584.83,
+      "duration": 18.27
+    },
+    {
+      "id": "C39",
+      "chapter": null,
+      "text": "Năm một nghìn chín trăm tám mươi bảy, một ngôi sao nổ tung ở một thiên hà lân cận, cách chúng ta một trăm sáu mươi nghìn năm ánh sáng. Và điều đáng kinh ngạc là các máy dò dưới lòng đất đã bắt được đợt neutrino từ vụ nổ ấy.",
+      "file": "voice/seg-41.mp3",
+      "start": 603.1,
+      "duration": 14.22
+    },
+    {
+      "id": "C40",
+      "chapter": null,
+      "text": "Nhưng đây mới là chi tiết khiến tôi nổi da gà. Đợt neutrino ấy đến Trái Đất sớm hơn ánh sáng của vụ nổ vài giờ đồng hồ. Vài giờ.",
+      "file": "voice/seg-42.mp3",
+      "start": 617.32,
+      "duration": 10.49
+    },
+    {
+      "id": "C41",
+      "chapter": null,
+      "text": "Vì ánh sáng phải chật vật chen qua các lớp vật chất đang bùng nổ của ngôi sao mới thoát ra được. Còn neutrino, như mọi khi, phóng thẳng qua tất cả, không gì cản nổi. Chúng lao một mạch qua một trăm sáu mươi nghìn năm ánh sáng, và về đích trước ánh sáng.",
+      "file": "voice/seg-43.mp3",
+      "start": 627.81,
+      "duration": 18.16
+    },
+    {
+      "id": "C42",
+      "chapter": null,
+      "text": "Chỉ hai mươi mấy hạt ma được bắt trong vài giây ngắn ngủi ấy. Hai mươi mấy hạt, sau một hành trình một trăm sáu mươi nghìn năm. Nhưng chúng là lời báo tin đầu tiên loài người nhận được, rằng ở tận nơi xa xôi kia, một ngôi sao vừa qua đời.",
+      "file": "voice/seg-44.mp3",
+      "start": 645.97,
+      "duration": 16.67
+    },
+    {
+      "id": "C43",
+      "chapter": null,
+      "text": "Và neutrino còn mang trong mình một tin nhắn cổ xưa hơn tất cả. Cổ xưa hơn cả Mặt Trời, cả các ngôi sao. Một tin nhắn từ chính buổi bình minh của vũ trụ.",
+      "file": "voice/seg-46.mp3",
+      "start": 664.14,
+      "duration": 11.92
+    },
+    {
+      "id": "C44",
+      "chapter": null,
+      "text": "Chỉ một giây sau Big Bang, khi vũ trụ còn là một biển lửa đặc quánh, ánh sáng còn bị giam cầm không lối thoát, thì neutrino đã tự do bay đi. Chúng thoát ra sớm hơn ánh sáng cả hàng trăm nghìn năm. Và chúng vẫn còn ở đây, ngay lúc này, trôi khắp vũ trụ.",
+      "file": "voice/seg-47.mp3",
+      "start": 676.06,
+      "duration": 19.5
+    },
+    {
+      "id": "C45",
+      "chapter": null,
+      "text": "Người ta gọi đó là nền neutrino vũ trụ. Trong mỗi centimet khối không gian quanh bạn có khoảng ba trăm hạt ma cổ đại ấy. Chúng là những nhân chứng già nhất còn sống, đã lang thang gần mười bốn tỉ năm, mang trên mình dấu vết của giây đầu tiên khi vũ trụ vừa ra đời.",
+      "file": "voice/seg-48.mp3",
+      "start": 695.56,
+      "duration": 19.05
+    },
+    {
+      "id": "C46",
+      "chapter": null,
+      "text": "Vậy nên bây giờ, tôi lại ngồi thật yên. Và tôi nghĩ về cơn mưa vô hình vẫn đang tưới qua tôi, không ngừng nghỉ, ngay trong giây phút này.",
+      "file": "voice/seg-50.mp3",
+      "start": 716.61,
+      "duration": 9.48
+    },
+    {
+      "id": "C47",
+      "chapter": null,
+      "text": "Trong lúc bạn nghe câu này, hàng tỉ tỉ hạt ma vừa đi xuyên qua cơ thể bạn. Phần lớn đến thẳng từ lõi Mặt Trời, rời khỏi trái tim ngôi sao chỉ tám phút trước. Chúng vừa lướt qua từng tế bào của bạn, mang theo một tin nhắn trực tiếp từ nơi mà không ánh mắt nào chạm tới được.",
+      "file": "voice/seg-51.mp3",
+      "start": 726.09,
+      "duration": 18.79
+    },
+    {
+      "id": "C48",
+      "chapter": null,
+      "text": "Và lẫn trong cơn mưa ấy, có cả những hạt ma đến từ những ngôi sao đã nổ tung từ lâu, ở những thiên hà xa xôi. Có cả những hạt đã lang thang từ giây đầu tiên của vũ trụ, già hơn mọi thứ bạn từng biết. Tất cả cùng lặng lẽ đi xuyên qua bạn, ngay lúc này.",
+      "file": "voice/seg-52.mp3",
+      "start": 744.88,
+      "duration": 17.77
+    },
+    {
+      "id": "C49",
+      "chapter": null,
+      "text": "Chúng ta cứ ngỡ mình đứng ngoài vũ trụ mà ngắm nhìn nó. Nhưng vũ trụ chưa từng ngừng chảy qua ta. Mỗi giây, nó gửi tới ta hàng nghìn tỉ sứ giả vô hình, thầm lặng, trung thực, kể cho ta nghe về những nơi ta không bao giờ tới được.",
+      "file": "voice/seg-53.mp3",
+      "start": 762.65,
+      "duration": 16.45
+    },
+    {
+      "id": "C50",
+      "chapter": null,
+      "text": "Nên lần tới, khi ánh nắng chạm vào da bạn, hãy khẽ nhớ điều này. Ngay dưới lớp nắng ấy, một cơn mưa ma đang lặng lẽ xuyên qua bạn. Mang trên mình câu chuyện của lõi Mặt Trời, của những ngôi sao đã chết, và của khoảnh khắc đầu tiên khi tất cả bắt đầu. Bạn không hề tách khỏi nó. Bạn đang tắm trong nó, ngay lúc này.",
+      "file": "voice/seg-54.mp3",
+      "start": 779.1,
+      "duration": 24.04
+    }
+  ]
+}
