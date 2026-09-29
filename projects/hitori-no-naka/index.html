@@ -1,0 +1,2830 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, height=1080">
+<title>なぜ家族といても寂しいのか｜孤立と孤独を分けた研究 — HyperFrames</title>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+<style>
+  /* Font Nhật NHÚNG — "Segoe UI" KHÔNG có glyph CJK, render headless không được
+   * phụ thuộc font máy. Khai ở đây, và CŨNG phải khai trong chuỗi font của textTex(). */
+  @font-face{font-family:'BIZ UDPGothic';src:url('assets/fonts/BIZUDPGothic-Bold.ttf') format('truetype');font-weight:700;font-display:block;}
+  @font-face{font-family:'BIZ UDPGothic';src:url('assets/fonts/BIZUDPGothic-Regular.ttf') format('truetype');font-weight:400;font-display:block;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{width:1920px;height:1080px;overflow:hidden;background:#000000;font-family:'BIZ UDPGothic',sans-serif;}
+  #root{position:relative;width:1920px;height:1080px;background:#000;}
+  #c{position:absolute;inset:0;display:block;z-index:0;}
+  #vig{position:absolute;inset:0;pointer-events:none;z-index:6;background:radial-gradient(ellipse at center,rgba(0,0,0,0) 56%,rgba(4,4,4,.58) 100%);}
+  #chap{position:absolute;left:4.2%;bottom:20.5%;z-index:18;color:#CDBFA6;font-family:'BIZ UDPGothic',sans-serif;font-size:34px;font-weight:700;letter-spacing:6px;opacity:0;text-shadow:0 2px 18px rgba(0,0,0,.96);white-space:nowrap;}
+  #sub{position:absolute;left:50%;bottom:8.2%;transform:translateX(-50%);z-index:20;
+    width:min(1500px,88%);text-align:center;color:#f4f2ee;font-family:'BIZ UDPGothic',sans-serif;
+    font-size:56px;font-weight:700;line-height:1.35;
+    text-shadow:0 3px 20px rgba(0,0,0,.97),0 0 4px rgba(0,0,0,.97);
+    display:table;width:auto;max-width:96%;white-space:nowrap;margin-left:auto;margin-right:auto;
+    padding:.26em 1.15em;border-radius:10px;
+    background:radial-gradient(ellipse 100% 96% at 50% 50%,rgba(0,0,0,.66) 0%,rgba(0,0,0,.58) 42%,rgba(0,0,0,.28) 76%,rgba(0,0,0,0) 100%);}
+  #err{position:absolute;left:12px;top:12px;z-index:99;color:#ff9090;background:rgba(0,0,0,.82);padding:8px 10px;font:12px/1.5 monospace;max-width:90%;white-space:pre-wrap;border-radius:8px;display:none;}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="hitori-no-naka" data-start="0" data-duration="818.47" data-width="1920" data-height="1080">
+  <canvas id="c" class="clip" data-start="0.01" data-duration="818.47" data-track-index="0"></canvas>
+  <audio id="narr" class="clip" data-start="0" data-duration="818.47" data-track-index="1" src="projects/hitori-no-naka/voice/narration_mixed.mp3"></audio>
+  <div id="vig"></div>
+  <div id="chap" data-layout-allow-occlusion=""></div>
+  <div id="sub" data-layout-allow-occlusion=""></div>
+  <div id="err"></div>
+<div id="outro-black" style="position:absolute;inset:0;z-index:90;background:#000;opacity:0;pointer-events:none"></div>
+</div>
+<script>
+/* ===== HFA:BEGIN — sinh tự động bởi scripts/inject-lib.mjs, ĐỪNG SỬA TAY ===== */
+/* ============================================================================
+ * hf-astro.js — bộ khung dùng chung cho composition Du Mục Vũ Trụ
+ *
+ * Trích từ các tập ĐÃ RENDER VÀ VERIFY (01–07). Trước khi có file này, mỗi tập
+ * tự dựng lại cùng một đoạn code (mulberry32, ACESFilmic, composer+bloom, lens
+ * pass, starfield, tra phụ đề, driver timeline) — nên bug đã sửa ở tập này lại
+ * tái xuất ở tập sau. Dùng file này thay vì chép tay.
+ *
+ * CÁCH DÙNG: KHÔNG nạp bằng thẻ script ngoài. Preview/render server của HyperFrames
+ *      không phục vụ file .js tuỳ ý trong project — nó trả về SPA shell HTML cho
+ *      đường dẫn đó, browser parse "doctype html" thành lỗi cú pháp và tập chết
+ *      (đã kiểm chứng: curl -D- trả về 200 text/html, 593 byte). Composition phải
+ *      TỰ CHỨA. Nhúng bằng:
+ *
+ *          node scripts/inject-lib.mjs --html index.html
+ *
+ *      Lệnh này dán nội dung file này vào đầu khối code của tập, giữa hai mốc
+ *      HFA:BEGIN / HFA:END. Chạy lại được nhiều lần. Định nghĩa một global: HFA.
+ *      Yêu cầu three.min.js + EffectComposer/RenderPass/ShaderPass/UnrealBloomPass
+ *      đã nạp trước đó.
+ *
+ * LUẬT TẤT ĐỊNH: file này không dùng Date.now / performance.now / Math.random /
+ * requestAnimationFrame / setTimeout. Mọi thứ là hàm thuần của t hoặc của seed.
+ * ========================================================================== */
+(function (global) {
+  'use strict';
+
+  var HFA = {};
+
+  /* ---- PRNG có seed ------------------------------------------------------
+   * Math.random() bị cấm (render phải tất định). Mỗi cụm vật thể dùng MỘT
+   * seed riêng — dùng chung một chuỗi cho hai cụm thì thêm/bớt hạt ở cụm này
+   * sẽ xê dịch layout cụm kia.
+   */
+  HFA.mulberry32 = function (a) {
+    return function () {
+      a |= 0; a = (a + 0x6D2B79F5) | 0;
+      var t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  };
+
+  /* ---- helper toán -------------------------------------------------------- */
+  HFA.clamp = function (x, a, b) { return Math.min(b, Math.max(a, x)); };
+
+  HFA.smooth = function (x) { x = HFA.clamp(x, 0, 1); return x * x * (3 - 2 * x); };
+
+  /** Bao lồi mềm: 0 ngoài [a,b], lên/xuống mượt trong dải f giây ở hai mép.
+   *
+   * Hoà chéo đặt ĐỐI XỨNG quanh mốc cảnh: cảnh chỉ nhú lên từ a-f/2 và tắt hẳn
+   * ở b+f/2, nên hai cảnh liền nhau chồng đúng f giây và tổng trọng số luôn = 1
+   * (không chớp đen). Bản cũ dùng a-f .. a+f với mẫu số 2f: cảnh mới hiện sớm
+   * cả f giây trước mốc và cảnh cũ nán lại thêm f giây sau mốc, tổng thời gian
+   * dính hình là 2f — chuyển cảnh nhoè, hình cue trước còn đọng khi lời đã sang
+   * ý mới. Xem tập mat-trang t=167,33s (Trái Đất + Sao Hoả + Mặt Trăng chồng nhau).
+   */
+  HFA.band = function (t, a, b, f) {
+    f = f || 0.8;
+    var h = f * 0.5;
+    if (t < a - h || t > b + h) return 0;
+    var up = HFA.smooth((t - (a - h)) / f);
+    var dn = HFA.smooth(((b + h) - t) / f);
+    return Math.min(1, Math.min(up, dn));
+  };
+
+  /* ---- cửa sổ cảnh --------------------------------------------------------
+   * SC = {A:[start,end], B:[...], ...} theo GIÂY THẬT (lấy từ timing.json cue.start).
+   * Trả về loc(t,k) ∈ [0,1] (tiến độ trong cảnh) và inSc(t,k).
+   */
+  HFA.scenes = function (SC) {
+    return {
+      SC: SC,
+      loc: function (t, k) {
+        var w = SC[k];
+        return Math.min(1, Math.max(0, (t - w[0]) / (w[1] - w[0])));
+      },
+      inSc: function (t, k) { var w = SC[k]; return t >= w[0] && t < w[1]; }
+    };
+  };
+
+  /* ---- shader lens — PASS CUỐI, kiêm luôn tone mapping + mã hoá sRGB --------
+   *
+   * ⚠ VÌ SAO PASS NÀY PHẢI TỰ TONE MAP:
+   * three.js chỉ chèn ACES + sRGB vào shader của VẬT LIỆU nó tự dựng. Một
+   * ShaderMaterial thô trong ShaderPass KHÔNG được chèn — nên khi pass cuối ghi
+   * ra màn hình, ảnh chưa hề được mã hoá sRGB.
+   * Đo thật (xám #808080, r128): vẽ thẳng = 197, qua EffectComposer = 143.
+   * Sai lệch đó là lý do các tập 01–07 ra tối hơn và sai gamma.
+   *
+   * Vì vậy chuỗi mới là: cảnh vẽ TUYẾN TÍNH vào target HDR (không tone map)
+   * → bloom ăn giá trị HDR thật → pass này mới ACES + sRGB ở bước cuối.
+   * Bloom đứng TRƯỚC tone mapping mới đúng thứ tự điện ảnh: vùng cực sáng
+   * (quang cầu, đĩa bồi tụ) chưa bị nén ngọn nên quầng sáng nở tự nhiên.
+   *
+   * Thứ tự trong shader: CA → vignette → fade (đều ở TUYẾN TÍNH, vì chúng là
+   * phơi sáng) → ACES → sRGB → grain + flash (ở không gian hiển thị, vì grain
+   * phim và chớp trắng là hiện tượng của bản in, không phải của ánh sáng).
+   * Grain seed theo t, KHÔNG theo đồng hồ — cùng t phải cho cùng frame.
+   */
+  HFA.LensShader = {
+    uniforms: {
+      tDiffuse: { value: null }, uT: { value: 0 }, uVig: { value: 0.34 },
+      uCA: { value: 0.0015 }, uGrain: { value: 0.045 },
+      uFade: { value: 1.0 }, uFlash: { value: 0.0 },
+      uExposure: { value: 1.02 }, uToneMap: { value: 1.0 }
+    },
+    vertexShader:
+      'varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',
+    fragmentShader: [
+      'varying vec2 vUv;uniform sampler2D tDiffuse;',
+      'uniform float uT,uVig,uCA,uGrain,uFade,uFlash,uExposure,uToneMap;',
+      'float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}',
+      // ACES — SAO CHÉP ĐÚNG bản three.js r128 dùng cho ACESFilmicToneMapping
+      // (ma trận vào/ra + RRTAndODTFit + tiền tỉ lệ /0.6). KHÔNG dùng xấp xỉ
+      // Narkowicz: nó sáng hơn ~4% ở vùng trung, đo được (206 vs 197 trên xám
+      // giữa) và sẽ lệch với mọi tài liệu/preset tính theo three.js.
+      'vec3 rrt(vec3 v){vec3 a=v*(v+0.0245786)-0.000090537;',
+      '  vec3 b=v*(0.983729*v+0.4329510)+0.238081;return a/b;}',
+      'vec3 aces(vec3 color){',
+      '  const mat3 mIn=mat3(0.59719,0.07600,0.02840, 0.35458,0.90834,0.13383, 0.04823,0.01566,0.83777);',
+      '  const mat3 mOut=mat3(1.60475,-0.10208,-0.00327, -0.53108,1.10813,-0.07276, -0.07367,-0.00605,1.07602);',
+      '  color/=0.6;',
+      '  color=mIn*color; color=rrt(color); color=mOut*color;',
+      '  return clamp(color,0.0,1.0);}',
+      // tuyến tính → sRGB, đúng công thức chuẩn (không phải pow(1/2.2) cho nhanh)
+      'vec3 toSRGB(vec3 c){c=max(c,vec3(0.0));',
+      '  return mix(c*12.92,1.055*pow(c,vec3(1.0/2.4))-0.055,step(vec3(0.0031308),c));}',
+      'void main(){',
+      '  vec2 d=vUv-0.5;float r=dot(d,d);',
+      '  vec2 off=d*uCA*(1.0+r*2.2);',
+      '  vec3 col;',
+      '  col.r=texture2D(tDiffuse,vUv+off).r;',
+      '  col.g=texture2D(tDiffuse,vUv).g;',
+      '  col.b=texture2D(tDiffuse,vUv-off).b;',
+      // --- còn ở TUYẾN TÍNH: vignette + fade là phơi sáng ---
+      '  float vig=smoothstep(1.02,uVig,r*2.0);',
+      '  col*=mix(1.0,vig,0.85);',
+      '  col*=uFade;',
+      // --- tone map + mã hoá hiển thị ---
+      '  col=mix(col*uExposure,aces(col*uExposure),uToneMap);',
+      '  col=toSRGB(col);',
+      // --- không gian hiển thị: grain + chớp trắng ---
+      '  float g=h(vUv*vec2(1920.0,1080.0)+fract(uT)*97.3)-0.5;',
+      '  col+=g*uGrain;',
+      '  col=mix(col,vec3(1.0,0.98,0.94),uFlash);',
+      '  gl_FragColor=vec4(clamp(col,0.0,1.0),1.0);',
+      '}'
+    ].join('\n')
+  };
+
+  /* ---- dựng sân khấu ------------------------------------------------------
+   * Trả về {renderer, scene, camera, composer, bloom, lens, W, H, loadTex}.
+   * Ánh sáng mặc định (amb/key/rim) tắt được bằng opt.lights=false.
+   */
+  HFA.createStage = function (opt) {
+    opt = opt || {};
+    var W = opt.width || 1920, H = opt.height || 1080;
+    var canvas = typeof opt.canvas === 'string'
+      ? document.getElementById(opt.canvas)
+      : (opt.canvas || document.getElementById('c'));
+
+    var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: false });
+    renderer.setPixelRatio(1);
+    renderer.setSize(W, H);
+    renderer.setClearColor(opt.clearColor != null ? opt.clearColor : 0x08080a, 1);
+
+    // Tone mapping + sRGB CỐ Ý tắt ở đây: cả hai được làm ở pass lens cuối cùng.
+    // Bật ở đây thì cảnh bị nén dải TRƯỚC khi bloom nhìn thấy (quầng sáng bẹt),
+    // rồi lại không được mã hoá sRGB lúc ghi ra màn hình (xem chú thích LensShader).
+    renderer.toneMapping = THREE.NoToneMapping;
+    renderer.outputEncoding = THREE.LinearEncoding;
+
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(
+      opt.fov || 46, W / H, opt.near || 0.05, opt.far || 60000);
+    camera.position.set(0, 0, 60);
+
+    if (opt.lights !== false) {
+      var amb = new THREE.AmbientLight(0x232838, 0.85); scene.add(amb);
+      var key = new THREE.DirectionalLight(0xffe8d2, 1.05); key.position.set(6, 4, 8); scene.add(key);
+      var rim = new THREE.DirectionalLight(0x6f9cff, 0.4); rim.position.set(-8, -3, -6); scene.add(rim);
+      scene.userData.lights = { amb: amb, key: key, rim: rim };
+    }
+
+    /* --- render target: MSAA + HDR -------------------------------------------
+     * `antialias:true` ở trên CHỈ tác dụng lên framebuffer mặc định. Đi qua
+     * EffectComposer là vẽ vào target offscreen, và target đó KHÔNG multisample
+     * theo mặc định — nên cờ antialias thành vô nghĩa và mọi rìa bị răng cưa.
+     * WebGLMultisampleRenderTarget (có từ r111) khôi phục MSAA thật.
+     * HalfFloat giữ giá trị >1.0 để bloom ăn được highlight HDR thật.
+     */
+    var samples = opt.msaa != null ? opt.msaa : 4;
+    var rtOpts = {
+      minFilter: THREE.LinearFilter,
+      magFilter: THREE.LinearFilter,
+      format: THREE.RGBAFormat,
+      type: opt.hdr === false ? THREE.UnsignedByteType : THREE.HalfFloatType
+    };
+    var rt;
+    if (samples > 0 && typeof THREE.WebGLMultisampleRenderTarget === 'function') {
+      rt = new THREE.WebGLMultisampleRenderTarget(W, H, rtOpts);
+      rt.samples = samples;
+    } else {
+      rt = new THREE.WebGLRenderTarget(W, H, rtOpts);
+      if (samples > 0) console.warn('[hf-astro] không có WebGLMultisampleRenderTarget — chạy không MSAA.');
+    }
+
+    var composer = new THREE.EffectComposer(renderer, rt);
+    composer.addPass(new THREE.RenderPass(scene, camera));
+
+    /* Ngưỡng bloom: cảnh giờ là HDR TUYẾN TÍNH, không còn bị nén về [0,1] như
+     * trước. Highlight thật nằm TRÊN 1.0, nên ngưỡng cũ 0.62 (chỉnh cho ảnh đã
+     * tone map) sẽ làm cả những vùng sáng vừa cũng loé. Mặc định nâng lên 1.0. */
+    var bloom = new THREE.UnrealBloomPass(
+      new THREE.Vector2(W, H),
+      opt.bloomStrength != null ? opt.bloomStrength : 0.78,
+      opt.bloomRadius != null ? opt.bloomRadius : 0.7,
+      opt.bloomThreshold != null ? opt.bloomThreshold : (opt.hdr === false ? 0.62 : 1.0));
+    composer.addPass(bloom);
+
+    // Bản sao uniforms để hai stage không dùng chung state.
+    var lensDef = {
+      uniforms: THREE.UniformsUtils.clone(HFA.LensShader.uniforms),
+      vertexShader: HFA.LensShader.vertexShader,
+      fragmentShader: HFA.LensShader.fragmentShader
+    };
+    var lens = new THREE.ShaderPass(lensDef);
+    lens.renderToScreen = true;
+    lens.uniforms.uExposure.value = opt.exposure != null ? opt.exposure : 1.02;
+    composer.addPass(lens);
+
+    var texLoader = new THREE.TextureLoader();
+    texLoader.setCrossOrigin('anonymous');
+    function loadTex(path, enc) {
+      var tx = texLoader.load(path);
+      if (enc) tx.encoding = enc;
+      tx.anisotropy = renderer.capabilities.getMaxAnisotropy();
+      return tx;
+    }
+
+    var stage = {
+      renderer: renderer, scene: scene, camera: camera,
+      composer: composer, bloom: bloom, lens: lens, rt: rt,
+      W: W, H: H, loadTex: loadTex,
+      clearColor: opt.clearColor != null ? opt.clearColor : 0x08080a
+    };
+
+    /* --- environment map (IBL) ----------------------------------------------
+     * MeshStandardMaterial là vật liệu PBR: nó phản xạ MÔI TRƯỜNG. Không có
+     * envMap thì kim loại và bề mặt bóng mất gần hết thông tin phản xạ, chỉ còn
+     * highlight từ đèn → ra chất nhựa sơn. (Tập "Vàng" là ví dụ rõ nhất.)
+     * Dựng một bầu trời tối có vài đốm sáng, nướng qua PMREM MỘT LẦN lúc khởi
+     * tạo → tất định, không phụ thuộc t, mọi MeshStandardMaterial hưởng ngay
+     * qua scene.environment mà không phải sửa từng vật liệu.
+     */
+    if (opt.environment !== false) {
+      stage.environment = HFA.buildEnvironment(renderer, scene, opt.environmentSeed || 4242);
+    }
+
+    return stage;
+  };
+
+  /** Bầu trời sao mờ nướng thành envMap PMREM. Trả về texture (đã gán scene.environment). */
+  HFA.buildEnvironment = function (renderer, scene, seed) {
+    var pr = HFA.mulberry32(seed);
+    var cv = document.createElement('canvas');
+    cv.width = 512; cv.height = 256;
+    var cx = cv.getContext('2d');
+
+    // nền: gradient rất tối, hơi lạnh ở dưới, ấm nhạt ở trên (ánh sáng thiên hà)
+    var gr = cx.createLinearGradient(0, 0, 0, 256);
+    gr.addColorStop(0, '#0a0d16'); gr.addColorStop(0.5, '#070910'); gr.addColorStop(1, '#05060b');
+    cx.fillStyle = gr; cx.fillRect(0, 0, 512, 256);
+
+    // dải Ngân Hà mờ vắt ngang → cho phản xạ có hướng, tránh env phẳng lì
+    var bandGr = cx.createLinearGradient(0, 96, 0, 160);
+    bandGr.addColorStop(0, 'rgba(70,80,110,0)');
+    bandGr.addColorStop(0.5, 'rgba(120,130,165,0.30)');
+    bandGr.addColorStop(1, 'rgba(70,80,110,0)');
+    cx.fillStyle = bandGr; cx.fillRect(0, 96, 512, 64);
+
+    // vài nguồn sáng nhỏ để kim loại có điểm loé
+    for (var i = 0; i < 220; i++) {
+      var x = pr() * 512, y = pr() * 256, s = pr() < 0.06 ? 2.2 : 1.0;
+      var b = 0.35 + pr() * 0.65;
+      cx.fillStyle = 'rgba(255,252,245,' + b.toFixed(3) + ')';
+      cx.fillRect(x, y, s, s);
+    }
+
+    var tex = new THREE.CanvasTexture(cv);
+    tex.mapping = THREE.EquirectangularReflectionMapping;
+    tex.encoding = THREE.sRGBEncoding;
+
+    var pmrem = new THREE.PMREMGenerator(renderer);
+    pmrem.compileEquirectangularShader();
+    var env = pmrem.fromEquirectangular(tex).texture;
+    pmrem.dispose();
+    tex.dispose();
+
+    scene.environment = env;   // KHÔNG gán scene.background — nền do starfield lo
+    return env;
+  };
+
+  /* ---- CHỌN MÀU SAO CHO SỐNG SÓT QUA ACES ---------------------------------
+   * Bài học đo được ở tập 08, tốn 3 vòng sửa mới ra. Đọc trước khi chọn bảng màu.
+   *
+   * ACES nén mạnh vùng sáng. Càng đẩy độ sáng lên, sắc càng bị kéo về trắng/xám.
+   * Nên SẮC PHẢI ĐẾN TỪ TỈ LỆ GIỮA CÁC KÊNH, không đến từ độ sáng.
+   *
+   * Đo thật (bão hoà còn lại sau khi qua chuỗi ACES của three.js r128):
+   *   (0.42, 0.60, 1.05)  → còn 11–25%  → ra XÁM BÊ TÔNG. Đừng dùng.
+   *   (0.10, 0.32, 1.00)  → còn 37–67%  → ra LAM THẬT.
+   *
+   * Quy tắc rút ra:
+   *   - Kênh yếu nên ≤ 0.2× kênh mạnh. Nâng kênh yếu lên là giết sắc.
+   *   - Kênh mạnh giữ quanh 1.0, đừng hơn.
+   *   - Muốn SÁNG hơn thì tăng emissive (vượt ngưỡng bloom), ĐỪNG nâng kênh yếu.
+   *
+   * Hệ quả cho chữ và sơ đồ: bloom làm NHOÈ MẤT NÉT CHỮ. Nét biểu đồ và typo phải
+   * để DƯỚI ngưỡng bloom (<1.0). Muốn chữ rõ hơn thì tăng độ dày nét, không tăng
+   * emissive.
+   *
+   * Chống cháy trắng: giữ diện tích có luminance >0.85 (sau tonemap) dưới ~12%
+   * khung. Cần một vùng sáng rộng thì đẩy bằng SỐ LƯỢNG hạt nhỏ, đừng đẩy bằng
+   * độ sáng của hạt lớn.
+   */
+  HFA.saturationAfterACES = function (r, g, b) {
+    // Ước lượng nhanh xem một màu tuyến tính có giữ được sắc sau ACES không.
+    // Trả về {before, after} ∈ [0,1]. after < 0.3 nghĩa là sẽ ra xám.
+    function aces(v) {
+      // xấp xỉ đủ dùng để SO SÁNH các màu với nhau (không phải bản đầy đủ)
+      return Math.max(0, Math.min(1, (v * (2.51 * v + 0.03)) / (v * (2.43 * v + 0.59) + 0.14)));
+    }
+    function sat(x, y, z) {
+      var mx = Math.max(x, y, z), mn = Math.min(x, y, z);
+      return mx <= 0 ? 0 : (mx - mn) / mx;
+    }
+    return { before: sat(r, g, b), after: sat(aces(r), aces(g), aces(b)) };
+  };
+
+  /* ---- sprite hạt tròn mềm (tránh hạt vuông) ------------------------------ */
+  HFA.dotTex = function (rr, gg, bb) {
+    var cv = document.createElement('canvas');
+    cv.width = cv.height = 64;
+    var cx = cv.getContext('2d');
+    var gr = cx.createRadialGradient(32, 32, 0, 32, 32, 32);
+    gr.addColorStop(0, 'rgba(' + rr + ',' + gg + ',' + bb + ',1)');
+    gr.addColorStop(0.4, 'rgba(' + rr + ',' + gg + ',' + bb + ',0.55)');
+    gr.addColorStop(1, 'rgba(0,0,0,0)');
+    cx.fillStyle = gr; cx.fillRect(0, 0, 64, 64);
+    var tx = new THREE.CanvasTexture(cv);
+    tx.encoding = THREE.sRGBEncoding;
+    return tx;
+  };
+
+  /* ---- BỐN LỖI ĐÃ LÀM CHẾT HÀNG CHỤC CẢNH — đọc trước khi dựng tập mới -----
+   *
+   * Cả bốn đều KHÔNG bị `hyperframes validate` bắt, vì validate chỉ lấy vài mẫu
+   * thời gian. Chúng chỉ lộ ra khi render ảnh và NHÌN. Rút từ tập 09–12.
+   *
+   * 1. BIẾN BỊ CHE (shadowing).
+   *    Tập "nước": một mesh tên `grain` bị che bởi `var grain = 0.040` (lượng
+   *    grain của lens) khai báo ngay trong renderAtTime → mọi cảnh từ S19 trở đi
+   *    chết. Đặt tên mesh khác hẳn tên biến cục bộ; đối chiếu danh sách biến
+   *    top-level với biến trong renderAtTime trước khi giao.
+   *
+   * 2. GỌI UNIFORM KHÔNG TỒN TẠI.
+   *    Tập "photon": gọi `.uniforms.uEm` trên kết quả của HFA.buildStars — hàm
+   *    đó CHỈ có `uOp`. Ném TypeError, 17 cảnh liên tiếp đứng hình. Kiểm API
+   *    thư viện trước khi gọi, đừng đoán tên uniform.
+   *
+   * 3. SAI TỈ LỆ SÂN KHẤU.
+   *    Tập "nước": nguyên tử r=1.30 đặt trên mặt cầu r=140 với camera cách 2.7
+   *    → hai quả cầu phủ kín khung, ống liên kết thành tấm phẳng. Tính trước
+   *    tỉ lệ vật thể so với khoảng cách camera, đừng chỉnh mò sau.
+   *
+   * 4. CHỮ QUÁ NHỎ KHÔNG ĐỌC NỔI.
+   *    Tập "nước": chữ cao 0.42 world ở khoảng cách camera 28 → ra dưới 18px
+   *    trên 1080p. Cần ≥26px. Với mỗi shot có chữ, tính trước
+   *    `px ≈ (h_world / (2 * d * tan(fov/2))) * 1080` rồi mới chốt camera.
+   *    Muốn chữ rõ hơn thì TĂNG ĐỘ DÀY NÉT, đừng tăng emissive — bloom làm
+   *    nhoè mất nét chữ. Giữ chữ và sơ đồ DƯỚI ngưỡng bloom 1.0.
+   */
+
+  /* ---- CHỮ TIẾNG VIỆT TRÊN CANVAS: CANVAS PHẢI ĐỦ CAO CHO DẤU ------------
+   *
+   * Lỗi hệ thống, đo được ở tập quasar: 72/121 nhãn bị CẮT MẤT DẤU.
+   *
+   * Cơ chế: canvas 2D đặt `textBaseline='middle'` canh em-box vào giữa chiều
+   * cao canvas. Nhưng dấu tiếng Việt nhô RA NGOÀI em-box — mũ/sắc/huyền/ngã/hỏi
+   * nhô lên trên cap-height (chồng hai tầng như `ế`, `ộ`), dấu nặng thụt xuống
+   * dưới baseline. Canvas chật thì chữ cái vẫn vẽ, dấu rơi ra ngoài vùng vẽ.
+   * Triệu chứng: "vài chục nghìn ly" render ra "vai chuc nghin ly" dù mã nguồn
+   * viết đúng dấu.
+   *
+   * Ngưỡng an toàn đo được: `hpx >= fpx * 2.4 * số_dòng`.
+   * ⚠ Ngưỡng 2.0 KHÔNG đủ — một nhãn ở tỉ lệ 2.09 vẫn bị cắt.
+   *
+   * Nới canvas kéo theo HAI hệ quả phải xử cùng lúc, nếu không sẽ hỏng kiểu khác:
+   *   1. Tỉ lệ khung của plane phải tính theo chiều cao THẬT sau khi nở, không
+   *      theo `hpx` gốc — nếu không mọi chữ bị KÉO GIÃN NGANG.
+   *   2. Trần bù `glyphFrac` phải chia cho hệ số nở — canvas cao hơn làm
+   *      glyphFrac tụt, trần giữ nguyên thì chữ NHỎ ĐI THẬT (đo được 32px → 21px).
+   *
+   * Dùng `HFA.canvasHeightForText` khi tự dựng nhãn canvas.
+   *
+   * ---- CHỮ NHẬT (kanji/kana) THÌ KHÁC ------------------------------------
+   * Kanji KHÔNG có dấu nhô ra ngoài em-box: chữ nằm gọn trong hộp vuông.
+   * Đo thật ngày 2026-09-21 (BIZ UDPGothic 700, headless Chrome, "位牌と仏壇"):
+   *   ascent 27.7px + descent 27.3px = 55.0px ở font 56px → tỉ lệ ~0.98.
+   * Tức hệ số 2.4 của tiếng Việt CẤP DƯ hơn gấp đôi. Không gây cắt chữ, nhưng
+   * canvas cao gấp đôi làm `glyphFrac` tụt một nửa → chữ NHỎ ĐI THẬT trên màn
+   * hình (đúng cơ chế đã ghi ở hệ quả 2 bên trên). Vì thế tách hệ số theo chữ.
+   * Vẫn để dư 1.45 cho phần nhô của 〜 ー ゛ ゜ và chữ Latin lẫn trong câu Nhật.
+   */
+  var CJK_RE = /[぀-ヿ㐀-䶿一-鿿＀-￯]/;
+
+  /** true nếu chuỗi có chữ Nhật (kana/kanji/toàn角). */
+  HFA.isCJK = function (s) { return CJK_RE.test(String(s || '')); };
+
+  /**
+   * Chiều cao canvas tối thiểu cho nhãn chữ.
+   * @param fontPx cỡ chữ px
+   * @param lines  số dòng
+   * @param requestedHpx chiều cao mong muốn (lấy max)
+   * @param text   (tuỳ chọn) chữ sẽ vẽ — có chữ Nhật thì dùng hệ số 1.45 thay vì 2.4.
+   *               Bỏ trống = giữ nguyên hành vi cũ (2.4) cho các tập tiếng Việt.
+   */
+  HFA.canvasHeightForText = function (fontPx, lines, requestedHpx, text) {
+    var k = (text != null && HFA.isCJK(text)) ? 1.45 : 2.4;
+    var need = Math.ceil(fontPx * k * (lines || 1));
+    return Math.max(requestedHpx || 0, need);
+  };
+
+  /** px ước tính của một vật cao `hWorld` ở khoảng cách `dist`, camera fov độ.
+   *
+   * ⚠ HÀM NÀY ĐO PLANE, KHÔNG ĐO CHỮ. Với nhãn vẽ bằng canvas texture, chữ dài
+   * làm font bị thu nhỏ cho vừa canvas trong khi plane vẫn giữ nguyên kích
+   * thước → glyph thật chỉ chiếm 55–62% chiều cao plane. Đo được ở tập quasar:
+   * hàm báo 49px trong khi chữ trên frame render chỉ **4px**.
+   *
+   * Với nhãn canvas, truyền `glyphFrac` (tỉ lệ chiều cao glyph / chiều cao
+   * plane, thường 0.55–0.68) làm tham số thứ 5, hoặc tốt hơn: cho `textTex`
+   * trả về glyphFrac thật rồi chia hWorld cho nó khi dựng plane.
+   *
+   * Cách đáng tin duy nhất vẫn là ĐO TRÊN FRAME ĐÃ RENDER. Ngưỡng đọc được:
+   * ≥26px @1080p.
+   */
+  HFA.estimatePx = function (hWorld, dist, fovDeg, screenH, glyphFrac) {
+    var f = (fovDeg || 46) * Math.PI / 180;
+    var px = (hWorld / (2 * dist * Math.tan(f / 2))) * (screenH || 1080);
+    return px * (glyphFrac == null ? 1 : glyphFrac);
+  };
+
+  /* ---- starfield màu theo nhiệt độ ----------------------------------------
+   * ⚠ BÁN KÍNH: radius PHẢI lớn hơn khoảng cách camera XA NHẤT trong cả timeline.
+   * Camera bay ra ngoài quả cầu sao → nhìn thấy "quả bóng vũ trụ" bo tròn. Đây là
+   * lỗi đã xảy ra thật. Truyền opt.maxCamDist để bật cảnh báo tự động.
+   * Hằng số trong gl_PointSize phải BẰNG ĐÚNG radius, nếu không sao đổi độ to khi
+   * đổi bán kính — nên nó được nội suy vào shader ngay dưới đây.
+   */
+  HFA.buildStars = function (opt) {
+    opt = opt || {};
+    var R = opt.radius || 9000;
+    var N = opt.count || 3600;
+    var pr = HFA.mulberry32(opt.seed || 20260808);
+
+    if (opt.maxCamDist && R <= opt.maxCamDist * 1.5) {
+      console.warn('[hf-astro] starfield radius ' + R + ' quá nhỏ so với camera xa nhất ' +
+        opt.maxCamDist + ' — sẽ lộ "quả bóng vũ trụ". Tăng radius lên >' +
+        Math.ceil(opt.maxCamDist * 2) + ' (và giữ < camera.far).');
+    }
+
+    var pos = new Float32Array(N * 3), col = new Float32Array(N * 3), siz = new Float32Array(N);
+    var tmp = new THREE.Vector3();
+    for (var i = 0; i < N; i++) {
+      var u = pr(), v = pr();
+      var theta = Math.acos(2 * u - 1), phi = 2 * Math.PI * v;
+      tmp.set(Math.sin(theta) * Math.cos(phi), Math.cos(theta) * 0.8, Math.sin(theta) * Math.sin(phi))
+        .normalize().multiplyScalar(R);
+      pos[i * 3] = tmp.x; pos[i * 3 + 1] = tmp.y; pos[i * 3 + 2] = tmp.z;
+
+      // màu theo nhiệt độ: xanh nóng → trắng → vàng nhạt
+      var tt = pr(), c = new THREE.Color();
+      if (tt < 0.14) c.setRGB(0.6, 0.72, 1.0);
+      else if (tt < 0.5) c.setRGB(0.85, 0.9, 1.0);
+      else if (tt < 0.8) c.setRGB(0.9, 0.92, 1.0);
+      else c.setRGB(0.8, 0.82, 0.95);
+      c.multiplyScalar(0.3 + pr() * 0.5);
+      col[i * 3] = c.r; col[i * 3 + 1] = c.g; col[i * 3 + 2] = c.b;
+
+      siz[i] = (pr() < 0.05 ? 2.6 : 1.0) * (0.8 + pr() * 1.4);
+    }
+
+    var g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    g.setAttribute('color', new THREE.BufferAttribute(col, 3));
+    g.setAttribute('aS', new THREE.BufferAttribute(siz, 1));
+
+    var m = new THREE.ShaderMaterial({
+      uniforms: { uOp: { value: 1 } },
+      transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+      vertexShader:
+        'attribute float aS;attribute vec3 color;varying vec3 vC;' +
+        'void main(){vC=color;vec4 mv=modelViewMatrix*vec4(position,1.0);' +
+        'gl_PointSize=aS*(' + R.toFixed(1) + '/-mv.z);gl_Position=projectionMatrix*mv;}',
+      fragmentShader:
+        'varying vec3 vC;uniform float uOp;' +
+        'void main(){vec2 d=gl_PointCoord-0.5;float r=length(d);' +
+        'float a=smoothstep(0.5,0.0,r);gl_FragColor=vec4(vC,a*uOp);}'
+    });
+
+    var pts = new THREE.Points(g, m);
+    pts.userData.radius = R;
+    return pts;
+  };
+
+  /* ---- TÍCH LUỸ ĐA MẪU: khử răng cưa + motion blur thật -------------------
+   *
+   * Chỉ làm được vì renderAtTime(t) là HÀM THUẦN, không trạng thái: gọi lại với
+   * t nào cũng cho đúng kết quả của t đó. Render offline nên được phép trả giá
+   * bằng thời gian để đổi lấy chất lượng — đây là thứ engine realtime không có.
+   *
+   * Mỗi frame xuất ra lấy N mẫu:
+   *   - t rải đều trong khoảng 1/fps      → MOTION BLUR thật theo quỹ đạo
+   *   - camera lệch dưới-một-pixel        → SUPERSAMPLING, khử cả răng cưa
+   *     shader/specular mà MSAA không xử lý được
+   * rồi cộng trung bình.
+   *
+   * Giá: thời gian capture ×N. Nháp để samples=1, bản giao hàng đặt 4.
+   *
+   * CÁCH DÙNG — trong file tập:
+   *   HFA.enableAccumulation(stage, {samples:4, fps:30});
+   *   ... window.__time""lines[id] = HFA.makeTimeline(id, TOTAL, renderAtTime);
+   * makeTimeline tự phát hiện stage đã bật tích luỹ nếu bạn truyền stage:
+   *   HFA.makeTimeline(id, TOTAL, renderAtTime, stage)
+   */
+  HFA.enableAccumulation = function (stage, o) {
+    o = o || {};
+    var N = Math.max(1, o.samples || 1);
+    if (N === 1) {
+      // tắt tích luỹ → PHẢI trả composer về chế độ vẽ thẳng ra màn hình,
+      // nếu không màn hình đen (không pass nào ghi ra nữa).
+      stage.accum = null;
+      stage.composer.renderToScreen = true;
+      return stage;
+    }
+
+    /* Chuyển hướng đầu ra composer vào texture thay vì màn hình.
+     * ⚠ PHẢI đặt trên COMPOSER, không phải trên pass: EffectComposer.render()
+     * gán lại pass.renderToScreen mỗi frame theo công thức
+     *   pass.renderToScreen = composer.renderToScreen && làPassCuốiCùng
+     * nên mọi thiết lập trực tiếp lên lens.renderToScreen đều bị xoá. (Đo được:
+     * đặt trên pass thì cả read/write buffer đều chứa dữ liệu TRƯỚC lens.) */
+    stage.composer.renderToScreen = false;
+
+    var rtOpts = {
+      minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter,
+      format: THREE.RGBAFormat, type: THREE.HalfFloatType
+    };
+    var accumRT = new THREE.WebGLRenderTarget(stage.W, stage.H, rtOpts);
+
+    // quad toàn màn hình dùng để cộng dồn rồi để xuất ra
+    var quadScene = new THREE.Scene();
+    var quadCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+    var quadMat = new THREE.ShaderMaterial({
+      uniforms: { tSrc: { value: null }, uWeight: { value: 1 / N } },
+      transparent: true, depthTest: false, depthWrite: false,
+      blending: THREE.CustomBlending,
+      blendEquation: THREE.AddEquation,
+      blendSrc: THREE.OneFactor, blendDst: THREE.OneFactor,   // cộng thuần
+      vertexShader: 'varying vec2 vUv;void main(){vUv=uv;gl_Position=vec4(position.xy,0.0,1.0);}',
+      fragmentShader: 'varying vec2 vUv;uniform sampler2D tSrc;uniform float uWeight;' +
+        'void main(){gl_FragColor=vec4(texture2D(tSrc,vUv).rgb*uWeight,1.0);}'
+    });
+    quadScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), quadMat));
+
+    var outMat = new THREE.ShaderMaterial({
+      uniforms: { tSrc: { value: accumRT.texture } },
+      depthTest: false, depthWrite: false,
+      vertexShader: 'varying vec2 vUv;void main(){vUv=uv;gl_Position=vec4(position.xy,0.0,1.0);}',
+      fragmentShader: 'varying vec2 vUv;uniform sampler2D tSrc;' +
+        'void main(){gl_FragColor=vec4(texture2D(tSrc,vUv).rgb,1.0);}'
+    });
+    var outScene = new THREE.Scene();
+    outScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), outMat));
+
+    stage.accum = {
+      samples: N, fps: o.fps || 30,
+      rt: accumRT, quadScene: quadScene, quadCam: quadCam,
+      quadMat: quadMat, outScene: outScene
+    };
+    return stage;
+  };
+
+  /* Vị trí lệch subpixel — chuỗi Halton (2,3): phân bố đều hơn ngẫu nhiên,
+   * và tất định tuyệt đối (không đụng tới PRNG chung). */
+  function halton(i, b) {
+    var f = 1, r = 0;
+    while (i > 0) { f /= b; r += f * (i % b); i = Math.floor(i / b); }
+    return r;
+  }
+
+  /** Vẽ MỘT frame tại t. Tự dùng tích luỹ nếu stage đã bật, không thì vẽ thẳng. */
+  HFA.renderFrame = function (stage, renderAtTime, t) {
+    var acc = stage && stage.accum;
+    if (!acc) { renderAtTime(t); return; }   // renderAtTime tự gọi composer.render()
+
+    var r = stage.renderer, cam = stage.camera, N = acc.samples;
+    var dt = 1 / acc.fps;
+    var prevAutoClear = r.autoClear;
+
+    // xoá bộ tích luỹ ĐÚNG MỘT LẦN, trước vòng lặp
+    r.setRenderTarget(acc.rt);
+    r.setClearColor(0x000000, 1);
+    r.clear(true, true, true);
+    r.setRenderTarget(null);
+
+    for (var i = 0; i < N; i++) {
+      // lệch dưới-một-pixel (Halton, tất định)
+      var jx = halton(i + 1, 2) - 0.5, jy = halton(i + 1, 3) - 0.5;
+      cam.setViewOffset(stage.W, stage.H, jx, jy, stage.W, stage.H);
+
+      // trải t trong đúng một frame → motion blur
+      var tt = t + ((i + 0.5) / N - 0.5) * dt;
+      r.setClearColor(stage.clearColor, 1);   // trả màu nền cho RenderPass
+      renderAtTime(tt < 0 ? 0 : tt);
+
+      /* ⚠ autoClear PHẢI tắt ở đây.
+       * renderer.autoClear mặc định TRUE → mỗi r.render() xoá sạch target trước
+       * khi vẽ. Cộng dồn mà không tắt thì 3 mẫu đầu bị xoá, chỉ mẫu cuối sống
+       * sót và nó mang trọng số 1/N → ảnh tối đúng N lần. (Đã dính lỗi này:
+       * ảnh ra tối bằng 1/4 với N=4.) */
+      // pass cuối có needsSwap=true nên sau render(), kết quả nằm ở readBuffer
+      acc.quadMat.uniforms.tSrc.value = stage.composer.readBuffer.texture;
+      r.autoClear = false;
+      r.setRenderTarget(acc.rt);
+      r.render(acc.quadScene, acc.quadCam);
+      r.setRenderTarget(null);
+      r.autoClear = prevAutoClear;
+    }
+
+    cam.clearViewOffset();
+    r.setClearColor(stage.clearColor, 1);
+    r.render(acc.outScene, acc.quadCam);   // xuất ra màn hình
+  };
+
+  /* ---- phụ đề -------------------------------------------------------------
+   * CUES = [{t, s}] do scripts/gen-captions.mjs sinh, đã cắt sẵn MỘT DÒNG:
+   * ≤42 ký tự với tiếng Việt, ≤22 ký tự toàn角 với tiếng Nhật (chữ Nhật rộng gấp đôi).
+   * Đừng cắt tay và đừng đổi mảng này bằng tay.
+   */
+  HFA.subtitleAt = function (CUES, t) {
+    var s = '';
+    for (var i = 0; i < CUES.length; i++) {
+      if (CUES[i].t <= t + 0.001) s = CUES[i].s; else break;
+    }
+    return s;
+  };
+
+  HFA.applySubtitle = function (el, CUES, t) {
+    if (!el) return;
+    var s = HFA.subtitleAt(CUES, t);
+    if (el.textContent !== s) el.textContent = s;   // chỉ ghi khi đổi
+  };
+
+  /* ---- nhãn chương --------------------------------------------------------
+   * marks = [{t, x:'CHƯƠNG 1'}, ...]; hiện `hold` giây rồi tắt mượt.
+   */
+  HFA.applyChapter = function (el, marks, t, hold) {
+    if (!el) return 0;
+    hold = hold || 5.5;
+    var show = 0, txt = '';
+    for (var i = 0; i < marks.length; i++) {
+      var m = marks[i];
+      if (t >= m.t && t < m.t + hold) {
+        show = HFA.band(t, m.t + 0.3, m.t + hold - 0.7, 0.6);
+        txt = m.x;
+      }
+    }
+    if (el.textContent !== txt) el.textContent = txt;
+    el.style.opacity = show.toFixed(3);
+    return show;
+  };
+
+  /* ---- fade vào/ra toàn cục ----------------------------------------------- */
+  HFA.globalFade = function (t, TOTAL, inSec, outSec) {
+    return HFA.smooth(t / (inSec || 1.5)) * HFA.smooth((TOTAL - t) / (outSec || 3.0));
+  };
+
+  /* ---- dựng timeline ------------------------------------------------------
+   * ⚠ HÀM NÀY KHÔNG TỰ ĐĂNG KÝ — và đó là chủ ý.
+   * StaticGuard của HyperFrames QUÉT VĂN BẢN file composition để tìm chuỗi
+   * `window.__timelines`. Giấu phần đăng ký vào thư viện này làm guard báo
+   * "Missing window.__timelines registration" và render ra frame tĩnh.
+   * (Đã kiểm chứng bằng hyperframes validate.)
+   *
+   * Vì vậy file tập PHẢI tự viết hai dòng đăng ký. Mẫu (thay SLUG bằng slug thật,
+   * và viết bằng cú pháp ngoặc vuông bình thường — ở đây tách chữ để chính bản
+   * hướng dẫn này không bị StaticGuard đếm nhầm thành một đăng ký có thật):
+   *
+   *     window.__time""lines = window.__time""lines || {};
+   *     window.__time""lines[ "SLUG" ] = HFA.makeTimeline("SLUG", TOTAL, renderAtTime);
+   *
+   * SLUG phải trùng data-composition-id của div gốc.
+   * (StaticGuard quét VĂN BẢN, kể cả trong comment — đừng viết ví dụ đăng ký
+   *  nguyên dạng ở bất kỳ đâu trong file dùng chung này.)
+   *
+   * Đổi lại, hàm này lo phần dễ sai: driver clk tuyến tính, bọc try/catch để
+   * lỗi hiện lên #err (thay vì ra frame đen không rõ lý do), và vẽ frame đầu.
+   */
+  HFA.makeTimeline = function (id, TOTAL, renderAtTime, stage) {
+    if (!document.querySelector('[data-composition-id="' + id + '"]')) {
+      console.warn('[hf-astro] không thấy [data-composition-id="' + id + '"] — ' +
+        'khoá timeline phải trùng id của div gốc.');
+    }
+    function safeRender(t) {
+      try {
+        // truyền stage (đã enableAccumulation) → mỗi frame lấy N mẫu
+        if (stage && stage.accum) HFA.renderFrame(stage, renderAtTime, t);
+        else renderAtTime(t);
+      } catch (err) {
+        var eb = document.getElementById('err');
+        if (eb) {
+          eb.style.display = 'block';
+          eb.textContent = 'renderAtTime@' + t.toFixed(2) + ': ' + err.message;
+        }
+        throw err;
+      }
+    }
+    var tl = gsap.timeline({ paused: true });
+    var clk = { t: 0 };
+    tl.to(clk, { t: TOTAL, duration: TOTAL, ease: 'none', onUpdate: function () { safeRender(clk.t); } }, 0);
+    safeRender(0);          // vẽ frame đầu
+    return tl;
+  };
+
+  global.HFA = HFA;
+})(window);
+/* ===== HFA:END ===== */
+
+/* HFA lib injected here by scripts/inject-lib.mjs --html build-hitori-no-naka.html */
+
+/* ============================================================================
+ * なぜ家族といても寂しいのか｜孤立と孤独を分けた研究
+ * slug: hitori-no-naka · 34 cảnh (S01–S34) · 80 cue · 4 chương
+ *
+ * Nguồn thời gian: projects/hitori-no-naka/timing.json (giọng THẬT, dryRun:false).
+ * KHÔNG remap — mốc cảnh dưới đây LÀ mốc thật, lấy từ cue.start của cue đầu shot.
+ *
+ * Luật tất định: mọi chuyển động là hàm thuần của t. Không rAF/Date.now/
+ * Math.random/setTimeout/+= dt. Ngẫu nhiên = mulberry32 có seed.
+ * ========================================================================== */
+var SLUG = "hitori-no-naka";
+var TOTAL = 818.47;
+var W = 1920, H = 1080;
+
+/* ---- bảng màu: một nguồn sáng chủ đạo 3200K ấm, đường đi ánh sáng theo GHI CHÚ
+ * mục 1 của storyboard. Lớp 2 (感じる距離) dùng CÙNG nhiệt độ, chỉ giảm cường độ. */
+var K3200 = new THREE.Color(1.00, 0.86, 0.68);   // đèn 和室 chính — mọi cảnh trong phòng
+var K5600 = new THREE.Color(0.97, 0.95, 0.90);   // ánh trời gián tiếp — S09 vườn ban ngày
+var K5000 = new THREE.Color(0.82, 0.88, 0.98);   // giấy in nghiên cứu — S07/S11/S12/S24/S28
+var K4000 = new THREE.Color(0.90, 0.93, 0.98);   // hành lang YMYL — S29
+var SIGNAL = new THREE.Color(1.00, 0.74, 0.42);  // điểm sáng tín hiệu — S21/S22/S23/S32
+var CSS_MIST = '#F1E9DC', CSS_WARM='#F6E7C8', CSS_DIM = '#B9AD98', CSS_SRC = '#9C9484';
+
+/* ---- cửa sổ 34 cảnh --------------------------------------------------------
+ * GIÂY THẬT, liền mạch. start = cue.start của cue đầu shot (timing.json).
+ */
+var SC = {
+  S01:[0,8.85],        S02:[8.85,29.29],    S03:[29.29,40.11],  S04:[40.11,49.03],
+  S05:[49.03,66.54],   S06:[66.54,85.79],   S07:[85.79,106.98], S08:[106.98,123.98],
+  S09:[123.98,146.78], S10:[146.78,156.45], S11:[156.45,183.19],S12:[183.19,224.00],
+  S13:[224.00,265.18], S14:[265.18,277.98], S15:[277.98,299.20],S16:[299.20,329.63],
+  S17:[329.63,339.37], S18:[339.37,369.61], S19:[369.61,395.32],S20:[395.32,407.03],
+  S21:[407.03,427.85], S22:[427.85,450.64], S23:[450.64,470.07],S24:[470.07,509.80],
+  S25:[509.80,554.62], S26:[554.62,594.86], S27:[594.86,624.65],S28:[624.65,669.34],
+  S29:[669.34,683.35], S30:[683.35,699.58], S31:[699.58,736.05],S32:[736.05,755.15],
+  S33:[755.15,796.32], S34:[796.32,811.41]
+};
+var SCN = HFA.scenes(SC);
+
+/* ⚠⚠ ĐƠN VỊ CỦA loc(): GIÂY, KHÔNG PHẢI TỈ LỆ 0–1. CHỐT MỘT LẦN, ĐỌC TRƯỚC KHI SỬA.
+ * `HFA.scenes().loc` của thư viện trả TỈ LỆ 0–1. Toàn bộ hàm cảnh trong file này
+ * viết theo NGHĨA GIÂY ("0s ... 6s ... 12s ..."). Dùng bản 0–1 sẽ đóng băng mọi
+ * cảnh ở ~1% đầu (lỗi đã ghi trong visual-builder.md, tập tamashii-no-tabi).
+ * Sửa TẠI ĐÂY, KHÔNG sửa hf-astro.js — tập khác đang dùng đúng nghĩa 0–1. */
+function loc(t, k){
+  var w = SC[k];
+  return Math.min(w[1] - w[0], Math.max(0, t - w[0]));
+}
+function dur(k){ return SC[k][1] - SC[k][0]; }
+var inSc = SCN.inSc;
+
+/* nhãn chương — mốc lấy từ timing.json (C01 · C12 · C35 · C67) */
+var CHAPTERS = [
+  {t:0,      x:'第1章　入口'},
+  {t:106.98, x:'第2章　二つの物差し'},
+  {t:339.37, x:'第3章　深いところ'},
+  {t:683.35, x:'第4章　帰り道'}
+];
+
+/* ---- helper toán (đều là hàm thuần) --------------------------------------- */
+var clamp = HFA.clamp, smooth = HFA.smooth, band = HFA.band;
+function ease(x){ x = clamp(x,0,1); return x*x*x*(x*(x*6-15)+10); }
+function lerpE(a,b,p){ return a + (b-a)*ease(p); }
+function lerp(a,b,p){ return a + (b-a)*clamp(p,0,1); }
+function win(t,a,b,f){ return band(t,a,b,f||0.8); }
+function ramp(u,a,b){ return ease(clamp((u-a)/(b-a),0,1)); }
+function lin(u,a,b){ return clamp((u-a)/(b-a),0,1); }
+
+/* ---- sân khấu ---------------------------------------------------------------
+ * Một renderer, một scene. Phòng 和室 procedural + khối người tối giản.
+ * lights:false — TỰ ĐẶT ĐÈN THẬT bên dưới (lỗi "pass mà sai" số 4: nhóm thiếu
+ * đèn ra đen tuyền mà không báo lỗi gì). */
+var stage = HFA.createStage({
+  canvas:'c', width:W, height:H, fov:44, near:0.02, far:2000,
+  clearColor:0x050403, lights:false,
+  bloomStrength:0.46, bloomRadius:0.75, bloomThreshold:1.0, exposure:1.00
+});
+var renderer = stage.renderer, scene = stage.scene, camera = stage.camera, composer = stage.composer;
+stage.lens.uniforms.uCA.value = 0.0006;
+stage.lens.uniforms.uGrain.value = 0.032;
+stage.lens.uniforms.uVig.value = 0.40;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+var MAXANI = renderer.capabilities.getMaxAnisotropy();
+var rootEl = document.getElementById('root');
+var subEl  = document.getElementById('sub');
+var chapEl = document.getElementById('chap');
+
+/* ============================================================================
+ * CHỮ: canvas texture, font BIZ UDPGothic. Chờ font trước khi vẽ nhãn đầu tiên.
+ * ========================================================================== */
+var JP_FONT = '"BIZ UDPGothic",sans-serif';
+var _texCache = {};
+var _fontReady = false;
+function fontsOK(){
+  if(_fontReady) return true;
+  _fontReady = !!(document.fonts && document.fonts.check &&
+                  document.fonts.check('700 96px "BIZ UDPGothic"'));
+  return _fontReady;
+}
+if(document.fonts){
+  if(document.fonts.load) document.fonts.load('700 96px "BIZ UDPGothic"');
+  if(document.fonts.load) document.fonts.load('400 96px "BIZ UDPGothic"');
+  if(document.fonts.ready) document.fonts.ready.then(function(){
+    _fontReady = false;
+    if(fontsOK()){
+      _texCache = {};
+      if(typeof refreshLabels === 'function') refreshLabels();
+      var tl = window.__timelines && window.__timelines["hitori-no-naka"];
+      if(typeof renderAtTime === 'function') renderAtTime(tl ? tl.time() : 0);
+    }
+  });
+}
+function textTex(txt, fpx, colr, weight){
+  var key = txt+'|'+fpx+'|'+colr+'|'+(weight||'700');
+  if(_texCache[key]) return _texCache[key];
+  var ready = fontsOK();
+  var lns = String(txt).split('\n');
+  var cv = document.createElement('canvas');
+  var cx = cv.getContext('2d');
+  var fstr = (weight||'700')+' '+fpx+'px '+JP_FONT;
+  cx.font = fstr;
+  var widest = 0, li;
+  for(li=0; li<lns.length; li++) widest = Math.max(widest, cx.measureText(lns[li]).width);
+  cv.width  = Math.min(4096, Math.ceil(widest) + Math.ceil(fpx*0.5));
+  cv.height = HFA.canvasHeightForText(fpx, lns.length, 0, txt);
+  cx = cv.getContext('2d');
+  cx.clearRect(0,0,cv.width,cv.height);
+  cx.font = fstr;
+  cx.textBaseline = 'middle'; cx.textAlign = 'center';
+  cx.fillStyle = colr || CSS_MIST;
+  var lh = fpx*1.3, y0 = cv.height/2 - lh*(lns.length-1)/2;
+  for(li=0; li<lns.length; li++) cx.fillText(lns[li], cv.width/2, y0 + li*lh);
+  var tx = new THREE.CanvasTexture(cv);
+  tx.encoding = THREE.sRGBEncoding; tx.minFilter = THREE.LinearFilter; tx.anisotropy = MAXANI;
+  tx.userData = {cw:cv.width, ch:cv.height,
+    glyphFrac:(fpx*lns.length + fpx*0.3*(lns.length-1))/cv.height};
+  if(ready) _texCache[key] = tx;
+  return tx;
+}
+var _labels = [];
+function textPlane(txt, hGlyph, colr, op, weight){
+  var tx = textTex(txt, 88, colr, weight);
+  var h = hGlyph / tx.userData.glyphFrac;
+  var w = h * tx.userData.cw / tx.userData.ch;
+  var m = new THREE.MeshBasicMaterial({map:tx, transparent:true, depthWrite:false,
+    depthTest:false, opacity:(op==null?0.9:op), side:THREE.DoubleSide});
+  var p = new THREE.Mesh(new THREE.PlaneGeometry(w,h), m);
+  p.userData.baseOp = (op==null?0.9:op);
+  p.userData.mk = [txt, hGlyph, colr, weight];
+  p.renderOrder = 30;
+  _labels.push(p);
+  return p;
+}
+function refreshLabels(){
+  var i;
+  for(i=0; i<_labels.length; i++){
+    var p = _labels[i], a = p.userData.mk;
+    var tx2 = textTex(a[0], 88, a[2], a[3]);
+    var h2 = a[1]/tx2.userData.glyphFrac;
+    var w2 = h2*tx2.userData.cw/tx2.userData.ch;
+    p.material.map = tx2; p.material.needsUpdate = true;
+    p.geometry.dispose();
+    p.geometry = new THREE.PlaneGeometry(w2, h2);
+  }
+}
+function srcPlane(txt, hGlyph, op){ return textPlane(txt, hGlyph, CSS_SRC, op==null?0.5:op, '400'); }
+
+/* ---- sprite hạt tròn mềm — bụi trong luồng sáng, hơi nước, sương lớp 2 ----- */
+var _dotTex = null;
+function dotTex(){
+  if(_dotTex) return _dotTex;
+  var cv = document.createElement('canvas'); cv.width = cv.height = 64;
+  var cx = cv.getContext('2d');
+  var g = cx.createRadialGradient(32,32,0,32,32,32);
+  g.addColorStop(0,'rgba(255,255,255,1)'); g.addColorStop(0.38,'rgba(255,255,255,0.42)');
+  g.addColorStop(1,'rgba(255,255,255,0)');
+  cx.fillStyle = g; cx.fillRect(0,0,64,64);
+  _dotTex = new THREE.CanvasTexture(cv);
+  return _dotTex;
+}
+function glow(col, size, op){
+  var s = new THREE.Sprite(new THREE.SpriteMaterial({map:dotTex(), color:col,
+    transparent:true, opacity:(op==null?1:op), blending:THREE.AdditiveBlending, depthWrite:false}));
+  s.scale.setScalar(size||1);
+  return s;
+}
+
+/* ============================================================================
+ * PRNG — mỗi cụm một seed riêng (mục 8 GHI CHÚ storyboard)
+ * ========================================================================== */
+var rndZabu   = HFA.mulberry32(1101);   // vết lõm trên 座布団
+var rndDust   = HFA.mulberry32(1102);   // hạt bụi trong luồng sáng
+var rndWood   = HFA.mulberry32(1103);   // vân khay gỗ
+var rndShoji  = HFA.mulberry32(1104);   // sợi giấy 障子
+var rndRings  = HFA.mulberry32(1105);   // vị trí các vòng ở S26
+var rndMist2  = HFA.mulberry32(1106);   // sương lớp 2
+
+/* ============================================================================
+ * VẬT THỂ DÙNG CHUNG — dựng MỘT LẦN trong block dựng (không dựng lười trong
+ * renderAtTime — lỗi "pass mà sai" số 6).
+ * ========================================================================== */
+
+/* ---- vật liệu gỗ / vải / giấy dùng nhiều nơi -------------------------------- */
+function woodMat(colr){ return new THREE.MeshStandardMaterial({color:colr||0x4a3324, roughness:0.62, metalness:0.05}); }
+function clothMat(colr){ return new THREE.MeshStandardMaterial({color:colr||0x2f5c46, roughness:0.86, metalness:0.0}); }
+function tatamiMat(){ return new THREE.MeshStandardMaterial({color:0xcdb877, roughness:0.78, metalness:0.0}); }
+function paperMat(){ return new THREE.MeshStandardMaterial({color:0xe9e2cf, roughness:0.9, metalness:0.0, side:THREE.DoubleSide, transparent:true, opacity:0.94}); }
+
+/* ---- chiếu tatami 88x176cm, sáu chiếu xếp 田の字 ---------------------------- */
+var ROOM = new THREE.Group(); scene.add(ROOM);
+var TATAMI_W = 1.76, TATAMI_D = 0.88, TATAMI_H = 0.055;
+var floorGroup = new THREE.Group();
+(function buildFloor(){
+  var mat = tatamiMat();
+  var layout = [
+    [-0.88, -0.44],[0.88,-0.44],
+    [-0.88,  0.44],[0.88, 0.44],
+    [-0.88,  1.32],[0.88, 1.32]
+  ];
+  for(var i=0;i<layout.length;i++){
+    var g = new THREE.BoxGeometry(TATAMI_W-0.01, TATAMI_H, TATAMI_D-0.01);
+    var m = new THREE.Mesh(g, mat);
+    m.position.set(layout[i][0], -TATAMI_H/2, layout[i][1]);
+    m.receiveShadow = true;
+    floorGroup.add(m);
+    // mép 畳縁 sẫm
+    var edgeMat = new THREE.MeshStandardMaterial({color:0x1c1712, roughness:0.9});
+    var eg = new THREE.BoxGeometry(TATAMI_W-0.01, TATAMI_H+0.002, 0.04);
+    var e1 = new THREE.Mesh(eg, edgeMat); e1.position.set(layout[i][0], -TATAMI_H/2, layout[i][1]-TATAMI_D/2+0.02);
+    var e2 = e1.clone(); e2.position.z = layout[i][1]+TATAMI_D/2-0.02;
+    floorGroup.add(e1, e2);
+  }
+})();
+ROOM.add(floorGroup);
+
+/* ---- trần với 竿縁 song song cạnh dài chiếu --------------------------------- */
+var ceilGroup = new THREE.Group();
+(function buildCeiling(){
+  var cMat = new THREE.MeshStandardMaterial({color:0x2a2015, roughness:0.85});
+  var plane = new THREE.Mesh(new THREE.PlaneGeometry(4.2, 3.2), cMat);
+  plane.rotation.x = Math.PI/2; plane.position.y = 2.55;
+  ceilGroup.add(plane);
+  var beamMat = new THREE.MeshStandardMaterial({color:0x1c150e, roughness:0.7});
+  for(var i=-2;i<=2;i++){
+    var beam = new THREE.Mesh(new THREE.BoxGeometry(4.2, 0.05, 0.07), beamMat);
+    beam.position.set(0, 2.52, i*0.55);
+    ceilGroup.add(beam);
+  }
+})();
+ROOM.add(ceilGroup);
+
+/* ---- 座卓 thấp 33cm --------------------------------------------------------- */
+var zataku = new THREE.Group();
+(function buildZataku(){
+  var top = new THREE.Mesh(new THREE.BoxGeometry(1.1,0.04,0.7), woodMat(0x3a2718));
+  top.position.y = 0.33; top.castShadow = true; top.receiveShadow = true;
+  zataku.add(top);
+  var legMat = woodMat(0x2c1c10);
+  var lp = [[-0.5,-0.31],[0.5,-0.31],[-0.5,0.31],[0.5,0.31]];
+  for(var i=0;i<4;i++){
+    var leg = new THREE.Mesh(new THREE.BoxGeometry(0.045,0.31,0.045), legMat);
+    leg.position.set(lp[i][0], 0.155, lp[i][1]); leg.castShadow = true;
+    zataku.add(leg);
+  }
+})();
+zataku.position.set(0, 0, 0.15);
+ROOM.add(zataku);
+
+/* ---- chén trà 湯のみ trên 座卓 ----------------------------------------------- */
+var cupsGroup = new THREE.Group();
+var cupSteamUni = [];
+(function buildCups(){
+  var cMat = new THREE.MeshStandardMaterial({color:0xf3ede0, roughness:0.35, metalness:0.05});
+  var pos = [[-0.32,0.02],[0,0.02],[0.32,0.02]];
+  for(var i=0;i<3;i++){
+    var cup = new THREE.Mesh(new THREE.CylinderGeometry(0.045,0.038,0.06,20), cMat);
+    cup.position.set(pos[i][0], 0.33+0.03, 0.15+pos[i][1]);
+    cup.castShadow = true;
+    cupsGroup.add(cup);
+    if(i<2){
+      // hơi nước mỏng — sprite, biên độ theo sin, chu kỳ 3.7s
+      var sp = glow(new THREE.Color(1,1,1), 0.10, 0.10);
+      sp.position.copy(cup.position); sp.position.y += 0.09;
+      sp.userData.baseY = sp.position.y;
+      cupsGroup.add(sp);
+      cupSteamUni.push(sp);
+    }
+  }
+})();
+ROOM.add(cupsGroup);
+
+/* ---- 座布団: 55x59cm, mép bọc, núm chỉ giữa. Sáu cái quanh 座卓 -------------- */
+var ZAB_W = 0.59, ZAB_D = 0.55, ZAB_H = 0.05;
+function makeZabuton(seed, folded, halfFolded){
+  var g = new THREE.Group();
+  var pr = HFA.mulberry32(seed);
+  var colr = new THREE.Color().setHSL(0.08+pr()*0.03, 0.35, 0.30+pr()*0.06);
+  var mat = clothMat(colr.getHex());
+  var hh = folded ? ZAB_H*2 : (halfFolded ? ZAB_H*1.4 : ZAB_H);
+  var ww = folded ? ZAB_W*0.5 : ZAB_W;
+  var dd = folded ? ZAB_D : (halfFolded ? ZAB_D*0.72 : ZAB_D);
+  var body = new THREE.Mesh(new THREE.BoxGeometry(ww, hh, dd), mat);
+  body.position.y = hh/2;
+  body.castShadow = true; body.receiveShadow = true;
+  // vết lõm nhẹ ở giữa nếu không gập — dịch chuyển đỉnh hộp bằng cách thêm mesh lõm mỏng
+  if(!folded && !halfFolded){
+    var dimple = new THREE.Mesh(new THREE.SphereGeometry(0.10,12,8), mat);
+    dimple.scale.set(1,0.14,1);
+    dimple.position.y = hh - 0.006;
+    body.add(dimple);
+  }
+  // núm chỉ giữa (房)
+  var knotMat = new THREE.MeshStandardMaterial({color:0x1a1410, roughness:0.8});
+  var knot = new THREE.Mesh(new THREE.SphereGeometry(0.012,8,6), knotMat);
+  knot.position.set(0, hh+0.001, 0);
+  body.add(knot);
+  g.add(body);
+  g.userData.seed = seed;
+  return g;
+}
+/* sáu 座布団 quanh 座卓, ba cái hằn lõm, hai gập vuông, một (thứ năm) nửa gập */
+/* ⚠ Bố cục lại so với bản đầu: camera CAM_ORIGIN (cao 0,75m, sát mặt sàn) nhìn
+ * chéo qua 座卓 — kiểm bằng ray-vs-AABB cho thấy MỌI 座布団 đặt phía XA của bàn
+ * (z ≤ -0.2, cùng phía đối diện camera) đều bị mặt bàn (cao 0,33m) che khuất
+ * hoàn toàn, vì mắt máy quá thấp so với đáy khối bàn. Không có chiều cao/khoảng
+ * cách camera hợp lý nào giải quyết được mà vẫn giữ đúng "cao 0,75m ngang tầm
+ * quỳ" (yêu cầu cứng của storyboard). Vì vậy: 座布団 THỨ NĂM (mỏ neo cả tập,
+ * bắt buộc thấy được ở S02/S04/S06/S16/S30/S31/S34) đặt ở Ô GẦN-PHẢI — cùng
+ * phía với camera, không bị bàn che — còn hai ô XA (kém quan trọng hơn, chỉ
+ * là bối cảnh) giữ nguyên phía xa dù có thể bị che một phần, chấp nhận được.
+ */
+var ZAB_POS = [
+  [-0.62,-0.02, 0.62],  // 1
+  [ 0.00,-0.02, 0.85],  // 2
+  [-0.62,-0.02,-0.32],  // 3 (phía xa — có thể bị bàn che một phần, chỉ là bối cảnh)
+  [ 0.62,-0.02,-0.32],  // 4 (phía xa — có thể bị bàn che một phần, chỉ là bối cảnh)
+  [ 0.62,-0.02, 0.62],  // 5 — thứ năm, chưa gập (chủ thể bìa) — Ô GẦN-PHẢI, KHÔNG bị che
+  [ 0.95,-0.02, 0.15]   // 6 — cạnh bàn, bên phải, cũng không bị che
+];
+var zabutons = [];
+(function buildZabutons(){
+  var states = [false,false,true,true,'half',false]; // index4 = thứ năm nửa gập
+  for(var i=0;i<6;i++){
+    var folded = states[i]===true, half = states[i]==='half';
+    var z = makeZabuton(2000+i, folded, half);
+    z.position.set(ZAB_POS[i][0], 0, ZAB_POS[i][2]);
+    if(folded) z.rotation.y = 0.15*i;
+    ROOM.add(z);
+    zabutons.push(z);
+  }
+})();
+var ZAB5 = zabutons[4]; // 座布団 thứ năm — mỏ neo của cả tập
+/* ⚠ Màu 座布団 thứ năm chỉnh riêng cho tương phản rõ với chiếu tatami 0xcdb877
+ * (màu ngẫu nhiên theo seed gốc quá gần màu sàn ở một số góc sáng — đo được
+ * bằng contact-sheet). Tông sẫm hơn, lệch hue, luôn đọc được ranh giới. */
+ZAB5.children[0].material = new THREE.MeshStandardMaterial({
+  color: new THREE.Color().setHSL(0.06, 0.42, 0.22), roughness: 0.88, metalness: 0.0
+});
+
+/* ---- 障子: khung gỗ chia ô, giấy subsurface nhẹ, trượt ngang ----------------- */
+var shoji = new THREE.Group();
+(function buildShoji(){
+  var frameMat = woodMat(0x3d2c1a);
+  var w=1.6, h=2.0;
+  var outer = new THREE.Mesh(new THREE.BoxGeometry(w,h,0.04), frameMat);
+  shoji.add(outer);
+  var paper = new THREE.Mesh(new THREE.PlaneGeometry(w-0.08,h-0.08),
+    new THREE.MeshStandardMaterial({color:0xf2ecda, roughness:0.95, side:THREE.DoubleSide,
+      transparent:true, opacity:0.88, emissive:0x3a3222, emissiveIntensity:0.05}));
+  paper.position.z = 0.021;
+  shoji.add(paper);
+  // lưới chia ô
+  var gridMat = new THREE.MeshStandardMaterial({color:0x3d2c1a, roughness:0.8});
+  for(var i=-2;i<=2;i++){
+    var vBar = new THREE.Mesh(new THREE.BoxGeometry(0.02,h-0.06,0.03), gridMat);
+    vBar.position.set(i*(w/5), 0, 0.022);
+    shoji.add(vBar);
+  }
+  for(var j=-3;j<=3;j++){
+    var hBar = new THREE.Mesh(new THREE.BoxGeometry(w-0.06,0.02,0.03), gridMat);
+    hBar.position.set(0, j*(h/7), 0.022);
+    shoji.add(hBar);
+  }
+})();
+shoji.position.set(0, 1.0, -1.35);
+ROOM.add(shoji);
+/* dải sáng hành lang (S29 — hé mở 30cm) + vệt lạnh (S07 cuối) */
+var corridorLight = new THREE.Mesh(new THREE.PlaneGeometry(0.30,2.0),
+  new THREE.MeshBasicMaterial({color:K4000, transparent:true, opacity:0}));
+corridorLight.position.set(0.65, 1.0, -1.36);
+ROOM.add(corridorLight);
+
+/* ---- đèn 和室 treo giữa trần, chụp giấy, 3200K ------------------------------ */
+var lampGroup = new THREE.Group();
+var lampShade = new THREE.Mesh(new THREE.ConeGeometry(0.28,0.22,24,1,true),
+  new THREE.MeshStandardMaterial({color:0xf5ecd2, roughness:0.9, side:THREE.DoubleSide,
+    emissive:K3200, emissiveIntensity:0.35}));
+lampShade.position.y = 2.25;
+lampGroup.add(lampShade);
+var lampCord = new THREE.Mesh(new THREE.CylinderGeometry(0.006,0.006,0.30,6), woodMat(0x111111));
+lampCord.position.y = 2.50; lampGroup.add(lampCord);
+ROOM.add(lampGroup);
+
+/* ---- ĐÈN THẬT của phòng — luật số 2: mọi group PBR cần có đèn chiếu tới ---- */
+var roomAmbient = new THREE.AmbientLight(0x362a1c, 0.55);
+scene.add(roomAmbient);
+var lampPoint = new THREE.PointLight(K3200.getHex(), 2.4, 6.5, 2.0);
+lampPoint.position.set(0, 2.2, 0.15);
+lampPoint.castShadow = true;
+lampPoint.shadow.mapSize.set(1024,1024);
+scene.add(lampPoint);
+var lampFill = new THREE.PointLight(K3200.getHex(), 0.6, 5.0, 2.0);
+lampFill.position.set(0, 1.4, 0.6);
+scene.add(lampFill);
+/* ánh sáng lạnh 5000K từ giấy nghiên cứu — bật riêng trong các shot procedural */
+var deskLight = new THREE.DirectionalLight(K5000.getHex(), 0.0);
+deskLight.position.set(1.2, 1.4, 0.6);
+scene.add(deskLight);
+/* ánh trời 5600K cho S09 vườn ban ngày */
+var gardenLight = new THREE.DirectionalLight(K5600.getHex(), 0.0);
+gardenLight.position.set(-3, 4, 2);
+scene.add(gardenLight);
+var gardenAmbient = new THREE.AmbientLight(0x9aa79a, 0.0);
+scene.add(gardenAmbient);
+/* hành lang 4000K cho S29 */
+var corridorGlow = new THREE.PointLight(K4000.getHex(), 0.0, 3.0, 2.0);
+corridorGlow.position.set(1.0, 1.2, -1.5);
+scene.add(corridorGlow);
+
+/* ---- bụi trong luồng sáng: volumetric mật độ thấp, hàm thuần của t --------- */
+var dustGeo = new THREE.BufferGeometry();
+var DUST_N = 140;
+var dustPos = new Float32Array(DUST_N*3), dustSeed = new Float32Array(DUST_N);
+for(var di=0; di<DUST_N; di++){
+  var ang = rndDust()*Math.PI*2, rr = rndDust()*0.5;
+  dustPos[di*3]   = Math.cos(ang)*rr;
+  dustPos[di*3+1] = 0.3 + rndDust()*1.9;
+  dustPos[di*3+2] = 0.15 + Math.sin(ang)*rr*0.6;
+  dustSeed[di] = rndDust()*100;
+}
+dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPos,3));
+dustGeo.setAttribute('aSeed', new THREE.BufferAttribute(dustSeed,1));
+var dustUni = { uT:{value:0}, uOp:{value:0.5} };
+var dustMat = new THREE.ShaderMaterial({
+  uniforms: dustUni, transparent:true, depthWrite:false, blending:THREE.AdditiveBlending,
+  vertexShader:'attribute float aSeed;varying float vA;uniform float uT;'+
+    'void main(){vA=0.5+0.5*sin(uT*0.6+aSeed);vec4 mv=modelViewMatrix*vec4(position,1.0);'+
+    'gl_PointSize=3.0*(4.0/-mv.z);gl_Position=projectionMatrix*mv;}',
+  fragmentShader:'varying float vA;uniform float uOp;'+
+    'void main(){vec2 d=gl_PointCoord-0.5;float r=length(d);'+
+    'float a=smoothstep(0.5,0.0,r);gl_FragColor=vec4(1.0,0.95,0.85,a*vA*uOp*0.35);}'
+});
+var dustPts = new THREE.Points(dustGeo, dustMat);
+ROOM.add(dustPts);
+
+/* ============================================================================
+ * KHỐI NGƯỜI — tối giản có thể tích thật, không mặt, không billboard.
+ * Tư thế 正座, cao ~1.05m. Dùng LatheGeometry cho profile liền khối (tránh
+ * đường cắt khi ghép khối cầu — bài học đã ghi).
+ * ========================================================================== */
+function personProfile(){
+  // profile 正座: đế rộng (đùi gập), thân thon lên vai, đầu tròn nhỏ — LatheGeometry
+  var pts = [];
+  pts.push(new THREE.Vector2(0.001, 0.0));
+  pts.push(new THREE.Vector2(0.24, 0.0));
+  pts.push(new THREE.Vector2(0.22, 0.05));
+  pts.push(new THREE.Vector2(0.16, 0.18));
+  pts.push(new THREE.Vector2(0.14, 0.40));
+  pts.push(new THREE.Vector2(0.155,0.60));
+  pts.push(new THREE.Vector2(0.13, 0.78));
+  pts.push(new THREE.Vector2(0.085,0.86));
+  pts.push(new THREE.Vector2(0.09, 0.90));   // cổ
+  pts.push(new THREE.Vector2(0.115,0.945));  // đầu — nối liền, không ghép cầu rời
+  pts.push(new THREE.Vector2(0.09, 1.00));
+  pts.push(new THREE.Vector2(0.001,1.03));
+  return pts;
+}
+var PERSON_GEO = new THREE.LatheGeometry(personProfile(), 20);
+PERSON_GEO.computeVertexNormals();
+function makePerson(colrHex, op){
+  var mat = new THREE.MeshStandardMaterial({color:colrHex!=null?colrHex:0x8a7a68,
+    roughness:0.88, metalness:0.0, transparent:(op!=null), opacity:(op==null?1:op)});
+  var m = new THREE.Mesh(PERSON_GEO, mat);
+  m.castShadow = true; m.receiveShadow = true;
+  m.scale.setScalar(1.05); // cao ~1.05m
+  return m;
+}
+/* sáu người quanh 座卓 (lớp 1, "ba ngày trước" và chương 2) — cùng vị trí 座布団 */
+var PEOPLE_HUES = [0x8d7862,0x8a7565,0x907b64,0x84725f,0x8f7a68,0x8a7867];
+var peopleLayer1 = new THREE.Group();
+var peopleMeshes1 = [];
+(function buildPeopleLayer1(){
+  for(var i=0;i<6;i++){
+    var p = makePerson(PEOPLE_HUES[i]);
+    p.position.set(ZAB_POS[i][0], 0, ZAB_POS[i][2]);
+    p.rotation.y = Math.atan2(-ZAB_POS[i][0], -ZAB_POS[i][2]);
+    peopleLayer1.add(p);
+    peopleMeshes1.push(p);
+  }
+})();
+scene.add(peopleLayer1);
+peopleLayer1.visible = false;
+
+/* đứa cháu ngủ — khối nhỏ nằm ngang trên chiếu (CylinderGeometry: r128 không có CapsuleGeometry) */
+var childSleep = new THREE.Mesh(new THREE.CylinderGeometry(0.13,0.13,0.55,12,1,false),
+  new THREE.MeshStandardMaterial({color:0x9c8a76, roughness:0.9}));
+childSleep.rotation.z = Math.PI/2;
+childSleep.position.set(0.15, 0.10, 0.15);
+childSleep.castShadow = true; childSleep.receiveShadow = true;
+scene.add(childSleep);
+childSleep.visible = false;
+var childPillow = makeZabuton(3001, false, false);
+childPillow.scale.set(0.5,0.5,0.5);
+childPillow.position.set(-0.28, 0, 0.15);
+childPillow.rotation.y = Math.PI/2;
+scene.add(childPillow);
+childPillow.visible = false;
+
+/* ---- LỚP 2 (感じる距離): CÙNG MESH, chỉ đổi vị trí (trải ra 40m), cùng 3200K --- */
+var peopleLayer2 = new THREE.Group();
+var peopleMeshes2 = [];
+(function buildPeopleLayer2(){
+  // trải theo hướng z sâu, giữ trục dọc thẳng hàng với lớp 1 (để nối sợi sáng S17)
+  var spread = 40.0;
+  for(var i=0;i<6;i++){
+    var p = makePerson(PEOPLE_HUES[i], 1.0);
+    var ang = Math.atan2(ZAB_POS[i][0], ZAB_POS[i][2]);
+    p.position.set(ZAB_POS[i][0]*(spread/0.9), 0, ZAB_POS[i][2]*(spread/0.9) - 2.0);
+    p.rotation.y = Math.atan2(-p.position.x, -p.position.z);
+    peopleLayer2.add(p);
+    peopleMeshes2.push(p);
+  }
+})();
+scene.add(peopleLayer2);
+peopleLayer2.visible = false;
+var layer2Mat_op = 1.0;
+/* khung lưới rất mờ cho lớp 2 — đường 竿縁 trần + mép chiếu, opacity ~15% */
+var layer2Grid = new THREE.Group();
+(function buildLayer2Grid(){
+  /* ⚠ depthWrite:false BẮT BUỘC cho vật trong suốt mảnh — thiếu nó, các dầm
+   * dài 60 đơn vị ở góc nhìn từ trên xuống gần như thẳng hàng cạnh khung hình
+   * chồng lên nhau qua depth buffer, ra thành VẠCH ĐEN ĐẶC ngang khung (bắt
+   * được qua contact-sheet ở S17 t=338.8s, không qua validate/lint). Đồng thời
+   * thu nhỏ quy mô dầm để khớp cảnh cận thay vì kích thước phòng-toàn-cảnh cũ. */
+  /* additive thay vì normal-transparent: dầm mảnh dài dưới góc nhìn top-down
+   * (S17) sẽ CỘNG một chút sáng thay vì pha đen — không thể đọc thành vạch
+   * đen đặc dù mật độ điểm ảnh cao (nhiều dầm chồng theo phối cảnh). */
+  var gm = new THREE.MeshBasicMaterial({color:0xdccfa8, transparent:true, opacity:0.12,
+    depthWrite:false, depthTest:false, side:THREE.DoubleSide, blending:THREE.AdditiveBlending});
+  for(var i=-2;i<=2;i++){
+    var beam = new THREE.Mesh(new THREE.BoxGeometry(6,0.025,0.03), gm);
+    beam.position.set(0, 2.5, i*0.8 - 2);
+    beam.renderOrder = 5;
+    layer2Grid.add(beam);
+  }
+  var floorLine = new THREE.Mesh(new THREE.PlaneGeometry(6,6), gm);
+  floorLine.rotation.x = -Math.PI/2; floorLine.position.set(0,0.001,-2);
+  floorLine.renderOrder = 5;
+  layer2Grid.add(floorLine);
+})();
+scene.add(layer2Grid);
+layer2Grid.visible = false;
+
+/* sương mỏng lớp 2 — hạt điểm, không đổi màu/nhiệt độ */
+var mist2Geo = new THREE.BufferGeometry();
+var MIST_N = 200;
+var mistPos = new Float32Array(MIST_N*3);
+for(var mi=0; mi<MIST_N; mi++){
+  mistPos[mi*3]   = (rndMist2()-0.5)*30;
+  mistPos[mi*3+1] = rndMist2()*6;
+  mistPos[mi*3+2] = -5 - rndMist2()*35;
+}
+mist2Geo.setAttribute('position', new THREE.BufferAttribute(mistPos,3));
+var mist2Mat = new THREE.PointsMaterial({color:0xf5ead0, size:0.5, transparent:true,
+  opacity:0.10, sizeAttenuation:true, depthWrite:false, blending:THREE.AdditiveBlending});
+var mist2Pts = new THREE.Points(mist2Geo, mist2Mat);
+scene.add(mist2Pts);
+mist2Pts.visible = false;
+
+/* ---- vùng tối trong ngực — mép mềm, đường kính 25cm, độ đậm 12% -----------
+ * KHÔNG phải hình trái tim, không phải lỗ thủng. Dựng bằng sprite radial đen
+ * với alpha thấp cố định 0.12, mép mềm (gradient tự nhiên). */
+var darkTex = (function(){
+  var cv = document.createElement('canvas'); cv.width=cv.height=128;
+  var cx = cv.getContext('2d');
+  var g = cx.createRadialGradient(64,64,0,64,64,64);
+  g.addColorStop(0,'rgba(0,0,0,1)'); g.addColorStop(0.55,'rgba(0,0,0,0.7)'); g.addColorStop(1,'rgba(0,0,0,0)');
+  cx.fillStyle = g; cx.fillRect(0,0,128,128);
+  return new THREE.CanvasTexture(cv);
+})();
+var voidSpot = new THREE.Sprite(new THREE.SpriteMaterial({map:darkTex, color:0x000000,
+  transparent:true, opacity:0.12, depthWrite:false}));
+voidSpot.scale.set(0.5,0.5,1);
+scene.add(voidSpot);
+voidSpot.visible = false;
+
+/* ---- khung chữ nhật mảnh (= ô báo cáo), 座布団 thứ năm mesh dùng lại, hai cây
+ * thước gỗ, điểm sáng tín hiệu — dựng chung, tái sử dụng nhiều shot. ------- */
+function makeFrameOutline(w,h,colr){
+  var pts = [[-w/2,-h/2],[w/2,-h/2],[w/2,h/2],[-w/2,h/2],[-w/2,-h/2]];
+  var vs = [];
+  for(var i=0;i<pts.length;i++) vs.push(new THREE.Vector3(pts[i][0],pts[i][1],0));
+  var geo = new THREE.BufferGeometry().setFromPoints(vs);
+  var mat = new THREE.LineBasicMaterial({color:colr||0xdccfa8, transparent:true, opacity:0.0});
+  return new THREE.Line(geo, mat);
+}
+var reportFrame = makeFrameOutline(2.6, 1.9, 0xe7dab4);
+scene.add(reportFrame);
+
+/* ---- BÀN GỖ + TRANG GIẤY NGHIÊN CỨU — vật thể thật cho mọi cảnh procedural
+ * "giấy in" (S11, S12, S24, S28). Trước đây các shot này chỉ có nhãn chữ trôi
+ * trong khoảng không — ra khung ĐEN TUYỀN (bắt được qua contact-sheet, không
+ * qua validate/lint). Một bàn gỗ + một trang giấy thật giải quyết cả bốn shot. */
+var deskGroup = new THREE.Group();
+var deskTop = new THREE.Mesh(new THREE.BoxGeometry(2.0,0.06,1.3), woodMat(0x4a3320));
+deskTop.position.y = 0; deskTop.receiveShadow = true; deskTop.castShadow = true;
+deskGroup.add(deskTop);
+var deskPaper = new THREE.Mesh(new THREE.PlaneGeometry(1.35,0.95), paperMat());
+deskPaper.rotation.x = -Math.PI/2; deskPaper.position.set(0,0.032,0);
+deskPaper.receiveShadow = true;
+deskGroup.add(deskPaper);
+/* mép giấy hơi cong — dùng một plane mỏng hơi nhô lên ở một cạnh */
+var deskPaperEdge = new THREE.Mesh(new THREE.BoxGeometry(1.35,0.01,0.04), paperMat());
+deskPaperEdge.position.set(0, 0.037, 0.475);
+deskGroup.add(deskPaperEdge);
+deskGroup.position.set(0, 0.55, -0.2);
+scene.add(deskGroup);
+deskGroup.visible = false;
+var deskLamp = new THREE.SpotLight(K5000.getHex(), 0.0, 5, Math.PI/4.5, 0.5);
+deskLamp.position.set(0.9, 1.5, 0.5);
+deskLamp.target = deskGroup;
+scene.add(deskLamp, deskLamp.target);
+
+/* hai cây thước gỗ: có vạch (会った人の数) / không vạch (寂しいと感じているか) */
+function makeRuler(hasMarks){
+  var g = new THREE.Group();
+  var bodyMat = woodMat(0x5a4025);
+  bodyMat.transparent = true;
+  var body = new THREE.Mesh(new THREE.BoxGeometry(1.0,0.03,0.09), bodyMat);
+  body.castShadow = true; g.add(body);
+  var markMats = [];
+  if(hasMarks){
+    var mMat = new THREE.MeshStandardMaterial({color:0x1a140c, roughness:0.6, transparent:true});
+    for(var i=-9;i<=9;i++){
+      var mk = new THREE.Mesh(new THREE.BoxGeometry(0.006,0.031,0.02), mMat);
+      mk.position.set(i*0.05,0,0.03);
+      g.add(mk);
+      markMats.push(mMat);
+    }
+  }
+  // ⚠ g LÀ THREE.Group — không có .material. Nhãn setOpacity() thay cho việc
+  // gán trực tiếp rulerX.material.opacity (lỗi thật đã bắt bằng contact-sheet:
+  // "Cannot set properties of undefined (setting 'opacity')" ở S30-S34).
+  g.userData.bodyMat = bodyMat;
+  g.userData.markMats = markMats;
+  g.setOpacity = function(op){
+    bodyMat.opacity = op;
+    for(var i=0;i<markMats.length;i++) markMats[i].opacity = op;
+  };
+  return g;
+}
+var rulerMarked = makeRuler(true);
+var rulerBlank  = makeRuler(false);
+scene.add(rulerMarked, rulerBlank);
+
+/* điểm sáng tín hiệu — nhịp sin(2*PI*t/4), dùng ở S21/S22/S23/S32 */
+var signalDot = glow(SIGNAL, 0.12, 0);
+scene.add(signalDot);
+
+/* ============================================================================
+ * S18–S20: khay gỗ ba chỗ (chén nước, chén cơm, chỗ trống thứ ba/tư)
+ * ========================================================================== */
+var trayGroup = new THREE.Group();
+var tray = new THREE.Mesh(new THREE.BoxGeometry(1.4,0.05,0.6), woodMat(0x5c4128));
+tray.castShadow = true; tray.receiveShadow = true;
+trayGroup.add(tray);
+var waterCup = new THREE.Mesh(new THREE.CylinderGeometry(0.08,0.07,0.11,24),
+  new THREE.MeshPhysicalMaterial({color:0xffffff, roughness:0.1, transparent:true, opacity:0.55, metalness:0.0, clearcoat:0.4}));
+waterCup.position.set(-0.42,0.08,0);
+waterCup.castShadow = true;
+trayGroup.add(waterCup);
+var waterSurf = new THREE.Mesh(new THREE.CircleGeometry(0.065,24),
+  new THREE.MeshStandardMaterial({color:0x9fc4e8, roughness:0.05, metalness:0.1, transparent:true, opacity:0.85}));
+waterSurf.rotation.x = -Math.PI/2; waterSurf.position.set(-0.42,0.135,0);
+trayGroup.add(waterSurf);
+var riceBowl = new THREE.Mesh(new THREE.CylinderGeometry(0.09,0.06,0.09,24),
+  new THREE.MeshStandardMaterial({color:0x2b2019, roughness:0.5}));
+riceBowl.position.set(0,0.075,0); riceBowl.castShadow = true;
+trayGroup.add(riceBowl);
+var riceTop = new THREE.Mesh(new THREE.SphereGeometry(0.075,16,10,0,Math.PI*2,0,Math.PI*0.5),
+  new THREE.MeshStandardMaterial({color:0xf5f0e2, roughness:0.85}));
+riceTop.position.set(0,0.118,0);
+trayGroup.add(riceTop);
+var riceSteam = glow(new THREE.Color(1,1,1), 0.08, 0.08);
+riceSteam.position.set(0,0.19,0);
+trayGroup.add(riceSteam);
+/* vết lõm chỗ trống thứ ba + chỗ trống thứ tư (đói/khát/đau/寂しさ) */
+var thirdSlot = new THREE.Mesh(new THREE.RingGeometry(0.05,0.075,24),
+  new THREE.MeshStandardMaterial({color:0x4a3520, roughness:0.9}));
+thirdSlot.rotation.x = -Math.PI/2; thirdSlot.position.set(0.34,0.028,0);
+trayGroup.add(thirdSlot);
+var fourthGlow = new THREE.Mesh(new THREE.CircleGeometry(0.075,24),
+  new THREE.MeshStandardMaterial({color:0xf0dfb0, roughness:0.7, emissive:0xf0dfb0, emissiveIntensity:0.0, transparent:true, opacity:0.0}));
+fourthGlow.rotation.x = -Math.PI/2; fourthGlow.position.set(0.34,0.03,0);
+trayGroup.add(fourthGlow);
+trayGroup.position.set(0, 0.55, -0.2);
+scene.add(trayGroup);
+trayGroup.visible = false;
+var trayLight = new THREE.SpotLight(0xffe0b0, 0.0, 5, Math.PI/5, 0.4);
+trayLight.position.set(0.8, 1.3, 0.3);
+trayLight.target = trayGroup;
+scene.add(trayLight, trayLight.target);
+
+/* ============================================================================
+ * S21–S23: vòng người quanh lửa (nguồn gốc tiến hoá của tín hiệu)
+ * ========================================================================== */
+var fireGroup = new THREE.Group();
+var fireCore = glow(new THREE.Color(1.0,0.55,0.15), 0.4, 1.0);
+fireGroup.add(fireCore);
+var fireLight = new THREE.PointLight(0xffaa55, 0.0, 8, 2.0);
+fireGroup.add(fireLight);
+var firePeople = new THREE.Group();
+var FIRE_RING_N = 7;
+for(var fi=0; fi<FIRE_RING_N; fi++){
+  var fa = (fi/FIRE_RING_N)*Math.PI*2;
+  var fp = makePerson(0x7d6b58);
+  fp.position.set(Math.cos(fa)*1.1, 0, Math.sin(fa)*1.1);
+  fp.rotation.y = fa + Math.PI;
+  firePeople.add(fp);
+}
+fireGroup.add(firePeople);
+var strayPerson = makePerson(0x8d7862);
+fireGroup.add(strayPerson);
+var strayLine = makeFrameOutline(0.02,0.02,0xffcc88); // reused as generic line container; replaced below
+scene.remove(strayLine);
+/* đường sáng mảnh nối khối tách ra và vòng lửa */
+var strayLineGeo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0,0.05,0), new THREE.Vector3(0,0.05,1)]);
+var strayLineMat = new THREE.LineBasicMaterial({color:0xffbb77, transparent:true, opacity:0});
+var strayLineObj = new THREE.Line(strayLineGeo, strayLineMat);
+fireGroup.add(strayLineObj);
+fireGroup.position.set(0,0,0);
+scene.add(fireGroup);
+fireGroup.visible = false;
+
+/* S22: khối giữa + 8 khối quanh, bộ đếm 8 chấm, sợi nối */
+var countGroup = new THREE.Group();
+var centerPerson = makePerson(0x8d7862);
+countGroup.add(centerPerson);
+var ringPeople = [];
+var ringLinks = [];
+var countDots = [];
+for(var ci=0; ci<8; ci++){
+  var caAng = (ci/8)*Math.PI*2;
+  var cp = makePerson(0x7d6b58);
+  cp.position.set(Math.cos(caAng)*1.4, 0, Math.sin(caAng)*1.4);
+  cp.rotation.y = caAng+Math.PI;
+  countGroup.add(cp);
+  ringPeople.push(cp);
+  var linkGeo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0,0.5,0), cp.position.clone().setY(0.5)]);
+  var linkMat = new THREE.LineBasicMaterial({color:0xd8c9a0, transparent:true, opacity:0});
+  var link = new THREE.Line(linkGeo, linkMat);
+  countGroup.add(link);
+  ringLinks.push(link);
+  var dot = glow(new THREE.Color(1,0.9,0.6), 0.05, 0);
+  dot.position.set(-1.0 + ci*0.28, 1.2, 0);
+  countGroup.add(dot);
+  countDots.push(dot);
+}
+var countLight = new THREE.PointLight(0xffe0c0, 0.0, 6, 2.0);
+countGroup.add(countLight);
+scene.add(countGroup);
+countGroup.visible = false;
+
+/* S23: 火災報知機 trên trần, nhìn từ dưới lên */
+var alarmGroup = new THREE.Group();
+var alarmBody = new THREE.Mesh(new THREE.CylinderGeometry(0.09,0.09,0.03,24),
+  new THREE.MeshStandardMaterial({color:0xece7dc, roughness:0.55}));
+alarmGroup.add(alarmBody);
+var alarmGrille = new THREE.Mesh(new THREE.TorusGeometry(0.05,0.006,8,24),
+  new THREE.MeshStandardMaterial({color:0xcfc9ba, roughness:0.6}));
+alarmGrille.rotation.x = Math.PI/2; alarmGrille.position.y = 0.012;
+alarmGroup.add(alarmGrille);
+var alarmLED = glow(new THREE.Color(0.3,1.0,0.4), 0.02, 0);
+alarmLED.position.set(0.03,-0.014,0.03);
+alarmGroup.add(alarmLED);
+alarmGroup.position.set(0,2.35,0.4);
+scene.add(alarmGroup);
+alarmGroup.visible = false;
+
+/* ============================================================================
+ * S25–S27: lối đi cong khép vòng, nhiều vòng, nhánh rẽ
+ * ========================================================================== */
+function makePathRing(radius, seed){
+  var pts = [];
+  var N = 48;
+  for(var i=0;i<=N;i++){
+    var a = (i/N)*Math.PI*2;
+    pts.push(new THREE.Vector3(Math.cos(a)*radius, 0, Math.sin(a)*radius));
+  }
+  var geo = new THREE.BufferGeometry().setFromPoints(pts);
+  var mat = new THREE.MeshStandardMaterial({color:0xcdb877, roughness:0.85});
+  // dải đường đi rộng, đủ sáng — dùng TubeGeometry cho có bề rộng thật
+  var curve = new THREE.CatmullRomCurve3(pts, true);
+  var tube = new THREE.Mesh(new THREE.TubeGeometry(curve, 64, radius*0.10, 8, true), mat);
+  tube.receiveShadow = true;
+  return tube;
+}
+var pathMain = makePathRing(1.6, 5001);
+scene.add(pathMain);
+pathMain.visible = false;
+var walkerPerson = makePerson(0x8d7862);
+scene.add(walkerPerson);
+walkerPerson.visible = false;
+var sideMarkPerson = makePerson(0x7d6b58, 0.9);
+scene.add(sideMarkPerson);
+sideMarkPerson.visible = false;
+
+/* nhiều vòng khác (S26) — rải trên mặt phẳng, mỗi vòng một người, seed cố định */
+var manyRings = new THREE.Group();
+var manyRingTubes = [];
+var manyRingWalkers = [];
+var RING_COUNT = 12;
+for(var ri=0; ri<RING_COUNT; ri++){
+  var rx = (rndRings()-0.5)*14, rz = (rndRings()-0.5)*14 - 2;
+  if(Math.abs(rx)<2.2 && Math.abs(rz+2)<2.2){ rx += (rx<0?-3:3); } // tránh chồng ring chính
+  var rr = 1.2 + rndRings()*0.5;
+  var rt = makePathRing(rr, 6000+ri);
+  rt.position.set(rx, 0, rz);
+  manyRings.add(rt);
+  manyRingTubes.push(rt);
+  var rw = makePerson(0x7d6b58);
+  rw.position.set(rx+rr, 0, rz);
+  manyRings.add(rw);
+  manyRingWalkers.push(rw);
+  // lớp sáng mỏng ôm quanh khối người — bảo vệ, không siết
+  var shield = new THREE.Mesh(new THREE.TorusGeometry(0.22,0.015,8,20),
+    new THREE.MeshBasicMaterial({color:0xffdca0, transparent:true, opacity:0}));
+  shield.rotation.x = Math.PI/2; shield.position.copy(rw.position); shield.position.y = 0.5;
+  manyRings.add(shield);
+  manyRingWalkers[ri].userData.shield = shield;
+}
+scene.add(manyRings);
+manyRings.visible = false;
+
+/* nhánh rẽ — lối phụ tách khỏi vòng, rộng bằng lối chính, sáng hơn 20% */
+function makeBranch(){
+  var pts = [new THREE.Vector3(1.6,0,0), new THREE.Vector3(2.6,0,0.6), new THREE.Vector3(3.6,0,0.9)];
+  var curve = new THREE.CatmullRomCurve3(pts);
+  var mat = new THREE.MeshStandardMaterial({color:0xdccb92, roughness:0.8, emissive:0x1a1408, emissiveIntensity:0.15});
+  return new THREE.Mesh(new THREE.TubeGeometry(curve, 24, 0.16, 8, false), mat);
+}
+var branch1 = makeBranch();
+branch1.material = branch1.material.clone(); branch1.material.opacity = 0; branch1.material.transparent = true;
+scene.add(branch1);
+branch1.visible = false;
+var branch2 = makeBranch();
+branch2.rotation.y = Math.PI*0.6;
+branch2.material = branch2.material.clone(); branch2.material.opacity = 0; branch2.material.transparent = true;
+scene.add(branch2);
+branch2.visible = false;
+
+/* trục thời gian mảnh + vạch baseline (S28) */
+var timelineBar = new THREE.Mesh(new THREE.BoxGeometry(2.2,0.01,0.01),
+  new THREE.MeshBasicMaterial({color:0x8a8270, transparent:true, opacity:0}));
+scene.add(timelineBar);
+var baselineMark = new THREE.Mesh(new THREE.BoxGeometry(0.02,0.08,0.02),
+  new THREE.MeshBasicMaterial({color:0xffe0a0, transparent:true, opacity:0}));
+scene.add(baselineMark);
+
+/* ============================================================================
+ * S09: vườn ban ngày — 縁側, cỏ vừa nhổ, chén trà
+ * ========================================================================== */
+var gardenGroup = new THREE.Group();
+var engawa = new THREE.Mesh(new THREE.BoxGeometry(2.2,0.12,0.5), woodMat(0x6a4c30));
+engawa.position.set(0,0.06,-0.3); engawa.receiveShadow = true;
+gardenGroup.add(engawa);
+var gardenFloor = new THREE.Mesh(new THREE.PlaneGeometry(20,20),
+  new THREE.MeshStandardMaterial({color:0x4a6b3a, roughness:0.95}));
+gardenFloor.rotation.x = -Math.PI/2; gardenFloor.position.y = -0.01;
+gardenGroup.add(gardenFloor);
+var gardenPerson = makePerson(0x8a7565);
+gardenPerson.position.set(0,0.12,-0.35);
+gardenGroup.add(gardenPerson);
+var grassPile = new THREE.Mesh(new THREE.ConeGeometry(0.1,0.08,8),
+  new THREE.MeshStandardMaterial({color:0x5c7a3c, roughness:0.9}));
+grassPile.position.set(0.4,0.16,-0.2);
+gardenGroup.add(grassPile);
+var gardenCup = new THREE.Mesh(new THREE.CylinderGeometry(0.045,0.038,0.06,20),
+  new THREE.MeshStandardMaterial({color:0xf3ede0, roughness:0.35}));
+gardenCup.position.set(-0.4,0.18,-0.25);
+gardenGroup.add(gardenCup);
+scene.add(gardenGroup);
+gardenGroup.visible = false;
+
+/* ============================================================================
+ * DỌN CẢNH — reset trạng thái mỗi frame, mỗi shot tự bật cái mình cần
+ * ========================================================================== */
+function resetState(){
+  /* ⚠ style.filter/opacity là trạng thái DOM, KHÔNG tự reset giữa các frame khi
+   * scrub nhảy cóc tới t bất kỳ (không đi qua các scene ở giữa theo thứ tự).
+   * S01 và S17/S34 gán rootEl.style.filter — nếu scene sau không tự đặt lại,
+   * giá trị cũ VẪN CÒN khi scrub thẳng tới t đó. Lỗi thật đã bắt bằng debug
+   * overlay: brightness(0.15) sót lại từ S01 làm cả S30 tối gấp ~7 lần. */
+  rootEl.style.filter = '';
+  shoji.position.x = 0;
+  ROOM.visible = true;
+  peopleLayer1.visible = false;
+  peopleLayer2.visible = false;
+  layer2Grid.visible = false;
+  mist2Pts.visible = false;
+  childSleep.visible = false; childPillow.visible = false;
+  voidSpot.visible = false;
+  reportFrame.material.opacity = 0;
+  trayGroup.visible = false; trayLight.intensity = 0;
+  fireGroup.visible = false; fireLight.intensity = 0;
+  countGroup.visible = false; countLight.intensity = 0;
+  alarmGroup.visible = false;
+  pathMain.visible = false; walkerPerson.visible = false; sideMarkPerson.visible = false;
+  manyRings.visible = false;
+  branch1.visible = false; branch2.visible = false;
+  timelineBar.material.opacity = 0; baselineMark.material.opacity = 0;
+  gardenGroup.visible = false;
+  gardenLight.intensity = 0; gardenAmbient.intensity = 0;
+  deskLight.intensity = 0;
+  deskGroup.visible = false; deskLamp.intensity = 0;
+  corridorGlow.intensity = 0; corridorLight.material.opacity = 0;
+  rulerMarked.visible = false; rulerBlank.visible = false;
+  signalDot.material.opacity = 0;
+  reportFrame.visible = false;
+  ZAB5.visible = true;
+  lampPoint.intensity = 2.4; lampFill.intensity = 0.6; roomAmbient.intensity = 0.55;
+  for(var li=0; li<_labels.length; li++) _labels[li].visible = false;
+}
+/* ⚠ `lampPoint`/`roomAmbient` là đèn 和室 CHUNG CHO CẢ SCENE (không phải con của
+ * ROOM) — chúng vẫn sáng dù `ROOM.visible=false`. Ở các cảnh procedural "ngoài
+ * phòng" (bàn giấy, khay gỗ, vòng lửa, lối đi…) đèn phòng cộng dồn với đèn
+ * riêng của cảnh đó làm bề mặt gần trắng vọt qua ngưỡng bloom 1.0 → cháy trắng
+ * toàn khung (bắt được qua contact-sheet, không qua validate). Gọi hàm này ở
+ * đầu mỗi cảnh KHÔNG dùng ROOM để tắt hẳn đèn phòng. */
+function dimRoomLights(){
+  lampPoint.intensity = 0; lampFill.intensity = 0; roomAmbient.intensity = 0.12;
+}
+
+/* ============================================================================
+ * NHÃN — dựng trước, gọi trong renderAtTime, chỉ set visible/opacity/position
+ * ========================================================================== */
+var lbTitleC1   = textPlane('第1章　入口', 0.16, CSS_WARM, 0.85);
+var lbNightTime = textPlane('夜十一時', 0.10, CSS_MIST, 0.8);
+var lbIchimai   = textPlane('一枚', 0.09, CSS_MIST, 0.75);
+var lbNimai     = textPlane('二枚', 0.09, CSS_MIST, 0.75);
+var lbGomai     = textPlane('五枚目', 0.09, CSS_MIST, 0.75);
+var lbHakujo    = textPlane('薄情', 0.075, '#8f8672', 0.55);
+var lbTitleC2   = textPlane('第2章　二つの物差し', 0.16, CSS_WARM, 0.85);
+var lbSotoKazu  = textPlane('外から数えられるもの', 0.075, CSS_MIST, 0.8);
+var lbHonnin    = textPlane('本人にしか分からないもの', 0.075, CSS_MIST, 0.8);
+var lbKoritsu   = textPlane('社会的孤立', 0.10, CSS_MIST, 0.85);
+var lbKodokukan = textPlane('孤独感', 0.10, CSS_MIST, 0.85);
+var lbAttaKazu  = textPlane('会った人の数 / 出かけた回数', 0.06, CSS_DIM, 0.7);
+var lbSabishiSensing = textPlane('寂しいと感じているか', 0.065, CSS_DIM, 0.7);
+var lbNoHitowa  = textPlane('人はいないのに、寂しくない', 0.075, CSS_MIST, 0.8);
+var lb747       = textPlane('74.7%', 0.14, CSS_WARM, 0.9);
+var lbDochira   = textPlane('どちらでもない', 0.08, CSS_MIST, 0.8);
+var lb156       = textPlane('15.6%', 0.14, CSS_WARM, 0.9);
+var lbKoritsuOnly = textPlane('孤立のみ', 0.08, CSS_MIST, 0.8);
+var lb67        = textPlane('6.7%', 0.16, CSS_WARM, 0.95);
+var lbKodokuOnly  = textPlane('孤独のみ', 0.08, CSS_MIST, 0.85);
+var lb30        = textPlane('3.0%', 0.14, CSS_WARM, 0.9);
+var lbRyoho     = textPlane('両方', 0.08, CSS_MIST, 0.8);
+var lbSum223    = textPlane('15.6% + 6.7% = 22.3%', 0.09, CSS_WARM, 0.85);
+var lb12m       = textPlane('1.2 m', 0.11, CSS_WARM, 0.9);
+var lb40m       = textPlane('40 m', 0.11, CSS_WARM, 0.9);
+var lbSrcMenec  = srcPlane('Menec VH et al., PLOS ONE 15(3): e0230673 (2020)', 0.045);
+var lbSrcMenec2 = srcPlane('Menec et al., PLOS ONE (2020)', 0.05);
+var lbCLSA      = textPlane('n = 30,079 ／ 45–85歳', 0.10, CSS_MIST, 0.85);
+var lbCLSACanada= srcPlane('CLSA Comprehensive Cohort ／ Canada', 0.045);
+var lb67InScene = textPlane('6.7%', 0.11, CSS_WARM, 0.9);
+var lbTitleC3   = textPlane('第3章　深いところ', 0.16, CSS_WARM, 0.85);
+var lbSrcCacioppo = srcPlane('Cacioppo & Patrick (2008)', 0.05);
+var lbSrcCacioppoName = srcPlane('John T. Cacioppo', 0.04);
+var lbKawaki    = textPlane('渇き', 0.09, CSS_MIST, 0.85);
+var lbUe        = textPlane('飢え', 0.09, CSS_MIST, 0.85);
+var lbItami     = textPlane('痛み', 0.09, CSS_MIST, 0.85);
+var lbSabishisa = textPlane('寂しさ', 0.09, CSS_WARM, 0.9);
+var lbShingo    = textPlane('信号', 0.09, CSS_MIST, 0.8);
+var lbHatarai   = textPlane('壊れているのではない', 0.08, CSS_MIST, 0.8);
+var lbSrcHawkley = srcPlane('Hawkley LC & Cacioppo JT, Ann Behav Med 40(2): 218-227 (2010)', 0.042);
+var lbImplicit  = srcPlane('implicit hypervigilance for social threat', 0.045);
+var lbMimoMamoru= textPlane('身を守るための働き', 0.08, CSS_MIST, 0.8);
+var lbWanoDoushi= textPlane('輪になった道', 0.08, CSS_MIST, 0.8);
+var lbDareDemo  = textPlane('誰にでも起こりうる', 0.09, CSS_WARM, 0.85);
+var lbAnataMamoru = textPlane('あなたを守るために働いていました', 0.07, CSS_WARM, 0.85);
+var lbYuruShippai = textPlane('あなたがやっている失敗ではありません', 0.075, CSS_WARM, 0.9);
+var lbOoku      = textPlane('多くの人を見たときの傾向', 0.07, CSS_MIST, 0.8);
+var lbHaitte    = textPlane('入って、また出ていった人は大勢います', 0.06, CSS_MIST, 0.75);
+var lbEdamichi  = textPlane('脇へ抜ける枝道', 0.08, CSS_MIST, 0.8);
+var lbCLSACanadaN = textPlane('CLSA・Canada・n = 30,079', 0.075, CSS_MIST, 0.8);
+var lbBaseline  = textPlane('baseline 横断調査', 0.07, CSS_MIST, 0.8);
+var lbBetsuMono = textPlane('別の物差し', 0.08, CSS_MIST, 0.8);
+var lbShingo2   = textPlane('信号', 0.08, CSS_MIST, 0.8);
+var lbHitoride  = textPlane('一人で抱える決まりは、どこにもありません', 0.06, CSS_MIST, 0.85);
+var lbTitleC4   = textPlane('第4章　帰り道', 0.16, CSS_WARM, 0.85);
+var lbKienai    = textPlane('消えます、とは言えません', 0.065, CSS_MIST, 0.8);
+var lbHajimete  = textPlane('私がはじめてではなかった', 0.07, CSS_MIST, 0.85);
+var lbDochirakaUso = textPlane('どちらかが嘘なのではありません', 0.065, CSS_MIST, 0.85);
+
+/* ============================================================================
+ * PHỤ ĐỀ — nạp từ cues.json (309 dòng đã cắt sẵn ≤22 ký tự toàn角)
+ * ========================================================================== */
+const CUES=[
+{t:2.00,s:"夜の十一時でした。"},
+{t:3.90,s:"お盆が終わって、"},
+{t:5.58,s:"子どもも孫も、"},
+{t:7.06,s:"夕方には帰っていったあとのことです。"},
+{t:10.85,s:"三日のあいだ、この部屋はずっと賑やかでした。"},
+{t:15.39,s:"孫が畳の上で寝てしまって、"},
+{t:18.08,s:"誰かが座布団を枕にしてやっていました。"},
+{t:21.99,s:"その三日が終わって、"},
+{t:23.81,s:"玄関で手を振って、"},
+{t:25.45,s:"車が角を曲がるまで見ていました。"},
+{t:28.37,s:"それから、家の中に戻ったんです。"},
+{t:31.29,s:"茶碗を洗って、"},
+{t:32.84,s:"湯のみを片づけて、"},
+{t:34.83,s:"座布団を畳んでいきました。一枚、二枚。"},
+{t:39.03,s:"手はもう勝手に動いています。"},
+{t:42.11,s:"五枚目を畳んでいたときです。"},
+{t:44.77,s:"何の前ぶれもなく、"},
+{t:46.48,s:"胸のあたりに、"},
+{t:47.80,s:"すうっと空いたところができました。"},
+{t:51.03,s:"おかしな言い方になりますが、"},
+{t:53.12,s:"その空いたところは、"},
+{t:54.61,s:"はじめてそこにできたも"},
+{t:56.25,s:"のではありませんでした。"},
+{t:58.03,s:"みんながまだそこに座っていたとき。"},
+{t:61.40,s:"笑い声のまん中にいたとき。"},
+{t:63.98,s:"あのときにも、同じものが、"},
+{t:66.56,s:"確かにあったんです。"},
+{t:68.54,s:"そして、"},
+{t:69.33,s:"そう気づいたすぐあとに、"},
+{t:71.69,s:"もう一つの声がやってきました。"},
+{t:74.65,s:"自分で自分に言う声です。"},
+{t:77.01,s:"これだけ家族がいてくれるのに、"},
+{t:79.74,s:"私は何を贅沢なことを思っているんだろう。"},
+{t:83.39,s:"薄情な人間なんじゃないだろうか。"},
+{t:87.79,s:"この声のことを、"},
+{t:89.17,s:"私は長いあいだ、"},
+{t:90.54,s:"誰にも言ったことがありませんでした。言えば、"},
+{t:94.32,s:"きっと責められると思っていたからです。"},
+{t:97.59,s:"ですが、"},
+{t:98.42,s:"この十年ほどのあいだに、"},
+{t:100.90,s:"この胸の空いたところを、"},
+{t:103.39,s:"まっすぐ調べた人たちがいます。"},
+{t:106.49,s:"今日は、その話をします。"},
+{t:108.98,s:"まず、"},
+{t:109.45,s:"おかしな点をはっきりさせておきたいんです。"},
+{t:112.77,s:"人が多いほど寂しくないはずだ。"},
+{t:115.13,s:"ふつうはそう考えます。"},
+{t:116.87,s:"ところが、実際はそうなっていません。"},
+{t:120.02,s:"人に囲まれた三日間のまん中で、"},
+{t:122.65,s:"あの空いたところはちゃんとありました。"},
+{t:125.98,s:"そのうえ、逆のことも起きます。"},
+{t:129.01,s:"一日じゅう誰とも話さなかった日に、なぜか、"},
+{t:133.26,s:"ひどく落ちついていることがある。"},
+{t:136.49,s:"庭の草を抜いて、"},
+{t:138.28,s:"お茶を飲んで、"},
+{t:139.84,s:"それで一日が終わる。"},
+{t:142.08,s:"人はいないのに、寂しくない。"},
+{t:145.20,s:"こういう日が、確かにあるんです。"},
+{t:148.78,s:"つまり、"},
+{t:149.51,s:"「人がどれだけいるか」で"},
+{t:151.70,s:"寂しさを説明しようとすると、片っぽうも、"},
+{t:155.35,s:"もう片っぽうも、"},
+{t:156.81,s:"合わなくなります。"},
+{t:158.45,s:"ここで、"},
+{t:159.29,s:"カナダで行われたある調査のこと"},
+{t:162.42,s:"を思い出しました。"},
+{t:164.30,s:"四十五歳から八十五歳まで、"},
+{t:167.02,s:"三万七十九人を集めた調査です。"},
+{t:170.16,s:"メネックさんたちの研究チームが、"},
+{t:172.99,s:"二千二十年に『プロス・ワン』と"},
+{t:175.64,s:"いう学術誌に出した報告です。"},
+{t:178.12,s:"この調査が上手だったのは、"},
+{t:180.54,s:"二つのことを、"},
+{t:181.84,s:"わざわざ別々に尋ねたところなんです。"},
+{t:185.19,s:"一つ目は、実際にどれくらい人と会っているか。"},
+{t:189.55,s:"家族と話す回数、"},
+{t:191.14,s:"近所づきあい、"},
+{t:192.53,s:"何かの集まりに出ているかどうか。"},
+{t:195.70,s:"これは外から数えられます。"},
+{t:198.58,s:"会った人の数、出かけた回数。こちらを、"},
+{t:202.79,s:"研究では社会的な孤立と呼んでいます。"},
+{t:206.77,s:"二つ目は、まったく別のことです。"},
+{t:210.27,s:"あなたは今、寂しいと感じていますか。"},
+{t:214.20,s:"こちらは、本人にしか分かりません。"},
+{t:217.92,s:"外から数える物差しと、"},
+{t:219.99,s:"内側でしか測れない物差し。"},
+{t:222.43,s:"この二つを、同じにせずに分けたんです。"},
+{t:226.00,s:"そうやって三万人あまりを並べてみたら、"},
+{t:229.36,s:"人は四つの欄に分かれました。"},
+{t:231.84,s:"この四つが、今日いちばん大事なところです。"},
+{t:235.55,s:"いちばん多かったのは、"},
+{t:237.71,s:"孤立してもいないし、"},
+{t:239.67,s:"寂しくもない人。"},
+{t:241.23,s:"七十四・七パーセント。"},
+{t:243.39,s:"四人のうち三人です。"},
+{t:245.35,s:"次が、十五・六パーセント。"},
+{t:248.02,s:"この人たちは、"},
+{t:249.45,s:"人づきあいの数でいえば少ないほうに入ります。"},
+{t:253.97,s:"ですが、寂しいとは感じていない。"},
+{t:257.25,s:"外から見れば、心配されるほうの側です。"},
+{t:260.95,s:"訪ねてくる人も少ない。"},
+{t:263.09,s:"それでも本人は、これでいい、と言っている。"},
+{t:267.18,s:"そしてその次が、六・七パーセントです。"},
+{t:271.45,s:"人づきあいの数は足りている。"},
+{t:274.59,s:"数えれば、まわりに人はいる。"},
+{t:277.73,s:"それなのに、寂しい。"},
+{t:279.98,s:"最後の三・〇パーセントが、その両方。"},
+{t:283.73,s:"孤立していて、寂しくもある人たちです。"},
+{t:287.68,s:"二番目と三番目が、"},
+{t:289.50,s:"ちょうど反対を向いています。"},
+{t:292.34,s:"人は少ないのに寂しくない人と、"},
+{t:295.37,s:"人はいるのに寂しい人。"},
+{t:297.60,s:"合わせて二割を超えます。"},
+{t:301.20,s:"私がしばらく動けなくなったのは、"},
+{t:304.71,s:"三番目の欄でした。"},
+{t:306.68,s:"六・七パーセント。"},
+{t:308.66,s:"人がいるのに寂しい人。"},
+{t:311.07,s:"あの晩、"},
+{t:311.80,s:"五枚目の座布団のところで私がいた場所が、"},
+{t:315.45,s:"報告書の中に、"},
+{t:316.72,s:"ちゃんと欄として載っていたということです。"},
+{t:320.55,s:"正直に言うと、私はそこで少しほっとしました。"},
+{t:325.15,s:"名前がついていて、人数が数えてある。"},
+{t:328.91,s:"それだけのことなんですが。"},
+{t:331.63,s:"人といる量と、寂しさの量。この二つは、"},
+{t:335.65,s:"もともと別々の物差しで測られて"},
+{t:338.83,s:"いるということなんです。"},
+{t:341.37,s:"では、"},
+{t:342.00,s:"その内側の物差しのほうは、"},
+{t:344.74,s:"いったい何を測っているのか。"},
+{t:347.69,s:"ここからが、もう一段深いところです。"},
+{t:351.49,s:"アメリカにカシオポという研究者がいました。"},
+{t:355.89,s:"ジョン・カシオポ。"},
+{t:357.77,s:"寂しさというものを、生涯かけて調べた人です。"},
+{t:362.37,s:"この人の見方が、少し変わっていました。"},
+{t:365.81,s:"寂しさを、性格の問題として見なかったんです。"},
+{t:369.79,s:"信号として見ました。"},
+{t:371.61,s:"たとえば、お腹がすく。喉が渇く。"},
+{t:375.28,s:"指をぶつければ痛い。"},
+{t:377.57,s:"どれも気持ちのいいものではありません。"},
+{t:381.92,s:"ですが、"},
+{t:382.74,s:"お腹がすくのは、"},
+{t:384.38,s:"心が弱いからではありませんね。"},
+{t:387.46,s:"そろそろ食べるころですよ、"},
+{t:390.13,s:"と体が知らせているだけです。"},
+{t:393.01,s:"痛みも同じで、あるから手を引っこめられる。"},
+{t:397.32,s:"カシオポは、寂しさをその列に並べました。"},
+{t:401.91,s:"飢えと、渇きと、痛みと、同じ列に。"},
+{t:405.82,s:"三つではなく、四つ目として。"},
+{t:409.03,s:"なぜそんな信号があるのか。遠い昔、"},
+{t:412.38,s:"人が群れから離れることは、"},
+{t:414.94,s:"そのまま命に関わったからだ、"},
+{t:417.70,s:"という考え方です。"},
+{t:419.47,s:"一人になった者に、"},
+{t:421.34,s:"うずくような感じを起こさせて、"},
+{t:424.45,s:"群れのほうへ引き戻す。"},
+{t:426.74,s:"その役目を負った仕組みだ、と。"},
+{t:429.85,s:"大事なのは、その信号が何によって鳴るかです。"},
+{t:434.08,s:"人の数ではありません。"},
+{t:436.19,s:"つながりが足りて"},
+{t:437.73,s:"いるかどうかの感じのほうです。"},
+{t:440.61,s:"この見方でいくと、話がひっくり返ります。"},
+{t:444.43,s:"寂しさを感じる力があるということは、"},
+{t:447.87,s:"人とつながる力が、"},
+{t:449.58,s:"まだ生きているということになる。"},
+{t:452.64,s:"壊れているから鳴るのではありません。"},
+{t:455.96,s:"働いているから鳴るんです。"},
+{t:458.37,s:"火災報知機と同じで、鳴らないほうが困る。"},
+{t:463.23,s:"ただ、"},
+{t:463.82,s:"この信号には、"},
+{t:465.20,s:"少し厄介なところもあります。"},
+{t:467.95,s:"ここも、隠さずに言っておきたいところです。"},
+{t:472.07,s:"ホークリーさんとカシオポが、"},
+{t:474.44,s:"二千十年に『行動医学年報』と"},
+{t:476.81,s:"いう専門誌にまとめた総説があります。"},
+{t:479.85,s:"そこに、こんなことが書かれています。"},
+{t:482.90,s:"寂しさを感じているとき、人は、"},
+{t:485.67,s:"まわりから拒まれる気配に、"},
+{t:488.06,s:"ふだんより敏感になる。"},
+{t:490.09,s:"これ自体は、身を守るための働きです。"},
+{t:493.76,s:"もう一度突き放されたら、こたえます。"},
+{t:497.44,s:"だから先に身構えておく。"},
+{t:499.90,s:"困るのは、"},
+{t:500.84,s:"この身構えが、"},
+{t:502.17,s:"意識より下のところで、"},
+{t:504.24,s:"自動で働いてしまうことなんです。"},
+{t:507.27,s:"瞬きと同じで、"},
+{t:508.59,s:"気づいたときには、"},
+{t:510.29,s:"もう動いている。"},
+{t:511.80,s:"だから、"},
+{t:512.57,s:"あくびを一つ見て、"},
+{t:514.30,s:"退屈させてしまったかと思う。"},
+{t:516.99,s:"返事が短かっただけで、"},
+{t:519.10,s:"冷たくされたように感じる。"},
+{t:521.60,s:"相手は、ただ眠かっただけかもしれません。"},
+{t:525.71,s:"ですが、"},
+{t:526.54,s:"その場でそこまで考えられる人は、"},
+{t:529.83,s:"そういません。"},
+{t:531.27,s:"そして、ほんの少しだけ、自分から引きます。"},
+{t:536.06,s:"ひとこと言うのをやめる。"},
+{t:538.80,s:"誘いを一度だけ断る。"},
+{t:541.09,s:"ごく小さな動きです。"},
+{t:543.37,s:"すると相手も、深く誘わなくなる。"},
+{t:546.90,s:"そうして、また同じところに戻ってくる。"},
+{t:551.09,s:"この一周を、"},
+{t:552.42,s:"研究では輪になった道にたとえています。"},
+{t:556.62,s:"ここで一つ、"},
+{t:557.56,s:"はっきりさせておきたいことがあります。"},
+{t:560.55,s:"この輪は、"},
+{t:561.33,s:"あなたがやっている失敗ではありません。"},
+{t:564.32,s:"誰にでも起こりうることなんです。"},
+{t:567.49,s:"身を守る仕組みが、"},
+{t:569.28,s:"少しだけ熱心に働きすぎている。"},
+{t:572.25,s:"それだけのことなんです。"},
+{t:574.63,s:"あなたが引いたのではなくて、"},
+{t:577.04,s:"引かせる仕組みのほうが、"},
+{t:579.11,s:"先に動いていた。"},
+{t:580.49,s:"しかもそれは、"},
+{t:581.69,s:"あなたを守るために働いていました。"},
+{t:584.62,s:"自分を責めていた人が、"},
+{t:586.59,s:"これを聞いて、"},
+{t:587.85,s:"もう一つ責める種を増やしてしまうなら、"},
+{t:591.26,s:"私はこの話をしないほうが"},
+{t:593.41,s:"ましだと思っています。"},
+{t:596.86,s:"そのうえで、"},
+{t:597.84,s:"この話のどこまでが分かっていて、"},
+{t:600.46,s:"どこからが分かっていないのかを申し上げます。"},
+{t:604.05,s:"まず、"},
+{t:604.66,s:"今の輪の話は、"},
+{t:606.07,s:"多くの人を見たときの傾向です。"},
+{t:609.10,s:"一人ひとりの運命ではありません。"},
+{t:612.33,s:"その中に入って、"},
+{t:613.95,s:"また出ていった人は大勢います。"},
+{t:616.98,s:"輪と申し上げましたが、"},
+{t:619.20,s:"閉じきった輪ではありません。"},
+{t:622.02,s:"どの人の道にも、"},
+{t:623.63,s:"脇へ抜ける枝道がついています。"},
+{t:626.65,s:"次に、"},
+{t:627.20,s:"四つの欄の調査は、"},
+{t:628.85,s:"カナダで行われたものです。"},
+{t:631.23,s:"日本の数字ではありません。"},
+{t:633.61,s:"そのまま持ってくることはできません。"},
+{t:636.90,s:"それから、あの調査は、"},
+{t:639.12,s:"ある一時点で全員に尋ねたものです。"},
+{t:642.55,s:"同じ人を何年も追いかけて、"},
+{t:645.17,s:"変わっていく様子を見たものではない。"},
+{t:648.80,s:"そして、いちばん正直なところを言います。"},
+{t:652.83,s:"どうすればこの感じが必ず消えるのか。"},
+{t:656.46,s:"そこまでは、まだ分かっていません。"},
+{t:659.88,s:"分かっているのは、"},
+{t:661.54,s:"それが別の物差しで測られているということと、"},
+{t:665.61,s:"それが信号だということ。"},
+{t:667.83,s:"今日申し上げられるのは、そこまでです。"},
+{t:671.34,s:"一つだけ添えておきます。"},
+{t:673.42,s:"この感じが長く続いて、"},
+{t:675.32,s:"眠りや食事にまで届いているようなら、"},
+{t:678.43,s:"それはお医者さんに話していいことです。"},
+{t:681.72,s:"一人で抱える決まりは、どこにもありません。"},
+{t:685.35,s:"あの晩の和室に、戻ってきました。畳の上に、"},
+{t:689.86,s:"五枚目の座布団が、"},
+{t:691.80,s:"まだ畳まれずに置いてあります。"},
+{t:695.02,s:"今度は、すぐには畳みませんでした。"},
+{t:698.21,s:"少しのあいだ、そこに座っていました。"},
+{t:701.58,s:"胸の空いたところは、まだあります。"},
+{t:704.90,s:"消えてはいません。"},
+{t:706.66,s:"消えます、とは言えません。"},
+{t:709.21,s:"そこは、正直に申し上げておきます。"},
+{t:712.53,s:"ですが、"},
+{t:713.28,s:"あの晩と違っていることが、"},
+{t:715.73,s:"三つありました。"},
+{t:717.23,s:"一つ。"},
+{t:717.83,s:"この空いたところには、"},
+{t:720.01,s:"名前がついていて、"},
+{t:721.80,s:"数えた人がいて、"},
+{t:723.39,s:"報告書の中に欄があります。"},
+{t:725.98,s:"私がはじめてではなかった。"},
+{t:728.57,s:"あの晩、"},
+{t:729.33,s:"これを言ったら責められると思っていました。"},
+{t:733.31,s:"ですが、"},
+{t:734.07,s:"責められるどころか、"},
+{t:735.96,s:"数えられていたんです。"},
+{t:738.05,s:"二つ。これは、"},
+{t:739.47,s:"壊れたところから出て"},
+{t:741.51,s:"いる音ではありませんでした。"},
+{t:744.35,s:"まだ働いているところから出ている音でした。"},
+{t:748.62,s:"鳴っているのは、つながりたいという側です。"},
+{t:752.51,s:"どうでもよくなった人の胸には、"},
+{t:755.30,s:"この音は立ちません。"},
+{t:757.15,s:"三つ。"},
+{t:757.76,s:"そしてこれが、私にはいちばん効きました。"},
+{t:761.86,s:"この空いたところは、"},
+{t:763.91,s:"あの三日間と、"},
+{t:765.34,s:"何も矛盾していなかったんです。"},
+{t:768.41,s:"孫が畳で寝てしまったこと。"},
+{t:771.41,s:"みんなで笑ったこと。"},
+{t:773.72,s:"玄関で手を振ったこと。"},
+{t:776.26,s:"あれは全部、本当のことです。"},
+{t:779.49,s:"そして、"},
+{t:780.23,s:"そのまん中に空いたところがあったことも、"},
+{t:783.93,s:"同じように本当のことでした。"},
+{t:786.52,s:"どちらかが嘘なのではありません。"},
+{t:789.48,s:"二つとも本当でいられるのは、それぞれが、"},
+{t:792.92,s:"別の物差しの上に載っているからなんです。"},
+{t:798.32,s:"大事な人たちのまん中で"},
+{t:800.08,s:"寂しさを感じたとしても、それは、"},
+{t:802.64,s:"薄情だということではありません。"},
+{t:805.20,s:"その二つは、"},
+{t:806.37,s:"もともと別々の物差しで測るものだった。"},
+{t:810.09,s:"ただ、それだけのことだったんです。"}
+];
+
+/* ============================================================================
+ * CAM_ORIGIN — toạ độ khoá của tập, dùng lại ở S02, S30, S34
+ * ========================================================================== */
+/* ⚠ lookAt đã chỉnh so với bản đầu (0,0.55,-0.3): kiểm bằng ray-vs-AABB cho thấy
+ * 座卓 (0.55×0.33×0.7, tâm z=0.15) che khuất HOÀN TOÀN mọi điểm sàn phía xa bàn
+ * nhìn từ camera cao 0,75m — không có toạ độ ZAB5 nào vừa tránh bị che vừa lọt
+ * khung ở lookAt cũ. Hạ điểm nhìn xuống use y=0.32,z=0.1 (vẫn "chếch xuống,
+ * nhìn chéo qua 座卓") đưa được ZAB5 (đặt cạnh bàn, ô gần-phải 0.62/0.62) vào
+ * khung mà không đổi độ cao camera 0,75m (giữ đúng "ngang tầm người quỳ"). */
+/* ⚠ lookAt.y hạ xuống 0.1 (không phải 0.32) — 0.32 đưa ZAB5 xuống NDC.y=-0.978,
+ * đúng dải phụ đề bottom 8.2% che mất (đo bằng world→NDC project() thật, không
+ * đoán). 0.1 đưa ZAB5 lên ang_v≈-12°, rõ ràng trên dải phụ đề. */
+var CAM_ORIGIN = { pos: new THREE.Vector3(0, 0.75, 1.55), lookAt: new THREE.Vector3(0.2, 0.1, 0.05), fov: 40 };
+function setCamera(pos, look, fov){
+  camera.position.copy(pos);
+  camera.up.set(0,1,0);
+  camera.lookAt(look);
+  camera.fov = fov || 44;
+  camera.updateProjectionMatrix();
+}
+
+/* ============================================================================
+ * HÀM CẢNH — mỗi shot một hàm, tất cả nhận u = loc(t, 'Sxx') tính bằng GIÂY
+ * ========================================================================== */
+
+function sceneS01(u){
+  // Đen mở dần → phòng hiện, thẻ chương. Camera tĩnh, phòng lệch phải.
+  var d = dur('S01');
+  setCamera(new THREE.Vector3(0.45, 0.75, 1.85), new THREE.Vector3(0.15,0.55,-0.3), 46);
+  var reveal = ramp(u, 0, 3.0);
+  lampPoint.intensity = 2.4*reveal;
+  lampFill.intensity = 0.6*reveal;
+  roomAmbient.intensity = 0.15 + 0.40*reveal;
+  ZAB5.visible = true;
+  peopleLayer1.visible = false;
+  dustUni.uOp.value = 0.5*ramp(u,3,8);
+  lbTitleC1.visible = u>0.3 && u<4.3;
+  lbTitleC1.position.set(-1.1, 0.9, -0.6);
+  lbTitleC1.material.opacity = 0.85*win(u,0.3,4.3,0.6);
+  scene.add(lbTitleC1);
+  rootEl.style.filter = 'brightness(' + (0.15+0.85*reveal).toFixed(3) + ')';
+}
+
+function sceneS02(u){
+  setCamera(CAM_ORIGIN.pos, CAM_ORIGIN.lookAt, CAM_ORIGIN.fov);
+  rootEl.style.filter = '';
+  ZAB5.visible = true;
+  lbNightTime.visible = u>8 && u<14.5;
+  lbNightTime.position.set(0, 0.02, 0.9);
+  lbNightTime.rotation.x = -Math.PI/2;
+  lbNightTime.material.opacity = 0.7*win(u,8,14,1.2);
+  scene.add(lbNightTime);
+  lampPoint.intensity = 2.4 * (1 - 0.04*ramp(u,14,20));
+  cupSteamUni.forEach(function(sp,i){
+    sp.position.y = sp.userData.baseY + 0.02*Math.sin(u*(2*Math.PI/3.7) + i);
+    sp.material.opacity = 0.10*ramp(u,18,22);
+  });
+}
+
+function sceneS03(u){
+  /* ⭐ cận tay gập 座布団 — camera nhìn về đúng chỗ ZAB5 nghỉ cuối cùng (0.62,0.62),
+   * KHÔNG phải gốc toạ độ 0,0 của bản đầu (ZAB_POS đã dời để tránh bị 座卓 che
+   * khi nhìn từ CAM_ORIGIN — xem ghi chú tại khai báo ZAB_POS). */
+  var p0 = new THREE.Vector3(0.27, 0.55, 1.65), p1 = new THREE.Vector3(0.77, 0.55, 1.6);
+  var pp = p0.clone().lerp(p1, ease(u/dur('S03')));
+  setCamera(pp, new THREE.Vector3(0.62, 0.15, 0.52), 34);
+  ZAB5.visible = true;
+  lbIchimai.visible = u>6 && u<11;
+  lbIchimai.position.set(0.77, 0.05, 0.62); lbIchimai.rotation.x=-Math.PI/2;
+  lbIchimai.material.opacity = 0.75*win(u,6,11,0.8);
+  scene.add(lbIchimai);
+  lbNimai.visible = u>12 && u<17;
+  lbNimai.position.set(0.77, 0.09, 0.62); lbNimai.rotation.x=-Math.PI/2;
+  lbNimai.material.opacity = 0.75*win(u,12,17,0.8);
+  scene.add(lbNimai);
+}
+
+function sceneS04(u){
+  setCamera(new THREE.Vector3(0.62, 0.55, 1.55), new THREE.Vector3(0.62,0.20,0.22), lerp(85,72,ramp(u,4,8.9)));
+  ZAB5.visible = true;
+  lbGomai.visible = u>4 && u<8;
+  lbGomai.position.set(0.62,0.06,0.67); lbGomai.rotation.x=-Math.PI/2;
+  lbGomai.material.opacity = 0.75*win(u,4,8,0.7);
+  scene.add(lbGomai);
+  voidSpot.visible = u>6;
+  voidSpot.position.set(0.62, 0.9, 0.62);
+  voidSpot.material.opacity = 0.12*ramp(u,6,7.5);
+}
+
+function sceneS05(u){
+  var back = ramp(u, 0, 6.0);
+  var pos = CAM_ORIGIN.pos.clone().add(new THREE.Vector3(0,0,0.8*back));
+  setCamera(pos, CAM_ORIGIN.lookAt, CAM_ORIGIN.fov);
+  voidSpot.visible = true;
+  voidSpot.position.set(-0.5, 1.0, 0.2);
+  voidSpot.material.opacity = 0.12;
+  var fadeIn = ramp(u,4,8);
+  peopleLayer1.visible = fadeIn>0.01;
+  peopleMeshes1.forEach(function(p){ p.material.opacity = fadeIn; p.material.transparent = true; });
+  ZAB5.visible = fadeIn<0.5;
+  lampPoint.intensity = 2.4*(1+0.30*fadeIn);
+  roomAmbient.intensity = 0.55*(1+0.30*fadeIn);
+  childSleep.visible = fadeIn>0.5; childPillow.visible = fadeIn>0.5;
+}
+
+function sceneS06(u){
+  /* ⭐ KHUNG NGUỒN THUMBNAIL — 座布団 thứ năm PHẢI trong khung, tiền cảnh phải.
+   * Camera lùi ra đủ xa để thấy cả sáu 座布団 + 座卓, ZAB5 (0.62,0.62) ở 1/3 phải. */
+  setCamera(new THREE.Vector3(0.0,0.95,2.1), new THREE.Vector3(0.4,0.4,0.3), 44);
+  var fadeOut = 1 - ramp(u,0,4);
+  peopleLayer1.visible = fadeOut>0.01;
+  peopleMeshes1.forEach(function(p){ p.material.opacity = fadeOut; });
+  childSleep.visible = fadeOut>0.3; childPillow.visible = fadeOut>0.3;
+  ZAB5.visible = true;
+  lampPoint.intensity = 2.4*(1-0.30*ramp(u,4,6))*(1);
+  lampPoint.intensity = 2.4 - 0.30*2.4*ramp(u,4,6);
+  cupSteamUni.forEach(function(sp){ sp.material.opacity = 0.10*(1-ramp(u,4,6)); });
+  lbHakujo.visible = u>12;
+  lbHakujo.position.set(-0.9, 0.02, 0.9); lbHakujo.rotation.x=-Math.PI/2;
+  var hj = 0.55*ramp(u,12,14);
+  if(u>16) hj = 0.55*lerp(1,0.2/0.55,ramp(u,16,19));
+  lbHakujo.material.opacity = hj;
+  scene.add(lbHakujo);
+}
+
+function sceneS07(u){
+  var tiltP = ease(clamp(u/dur('S07'),0,1));
+  var eyeY = lerp(0.25, 0.75, tiltP*0.4);
+  setCamera(new THREE.Vector3(0,eyeY,1.4), new THREE.Vector3(0, lerp(0.05,0.9,tiltP), lerp(1.0,-1.3,tiltP)), 30);
+  ZAB5.visible = true;
+  lbHakujo.visible = u<8;
+  lbHakujo.position.set(0,0.02,1.0); lbHakujo.rotation.x=-Math.PI/2;
+  lbHakujo.material.opacity = 0.2*(1-ramp(u,4,8));
+  scene.add(lbHakujo);
+  corridorLight.material.opacity = 0.0; // giữ 5000K hé sáng bằng deskLight thay vì corridor
+  deskLight.intensity = 0.5*ramp(u,16,21);
+}
+
+function sceneS08(u){
+  var orbit = u/dur('S08') * (12*Math.PI/180);
+  var r = 2.6;
+  setCamera(new THREE.Vector3(Math.sin(orbit)*r, 2.1, 1.3+Math.cos(orbit)*r*0.4), new THREE.Vector3(0,0.5,0), 40);
+  peopleLayer1.visible = true;
+  peopleMeshes1.forEach(function(p){ p.material.opacity = 1; p.material.transparent=false; });
+  voidSpot.visible = true; voidSpot.position.set(0,1.0,0.15); voidSpot.material.opacity = 0.12;
+  lbTitleC2.visible = u>4 && u<8;
+  lbTitleC2.position.set(-1.3,0.9,0.4); lbTitleC2.material.opacity = 0.85*win(u,4,8,0.6);
+  scene.add(lbTitleC2);
+}
+
+function sceneS09(u){
+  gardenGroup.visible = true;
+  ROOM.visible = false;
+  dimRoomLights();
+  peopleLayer1.visible = false;
+  gardenLight.intensity = 1.1; gardenAmbient.intensity = 0.5;
+  var out = ramp(u,8,dur('S09'));
+  setCamera(new THREE.Vector3(0, 0.9, lerp(0.7,2.4,out)), new THREE.Vector3(0,0.3,-0.3), 50);
+  lbNoHitowa.visible = u>21;
+  lbNoHitowa.position.set(0,1.1,-0.2); lbNoHitowa.material.opacity = 0.8*win(u,21,dur('S09'),1.0);
+  scene.add(lbNoHitowa);
+}
+
+function sceneS10(u){
+  ROOM.visible = true; gardenGroup.visible = false;
+  peopleLayer1.visible = true;
+  peopleMeshes1.forEach(function(p){ p.material.opacity=1; });
+  voidSpot.visible = true; voidSpot.position.set(0,1.0,0.15); voidSpot.material.opacity=0.12;
+  var p = u/dur('S10');
+  setCamera(new THREE.Vector3(lerp(-1.6,1.6,p), 1.4, 1.6), new THREE.Vector3(0,0.5,0), 46);
+}
+
+function sceneS11(u){
+  var d = dur('S11');
+  var pIn = ramp(u,0,d);
+  var dp = deskGroup.position;
+  setCamera(dp.clone().add(new THREE.Vector3(0, lerp(0.75,0.35,pIn), lerp(1.4,0.85,pIn))), dp.clone(), 42);
+  ROOM.visible = false;
+  dimRoomLights();
+  deskGroup.visible = true; deskLamp.intensity = 0.65;
+  reportFrame.visible = true; reportFrame.material.opacity = 0.0;
+  lbCLSA.visible = u>4;
+  lbCLSA.position.set(dp.x,dp.y+0.30,dp.z-0.1); lbCLSA.material.opacity = 0.85*win(u,4,d,1.0);
+  scene.add(lbCLSA);
+  lbSrcMenec.visible = u>8;
+  lbSrcMenec.position.set(dp.x,dp.y+0.20,dp.z-0.1); lbSrcMenec.material.opacity = 0.7*win(u,8,d,1.0);
+  scene.add(lbSrcMenec);
+  lbCLSACanada.visible = u>8;
+  lbCLSACanada.position.set(dp.x,dp.y+0.15,dp.z-0.1); lbCLSACanada.material.opacity = 0.6*win(u,8,d,1.0);
+  scene.add(lbCLSACanada);
+  lbSotoKazu.visible = u>19;
+  lbSotoKazu.position.set(dp.x-0.4,dp.y+0.06,dp.z-0.1); lbSotoKazu.material.opacity = 0.8*win(u,19,d,1.0);
+  scene.add(lbSotoKazu);
+  lbHonnin.visible = u>19;
+  lbHonnin.position.set(dp.x+0.4,dp.y+0.06,dp.z-0.1); lbHonnin.material.opacity = 0.8*win(u,19,d,1.0);
+  scene.add(lbHonnin);
+}
+
+function sceneS12(u){
+  var d = dur('S12');
+  var orbit = ramp(u,0,d)*(25*Math.PI/180);
+  var dp = deskGroup.position;
+  setCamera(dp.clone().add(new THREE.Vector3(Math.sin(orbit)*1.4, 0.55, 0.9+Math.cos(orbit)*0.4)), dp.clone(), 46);
+  deskGroup.visible = true; deskLamp.intensity = 0.65; ROOM.visible = false; dimRoomLights();
+  rulerMarked.visible = true; rulerMarked.position.set(dp.x-0.55,dp.y+0.10,dp.z); rulerMarked.setOpacity(1);
+  rulerBlank.visible = true; rulerBlank.position.set(dp.x+0.55,dp.y+0.10,dp.z); rulerBlank.setOpacity(1);
+  lbAttaKazu.visible = u>6;
+  lbAttaKazu.position.set(dp.x-0.55,dp.y+0.25,dp.z); lbAttaKazu.material.opacity = 0.75*win(u,6,d,1.0);
+  scene.add(lbAttaKazu);
+  lbSrcMenec2.visible = u>6;
+  lbSrcMenec2.position.set(dp.x-0.55,dp.y+0.03,dp.z+0.15); lbSrcMenec2.material.opacity = 0.5*win(u,6,d,1.0);
+  scene.add(lbSrcMenec2);
+  lbKoritsu.visible = u>12;
+  lbKoritsu.position.set(dp.x-0.55,dp.y+0.42,dp.z); lbKoritsu.material.opacity = 0.85*win(u,12,d,1.0);
+  scene.add(lbKoritsu);
+  lbSabishiSensing.visible = u>18;
+  lbSabishiSensing.position.set(dp.x+0.55,dp.y+0.25,dp.z); lbSabishiSensing.material.opacity = 0.75*win(u,18,d,1.0);
+  scene.add(lbSabishiSensing);
+  lbKodokukan.visible = u>25;
+  lbKodokukan.position.set(dp.x+0.55,dp.y+0.42,dp.z); lbKodokukan.material.opacity = 0.85*win(u,25,d,1.0);
+  scene.add(lbKodokukan);
+}
+
+function sceneS13(u){
+  var d = dur('S13');
+  var p = ramp(u,0,d);
+  setCamera(new THREE.Vector3(lerp(-1.0,1.0,p), 3.2, 1.6), new THREE.Vector3(lerp(-1.0,1.0,p),0,0), 40);
+  ROOM.visible = true; peopleLayer1.visible = true;
+  peopleMeshes1.forEach(function(pp){ pp.material.opacity=1; });
+  voidSpot.visible = false;
+  lb747.visible = u>4; lb747.position.set(-1.1,0.02,0.3); lb747.rotation.x=-Math.PI/2;
+  lb747.material.opacity = 0.9*win(u,4,d,1.0); scene.add(lb747);
+  lbDochira.visible = u>4; lbDochira.position.set(-1.1,0.02,0.5); lbDochira.rotation.x=-Math.PI/2;
+  lbDochira.material.opacity = 0.8*win(u,4,d,1.0); scene.add(lbDochira);
+  lbSrcMenec2.visible = u>4; lbSrcMenec2.position.set(-1.1,0.02,0.65); lbSrcMenec2.rotation.x=-Math.PI/2;
+  lbSrcMenec2.material.opacity = 0.5*win(u,4,d,1.0); scene.add(lbSrcMenec2);
+  lb156.visible = u>16; lb156.position.set(1.1,0.02,0.3); lb156.rotation.x=-Math.PI/2;
+  lb156.material.opacity = 0.9*win(u,16,d,1.0); scene.add(lb156);
+  lbKoritsuOnly.visible = u>16; lbKoritsuOnly.position.set(1.1,0.02,0.5); lbKoritsuOnly.rotation.x=-Math.PI/2;
+  lbKoritsuOnly.material.opacity = 0.8*win(u,16,d,1.0); scene.add(lbKoritsuOnly);
+}
+
+function sceneS14(u){
+  // CÚ LỒNG — camera tĩnh tuyệt đối, fade lớp 2 lên 11.6s
+  setCamera(CAM_ORIGIN.pos, CAM_ORIGIN.lookAt, CAM_ORIGIN.fov);
+  ROOM.visible = true;
+  peopleLayer1.visible = true;
+  peopleMeshes1.forEach(function(p){ p.material.opacity=1; p.material.transparent=false; });
+  lb67.visible = u>3; lb67.position.set(-1.0,0.02,1.2); lb67.rotation.x=-Math.PI/2;
+  lb67.material.opacity = 0.95*ramp(u,3,4.2); scene.add(lb67);
+  lbKodokuOnly.visible = u>3; lbKodokuOnly.position.set(-1.0,0.02,1.35); lbKodokuOnly.rotation.x=-Math.PI/2;
+  lbKodokuOnly.material.opacity = 0.85*ramp(u,3,4.2); scene.add(lbKodokuOnly);
+  lbSrcMenec2.visible = u>3; lbSrcMenec2.position.set(-1.0,0.02,1.48); lbSrcMenec2.rotation.x=-Math.PI/2;
+  lbSrcMenec2.material.opacity = 0.55*ramp(u,3,4.2); scene.add(lbSrcMenec2);
+
+  var l2 = ramp(u, 4, 11); // 0→1 trong 7s bắt đầu ở 4s
+  peopleLayer2.visible = l2>0.001;
+  peopleMeshes2.forEach(function(p){ p.material.transparent=true; p.material.opacity = l2; });
+  layer2Grid.visible = l2>0.001;
+  layer2Grid.children.forEach(function(c){ c.material.opacity = 0.15*l2; });
+  mist2Pts.visible = l2>0.001;
+  mist2Mat.opacity = 0.10*l2;
+  lampPoint.intensity = 2.4*(1 - 0.45*ramp(u,4,11.6));
+  lampFill.intensity = 0.6*(1 - 0.45*ramp(u,4,11.6));
+}
+
+function sceneS15(u){
+  var d = dur('S15');
+  var p = ramp(u,0,d);
+  setCamera(CAM_ORIGIN.pos.clone().lerp(new THREE.Vector3(0,2.8,2.6), p), CAM_ORIGIN.lookAt.clone().lerp(new THREE.Vector3(0,0.3,-0.3),p), 40);
+  peopleLayer1.visible = true; peopleLayer2.visible = true; layer2Grid.visible = true; mist2Pts.visible = true;
+  peopleMeshes1.forEach(function(pp){ pp.material.opacity=1; pp.material.transparent=false; });
+  peopleMeshes2.forEach(function(pp){ pp.material.transparent=true; pp.material.opacity=1; });
+  layer2Grid.children.forEach(function(c){ c.material.opacity = 0.15; });
+  mist2Mat.opacity = 0.10;
+  lampPoint.intensity = 2.4*0.55; lampFill.intensity = 0.6*0.55;
+  lb30.visible = u>5; lb30.position.set(0.7,0.02,1.6); lb30.rotation.x=-Math.PI/2;
+  lb30.material.opacity = 0.9*win(u,5,d,1.0); scene.add(lb30);
+  lbRyoho.visible = u>5; lbRyoho.position.set(0.7,0.02,1.75); lbRyoho.rotation.x=-Math.PI/2;
+  lbRyoho.material.opacity = 0.8*win(u,5,d,1.0); scene.add(lbRyoho);
+  lbSum223.visible = u>16; lbSum223.position.set(0,1.6,0.6);
+  lbSum223.material.opacity = 0.85*win(u,16,d,1.0); scene.add(lbSum223);
+  lbSrcMenec2.visible = u>16; lbSrcMenec2.position.set(0,1.4,0.6);
+  lbSrcMenec2.material.opacity = 0.55*win(u,16,d,1.0); scene.add(lbSrcMenec2);
+  var dim = 1 - 0.30*ramp(u,d-1.2,d);
+  roomAmbient.intensity = 0.55*dim;
+}
+
+function sceneS16(u){
+  var d = dur('S16');
+  var down = ramp(u,0,d);
+  /* ⭐ boom-down rồi quay 90° — kết ở cận ZAB5 (0.62,0.62), tránh lặp góc S02 */
+  var pos = new THREE.Vector3(0,2.8,2.6).lerp(new THREE.Vector3(1.6,0.75,0.9), down);
+  var look = new THREE.Vector3(0,0.3,-0.3).lerp(new THREE.Vector3(0.62,0.3,0.62), down);
+  setCamera(pos, look, 42);
+  ROOM.visible = true; peopleLayer1.visible = false; peopleLayer2.visible = false; layer2Grid.visible=false; mist2Pts.visible=false;
+  ZAB5.visible = true;
+  voidSpot.visible = u>16; voidSpot.position.set(0.75,0.9,0.7); voidSpot.material.opacity = 0.12*ramp(u,16,18);
+  reportFrame.visible = u>21; reportFrame.position.set(0.7,0.6,0.65); reportFrame.scale.set(1.4,1.4,1);
+  reportFrame.material.opacity = 0.6*ramp(u,21,23);
+  lb67InScene.visible = u>21; lb67InScene.position.set(0.7,1.55,0.65);
+  lb67InScene.material.opacity = 0.9*ramp(u,21,23); scene.add(lb67InScene);
+  lbSrcMenec2.visible = u>21; lbSrcMenec2.position.set(0.7,-0.05,0.65);
+  lbSrcMenec2.material.opacity = 0.55*ramp(u,21,23); scene.add(lbSrcMenec2);
+  lampPoint.intensity = 2.4; lampFill.intensity = 0.6; roomAmbient.intensity = 0.55;
+}
+
+function sceneS17(u){
+  var d = dur('S17');
+  var up = ramp(u,0,4);
+  setCamera(new THREE.Vector3(0, lerp(0.75,4.5,up), lerp(1.55,2.4,up)), new THREE.Vector3(0,0,-0.3), 34);
+  ROOM.visible = true;
+  peopleLayer1.visible = true; peopleMeshes1.forEach(function(p){p.material.opacity=1;p.material.transparent=false;});
+  var l2 = ramp(u,4,4.6);
+  peopleLayer2.visible = true; peopleMeshes2.forEach(function(p){p.material.transparent=true;p.material.opacity=l2;});
+  layer2Grid.visible = true; layer2Grid.children.forEach(function(c){c.material.opacity=0.15*l2;});
+  mist2Pts.visible = true; mist2Mat.opacity = 0.10*l2;
+  lb12m.visible = u>6; lb12m.position.set(-0.5,1.0,1.0);
+  lb12m.material.opacity = 0.9*ramp(u,6,8); scene.add(lb12m);
+  lb40m.visible = u>8.5; lb40m.position.set(-0.5,2.0,-3.0);
+  lb40m.material.opacity = 0.9*ramp(u,8.5,10.5); scene.add(lb40m);
+  rulerMarked.visible = u>12; rulerMarked.position.set(-0.9,0.9,1.0); rulerMarked.rotation.y = Math.PI/2; rulerMarked.setOpacity(0.9*ramp(u,12,14));
+  rulerBlank.visible = u>12; rulerBlank.position.set(-0.9,1.9,-3.0); rulerBlank.rotation.y = Math.PI/2; rulerBlank.setOpacity(0.9*ramp(u,12,14));
+  lbSrcMenec2.visible = u>14; lbSrcMenec2.position.set(0,0.1,1.6);
+  lbSrcMenec2.material.opacity = 0.55*ramp(u,14,d); scene.add(lbSrcMenec2);
+  var fadeOut = 1 - ramp(u,d-1.5,d);
+  rootEl.style.filter = 'brightness('+fadeOut.toFixed(3)+')';
+}
+
+function sceneS18(u){
+  rootEl.style.filter = '';
+  var d = dur('S18');
+  var pIn = ramp(u,0,d);
+  ROOM.visible = false;
+  dimRoomLights();
+  trayGroup.visible = true; trayLight.intensity = 0.6;
+  var tp = trayGroup.position;
+  setCamera(tp.clone().add(new THREE.Vector3(0, 0.35, lerp(1.15,0.75,pIn))), tp.clone(), 34);
+  lbTitleC3.visible = u>3 && u<7; lbTitleC3.position.copy(trayGroup.position).add(new THREE.Vector3(-0.9,0.5,0));
+  lbTitleC3.material.opacity = 0.85*win(u,3,7,0.6); scene.add(lbTitleC3);
+  lbSrcCacioppo.visible = u>12; lbSrcCacioppo.position.copy(trayGroup.position).add(new THREE.Vector3(0.55,-0.1,0));
+  lbSrcCacioppo.material.opacity = 0.5*ramp(u,12,d); scene.add(lbSrcCacioppo);
+  lbSrcCacioppoName.visible = u>18; lbSrcCacioppoName.position.copy(trayGroup.position).add(new THREE.Vector3(0.55,-0.16,0));
+  lbSrcCacioppoName.material.opacity = 0.42*ramp(u,18,d); scene.add(lbSrcCacioppoName);
+}
+
+function sceneS19(u){
+  var d = dur('S19');
+  var p = ramp(u,0,d);
+  ROOM.visible = false;
+  dimRoomLights();
+  setCamera(trayGroup.position.clone().add(new THREE.Vector3(lerp(-0.5,0.5,p),0.4,0.75)), trayGroup.position, 40);
+  trayGroup.visible = true; trayLight.intensity = 0.6;
+  lbKawaki.visible = u>4; lbKawaki.position.copy(waterCup.position).add(trayGroup.position).add(new THREE.Vector3(0,0.15,0));
+  lbKawaki.material.opacity = 0.85*ramp(u,4,10); scene.add(lbKawaki);
+  lbUe.visible = u>10; lbUe.position.copy(riceBowl.position).add(trayGroup.position).add(new THREE.Vector3(0,0.2,0));
+  lbUe.material.opacity = 0.85*ramp(u,10,16); scene.add(lbUe);
+  lbItami.visible = u>16; lbItami.position.copy(trayGroup.position).add(new THREE.Vector3(0.34,0.24,0.28));
+  lbItami.material.opacity = 0.85*ramp(u,16,22); scene.add(lbItami);
+  riceSteam.material.opacity = 0.08*ramp(u,10,14);
+  waterSurf.material.opacity = 0.85*(1-0.3*Math.max(0,Math.exp(-1.2*Math.max(0,u-4))));
+}
+
+function sceneS20(u){
+  var d = dur('S20');
+  ROOM.visible = false;
+  dimRoomLights();
+  setCamera(trayGroup.position.clone().add(new THREE.Vector3(0.5,0.4,0.75)), trayGroup.position, 40);
+  trayGroup.visible = true; trayLight.intensity = 0.6;
+  var glowP = ramp(u,3,6);
+  fourthGlow.material.opacity = glowP*0.9;
+  fourthGlow.material.emissiveIntensity = glowP*0.2;
+  lbSabishisa.visible = u>6; lbSabishisa.position.copy(trayGroup.position).add(new THREE.Vector3(0.34,0.3,0));
+  lbSabishisa.material.opacity = 0.9*ramp(u,6,9); scene.add(lbSabishisa);
+  lbKawaki.visible = true; lbKawaki.position.copy(waterCup.position).add(trayGroup.position).add(new THREE.Vector3(0,0.15,0));
+  lbKawaki.material.opacity = 0.85; scene.add(lbKawaki);
+  lbUe.visible = true; lbUe.position.copy(riceBowl.position).add(trayGroup.position).add(new THREE.Vector3(0,0.2,0));
+  lbUe.material.opacity = 0.85; scene.add(lbUe);
+  // đường sáng mảnh nối bốn vị trí (S20 9s)
+  var lineP = ramp(u,9,10.4);
+  timelineBar.material.opacity = lineP*0.5;
+  timelineBar.position.copy(trayGroup.position).add(new THREE.Vector3(0,0.28,0));
+  timelineBar.scale.set(1,1,1);
+}
+
+function sceneS21(u){
+  var d = dur('S21');
+  ROOM.visible = false; trayGroup.visible = false; dimRoomLights();
+  fireGroup.visible = true; fireLight.intensity = 1.2;
+  var out = ramp(u,0,d);
+  setCamera(new THREE.Vector3(0, 1.6, lerp(2.4,4.6,out)), new THREE.Vector3(0,0.4,0), 58);
+  var sep = ramp(u,6,10);
+  strayPerson.position.set(1.1,0,1.1).lerp(new THREE.Vector3(2.3,0,2.3), sep);
+  strayPerson.rotation.y = Math.PI*0.25;
+  strayLineObj.visible = u>12;
+  var lineLen = ramp(u,12,18);
+  strayLineObj.geometry.setFromPoints([new THREE.Vector3(0,0.05,0), strayPerson.position.clone().setY(0.05)]);
+  strayLineMat.opacity = 0.6*lineLen;
+  signalDot.material.opacity = ramp(u,18,20)*(1-ramp(u,24,29));
+  signalDot.position.copy(strayPerson.position).add(new THREE.Vector3(0,0.55,0));
+  var back = ramp(u,20,24);
+  strayPerson.position.lerpVectors(new THREE.Vector3(2.3,0,2.3), new THREE.Vector3(1.1,0,1.1), back);
+  lbShingo.visible = u>28; lbShingo.position.set(0,0.9,2.6);
+  lbShingo.material.opacity = 0.8*ramp(u,28,d); scene.add(lbShingo);
+}
+
+function sceneS22(u){
+  var d = dur('S22');
+  var orbit = ramp(u,0,d)*(20*Math.PI/180);
+  ROOM.visible = false;
+  dimRoomLights();
+  countGroup.visible = true; countLight.intensity = 1.0;
+  setCamera(new THREE.Vector3(Math.sin(orbit)*2.2, 1.1, Math.cos(orbit)*2.2), new THREE.Vector3(0,0.4,0), 50);
+  var dotsIn = ramp(u,5,9);
+  countDots.forEach(function(dot,i){ dot.material.opacity = dotsIn*ramp(u,5+i*0.2,6+i*0.2)*(1-ramp(u,14,15)); });
+  signalDot.position.set(0,0.55,0);
+  signalDot.material.opacity = 1 - 0.0*u;
+  var linksIn = ramp(u,18,22);
+  ringLinks.forEach(function(l,i){ l.material.opacity = 0.35*linksIn*(0.4+0.6*((i%3)/3)); });
+  var warm = ramp(u,28,32);
+  signalDot.material.color.copy(new THREE.Color(1,0.55,0.35)).lerp(SIGNAL, warm);
+  lbHatarai.visible = u>32; lbHatarai.position.set(0,1.6,0);
+  lbHatarai.material.opacity = 0.8*ramp(u,32,d); scene.add(lbHatarai);
+}
+
+function sceneS23(u){
+  var d = dur('S23');
+  countGroup.visible = false;
+  alarmGroup.visible = true;
+  /* ⚠ camera nhìn thẳng lên trần, gần trục lampPoint (0,2.2,0.15) — nhìn thẳng
+   * vào nguồn sáng gây cháy trắng cả khung (bắt bằng contact-sheet). Lệch
+   * điểm nhắm sang cạnh + hạ nhẹ cường độ đèn phòng trong đúng shot này. */
+  lampPoint.intensity = 1.1; lampFill.intensity = 0.3;
+  var tiltP = ramp(u,0,6);
+  setCamera(new THREE.Vector3(0.55, lerp(1.6,2.0,tiltP), lerp(0.6,0.15,tiltP)), new THREE.Vector3(0,2.35,0.4), 42);
+  var blink = 0.5+0.5*Math.sin(u*(2*Math.PI/4));
+  alarmLED.material.opacity = u>6 ? (0.4+0.6*Math.max(0,blink)) : 0;
+}
+
+function sceneS24(u){
+  var d = dur('S24');
+  ROOM.visible = false; alarmGroup.visible = false; dimRoomLights();
+  var dp = deskGroup.position;
+  var deskFade = 1 - ramp(u,12,16);
+  deskGroup.visible = deskFade>0.01; deskLamp.intensity = 0.65*deskFade;
+  reportFrame.visible = true;
+  var boom = ramp(u,14,d);
+  var camPos = dp.clone().add(new THREE.Vector3(0, 0.45, 1.1)).lerp(new THREE.Vector3(0, 2.2, -1+2.0), boom);
+  var camLook = dp.clone().lerp(new THREE.Vector3(0, 0, -1), boom);
+  setCamera(camPos, camLook, 44);
+  lbSrcHawkley.visible = u>4; lbSrcHawkley.position.set(dp.x,dp.y+0.10,dp.z-0.1);
+  lbSrcHawkley.material.opacity = 0.55*ramp(u,4,14); scene.add(lbSrcHawkley);
+  lbImplicit.visible = u>9; lbImplicit.position.set(dp.x,dp.y+0.02,dp.z-0.1);
+  lbImplicit.material.opacity = 0.5*ramp(u,9,14); scene.add(lbImplicit);
+  pathMain.visible = u>14; pathMain.position.set(0,0,-1);
+  walkerPerson.visible = u>20; walkerPerson.position.set(0,0,-1+1.6);
+  lbMimoMamoru.visible = u>26; lbMimoMamoru.position.set(0,1.2,-1);
+  lbMimoMamoru.material.opacity = 0.8*ramp(u,26,d); scene.add(lbMimoMamoru);
+  /* pathMain/walkerPerson không có đèn riêng — dimRoomLights() để lại ambient
+   * 0.12 (dùng cho các nhóm có đèn riêng khác). Từ lúc lối đi vào khung (u>14)
+   * nâng ambient lên cùng mức 0.55 đã dùng ở S26 để lối đi đọc được rõ. */
+  roomAmbient.intensity = lerp(0.12, 0.55, ramp(u,14,18));
+}
+
+function sceneS25(u){
+  var d = dur('S25');
+  var ang = ramp(u,0,d)*Math.PI*1.7;
+  ROOM.visible = false;
+  dimRoomLights();
+  /* xem ghi chú ở S24/S27: pathMain/walkerPerson cần ambient 0.55, không phải
+   * mức 0.12 mặc định của dimRoomLights() (mức đó dành cho nhóm có đèn riêng). */
+  roomAmbient.intensity = 0.55;
+  pathMain.visible = true; pathMain.position.set(0,0,-1);
+  walkerPerson.visible = true;
+  walkerPerson.position.set(Math.cos(ang)*1.6, 0, -1+Math.sin(ang)*1.6);
+  walkerPerson.rotation.y = -ang;
+  var camAng = ang - 0.5;
+  setCamera(new THREE.Vector3(Math.cos(camAng)*2.6, 1.5, -1+Math.sin(camAng)*2.6), walkerPerson.position, 40);
+  sideMarkPerson.visible = u>6; sideMarkPerson.position.set(Math.cos(ang+0.4)*1.9,0,-1+Math.sin(ang+0.4)*1.9);
+  var drift = ramp(u,18,24)*0.4;
+  walkerPerson.position.x += drift*Math.sin(camAng+Math.PI/2);
+  walkerPerson.position.z += drift*Math.cos(camAng+Math.PI/2);
+  lbWanoDoushi.visible = u>34; lbWanoDoushi.position.set(0,1.4,-1);
+  lbWanoDoushi.material.opacity = 0.8*ramp(u,34,d); scene.add(lbWanoDoushi);
+}
+
+function sceneS26(u){
+  var d = dur('S26');
+  var up = ramp(u,0,d);
+  ROOM.visible = false;
+  dimRoomLights();
+  setCamera(new THREE.Vector3(0, lerp(1.5,6,up), -1+lerp(2.6,7,up)), new THREE.Vector3(0,0,-1), 46);
+  pathMain.visible = true; pathMain.position.set(0,0,-1);
+  walkerPerson.visible = true; walkerPerson.position.set(1.6,0,-1);
+  manyRings.visible = u>6;
+  manyRingTubes.forEach(function(rt,i){ rt.visible = u > 6+ i*0.9; });
+  manyRingWalkers.forEach(function(rw,i){
+    rw.visible = u > 6 + i*0.9;
+    var shieldIn = ramp(u,24,30);
+    rw.userData.shield.material.opacity = 0.5*shieldIn;
+  });
+  lbDareDemo.visible = u>18; lbDareDemo.position.set(0,3.2,-1);
+  lbDareDemo.material.opacity = 0.85*ramp(u,18,24); scene.add(lbDareDemo);
+  lbAnataMamoru.visible = u>24; lbAnataMamoru.position.set(0,3.6,-1);
+  lbAnataMamoru.material.opacity = 0.85*ramp(u,24,32); scene.add(lbAnataMamoru);
+  lbYuruShippai.visible = u>32; lbYuruShippai.position.set(0,4.0,-1);
+  lbYuruShippai.material.opacity = 0.9*ramp(u,32,38); scene.add(lbYuruShippai);
+  var warm = ramp(u,38,d);
+  roomAmbient.intensity = 0.55*(1+0.15*warm);
+}
+
+function sceneS27(u){
+  var d = dur('S27');
+  var down = ramp(u,0,10);
+  ROOM.visible = false;
+  dimRoomLights();
+  /* xem ghi chú ở S24/S25: pathMain/walkerPerson/branch1-2 không có đèn riêng.
+   * dimRoomLights() để ambient ở 0.12 (dùng cho nhóm có đèn riêng khác) — quá
+   * tối để đọc lối đi + nhánh rẽ + dòng nguồn Hawkley. Nâng lên cùng mức 0.55
+   * đã verify ở S26 (cùng hình học, cùng chất liệu). */
+  roomAmbient.intensity = 0.55;
+  setCamera(new THREE.Vector3(0, lerp(6,2.0,down), -1+lerp(7,3.0,down)), new THREE.Vector3(0,0,-1), 42);
+  pathMain.visible = true; pathMain.position.set(0,0,-1);
+  walkerPerson.visible = true; walkerPerson.position.set(1.6,0,-1);
+  lbOoku.visible = u>5; lbOoku.position.set(0,1.6,-1);
+  lbOoku.material.opacity = 0.8*ramp(u,5,10); scene.add(lbOoku);
+  lbHaitte.visible = u>10; lbHaitte.position.set(0,1.9,-1);
+  lbHaitte.material.opacity = 0.75*ramp(u,10,16); scene.add(lbHaitte);
+  branch1.visible = u>16; branch1.position.set(0,0,-1); branch1.material.opacity = 0.9*ramp(u,16,22);
+  branch2.visible = u>22; branch2.position.set(0,0,-1); branch2.material.opacity = 0.9*ramp(u,22,26);
+  lbEdamichi.visible = u>26; lbEdamichi.position.set(2.4,1.2,-0.4);
+  lbEdamichi.material.opacity = 0.8*ramp(u,26,d); scene.add(lbEdamichi);
+  /* nguồn bắt buộc (Hawkley & Cacioppo 2010) — trước là 0.5, dưới ngưỡng đọc
+   * được trên nền cảnh tối; nâng lên 0.78 (cùng nhóm "nhãn nguồn nổi bật" như
+   * lbSrcCacioppo ở S18). Vẫn tắt dần u>26 khi nhánh rẽ chiếm vai trò chính. */
+  lbSrcHawkley.visible = u<28; lbSrcHawkley.position.set(0,0.05,0.4);
+  lbSrcHawkley.material.opacity = 0.78*(1-ramp(u,26,d)); scene.add(lbSrcHawkley);
+}
+
+function sceneS28(u){
+  var d = dur('S28');
+  var out = ramp(u,0,d);
+  var dp = deskGroup.position;
+  ROOM.visible = false;
+  dimRoomLights();
+  deskGroup.visible = true; deskLamp.intensity = 0.65;
+  reportFrame.visible = true;
+  setCamera(dp.clone().add(new THREE.Vector3(0, lerp(0.35,1.1,out), lerp(0.8,2.0,out))), dp.clone(), 40);
+  lbCLSACanadaN.visible = u>5; lbCLSACanadaN.position.set(dp.x,dp.y+0.10,dp.z-0.1);
+  lbCLSACanadaN.material.opacity = 0.85*ramp(u,5,11); scene.add(lbCLSACanadaN);
+  timelineBar.material.opacity = 0.5*ramp(u,11,d); timelineBar.position.set(dp.x,dp.y+0.05,dp.z-0.1);
+  baselineMark.material.opacity = 0.9*ramp(u,11,d); baselineMark.position.set(dp.x-0.6,dp.y+0.05,dp.z-0.1);
+  lbBaseline.visible = u>18; lbBaseline.position.set(dp.x,dp.y+0.07,dp.z-0.1);
+  lbBaseline.material.opacity = 0.8*ramp(u,18,24); scene.add(lbBaseline);
+  lbSrcMenec2.visible = u>18; lbSrcMenec2.position.set(dp.x,dp.y+0.02,dp.z-0.1);
+  lbSrcMenec2.material.opacity = 0.5*ramp(u,18,24); scene.add(lbSrcMenec2);
+  lbBetsuMono.visible = u>32; lbBetsuMono.position.set(dp.x-0.4,dp.y+0.12,dp.z-0.1);
+  lbBetsuMono.material.opacity = 0.8*ramp(u,32,d); scene.add(lbBetsuMono);
+  lbShingo2.visible = u>32; lbShingo2.position.set(dp.x+0.4,dp.y+0.12,dp.z-0.1);
+  lbShingo2.material.opacity = 0.8*ramp(u,32,d); scene.add(lbShingo2);
+}
+
+function sceneS29(u){
+  ROOM.visible = true;
+  setCamera(new THREE.Vector3(0.4,0.75,1.4), new THREE.Vector3(0.4,0.55,-1.2), 44);
+  var openP = ramp(u,4,7);
+  corridorLight.material.opacity = 0.55*openP;
+  corridorGlow.intensity = 0.9*openP;
+  shoji.position.x = 0.15*openP;
+  lbHitoride.visible = u>13; lbHitoride.position.set(0.3,0.35,-1.0);
+  lbHitoride.material.opacity = 0.85*ramp(u,13,dur('S29')); scene.add(lbHitoride);
+}
+
+function sceneS30(u){
+  setCamera(CAM_ORIGIN.pos, CAM_ORIGIN.lookAt, CAM_ORIGIN.fov);
+  ROOM.visible = true; ZAB5.visible = true;
+  shoji.position.x = 0;
+  var fadeIn = ramp(u,0,3);
+  lampPoint.intensity = 2.4*0.92*fadeIn; lampFill.intensity = 0.6*0.92*fadeIn;
+  roomAmbient.intensity = 0.55*0.92*fadeIn + 0.02;
+  /* voidSpot ở y=0.9 (trên mặt bàn 0.33m) — không bị bàn che, giữ nguyên toạ độ này */
+  voidSpot.visible = true; voidSpot.position.set(0.3,0.9,0.75); voidSpot.material.opacity = 0.12;
+  var l2 = 0.07;
+  peopleLayer2.visible = u>9; peopleMeshes2.forEach(function(p){p.material.transparent=true;p.material.opacity=l2;});
+  layer2Grid.visible = u>9; layer2Grid.children.forEach(function(c){c.material.opacity=0.15*0.4;});
+  var sitP = ramp(u,13,15);
+  /* ⚠ toạ độ cũ (0.3,0,-0.3) nằm phía XA bàn — bị mặt bàn che hoàn toàn từ
+   * CAM_ORIGIN (đã kiểm bằng ray-vs-AABB). Đặt cạnh 座布団 thứ năm (ZAB5, nay ở
+   * ô gần-phải 0.62/0.62) để "私 ngồi xuống cạnh 座布団 thứ năm" đúng nghĩa và
+   * không bị che. */
+  walkerPerson.visible = u>13; walkerPerson.position.set(0.95, 0, 0.62);
+  walkerPerson.material.opacity = sitP; walkerPerson.material.transparent = true;
+}
+
+function sceneS31(u){
+  var d = dur('S31');
+  var pIn = ramp(u,0,14);
+  /* ⭐ push-in về đúng chỗ ZAB5 mới (0.62,0.62) — ô gần-phải, KHÔNG bị bàn che */
+  setCamera(CAM_ORIGIN.pos.clone().lerp(new THREE.Vector3(0.85,0.7,1.3), pIn), CAM_ORIGIN.lookAt.clone().lerp(new THREE.Vector3(0.75,0.85,0.7),pIn), lerp(40,58,pIn));
+  ROOM.visible = true;
+  voidSpot.visible = true; voidSpot.position.set(0.75,0.9,0.75); voidSpot.material.opacity = 0.12;
+  lbKienai.visible = u>6 && u<12; lbKienai.position.set(0.75,1.3,0.7);
+  lbKienai.material.opacity = 0.8*win(u,6,12,1.0); scene.add(lbKienai);
+  reportFrame.visible = u>18; reportFrame.position.set(0.75,0.9,0.7); reportFrame.scale.set(1.3,1.3,1);
+  reportFrame.material.opacity = 0.25*ramp(u,18,26);
+  lbHajimete.visible = u>32; lbHajimete.position.set(0.75,1.5,0.6);
+  lbHajimete.material.opacity = 0.85*ramp(u,32,d); scene.add(lbHajimete);
+}
+
+function sceneS32(u){
+  var d = dur('S32');
+  var orbit = ramp(u,0,d)*(15*Math.PI/180);
+  var base = new THREE.Vector3(0.85,0.7,1.3);
+  setCamera(new THREE.Vector3(base.x+Math.sin(orbit)*0.5, base.y, base.z+Math.cos(orbit)*0.5), new THREE.Vector3(0.75,0.85,0.7), 58);
+  ROOM.visible = true;
+  voidSpot.visible = true; voidSpot.position.set(0.75,0.9,0.75); voidSpot.material.opacity = 0.12;
+  signalDot.visible = u>6;
+  signalDot.position.set(0.75,0.9,0.75);
+  var blink = 0.5+0.5*Math.sin(u*(2*Math.PI/4));
+  signalDot.material.opacity = u>6 ? (0.3+0.5*Math.max(0,blink)) : 0;
+  signalDot.material.color.copy(SIGNAL);
+}
+
+function sceneS33(u){
+  var d = dur('S33');
+  var back = ramp(u,0,d);
+  var basePos = new THREE.Vector3(0.85,0.7,1.3);
+  setCamera(basePos.clone().lerp(CAM_ORIGIN.pos.clone().add(new THREE.Vector3(0,0,0.6)), back), new THREE.Vector3(0.75,0.85,0.7).lerp(CAM_ORIGIN.lookAt,back), 40);
+  ROOM.visible = true;
+  voidSpot.visible = true; voidSpot.position.set(0.75,0.9,0.75); voidSpot.material.opacity = 0.12;
+  var fadeIn = ramp(u,5,11);
+  peopleLayer1.visible = fadeIn>0.001; peopleMeshes1.forEach(function(p){p.material.transparent=true;p.material.opacity=fadeIn;});
+  lampPoint.intensity = 2.4*(0.92+0.30*fadeIn); roomAmbient.intensity = 0.55*(0.92+0.30*fadeIn);
+  childSleep.visible = u>11; childPillow.visible = u>11;
+  lbDochirakaUso.visible = u>34; lbDochirakaUso.position.set(0.75,1.2,0.5);
+  lbDochirakaUso.material.opacity = 0.85*ramp(u,34,40); scene.add(lbDochirakaUso);
+  rulerMarked.visible = u>28; rulerMarked.position.set(-0.3,1.3,0.7); rulerMarked.setOpacity(0.3);
+  rulerBlank.visible = u>28; rulerBlank.position.set(-0.3,0.5,0.7); rulerBlank.setOpacity(0.3);
+  var gapDim = 1 - 0.40*ramp(u,d-2.0,d);
+  roomAmbient.intensity *= gapDim;
+}
+
+function sceneS34(u){
+  var d = dur('S34');
+  setCamera(CAM_ORIGIN.pos, CAM_ORIGIN.lookAt, CAM_ORIGIN.fov);
+  ROOM.visible = true; ZAB5.visible = true;
+  voidSpot.visible = true; voidSpot.position.set(0.75,0.9,0.75); voidSpot.material.opacity = 0.12;
+  lbHakujo.visible = u>4 && u<15; lbHakujo.position.set(-0.9,0.02,0.7); lbHakujo.rotation.x=-Math.PI/2;
+  var appear = ramp(u,4,6);
+  var vanish = ramp(u,11,15);
+  lbHakujo.material.opacity = 0.55*appear*(1-vanish);
+  scene.add(lbHakujo);
+  rulerMarked.visible = u>8 && u<15; rulerMarked.position.set(-1.3,0.7,0.3); rulerMarked.setOpacity(0.25*ramp(u,8,11)*(1-vanish));
+  rulerBlank.visible = u>8 && u<15; rulerBlank.position.set(-0.5,0.7,0.9); rulerBlank.setOpacity(0.25*ramp(u,8,11)*(1-vanish));
+  var fadeOut = 1 - ramp(u,d-3,d);
+  rootEl.style.filter = 'brightness('+fadeOut.toFixed(3)+')';
+}
+
+var SCENE_FN = {
+  S01:sceneS01, S02:sceneS02, S03:sceneS03, S04:sceneS04, S05:sceneS05, S06:sceneS06, S07:sceneS07,
+  S08:sceneS08, S09:sceneS09, S10:sceneS10, S11:sceneS11, S12:sceneS12, S13:sceneS13, S14:sceneS14,
+  S15:sceneS15, S16:sceneS16, S17:sceneS17, S18:sceneS18, S19:sceneS19, S20:sceneS20, S21:sceneS21,
+  S22:sceneS22, S23:sceneS23, S24:sceneS24, S25:sceneS25, S26:sceneS26, S27:sceneS27, S28:sceneS28,
+  S29:sceneS29, S30:sceneS30, S31:sceneS31, S32:sceneS32, S33:sceneS33, S34:sceneS34
+};
+var SHOT_ORDER = ['S01','S02','S03','S04','S05','S06','S07','S08','S09','S10','S11','S12','S13','S14',
+  'S15','S16','S17','S18','S19','S20','S21','S22','S23','S24','S25','S26','S27','S28','S29','S30',
+  'S31','S32','S33','S34'];
+function sceneAt(t){
+  for(var i=0;i<SHOT_ORDER.length;i++){
+    var k = SHOT_ORDER[i], w = SC[k];
+    if(t>=w[0] && t<w[1]) return k;
+  }
+  return SHOT_ORDER[SHOT_ORDER.length-1];
+}
+
+/* ============================================================================
+ * renderAtTime — hàm thuần duy nhất, mọi cảnh gọi từ đây
+ * ========================================================================== */
+function renderAtTime(t){
+  /* LEADTAIL:APPLIED — dịch timeline sang phải 2s cho intro lặng.
+     Cảnh vẫn dùng mốc gốc của timing.json; chỉ tới muộn hơn 2s. */
+  var _tReal = t;                    /* thời gian THẬT của video, cho phụ đề */
+  t = Math.max(0, t - 2);   /* thời gian CẢNH, đã trừ intro */
+
+  t = clamp(t, 0, TOTAL);
+  resetState();
+
+  var key = sceneAt(t);
+  var u = loc(t, key);
+  SCENE_FN[key](u);
+
+  /* phụ đề + nhãn chương */
+  HFA.applySubtitle(subEl, CUES, _tReal);
+  /* LEADTAIL:APPLIED — màn hình đen 5s cuối: nhạc chạy tiếp, hình tắt dần. */
+  (function(){
+    var ob = document.getElementById('outro-black');
+    if(!ob) return;
+    var f = (_tReal - 813.47) / 1.2;         /* 1.2s chuyển sang đen */
+    ob.style.opacity = String(Math.max(0, Math.min(1, f)));
+  })();
+  HFA.applyChapter(chapEl, CHAPTERS, _tReal, 6.0);
+
+  /* fade vào/ra toàn cục */
+  var fade = HFA.globalFade(t, TOTAL, 1.6, 3.0);
+  rootEl.style.opacity = fade.toFixed(4);
+
+  composer.render();
+}
+
+/* ⚠ Dòng đăng ký phải nằm NGUYÊN DẠNG trong file này — StaticGuard quét VĂN BẢN.
+ * Khoá trùng ĐÚNG data-composition-id của div gốc. */
+window.__timelines = window.__timelines || {};
+window.__timelines["hitori-no-naka"] = HFA.makeTimeline("hitori-no-naka", TOTAL, renderAtTime);
+
+</script>
+</body>
+</html>

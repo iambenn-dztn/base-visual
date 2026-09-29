@@ -1,0 +1,665 @@
+{
+  "slug": "tanomu",
+  "fps": 30,
+  "totalDuration": 827.92,
+  "dryRun": false,
+  "narration": "voice/narration.mp3",
+  "lang": "ja",
+  "voice": {
+    "provider": "gpt-sovits-local",
+    "voice_name": "keita",
+    "lang": "ja",
+    "speed": 0.95,
+    "seed": 42
+  },
+  "cues": [
+    {
+      "id": "C01",
+      "chapter": "第1章 — 入口",
+      "text": "台風が来る前の日の、午後二時でした。私は庭で、植木鉢を家の中に入れようとしていました。",
+      "file": "voice/seg-00.wav",
+      "start": 0,
+      "duration": 9.57
+    },
+    {
+      "id": "C02",
+      "chapter": null,
+      "text": "大きな素焼きの鉢が、三つあります。一つ目は、なんとか運べました。二つ目を持ち上げたところで、腰の奥に、ぴりっとしたものが走りました。",
+      "file": "voice/seg-01.wav",
+      "start": 9.57,
+      "duration": 14.28
+    },
+    {
+      "id": "C03",
+      "chapter": null,
+      "text": "縁側に腰をおろして、携帯電話を出しました。車で三十分ほどのところに、息子が住んでいます。",
+      "file": "voice/seg-02.wav",
+      "start": 23.84,
+      "duration": 9.31
+    },
+    {
+      "id": "C04",
+      "chapter": null,
+      "text": "明日の朝、少しだけ手を貸してもらえないか。鉢を中に入れたいんだ。そこまで打って、指が止まりました。",
+      "file": "voice/seg-03.wav",
+      "start": 33.15,
+      "duration": 9.37
+    },
+    {
+      "id": "C05",
+      "chapter": null,
+      "text": "読み返しているうちに、頭の中で、別の場面が始まっていたんです。",
+      "file": "voice/seg-04.wav",
+      "start": 42.52,
+      "duration": 5.86
+    },
+    {
+      "id": "C06",
+      "chapter": null,
+      "text": "息子が、仕事の合間に画面を見る。小さくため息をつく。休みの日の予定を、頭の中で組み直している。",
+      "file": "voice/seg-05.wav",
+      "start": 48.38,
+      "duration": 11.54
+    },
+    {
+      "id": "C07",
+      "chapter": null,
+      "text": "その場面は、なぜか薄暗いんです。天井が低くて、廊下が、奥へ行くほど細くなっていく。",
+      "file": "voice/seg-06.wav",
+      "start": 59.91,
+      "duration": 9.44
+    },
+    {
+      "id": "C08",
+      "chapter": null,
+      "text": "突き当たりには、すりガラスのような壁が一枚あります。その向こうに、困った顔の息子が、ぼんやりと見えている。",
+      "file": "voice/seg-07.wav",
+      "start": 69.35,
+      "duration": 9.81
+    },
+    {
+      "id": "C09",
+      "chapter": null,
+      "text": "そこまで思い浮かべたところで、私は、打った文字を、一つずつ消していきました。",
+      "file": "voice/seg-08.wav",
+      "start": 79.16,
+      "duration": 6.76
+    },
+    {
+      "id": "C10",
+      "chapter": null,
+      "text": "二つ目の鉢は、腰をかばいながら、一人で引きずるようにして運びました。三つ目は、動かせないまま、庭に残しました。",
+      "file": "voice/seg-09.wav",
+      "start": 85.92,
+      "duration": 11.09
+    },
+    {
+      "id": "C11",
+      "chapter": null,
+      "text": "夕方、雨戸を閉めながら、ふと思いました。鉢を一つ運ぶのを、手伝ってほしい。ただ、それだけのことです。",
+      "file": "voice/seg-10.wav",
+      "start": 97.01,
+      "duration": 10.45
+    },
+    {
+      "id": "C12",
+      "chapter": null,
+      "text": "なぜ、人に頼むのは、これほど難しいんでしょうか。",
+      "file": "voice/seg-11.wav",
+      "start": 107.46,
+      "duration": 4.39
+    },
+    {
+      "id": "C13",
+      "chapter": null,
+      "text": "実は、この難しさを、正面から測った人たちがいます。気持ちの問題としてではなく、数字として、です。今日は、その話をします。",
+      "file": "voice/seg-12.wav",
+      "start": 111.86,
+      "duration": 14.09
+    },
+    {
+      "id": "C14",
+      "chapter": "第2章 — 二つの秤",
+      "text": "その夜、一つ試してみたことがあります。立場を、入れ替えてみたんです。",
+      "file": "voice/seg-14.wav",
+      "start": 127.43,
+      "duration": 7.52
+    },
+    {
+      "id": "C15",
+      "chapter": null,
+      "text": "もし息子のほうから、同じことを頼まれたら。父さん、明日、ちょっと手を貸してくれないか。私は、断るでしょうか。",
+      "file": "voice/seg-15.wav",
+      "start": 134.95,
+      "duration": 10.07
+    },
+    {
+      "id": "C16",
+      "chapter": null,
+      "text": "実を言うと、考えるまでもありませんでした。行きます。何時に行けばいい、と聞き返すと思います。",
+      "file": "voice/seg-16.wav",
+      "start": 145.03,
+      "duration": 9.05
+    },
+    {
+      "id": "C17",
+      "chapter": null,
+      "text": "では、なぜ息子のほうは違うと思ったのか。自分なら引き受けることを、相手は嫌がるはずだと、私はどこで決めたんでしょう。",
+      "file": "voice/seg-17.wav",
+      "start": 154.07,
+      "duration": 11.35
+    },
+    {
+      "id": "C18",
+      "chapter": null,
+      "text": "このことを、実験で確かめた人たちがいます。アメリカの心理学者、フランシス・フリンさんと、バネッサ・ボーンズさんです。",
+      "file": "voice/seg-18.wav",
+      "start": 165.42,
+      "duration": 11.41
+    },
+    {
+      "id": "C19",
+      "chapter": null,
+      "text": "二千八年に、社会心理学の専門誌に出た論文です。題名をそのまま訳すと、助けが要るなら、とにかく頼んでみなさい、となります。",
+      "file": "voice/seg-19.wav",
+      "start": 176.83,
+      "duration": 11.41
+    },
+    {
+      "id": "C20",
+      "chapter": null,
+      "text": "やり方は、とても単純でした。大学生に、キャンパスを歩いている見知らぬ人へ、頼みごとをしてもらうんです。",
+      "file": "voice/seg-20.wav",
+      "start": 188.24,
+      "duration": 9.5
+    },
+    {
+      "id": "C21",
+      "chapter": null,
+      "text": "アンケートに答えてもらう。携帯電話を少し貸してもらう。体育館まで、一緒に歩いて案内してもらう。",
+      "file": "voice/seg-21.wav",
+      "start": 197.74,
+      "duration": 9.94
+    },
+    {
+      "id": "C22",
+      "chapter": null,
+      "text": "ただし、頼みに行く前に、一つだけ予想を書いてもらいます。何人に声をかければ、引き受けてくれる人が集まるか。",
+      "file": "voice/seg-22.wav",
+      "start": 207.68,
+      "duration": 10.32
+    },
+    {
+      "id": "C23",
+      "chapter": null,
+      "text": "たとえば、携帯電話の実験です。三人に貸してもらうまでに、十人ほどには声をかけることになるだろう。多くの人が、そう予想しました。",
+      "file": "voice/seg-23.wav",
+      "start": 218,
+      "duration": 13.32
+    },
+    {
+      "id": "C24",
+      "chapter": null,
+      "text": "実際に歩いてみると、六人ほどで足りたんです。予想の、六割ほどの人数です。",
+      "file": "voice/seg-24.wav",
+      "start": 231.32,
+      "duration": 8.86
+    },
+    {
+      "id": "C25",
+      "chapter": null,
+      "text": "アンケートでも、道案内でも、同じ向きのずれが出ました。引き受けてくれる見込みを、みんな低く見積もっていた。論文には、そのずれが最大で五十パーセントほどにのぼった、と書かれています。",
+      "file": "voice/seg-25.wav",
+      "start": 240.18,
+      "duration": 17.15
+    },
+    {
+      "id": "C26",
+      "chapter": null,
+      "text": "ボーンズさんは、その後も十年ほど、この種の実験を続けました。声をかけた見知らぬ人は、合わせて一万四千人を超えるそうです。",
+      "file": "voice/seg-26.wav",
+      "start": 257.33,
+      "duration": 11.92
+    },
+    {
+      "id": "C27",
+      "chapter": null,
+      "text": "それでも、ずれは消えませんでした。まとめると、平均でおよそ四十八パーセント。ほぼ半分を、見誤っていたことになります。",
+      "file": "voice/seg-27.wav",
+      "start": 269.25,
+      "duration": 11.92
+    },
+    {
+      "id": "C28",
+      "chapter": null,
+      "text": "正直に言うと、この数字を読んだとき、私は少し笑ってしまいました。縁側で打った文字を消した、あの指のことを思い出したからです。",
+      "file": "voice/seg-28.wav",
+      "start": 281.16,
+      "duration": 12.12
+    },
+    {
+      "id": "C29",
+      "chapter": null,
+      "text": "では、なぜ、そこまで見誤るのか。同じ論文の最後の実験が、その理由を調べています。",
+      "file": "voice/seg-29.wav",
+      "start": 293.28,
+      "duration": 8.93
+    },
+    {
+      "id": "C30",
+      "chapter": null,
+      "text": "頼む側の人は、相手が、はい、と言ったあとの手間を数えていました。時間を取られる。休みがつぶれる。",
+      "file": "voice/seg-30.wav",
+      "start": 302.21,
+      "duration": 10.77
+    },
+    {
+      "id": "C31",
+      "chapter": null,
+      "text": "ところが、頼まれた側の人が頭の中で重く見ていたのは、別のものだったんです。いいえ、と言うときの、気まずさです。",
+      "file": "voice/seg-31.wav",
+      "start": 312.98,
+      "duration": 11.16
+    },
+    {
+      "id": "C32",
+      "chapter": null,
+      "text": "目の前の人の頼みを断る。相手をがっかりさせる。冷たい人だと思われるかもしれない。これが、案外重いんです。",
+      "file": "voice/seg-32.wav",
+      "start": 324.14,
+      "duration": 11.73
+    },
+    {
+      "id": "C33",
+      "chapter": null,
+      "text": "つまり、頼む側と頼まれる側は、同じ一つの頼みごとについて、別々の計算をしていたということです。",
+      "file": "voice/seg-33.wav",
+      "start": 335.87,
+      "duration": 9.31
+    },
+    {
+      "id": "C34",
+      "chapter": null,
+      "text": "頼む側は、引き受ける重さだけを、秤に載せている。頼まれる側は、断る重さも、同じ秤に載せている。",
+      "file": "voice/seg-34.wav",
+      "start": 345.17,
+      "duration": 10.45
+    },
+    {
+      "id": "C35",
+      "chapter": null,
+      "text": "この説明は、私にはすっと腑に落ちました。縁側の私が量っていたのも、息子の手間だけでした。息子の秤に、もう一つ何が載っているのか。考えてもいなかったんです。",
+      "file": "voice/seg-35.wav",
+      "start": 355.63,
+      "duration": 15.81
+    },
+    {
+      "id": "C36",
+      "chapter": "第3章 — 壁の向こう",
+      "text": "ただ、ここで私は、一つ引っかかりました。",
+      "file": "voice/seg-37.wav",
+      "start": 372.92,
+      "duration": 4.39
+    },
+    {
+      "id": "C37",
+      "chapter": null,
+      "text": "断るのが気まずいから、引き受ける。それなら、なんというか、息子は結局、しかたなく来るということにならないか。",
+      "file": "voice/seg-38.wav",
+      "start": 377.32,
+      "duration": 9.31
+    },
+    {
+      "id": "C38",
+      "chapter": null,
+      "text": "はい、が増えるのはわかりました。ですが、その中身が我慢なのだとしたら。それは、あまりうれしい話ではありません。",
+      "file": "voice/seg-39.wav",
+      "start": 386.62,
+      "duration": 11.28
+    },
+    {
+      "id": "C39",
+      "chapter": null,
+      "text": "この疑問に、まっすぐ答えた研究があります。アメリカの心理学者、ニコラス・エプリーさんと、シュアン・ジャオさんです。",
+      "file": "voice/seg-40.wav",
+      "start": 397.9,
+      "duration": 9.94
+    },
+    {
+      "id": "C40",
+      "chapter": null,
+      "text": "二千二十二年に、サイコロジカル・サイエンスという学術誌に出ました。題名を訳すと、助けてみたら、思いのほかうれしかった。",
+      "file": "voice/seg-41.wav",
+      "start": 407.85,
+      "duration": 11.41
+    },
+    {
+      "id": "C41",
+      "chapter": null,
+      "text": "六つの実験に、合わせて二千百十八人が参加しています。",
+      "file": "voice/seg-42.wav",
+      "start": 419.26,
+      "duration": 5.67
+    },
+    {
+      "id": "C42",
+      "chapter": null,
+      "text": "一つ目の実験の舞台は、公園でした。来ていた人たちにインスタントカメラを渡して、こう頼みます。",
+      "file": "voice/seg-43.wav",
+      "start": 424.93,
+      "duration": 8.73
+    },
+    {
+      "id": "C43",
+      "chapter": null,
+      "text": "誰か知らない人に声をかけて、あなたの写真を一枚、撮ってもらってください。",
+      "file": "voice/seg-44.wav",
+      "start": 433.65,
+      "duration": 7.07
+    },
+    {
+      "id": "C44",
+      "chapter": null,
+      "text": "集まったのは五十人です。そのうち四十七人は、最初に声をかけた人が、そのまま引き受けてくれました。",
+      "file": "voice/seg-45.wav",
+      "start": 440.73,
+      "duration": 10.07
+    },
+    {
+      "id": "C45",
+      "chapter": null,
+      "text": "残りの三人も、二人目で引き受けてもらえています。断られたまま終わった人は、一人もいなかったんです。",
+      "file": "voice/seg-46.wav",
+      "start": 450.8,
+      "duration": 9.31
+    },
+    {
+      "id": "C46",
+      "chapter": null,
+      "text": "研究チームは、頼む前の人に、相手がどう感じると思うかを尋ねていました。そして、写真を撮った側の人にも、あとから尋ねました。",
+      "file": "voice/seg-47.wav",
+      "start": 460.11,
+      "duration": 12.31
+    },
+    {
+      "id": "C47",
+      "chapter": null,
+      "text": "二つの答えは、三つの点で、きれいにずれていました。",
+      "file": "voice/seg-48.wav",
+      "start": 472.41,
+      "duration": 5.35
+    },
+    {
+      "id": "C48",
+      "chapter": null,
+      "text": "頼む側は、相手が引き受けたいと思う気持ちを、低く見ていた。手伝ったあとの相手の気分がどれだけいいかも、低く見ていた。",
+      "file": "voice/seg-49.wav",
+      "start": 477.76,
+      "duration": 10.58
+    },
+    {
+      "id": "C49",
+      "chapter": null,
+      "text": "そして、相手がどれだけ迷惑に感じるかは、高く見ていました。三つとも、頼むのをためらわせる向きです。",
+      "file": "voice/seg-50.wav",
+      "start": 488.35,
+      "duration": 9.12
+    },
+    {
+      "id": "C50",
+      "chapter": null,
+      "text": "公園だけではありません。実験室で、作業を多く抱えた人と、手の空いている人を組ませたときにも、同じずれが出ています。",
+      "file": "voice/seg-51.wav",
+      "start": 497.46,
+      "duration": 10.64
+    },
+    {
+      "id": "C51",
+      "chapter": null,
+      "text": "では、頼む側は何を見誤っていたのか。エプリーさんたちの答えは、こうでした。",
+      "file": "voice/seg-52.wav",
+      "start": 508.1,
+      "duration": 6.94
+    },
+    {
+      "id": "C52",
+      "chapter": null,
+      "text": "頼む側は、相手が引き受ける理由を、断れないからだと考えている。しかたなく、というわけです。",
+      "file": "voice/seg-53.wav",
+      "start": 515.05,
+      "duration": 8.48
+    },
+    {
+      "id": "C53",
+      "chapter": null,
+      "text": "ところが、頼まれた側の中で大きく動いていたのは、助けたい、という気持ちのほうだったんです。",
+      "file": "voice/seg-54.wav",
+      "start": 523.53,
+      "duration": 8.09
+    },
+    {
+      "id": "C54",
+      "chapter": null,
+      "text": "エプリーさんは、こう説明しています。頼まれた人は、手間のことも考える。けれど同時に、自分は助けになれる人だと見込まれた、とも感じている。",
+      "file": "voice/seg-55.wav",
+      "start": 531.62,
+      "duration": 13.07
+    },
+    {
+      "id": "C55",
+      "chapter": null,
+      "text": "私は、ここでしばらく読む手が止まりました。頼むというのは、相手の時間をもらうことだと、ずっと思っていました。",
+      "file": "voice/seg-56.wav",
+      "start": 544.69,
+      "duration": 10.13
+    },
+    {
+      "id": "C56",
+      "chapter": null,
+      "text": "それは、間違いではありません。ですが、半分だけでした。頼むということには、もう半分があったんです。",
+      "file": "voice/seg-57.wav",
+      "start": 554.83,
+      "duration": 9.5
+    },
+    {
+      "id": "C57",
+      "chapter": null,
+      "text": "あなたなら、これができると思った。あなたに来てほしいと思った。頼みごとは、口に出さなくても、そういう知らせを一緒に運んでいるんです。",
+      "file": "voice/seg-58.wav",
+      "start": 564.32,
+      "duration": 12.37
+    },
+    {
+      "id": "C58",
+      "chapter": null,
+      "text": "二つの研究は、ぶつかっているように見えて、実は並んで立っています。断りにくさも、本当にある。助けたい気持ちも、本当にある。",
+      "file": "voice/seg-59.wav",
+      "start": 576.69,
+      "duration": 13.96
+    },
+    {
+      "id": "C59",
+      "chapter": null,
+      "text": "頼む側の目には、そのうち前のほうしか映っていなかった、ということなんです。",
+      "file": "voice/seg-60.wav",
+      "start": 590.65,
+      "duration": 6.89
+    },
+    {
+      "id": "C60",
+      "chapter": null,
+      "text": "縁側で思い浮かべた、あの薄暗い廊下のことを考えました。細くなっていく廊下。すりガラスの壁。その向こうの、困った顔。",
+      "file": "voice/seg-61.wav",
+      "start": 597.53,
+      "duration": 11.99
+    },
+    {
+      "id": "C61",
+      "chapter": null,
+      "text": "あれは全部、頼む側の見積もりが描いたものでした。息子の側からは、あの壁は、一度も見えていなかったのかもしれません。",
+      "file": "voice/seg-62.wav",
+      "start": 609.52,
+      "duration": 10.96
+    },
+    {
+      "id": "C62",
+      "chapter": null,
+      "text": "研究が測ったのは、ちょうどその、壁の向こう側です。窓が開いていて、明るくて、思っていたよりずっと広い部屋でした。",
+      "file": "voice/seg-63.wav",
+      "start": 620.48,
+      "duration": 11.67
+    },
+    {
+      "id": "C63",
+      "chapter": null,
+      "text": "そのうえで、この話の限りも申し上げておきます。",
+      "file": "voice/seg-65.wav",
+      "start": 633.31,
+      "duration": 4.2
+    },
+    {
+      "id": "C64",
+      "chapter": null,
+      "text": "二つの研究は、どちらもアメリカで行われました。頼む相手の多くは、その場で出会った見知らぬ人です。",
+      "file": "voice/seg-66.wav",
+      "start": 637.52,
+      "duration": 9.57
+    },
+    {
+      "id": "C65",
+      "chapter": null,
+      "text": "頼んだ中身も、写真を一枚、道案内を一つ、といった小さなことでした。何か月も続く世話や、お金のことは、測られていません。",
+      "file": "voice/seg-67.wav",
+      "start": 647.08,
+      "duration": 11.99
+    },
+    {
+      "id": "C66",
+      "chapter": null,
+      "text": "日本で同じ数字が出るのかどうか。家族のあいだではどうなのか。この点は、正直なところ、私にはわかりません。",
+      "file": "voice/seg-68.wav",
+      "start": 659.07,
+      "duration": 10.39
+    },
+    {
+      "id": "C67",
+      "chapter": null,
+      "text": "それに、断られることも、もちろんあります。公園でも、一人目に断られた人が三人いました。ずれがわかっても、断られる心配がゼロになるわけではないんです。",
+      "file": "voice/seg-69.wav",
+      "start": 669.46,
+      "duration": 14.54
+    },
+    {
+      "id": "C68",
+      "chapter": null,
+      "text": "言えるのは、ここまでです。いろいろな頼みごとで測るたびに、ずれは、いつも同じ向きに出た。頼みにくいほうへ、です。",
+      "file": "voice/seg-70.wav",
+      "start": 684,
+      "duration": 11.92
+    },
+    {
+      "id": "C69",
+      "chapter": "第4章 — 帰り道",
+      "text": "夜の九時でした。雨戸の外で、風が強くなっていました。庭には、三つ目の鉢が、まだ出たままです。",
+      "file": "voice/seg-72.wav",
+      "start": 697.89,
+      "duration": 10.2
+    },
+    {
+      "id": "C70",
+      "chapter": null,
+      "text": "私はもう一度、縁側の戸の前に座って、携帯電話を出しました。昼間に消した文を、最初から打ち直しました。",
+      "file": "voice/seg-73.wav",
+      "start": 708.09,
+      "duration": 10.45
+    },
+    {
+      "id": "C71",
+      "chapter": null,
+      "text": "明日の朝、少しだけ手を貸してもらえないか。鉢を一つ、中に入れたいんだ。",
+      "file": "voice/seg-74.wav",
+      "start": 718.55,
+      "duration": 6.76
+    },
+    {
+      "id": "C72",
+      "chapter": null,
+      "text": "指は、また止まりかけました。ためらいは、なくなってはいなかったんです。研究を読んだからといって、気持ちが先に軽くなるわけではありません。",
+      "file": "voice/seg-75.wav",
+      "start": 725.3,
+      "duration": 12.24
+    },
+    {
+      "id": "C73",
+      "chapter": null,
+      "text": "ただ、今度は、ためらいの正体がわかっていました。息子についての事実ではありません。私の側の見積もりが、いつもの向きにずれている。それだけのことでした。",
+      "file": "voice/seg-76.wav",
+      "start": 737.54,
+      "duration": 15.62
+    },
+    {
+      "id": "C74",
+      "chapter": null,
+      "text": "送りました。",
+      "file": "voice/seg-77.wav",
+      "start": 753.16,
+      "duration": 1.39
+    },
+    {
+      "id": "C75",
+      "chapter": null,
+      "text": "返事は、十分ほどで来ました。いいよ。七時には行ける。ほかにも運ぶもの、ある？",
+      "file": "voice/seg-78.wav",
+      "start": 754.55,
+      "duration": 9.44
+    },
+    {
+      "id": "C76",
+      "chapter": null,
+      "text": "翌朝、息子は鉢を一人で持ち上げて、あっさり家の中に運んでしまいました。一分もかかりませんでした。",
+      "file": "voice/seg-79.wav",
+      "start": 763.99,
+      "duration": 10.13
+    },
+    {
+      "id": "C77",
+      "chapter": null,
+      "text": "ついでに物干し竿まで外してくれてから、少し怒ったような顔で言いました。こういうのは、もっと早く言ってよ。",
+      "file": "voice/seg-80.wav",
+      "start": 774.12,
+      "duration": 8.54
+    },
+    {
+      "id": "C78",
+      "chapter": null,
+      "text": "その顔は、困った顔ではありませんでした。なんというか、頼られて、まんざらでもない顔です。公園で写真を撮った人たちも、こんな顔をしていたのかもしれません。",
+      "file": "voice/seg-81.wav",
+      "start": 782.66,
+      "duration": 14.15
+    },
+    {
+      "id": "C79",
+      "chapter": null,
+      "text": "頼む前に、頭の中に立つ、あの薄暗い壁。あれは、頼む側からしか見えない壁なんです。",
+      "file": "voice/seg-82.wav",
+      "start": 796.81,
+      "duration": 9.5
+    },
+    {
+      "id": "C80",
+      "chapter": null,
+      "text": "引き受けてもらえる見込みを、私たちは低く見積もる。測った人たちによれば、ほぼ半分。何度測っても、ずれは同じ向きに出ます。",
+      "file": "voice/seg-83.wav",
+      "start": 806.31,
+      "duration": 11.16
+    },
+    {
+      "id": "C81",
+      "chapter": null,
+      "text": "壁の向こうは、見積もりよりも明るいことが多い。一万人を超える人に頼んで数えた人たちが、そう書き残しています。",
+      "file": "voice/seg-84.wav",
+      "start": 817.47,
+      "duration": 10.45
+    }
+  ]
+}

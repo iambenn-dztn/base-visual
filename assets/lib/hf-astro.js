@@ -46,12 +46,21 @@
 
   HFA.smooth = function (x) { x = HFA.clamp(x, 0, 1); return x * x * (3 - 2 * x); };
 
-  /** Bao lồi mềm: 0 ngoài [a,b], lên/xuống mượt trong dải f giây ở hai mép. */
+  /** Bao lồi mềm: 0 ngoài [a,b], lên/xuống mượt trong dải f giây ở hai mép.
+   *
+   * Hoà chéo đặt ĐỐI XỨNG quanh mốc cảnh: cảnh chỉ nhú lên từ a-f/2 và tắt hẳn
+   * ở b+f/2, nên hai cảnh liền nhau chồng đúng f giây và tổng trọng số luôn = 1
+   * (không chớp đen). Bản cũ dùng a-f .. a+f với mẫu số 2f: cảnh mới hiện sớm
+   * cả f giây trước mốc và cảnh cũ nán lại thêm f giây sau mốc, tổng thời gian
+   * dính hình là 2f — chuyển cảnh nhoè, hình cue trước còn đọng khi lời đã sang
+   * ý mới. Xem tập mat-trang t=167,33s (Trái Đất + Sao Hoả + Mặt Trăng chồng nhau).
+   */
   HFA.band = function (t, a, b, f) {
     f = f || 0.8;
-    if (t < a - f || t > b + f) return 0;
-    var up = HFA.smooth((t - (a - f)) / (2 * f));
-    var dn = HFA.smooth(((b + f) - t) / (2 * f));
+    var h = f * 0.5;
+    if (t < a - h || t > b + h) return 0;
+    var up = HFA.smooth((t - (a - h)) / f);
+    var dn = HFA.smooth(((b + h) - t) / f);
     return Math.min(1, Math.min(up, dn));
   };
 
@@ -395,9 +404,32 @@
    *      glyphFrac tụt, trần giữ nguyên thì chữ NHỎ ĐI THẬT (đo được 32px → 21px).
    *
    * Dùng `HFA.canvasHeightForText` khi tự dựng nhãn canvas.
+   *
+   * ---- CHỮ NHẬT (kanji/kana) THÌ KHÁC ------------------------------------
+   * Kanji KHÔNG có dấu nhô ra ngoài em-box: chữ nằm gọn trong hộp vuông.
+   * Đo thật ngày 2026-09-21 (BIZ UDPGothic 700, headless Chrome, "位牌と仏壇"):
+   *   ascent 27.7px + descent 27.3px = 55.0px ở font 56px → tỉ lệ ~0.98.
+   * Tức hệ số 2.4 của tiếng Việt CẤP DƯ hơn gấp đôi. Không gây cắt chữ, nhưng
+   * canvas cao gấp đôi làm `glyphFrac` tụt một nửa → chữ NHỎ ĐI THẬT trên màn
+   * hình (đúng cơ chế đã ghi ở hệ quả 2 bên trên). Vì thế tách hệ số theo chữ.
+   * Vẫn để dư 1.45 cho phần nhô của 〜 ー ゛ ゜ và chữ Latin lẫn trong câu Nhật.
    */
-  HFA.canvasHeightForText = function (fontPx, lines, requestedHpx) {
-    var need = Math.ceil(fontPx * 2.4 * (lines || 1));
+  var CJK_RE = /[぀-ヿ㐀-䶿一-鿿＀-￯]/;
+
+  /** true nếu chuỗi có chữ Nhật (kana/kanji/toàn角). */
+  HFA.isCJK = function (s) { return CJK_RE.test(String(s || '')); };
+
+  /**
+   * Chiều cao canvas tối thiểu cho nhãn chữ.
+   * @param fontPx cỡ chữ px
+   * @param lines  số dòng
+   * @param requestedHpx chiều cao mong muốn (lấy max)
+   * @param text   (tuỳ chọn) chữ sẽ vẽ — có chữ Nhật thì dùng hệ số 1.45 thay vì 2.4.
+   *               Bỏ trống = giữ nguyên hành vi cũ (2.4) cho các tập tiếng Việt.
+   */
+  HFA.canvasHeightForText = function (fontPx, lines, requestedHpx, text) {
+    var k = (text != null && HFA.isCJK(text)) ? 1.45 : 2.4;
+    var need = Math.ceil(fontPx * k * (lines || 1));
     return Math.max(requestedHpx || 0, need);
   };
 
@@ -615,7 +647,8 @@
   };
 
   /* ---- phụ đề -------------------------------------------------------------
-   * CUES = [{t, s}] do scripts/gen-captions.mjs sinh (đã cắt ≤42 ký tự/dòng).
+   * CUES = [{t, s}] do scripts/gen-captions.mjs sinh, đã cắt sẵn MỘT DÒNG:
+   * ≤42 ký tự với tiếng Việt, ≤22 ký tự toàn角 với tiếng Nhật (chữ Nhật rộng gấp đôi).
    * Đừng cắt tay và đừng đổi mảng này bằng tay.
    */
   HFA.subtitleAt = function (CUES, t) {

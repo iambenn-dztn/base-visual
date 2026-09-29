@@ -1,0 +1,825 @@
+{
+  "slug": "omoide-yasashii",
+  "fps": 30,
+  "totalDuration": 821.08,
+  "dryRun": false,
+  "narration": "voice/narration.mp3",
+  "lang": "ja",
+  "voice": {
+    "provider": "gpt-sovits-local",
+    "voice_name": "keita",
+    "lang": "ja",
+    "speed": 0.95,
+    "seed": 42
+  },
+  "cues": [
+    {
+      "id": "C01",
+      "chapter": "第1章 — 入口",
+      "text": "よく晴れた午後でした。戸を開け放してあって、風が通っていました。",
+      "file": "voice/seg-00.wav",
+      "start": 0,
+      "duration": 6.61
+    },
+    {
+      "id": "C02",
+      "chapter": null,
+      "text": "その日、私はずっと後回しにしていたことをしていました。遺品の整理です。何か月も、手がつけられずにいたんです。",
+      "file": "voice/seg-01.wav",
+      "start": 6.61,
+      "duration": 11.01
+    },
+    {
+      "id": "C03",
+      "chapter": null,
+      "text": "押し入れの奥から、古い写真の箱が出てきました。蓋に埃がたまっています。それを払って、開けました。",
+      "file": "voice/seg-02.wav",
+      "start": 17.62,
+      "duration": 10.94
+    },
+    {
+      "id": "C04",
+      "chapter": null,
+      "text": "日が斜めに入ってきていて、光の筋がはっきり見えました。その中を、細かい埃がゆっくり流れていくんです。",
+      "file": "voice/seg-03.wav",
+      "start": 28.56,
+      "duration": 9.29
+    },
+    {
+      "id": "C05",
+      "chapter": null,
+      "text": "写真を畳の上に広げていると、隣に座っていた孫が、こう聞きました。",
+      "file": "voice/seg-04.wav",
+      "start": 37.85,
+      "duration": 6.74
+    },
+    {
+      "id": "C06",
+      "chapter": null,
+      "text": "おじいちゃんって、どんな人だったの。",
+      "file": "voice/seg-05.wav",
+      "start": 44.59,
+      "duration": 3.43
+    },
+    {
+      "id": "C07",
+      "chapter": null,
+      "text": "私は、答えはじめました。あの人はね、と。",
+      "file": "voice/seg-07.wav",
+      "start": 49.18,
+      "duration": 4.96
+    },
+    {
+      "id": "C08",
+      "chapter": null,
+      "text": "ところが、話しているうちに、自分の声が妙に聞こえてきたんです。",
+      "file": "voice/seg-08.wav",
+      "start": 54.14,
+      "duration": 6.11
+    },
+    {
+      "id": "C09",
+      "chapter": null,
+      "text": "私は、いい話ばかりしていました。声も軽い。それどころか、笑っていたんです。",
+      "file": "voice/seg-09.wav",
+      "start": 60.25,
+      "duration": 8.33
+    },
+    {
+      "id": "C10",
+      "chapter": null,
+      "text": "そこで、口が止まりました。",
+      "file": "voice/seg-10.wav",
+      "start": 68.58,
+      "duration": 3.5
+    },
+    {
+      "id": "C11",
+      "chapter": null,
+      "text": "なぜなら、私はちゃんと覚えているからです。あの頃が、いつも穏やかだったわけではないことを。",
+      "file": "voice/seg-12.wav",
+      "start": 73.57,
+      "duration": 8.2
+    },
+    {
+      "id": "C12",
+      "chapter": null,
+      "text": "やりくりに苦しかった年もありました。もうだめかもしれない、とそのときは思った言い争いもありました。",
+      "file": "voice/seg-13.wav",
+      "start": 81.77,
+      "duration": 8.14
+    },
+    {
+      "id": "C13",
+      "chapter": null,
+      "text": "忘れてはいないんです。ただ、それが先に出てこなかった。出てきたのは、いい話の方でした。",
+      "file": "voice/seg-14.wav",
+      "start": 89.91,
+      "duration": 10.24
+    },
+    {
+      "id": "C14",
+      "chapter": null,
+      "text": "私は、都合のいいところだけを話しているのだろうか。",
+      "file": "voice/seg-15.wav",
+      "start": 100.16,
+      "duration": 5.15
+    },
+    {
+      "id": "C15",
+      "chapter": null,
+      "text": "薄情になったから、あの頃が優しく見えるのだろうか。",
+      "file": "voice/seg-16.wav",
+      "start": 105.31,
+      "duration": 4.7
+    },
+    {
+      "id": "C16",
+      "chapter": null,
+      "text": "正直に言うと、その午後、私は孫に嘘を渡してしまった気がしていました。",
+      "file": "voice/seg-17.wav",
+      "start": 110.01,
+      "duration": 7.83
+    },
+    {
+      "id": "C17",
+      "chapter": "第2章 — 測った人たち",
+      "text": "それで、私は調べてみることにしました。そうしたら、思いがけないことがわかったんです。",
+      "file": "voice/seg-18.wav",
+      "start": 117.84,
+      "duration": 8.2
+    },
+    {
+      "id": "C18",
+      "chapter": null,
+      "text": "この、昔が優しく見えるという感じ。これを、実際に測ってみた人たちがいました。",
+      "file": "voice/seg-19.wav",
+      "start": 126.04,
+      "duration": 8.14
+    },
+    {
+      "id": "C19",
+      "chapter": null,
+      "text": "やり方は、とても素朴なものです。日記を使うんです。",
+      "file": "voice/seg-20.wav",
+      "start": 134.18,
+      "duration": 5.41
+    },
+    {
+      "id": "C20",
+      "chapter": null,
+      "text": "参加した人は毎日、その日にあった出来事を書きとめます。うれしかったこと、いやだったこと、どちらもです。",
+      "file": "voice/seg-21.wav",
+      "start": 139.59,
+      "duration": 8.78
+    },
+    {
+      "id": "C21",
+      "chapter": null,
+      "text": "そして大事なのがここなんです。書いたその場で、その出来事の感情の強さに点をつけておく。",
+      "file": "voice/seg-22.wav",
+      "start": 148.37,
+      "duration": 8.07
+    },
+    {
+      "id": "C22",
+      "chapter": null,
+      "text": "つまり、あとから思い出してつけた点ではありません。出来事が起きた、その日のうちの点なんです。",
+      "file": "voice/seg-23.wav",
+      "start": 156.45,
+      "duration": 8.07
+    },
+    {
+      "id": "C23",
+      "chapter": null,
+      "text": "それから何か月かたって、もう一度、同じ出来事を読み返してもらいます。そして今どう感じるか、また点をつける。",
+      "file": "voice/seg-24.wav",
+      "start": 164.52,
+      "duration": 10.5
+    },
+    {
+      "id": "C24",
+      "chapter": null,
+      "text": "これで、当時の点と今の点を並べて比べられるわけです。感想ではなく、数字として。",
+      "file": "voice/seg-25.wav",
+      "start": 175.02,
+      "duration": 8.52
+    },
+    {
+      "id": "C25",
+      "chapter": null,
+      "text": "この方法で集まった記録が、どれくらいあったか。八つの日記研究。参加した人が、二百二十九人。",
+      "file": "voice/seg-26.wav",
+      "start": 183.55,
+      "duration": 10.37
+    },
+    {
+      "id": "C26",
+      "chapter": null,
+      "text": "書きとめられた出来事は、二万三千二百二件。追いかけた期間は、短いもので一年半、長いもので二年半ほどです。",
+      "file": "voice/seg-27.wav",
+      "start": 193.92,
+      "duration": 11.26
+    },
+    {
+      "id": "C27",
+      "chapter": null,
+      "text": "これをまとめたのが、ウォーカーとスコウロンスキーとトンプソンという三人で、二〇〇三年の論文です。",
+      "file": "voice/seg-28.wav",
+      "start": 205.17,
+      "duration": 8.71
+    },
+    {
+      "id": "C28",
+      "chapter": null,
+      "text": "題は、こうついていました。人生は心地よい。そして記憶が、それを保つのを手伝っている。",
+      "file": "voice/seg-29.wav",
+      "start": 213.88,
+      "duration": 8.84
+    },
+    {
+      "id": "C29",
+      "chapter": null,
+      "text": "では、二万件を超える記録は、何を示したのか。",
+      "file": "voice/seg-30.wav",
+      "start": 222.72,
+      "duration": 5.28
+    },
+    {
+      "id": "C30",
+      "chapter": null,
+      "text": "まず、どちらの感情も薄れていました。うれしかったことも、いやだったことも、当時ほどの強さではなくなる。",
+      "file": "voice/seg-31.wav",
+      "start": 228,
+      "duration": 9.42
+    },
+    {
+      "id": "C31",
+      "chapter": null,
+      "text": "ここまでは、たぶん誰でも思うところです。違いは、その先にありました。",
+      "file": "voice/seg-32.wav",
+      "start": 237.42,
+      "duration": 6.87
+    },
+    {
+      "id": "C32",
+      "chapter": null,
+      "text": "いやだったことの方が、先に薄れていたんです。",
+      "file": "voice/seg-33.wav",
+      "start": 244.29,
+      "duration": 4.2
+    },
+    {
+      "id": "C33",
+      "chapter": null,
+      "text": "両方薄れる。でも、速さが違う。つらい方が早く軽くなって、うれしい方がゆっくり残る。",
+      "file": "voice/seg-34.wav",
+      "start": 248.49,
+      "duration": 9.98
+    },
+    {
+      "id": "C34",
+      "chapter": null,
+      "text": "この差には、名前がついています。フェージング・アフェクト・バイアス。感情が薄れていく、その傾きのことです。",
+      "file": "voice/seg-35.wav",
+      "start": 258.47,
+      "duration": 10.94
+    },
+    {
+      "id": "C35",
+      "chapter": null,
+      "text": "名づけたのは、ウォーカーとフォーグルとトンプソンで、一九九七年のことでした。",
+      "file": "voice/seg-36.wav",
+      "start": 269.41,
+      "duration": 7.32
+    },
+    {
+      "id": "C36",
+      "chapter": null,
+      "text": "ただ、ここに一つ、私がいちばん誤解していたところがあります。",
+      "file": "voice/seg-37.wav",
+      "start": 276.73,
+      "duration": 5.79
+    },
+    {
+      "id": "C37",
+      "chapter": null,
+      "text": "薄れているのは、記憶そのものではありません。",
+      "file": "voice/seg-38.wav",
+      "start": 282.52,
+      "duration": 3.94
+    },
+    {
+      "id": "C38",
+      "chapter": null,
+      "text": "出来事は覚えています。いつのことか、どこでのことか、何を言われたか。細かいところまで残っている。",
+      "file": "voice/seg-39.wav",
+      "start": 286.45,
+      "duration": 8.52
+    },
+    {
+      "id": "C39",
+      "chapter": null,
+      "text": "薄れていくのは、その記憶にくっついていた感情の強さの方なんです。",
+      "file": "voice/seg-40.wav",
+      "start": 294.98,
+      "duration": 5.34
+    },
+    {
+      "id": "C40",
+      "chapter": null,
+      "text": "記憶と、記憶についた感情。この二つは、別々のものとして測れる。研究はそれを、別々に測っていました。",
+      "file": "voice/seg-41.wav",
+      "start": 300.32,
+      "duration": 11.7
+    },
+    {
+      "id": "C41",
+      "chapter": null,
+      "text": "あの言い争いを、私は忘れてなどいない。ただ、思い出したときの胸の締めつけが、当時ほどではない。それだけなんです。",
+      "file": "voice/seg-42.wav",
+      "start": 312.02,
+      "duration": 11.7
+    },
+    {
+      "id": "C42",
+      "chapter": "第3章 — 深いところ",
+      "text": "さて、ここからが、私にとっていちばん意外だったところです。",
+      "file": "voice/seg-43.wav",
+      "start": 323.72,
+      "duration": 5.98
+    },
+    {
+      "id": "C43",
+      "chapter": null,
+      "text": "この働きは、いつから始まるのか。",
+      "file": "voice/seg-44.wav",
+      "start": 329.7,
+      "duration": 3.5
+    },
+    {
+      "id": "C44",
+      "chapter": null,
+      "text": "私は、何年もかかるものだと思っていました。歳月が薬になる、と言いますから。",
+      "file": "voice/seg-45.wav",
+      "start": 333.2,
+      "duration": 8.07
+    },
+    {
+      "id": "C45",
+      "chapter": null,
+      "text": "ところが、半日ほどで、もう始まっていました。",
+      "file": "voice/seg-46.wav",
+      "start": 341.28,
+      "duration": 4.2
+    },
+    {
+      "id": "C46",
+      "chapter": null,
+      "text": "出来事が起きて、十二時間ほど。そのあたりで、もう差がつきはじめている。そして三か月たっても、ちゃんと測れる。",
+      "file": "voice/seg-47.wav",
+      "start": 345.47,
+      "duration": 11.52
+    },
+    {
+      "id": "C47",
+      "chapter": null,
+      "text": "これを調べたのが、ギボンズとリーとウォーカーで、二〇一一年の研究です。論文の題が、そのまま結論になっていました。",
+      "file": "voice/seg-48.wav",
+      "start": 356.99,
+      "duration": 9.29
+    },
+    {
+      "id": "C48",
+      "chapter": null,
+      "text": "フェージング・アフェクト・バイアスは十二時間以内に始まり、三か月続く。そういう題なんです。",
+      "file": "voice/seg-49.wav",
+      "start": 366.27,
+      "duration": 7.57
+    },
+    {
+      "id": "C49",
+      "chapter": null,
+      "text": "つまり、頑張って忘れようとしたから始まるのではありません。そんな指示を出した覚えがなくても、もう動いているんです。",
+      "file": "voice/seg-50.wav",
+      "start": 373.84,
+      "duration": 9.48
+    },
+    {
+      "id": "C50",
+      "chapter": null,
+      "text": "ここで、私はこう思いました。それは本当に薄れているのだろうか、と。",
+      "file": "voice/seg-51.wav",
+      "start": 383.32,
+      "duration": 6.74
+    },
+    {
+      "id": "C51",
+      "chapter": null,
+      "text": "人は、昔の自分の気持ちを大げさに覚えていることがあります。この差も、ただの思い違いではないのか。",
+      "file": "voice/seg-52.wav",
+      "start": 390.06,
+      "duration": 9.79
+    },
+    {
+      "id": "C52",
+      "chapter": null,
+      "text": "実は、この反論は研究者自身がしていました。答えられるように、方法が組んであったんです。",
+      "file": "voice/seg-53.wav",
+      "start": 399.86,
+      "duration": 8.33
+    },
+    {
+      "id": "C53",
+      "chapter": null,
+      "text": "最初の点は、出来事が起きたその日につけてあります。あとから記憶をたどった数字ではないので、思い違いでは説明がつかないんです。",
+      "file": "voice/seg-54.wav",
+      "start": 408.19,
+      "duration": 11.07
+    },
+    {
+      "id": "C54",
+      "chapter": null,
+      "text": "そして、もう一つ。私はこれを知って、少し驚きました。",
+      "file": "voice/seg-55.wav",
+      "start": 419.26,
+      "duration": 5.53
+    },
+    {
+      "id": "C55",
+      "chapter": null,
+      "text": "うれしい出来事といやな出来事は、起きた時点での感情の強さが、ほぼ同じだったんです。",
+      "file": "voice/seg-56.wav",
+      "start": 424.78,
+      "duration": 7.7
+    },
+    {
+      "id": "C56",
+      "chapter": null,
+      "text": "つまり、最初から楽しい方が強かったわけではない。同じ高さから始まって、下りていく速さだけが違っていた。",
+      "file": "voice/seg-57.wav",
+      "start": 432.48,
+      "duration": 9.86
+    },
+    {
+      "id": "C57",
+      "chapter": null,
+      "text": "この整理をしたのが、ウォーカーとスコウロンスキーの二〇〇九年の論文です。",
+      "file": "voice/seg-58.wav",
+      "start": 442.35,
+      "duration": 6.29
+    },
+    {
+      "id": "C58",
+      "chapter": null,
+      "text": "その論文には、変わった題がついていました。フェージング・アフェクト・バイアス。それは一体、何のためにあるのか。",
+      "file": "voice/seg-59.wav",
+      "start": 448.64,
+      "duration": 10.5
+    },
+    {
+      "id": "C59",
+      "chapter": null,
+      "text": "つまり、こういう問いです。これは記憶の故障なのか、それとも、そうなるようにできているのか。",
+      "file": "voice/seg-60.wav",
+      "start": 459.14,
+      "duration": 8.14
+    },
+    {
+      "id": "C60",
+      "chapter": null,
+      "text": "著者たちの答えは、後者でした。",
+      "file": "voice/seg-61.wav",
+      "start": 467.29,
+      "duration": 3.24
+    },
+    {
+      "id": "C61",
+      "chapter": null,
+      "text": "これは、記憶が壊れているのではない。人が立ち直っていくための、健康な働きが記憶の中で動いている。その現れだ、と。",
+      "file": "voice/seg-62.wav",
+      "start": 470.53,
+      "duration": 12.02
+    },
+    {
+      "id": "C62",
+      "chapter": null,
+      "text": "私は、この一行を読んで、しばらく画面から目を離しました。",
+      "file": "voice/seg-63.wav",
+      "start": 482.55,
+      "duration": 6.11
+    },
+    {
+      "id": "C63",
+      "chapter": null,
+      "text": "都合よく話を作っていると思っていました。そうではなかったんです。",
+      "file": "voice/seg-64.wav",
+      "start": 488.65,
+      "duration": 5.98
+    },
+    {
+      "id": "C64",
+      "chapter": null,
+      "text": "あなたが薄情になったのではありません。心が、そう働くようにできているんです。",
+      "file": "voice/seg-65.wav",
+      "start": 494.63,
+      "duration": 6.55
+    },
+    {
+      "id": "C65",
+      "chapter": null,
+      "text": "そして、ここからは私たちの年代に関わる話です。",
+      "file": "voice/seg-67.wav",
+      "start": 502.67,
+      "duration": 5.15
+    },
+    {
+      "id": "C66",
+      "chapter": null,
+      "text": "二〇二四年に、サイコロジー・アンド・エイジングという学術誌に載った研究があります。年齢とこの働きの関係を調べたものです。",
+      "file": "voice/seg-68.wav",
+      "start": 507.82,
+      "duration": 11.01
+    },
+    {
+      "id": "C67",
+      "chapter": null,
+      "text": "どの年代にも、この働きはありました。若い人にも、ちゃんとある。",
+      "file": "voice/seg-69.wav",
+      "start": 518.82,
+      "duration": 5.6
+    },
+    {
+      "id": "C68",
+      "chapter": null,
+      "text": "ただ、年齢が高いほど、その働きは強くなっていました。",
+      "file": "voice/seg-70.wav",
+      "start": 524.42,
+      "duration": 5.6
+    },
+    {
+      "id": "C69",
+      "chapter": null,
+      "text": "そして、その差を説明していたのは、体の衰えでも、気分の良し悪しでもありませんでした。",
+      "file": "voice/seg-71.wav",
+      "start": 530.02,
+      "duration": 7.96
+    },
+    {
+      "id": "C70",
+      "chapter": null,
+      "text": "楽しかった出来事を、どれだけ大事なことだと思っているか。差を生んでいたのは、そこだったんです。",
+      "file": "voice/seg-72.wav",
+      "start": 537.98,
+      "duration": 8.2
+    },
+    {
+      "id": "C71",
+      "chapter": null,
+      "text": "年を重ねた人ほど、いい日をいい日として、重く受け取っている。そういうことでした。",
+      "file": "voice/seg-73.wav",
+      "start": 546.18,
+      "duration": 7.96
+    },
+    {
+      "id": "C72",
+      "chapter": null,
+      "text": "ここで、言っておかなければならないことが二つあります。わかっていないことの方です。",
+      "file": "voice/seg-74.wav",
+      "start": 554.14,
+      "duration": 7.19
+    },
+    {
+      "id": "C73",
+      "chapter": null,
+      "text": "一つめ。これらの研究は、その多くがアメリカで行われました。参加したのも、大学生が中心です。",
+      "file": "voice/seg-75.wav",
+      "start": 561.32,
+      "duration": 9.92
+    },
+    {
+      "id": "C74",
+      "chapter": null,
+      "text": "世界の十の文化で同じ傾向が見つかった、という研究もあります。二〇一五年のものです。",
+      "file": "voice/seg-76.wav",
+      "start": 571.25,
+      "duration": 8.33
+    },
+    {
+      "id": "C75",
+      "chapter": null,
+      "text": "ですが、日本人を対象にした大規模な研究は、まだ十分ではありません。ここは、はっきりそう申し上げておきます。",
+      "file": "voice/seg-77.wav",
+      "start": 579.58,
+      "duration": 10.43
+    },
+    {
+      "id": "C76",
+      "chapter": null,
+      "text": "二つめ。この働きは、いつでも同じように回るわけではないんです。",
+      "file": "voice/seg-78.wav",
+      "start": 590.01,
+      "duration": 5.98
+    },
+    {
+      "id": "C77",
+      "chapter": null,
+      "text": "不安や気分の落ち込みが重いとき、この差が小さくなることが知られています。",
+      "file": "voice/seg-79.wav",
+      "start": 595.99,
+      "duration": 6.11
+    },
+    {
+      "id": "C78",
+      "chapter": null,
+      "text": "落ち込みの度合いが高いグループでは、この働きが出ていませんでした。つらい記憶も楽しい記憶も、同じ速さで薄れていた。二〇〇三年の、別の研究です。",
+      "file": "voice/seg-80.wav",
+      "start": 602.09,
+      "duration": 15.39
+    },
+    {
+      "id": "C79",
+      "chapter": null,
+      "text": "ですから、もし何年たっても少しも軽くならない、という方がいらしたら。",
+      "file": "voice/seg-81.wav",
+      "start": 617.49,
+      "duration": 7.25
+    },
+    {
+      "id": "C80",
+      "chapter": null,
+      "text": "それは、あなたの心が弱いからではありません。この働き自体が、うまく回らなくなることがある。そういうことが、研究でわかっているんです。",
+      "file": "voice/seg-82.wav",
+      "start": 624.74,
+      "duration": 12.6
+    },
+    {
+      "id": "C81",
+      "chapter": null,
+      "text": "そういうときは、一人で抱えずに、お医者さんに相談していい話なんです。それは弱さではなく、体の調子の話と同じことなんです。",
+      "file": "voice/seg-83.wav",
+      "start": 637.34,
+      "duration": 11.46
+    },
+    {
+      "id": "C82",
+      "chapter": null,
+      "text": "それから、この研究にはもう一つ、私が好きな発見がありました。",
+      "file": "voice/seg-84.wav",
+      "start": 648.79,
+      "duration": 5.73
+    },
+    {
+      "id": "C83",
+      "chapter": null,
+      "text": "つらかった出来事は、人に話したときの方が、早く軽くなっていたんです。",
+      "file": "voice/seg-85.wav",
+      "start": 654.52,
+      "duration": 5.85
+    },
+    {
+      "id": "C84",
+      "chapter": null,
+      "text": "そして、楽しかった出来事は、人に話しても薄れない。むしろ、保たれる。",
+      "file": "voice/seg-86.wav",
+      "start": 660.37,
+      "duration": 7.25
+    },
+    {
+      "id": "C85",
+      "chapter": null,
+      "text": "一人で何度も思い返すのとは、違う結果になる。これも、あの二〇〇九年の論文に書かれていました。",
+      "file": "voice/seg-87.wav",
+      "start": 667.62,
+      "duration": 8.91
+    },
+    {
+      "id": "C86",
+      "chapter": null,
+      "text": "ということは、です。亡くなった人のことを誰かに話して聞かせるのは、気休めではないということなんです。測れる働きがある。",
+      "file": "voice/seg-88.wav",
+      "start": 676.53,
+      "duration": 10.88
+    },
+    {
+      "id": "C87",
+      "chapter": "第4章 — 帰り道",
+      "text": "さて、あの午後の話に戻ります。",
+      "file": "voice/seg-89.wav",
+      "start": 687.4,
+      "duration": 3.75
+    },
+    {
+      "id": "C88",
+      "chapter": null,
+      "text": "日はだいぶ低くなっていました。畳の上の光の筋が、部屋の奥まで伸びて、色が濃くなっています。",
+      "file": "voice/seg-90.wav",
+      "start": 691.15,
+      "duration": 9.03
+    },
+    {
+      "id": "C89",
+      "chapter": null,
+      "text": "写真の箱は、開けたままです。孫は、まだそこに座っていました。私の答えを待っている顔で。",
+      "file": "voice/seg-91.wav",
+      "start": 700.18,
+      "duration": 9.1
+    },
+    {
+      "id": "C90",
+      "chapter": null,
+      "text": "私は、話の続きをしました。今度は、自分が何をしているのかわかったうえで。",
+      "file": "voice/seg-92.wav",
+      "start": 709.28,
+      "duration": 7.83
+    },
+    {
+      "id": "C91",
+      "chapter": null,
+      "text": "いい話をするのは、嘘をつくことではありません。先に出てくるものが、そちらだというだけのことなんです。",
+      "file": "voice/seg-93.wav",
+      "start": 717.11,
+      "duration": 8.84
+    },
+    {
+      "id": "C92",
+      "chapter": null,
+      "text": "それから私は、もう少しだけ本当のことを足しました。あの頃は大変な年もあってね、と。",
+      "file": "voice/seg-94.wav",
+      "start": 725.95,
+      "duration": 8.52
+    },
+    {
+      "id": "C93",
+      "chapter": null,
+      "text": "不思議なもので、その話をしても、声は重くなりませんでした。覚えてはいる。でも、もう痛くないんです。",
+      "file": "voice/seg-95.wav",
+      "start": 734.47,
+      "duration": 11.7
+    },
+    {
+      "id": "C94",
+      "chapter": null,
+      "text": "今日お話ししたことで、覚えて帰っていただきたいのは、一つだけです。",
+      "file": "voice/seg-96.wav",
+      "start": 746.17,
+      "duration": 5.6
+    },
+    {
+      "id": "C95",
+      "chapter": null,
+      "text": "いやな記憶そのものは、消えません。消えるのは、それにくっついていた感情の強さだけです。しかも、つらい方が先に薄れる。",
+      "file": "voice/seg-97.wav",
+      "start": 751.77,
+      "duration": 11.64
+    },
+    {
+      "id": "C96",
+      "chapter": null,
+      "text": "これは、誰かが慰めのために言い出した話ではありません。二万三千二百二件の日記の記録から、測られたことなんです。",
+      "file": "voice/seg-98.wav",
+      "start": 763.42,
+      "duration": 9.92
+    },
+    {
+      "id": "C97",
+      "chapter": null,
+      "text": "ですから、あの人の記憶が薄れたのではないんです。覚えていることは、ちゃんとそこに残っている。下りていったのは、重さの方だけです。",
+      "file": "voice/seg-99.wav",
+      "start": 773.34,
+      "duration": 11.89
+    },
+    {
+      "id": "C98",
+      "chapter": null,
+      "text": "そして、これは私たちだけの話でもありません。",
+      "file": "voice/seg-100.wav",
+      "start": 785.23,
+      "duration": 4.07
+    },
+    {
+      "id": "C99",
+      "chapter": null,
+      "text": "古い写真を前にして、あの頃はよかったと言っている人が、今この時間にも、どこかの家に座っています。その人にも、同じことが起きているんです。",
+      "file": "voice/seg-101.wav",
+      "start": 789.3,
+      "duration": 13.8
+    },
+    {
+      "id": "C100",
+      "chapter": null,
+      "text": "昔が優しく見えるのは、あなたが自分をだましているからではありません。",
+      "file": "voice/seg-103.wav",
+      "start": 805.07,
+      "duration": 5.53
+    },
+    {
+      "id": "C101",
+      "chapter": null,
+      "text": "重たかったものが下に落ちるまで、あなたが十分に遠くまで歩いてきた。それだけのことなんです。",
+      "file": "voice/seg-104.wav",
+      "start": 810.6,
+      "duration": 8.01
+    }
+  ]
+}

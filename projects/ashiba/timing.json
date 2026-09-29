@@ -1,0 +1,729 @@
+{
+  "slug": "ashiba",
+  "fps": 30,
+  "totalDuration": 837.01,
+  "dryRun": false,
+  "narration": "voice/narration.mp3",
+  "lang": "ja",
+  "voice": {
+    "provider": "gpt-sovits-local",
+    "voice_name": "keita",
+    "lang": "ja",
+    "speed": 0.95,
+    "seed": 42
+  },
+  "cues": [
+    {
+      "id": "C01",
+      "chapter": "第1章 — 正午の定食屋",
+      "text": "正午でした。会社から二つ先の通りにある、いつもの定食屋です。",
+      "file": "voice/seg-00.wav",
+      "start": 0,
+      "duration": 6.66
+    },
+    {
+      "id": "C02",
+      "chapter": null,
+      "text": "この店で、十何年もお昼を食べてきました。その日も、いつもの席で、いつもの日替わりを頼みました。",
+      "file": "voice/seg-01.wav",
+      "start": 6.66,
+      "duration": 8.97
+    },
+    {
+      "id": "C03",
+      "chapter": null,
+      "text": "違っていたのは、私がもう、あの会社の人間ではないということです。定年になって、ひと月が経っていました。",
+      "file": "voice/seg-02.wav",
+      "start": 15.63,
+      "duration": 9.8
+    },
+    {
+      "id": "C04",
+      "chapter": null,
+      "text": "まわりは、ワイシャツばかりです。首から社員証を下げた人たちが、四人掛けの席に詰めて座っています。",
+      "file": "voice/seg-03.wav",
+      "start": 25.43,
+      "duration": 8.77
+    },
+    {
+      "id": "C05",
+      "chapter": null,
+      "text": "話しているのは仕事のことです。納期がどうの、あの部署がどうの。そして、社内の人にしかわからない何かで、どっと笑うんです。",
+      "file": "voice/seg-04.wav",
+      "start": 34.2,
+      "duration": 12.17
+    },
+    {
+      "id": "C06",
+      "chapter": null,
+      "text": "私の向かいの椅子は、空いていました。",
+      "file": "voice/seg-05.wav",
+      "start": 46.37,
+      "duration": 3.13
+    },
+    {
+      "id": "C07",
+      "chapter": null,
+      "text": "そして私は、その店の誰よりも早く食べ終わってしまいました。話す相手がいないと、ごはんというのは、こんなに早く終わるんですね。",
+      "file": "voice/seg-06.wav",
+      "start": 49.51,
+      "duration": 12.93
+    },
+    {
+      "id": "C08",
+      "chapter": null,
+      "text": "店を出たのが、十二時二十分でした。日差しが強くて、影が足もとに短く落ちていました。",
+      "file": "voice/seg-08.wav",
+      "start": 63.61,
+      "duration": 8.77
+    },
+    {
+      "id": "C09",
+      "chapter": null,
+      "text": "午後が、まだ丸ごと残っています。行かなければならない場所は、どこにもありません。",
+      "file": "voice/seg-09.wav",
+      "start": 72.38,
+      "duration": 7.37
+    },
+    {
+      "id": "C10",
+      "chapter": null,
+      "text": "そのとき頭に浮かんだのは、さびしいという言葉ではありませんでした。もっと間の抜けた疑問です。",
+      "file": "voice/seg-10.wav",
+      "start": 79.75,
+      "duration": 7.94
+    },
+    {
+      "id": "C11",
+      "chapter": null,
+      "text": "私は昔、どうやって友達を作っていたんだろう、と。",
+      "file": "voice/seg-11.wav",
+      "start": 87.69,
+      "duration": 5
+    },
+    {
+      "id": "C12",
+      "chapter": null,
+      "text": "学生のころには、いました。会社に入ってからも、いました。時間だけなら、今のほうがはるかにあります。",
+      "file": "voice/seg-12.wav",
+      "start": 92.68,
+      "duration": 10.25
+    },
+    {
+      "id": "C13",
+      "chapter": null,
+      "text": "時間はあるのに、人が増えない。正直に言うと、私はこれを、自分の性格の問題だと思っていました。",
+      "file": "voice/seg-13.wav",
+      "start": 102.94,
+      "duration": 9.22
+    },
+    {
+      "id": "C14",
+      "chapter": null,
+      "text": "年を取って、人づきあいが下手になったんだろう、と。そう思って、しばらく調べてみたんです。",
+      "file": "voice/seg-14.wav",
+      "start": 112.16,
+      "duration": 9.16
+    },
+    {
+      "id": "C15",
+      "chapter": null,
+      "text": "ところが出てきたのは、性格の話ではありませんでした。条件の話だったんです。",
+      "file": "voice/seg-15.wav",
+      "start": 121.32,
+      "duration": 7.3
+    },
+    {
+      "id": "C16",
+      "chapter": "第2章 — 三つの条件",
+      "text": "アメリカに、レベッカ・アダムスという社会学者がいます。ノースカロライナ大学グリーンズボロ校で、人のつながりを長く研究してきた方です。",
+      "file": "voice/seg-16.wav",
+      "start": 128.61,
+      "duration": 11.14
+    },
+    {
+      "id": "C17",
+      "chapter": null,
+      "text": "ご自分の実験を発表したわけではありません。二十世紀の半ばから積み重なっていた研究を、まとめて整理したんです。",
+      "file": "voice/seg-17.wav",
+      "start": 139.76,
+      "duration": 9.99
+    },
+    {
+      "id": "C18",
+      "chapter": null,
+      "text": "そのまとめによると、親しい友人ができるには、三つの条件が要る。三つです。数えられます。",
+      "file": "voice/seg-18.wav",
+      "start": 149.75,
+      "duration": 9.09
+    },
+    {
+      "id": "C19",
+      "chapter": null,
+      "text": "ひとつめは、近接性。同じ場所に、繰り返し体が置かれていることです。",
+      "file": "voice/seg-19.wav",
+      "start": 158.84,
+      "duration": 7.75
+    },
+    {
+      "id": "C20",
+      "chapter": null,
+      "text": "ふたつめは、予定しない繰り返しの再会。約束しなくても、また顔を合わせてしまうことです。",
+      "file": "voice/seg-20.wav",
+      "start": 166.59,
+      "duration": 9.35
+    },
+    {
+      "id": "C21",
+      "chapter": null,
+      "text": "みっつめは、心を開いて話せる場。かしこまらなくていい場所があることです。",
+      "file": "voice/seg-21.wav",
+      "start": 175.94,
+      "duration": 7.37
+    },
+    {
+      "id": "C22",
+      "chapter": null,
+      "text": "ここで私は、手を止めました。この三つの中に、性格というものが、ひとつも入っていません。",
+      "file": "voice/seg-22.wav",
+      "start": 183.31,
+      "duration": 9.29
+    },
+    {
+      "id": "C23",
+      "chapter": null,
+      "text": "明るいとか、話がうまいとか。そういうものは、条件になっていないんです。",
+      "file": "voice/seg-23.wav",
+      "start": 192.6,
+      "duration": 7.11
+    },
+    {
+      "id": "C24",
+      "chapter": null,
+      "text": "書いてあるのは全部、その人のまわりの話でした。どこにいるか。誰と何度会うか。どんな場所か。つまり、環境の話です。",
+      "file": "voice/seg-24.wav",
+      "start": 199.7,
+      "duration": 12.93
+    },
+    {
+      "id": "C25",
+      "chapter": null,
+      "text": "それで私は、さっきの定食屋のことを、もう一度思い出しました。",
+      "file": "voice/seg-25.wav",
+      "start": 212.64,
+      "duration": 5.64
+    },
+    {
+      "id": "C26",
+      "chapter": null,
+      "text": "四人掛けに詰めて座っていたあの人たちは、同じ建物で働いています。ひとつめが、あります。",
+      "file": "voice/seg-26.wav",
+      "start": 218.28,
+      "duration": 8.58
+    },
+    {
+      "id": "C27",
+      "chapter": null,
+      "text": "誰も、今日ここで会おうと約束していません。昼になったから出てきて、たまたま一緒になっただけです。ふたつめも、あります。",
+      "file": "voice/seg-27.wav",
+      "start": 226.85,
+      "duration": 10.76
+    },
+    {
+      "id": "C28",
+      "chapter": null,
+      "text": "昼休みの定食屋は、上司も部下もネクタイをゆるめる場所です。社内の話で笑える場所です。みっつめも、あります。",
+      "file": "voice/seg-28.wav",
+      "start": 237.62,
+      "duration": 10.76
+    },
+    {
+      "id": "C29",
+      "chapter": null,
+      "text": "三つとも、そろっていました。私から二メートル離れたところに、三つとも、そろっていたんです。",
+      "file": "voice/seg-29.wav",
+      "start": 248.38,
+      "duration": 7.75
+    },
+    {
+      "id": "C30",
+      "chapter": null,
+      "text": "そして私の側には、ひとつもありませんでした。同じ店で、同じ時間に、同じものを食べていたのに、です。",
+      "file": "voice/seg-30.wav",
+      "start": 256.13,
+      "duration": 9.73
+    },
+    {
+      "id": "C31",
+      "chapter": "第3章 — 足場",
+      "text": "工事現場に、足場というものがありますね。建物のまわりに鉄パイプを組んで、人が上まで登れるようにする、あの仮設のやつです。",
+      "file": "voice/seg-31.wav",
+      "start": 265.86,
+      "duration": 11.33
+    },
+    {
+      "id": "C32",
+      "chapter": null,
+      "text": "調べていて思ったのは、会社とは、まさにあれだったな、ということでした。",
+      "file": "voice/seg-32.wav",
+      "start": 277.19,
+      "duration": 6.02
+    },
+    {
+      "id": "C33",
+      "chapter": null,
+      "text": "同じフロアに毎日いる。近接性です。廊下でもエレベーターでも顔が合ってしまう。予定しない再会です。",
+      "file": "voice/seg-33.wav",
+      "start": 283.21,
+      "duration": 11.21
+    },
+    {
+      "id": "C34",
+      "chapter": null,
+      "text": "そして仕事が終われば、一杯やる場所がある。あそこでは、みんな少し気を抜きます。心を開いて話せる場です。",
+      "file": "voice/seg-34.wav",
+      "start": 294.42,
+      "duration": 10.12
+    },
+    {
+      "id": "C35",
+      "chapter": null,
+      "text": "三つとも、会社が用意していました。しかも四十年間、毎日、無料でです。誰も、用意しているとは言いませんでした。",
+      "file": "voice/seg-35.wav",
+      "start": 304.54,
+      "duration": 12.74
+    },
+    {
+      "id": "C36",
+      "chapter": null,
+      "text": "言われないまま、そこにありました。足場というのは、そういうものです。組んである間は、誰も見ていません。",
+      "file": "voice/seg-36.wav",
+      "start": 317.29,
+      "duration": 10.12
+    },
+    {
+      "id": "C37",
+      "chapter": null,
+      "text": "そして足場は、一度に外れたわけではありませんでした。順番に、外れていったんです。",
+      "file": "voice/seg-37.wav",
+      "start": 327.41,
+      "duration": 7.81
+    },
+    {
+      "id": "C38",
+      "chapter": null,
+      "text": "最初に外れたのは、学校を出たときです。同じ教室に毎日いるという、あの近さがなくなりました。",
+      "file": "voice/seg-38.wav",
+      "start": 335.22,
+      "duration": 9.22
+    },
+    {
+      "id": "C39",
+      "chapter": null,
+      "text": "次は、転勤や引っ越しのときです。約束しなくても会えていた人たちが、約束しないと会えない人たちに変わります。",
+      "file": "voice/seg-39.wav",
+      "start": 344.44,
+      "duration": 10.57
+    },
+    {
+      "id": "C40",
+      "chapter": null,
+      "text": "そして定年です。定年の日には、三つが一度に外れます。同じ日に、まとめてです。",
+      "file": "voice/seg-40.wav",
+      "start": 355.01,
+      "duration": 8.84
+    },
+    {
+      "id": "C41",
+      "chapter": null,
+      "text": "行く場所がなくなり、たまたま会う人がいなくなり、気を抜いて話せる場所も消えました。三本の筋交いが、同じ日に地面に落ちたわけです。",
+      "file": "voice/seg-41.wav",
+      "start": 363.85,
+      "duration": 11.59
+    },
+    {
+      "id": "C42",
+      "chapter": null,
+      "text": "それなのに私は、落ちたのは自分のほうだと思っていました。",
+      "file": "voice/seg-42.wav",
+      "start": 375.44,
+      "duration": 4.61
+    },
+    {
+      "id": "C43",
+      "chapter": null,
+      "text": "もうひとつ、知らなかったことに行き当たりました。友達ができるまでの時間を、数えた人がいるんです。",
+      "file": "voice/seg-43.wav",
+      "start": 380.05,
+      "duration": 8.26
+    },
+    {
+      "id": "C44",
+      "chapter": null,
+      "text": "カンザス大学の、ジェフリー・ホールという研究者です。二〇一八年の論文の題が、こうです。友達を一人作るのに、何時間かかるのか。",
+      "file": "voice/seg-44.wav",
+      "start": 388.31,
+      "duration": 12.93
+    },
+    {
+      "id": "C45",
+      "chapter": null,
+      "text": "調べたのは二つの集まりです。知らない土地へ引っ越した大人が三百五十五人。入学したばかりの大学生が百十二人を、九週間追いかけました。",
+      "file": "voice/seg-45.wav",
+      "start": 401.24,
+      "duration": 14.54
+    },
+    {
+      "id": "C46",
+      "chapter": null,
+      "text": "出てきた数字が、こうです。ただの知り合いが、親しい知り合いになるまで、およそ五十時間。",
+      "file": "voice/seg-46.wav",
+      "start": 415.78,
+      "duration": 9.41
+    },
+    {
+      "id": "C47",
+      "chapter": null,
+      "text": "そこから友人と呼べるようになるまでが、およそ九十時間。そして親友と呼べるところまでは、二百時間を超えます。",
+      "file": "voice/seg-47.wav",
+      "start": 425.19,
+      "duration": 10.57
+    },
+    {
+      "id": "C48",
+      "chapter": null,
+      "text": "二百時間です。正直に言うと、ぞっとしました。週に一度、二時間ずつ会ったとして、二年かかる計算です。",
+      "file": "voice/seg-48.wav",
+      "start": 435.76,
+      "duration": 9.73
+    },
+    {
+      "id": "C49",
+      "chapter": null,
+      "text": "ところが、そのあとで気づきました。この二百時間を、私はもう払っていたんです。何度も。",
+      "file": "voice/seg-49.wav",
+      "start": 445.49,
+      "duration": 8.52
+    },
+    {
+      "id": "C50",
+      "chapter": null,
+      "text": "同じ部署に一年いれば、その人とは千時間を超えて同じ空間にいます。二百時間どころではありません。",
+      "file": "voice/seg-50.wav",
+      "start": 454.01,
+      "duration": 9.48
+    },
+    {
+      "id": "C51",
+      "chapter": null,
+      "text": "つまり、努力していたわけではないんです。会社に行っていたら、勝手に積み上がっていた。足場が、時間まで積んでくれていたわけです。",
+      "file": "voice/seg-51.wav",
+      "start": 463.49,
+      "duration": 11.53
+    },
+    {
+      "id": "C52",
+      "chapter": null,
+      "text": "ただ、正直に言っておかないといけません。ホール自身が、論文の中でわざわざ断っているんです。",
+      "file": "voice/seg-52.wav",
+      "start": 475.02,
+      "duration": 9.54
+    },
+    {
+      "id": "C53",
+      "chapter": null,
+      "text": "一緒に働いた時間は、一緒に遊んだ時間と同じには数えられない、と。会議で隣にいた三時間は、その人の人生の話を聞いた三時間ではありません。",
+      "file": "voice/seg-53.wav",
+      "start": 484.56,
+      "duration": 13.71
+    },
+    {
+      "id": "C54",
+      "chapter": null,
+      "text": "四十年働いたからといって、その分の親友がいるとは限りません。そこは私も、思い当たる節があります。",
+      "file": "voice/seg-54.wav",
+      "start": 498.27,
+      "duration": 9.35
+    },
+    {
+      "id": "C55",
+      "chapter": null,
+      "text": "数字そのものも、二つの調査から出した平均です。ここを超えたら友達、という関所はありません。",
+      "file": "voice/seg-55.wav",
+      "start": 507.62,
+      "duration": 8.2
+    },
+    {
+      "id": "C56",
+      "chapter": null,
+      "text": "アダムスの三条件も同じです。対照群を置いた実験ではなく、長年の研究を社会学者がまとめたものでした。",
+      "file": "voice/seg-56.wav",
+      "start": 515.82,
+      "duration": 9.73
+    },
+    {
+      "id": "C57",
+      "chapter": null,
+      "text": "ですから私は、これを法則だとは思っていません。ただ、外れた三本に名前がついた。それだけでも、ずいぶん違いました。",
+      "file": "voice/seg-57.wav",
+      "start": 525.55,
+      "duration": 11.14
+    },
+    {
+      "id": "C58",
+      "chapter": "第4章 — 帰り道",
+      "text": "それでも、疑問が残っていました。では結局、定年で人は何人いなくなるのか、ということです。",
+      "file": "voice/seg-58.wav",
+      "start": 536.69,
+      "duration": 9.16
+    },
+    {
+      "id": "C59",
+      "chapter": null,
+      "text": "これを実際に数えた調査がありました。フィンランドの、トゥルク大学のグループです。二〇二一年に発表されました。",
+      "file": "voice/seg-59.wav",
+      "start": 545.85,
+      "duration": 10.57
+    },
+    {
+      "id": "C60",
+      "chapter": null,
+      "text": "対象は二千三百十九人。定年を迎える人たちを、退職の前から後まで追いかけています。",
+      "file": "voice/seg-60.wav",
+      "start": 556.42,
+      "duration": 10.12
+    },
+    {
+      "id": "C61",
+      "chapter": null,
+      "text": "つながりは、三つの輪に分けて数えました。内側は、いなくなったら困る人たち。その外が、近しい人たち。いちばん外が、そこまで近くはない人たちです。",
+      "file": "voice/seg-61.wav",
+      "start": 566.55,
+      "duration": 15.44
+    },
+    {
+      "id": "C62",
+      "chapter": null,
+      "text": "退職する前の平均は、全部で二十一人と少し。内側が五人あまり、中間が七人ほど、外側が九人ほどでした。",
+      "file": "voice/seg-62.wav",
+      "start": 581.98,
+      "duration": 11.08
+    },
+    {
+      "id": "C63",
+      "chapter": null,
+      "text": "そして退職の前後で、外側の輪が減りました。減った数が、〇・六七人です。一人にも、届いていません。",
+      "file": "voice/seg-63.wav",
+      "start": 593.07,
+      "duration": 10.95
+    },
+    {
+      "id": "C64",
+      "chapter": null,
+      "text": "内側の輪と、中間の輪は。ほとんど変わっていませんでした。",
+      "file": "voice/seg-64.wav",
+      "start": 604.02,
+      "duration": 5.25
+    },
+    {
+      "id": "C65",
+      "chapter": null,
+      "text": "つまり、薄くなったのは外側だけだったんです。深いところは、定年をはさんでも、そのままそこにありました。",
+      "file": "voice/seg-65.wav",
+      "start": 609.26,
+      "duration": 9.99
+    },
+    {
+      "id": "C66",
+      "chapter": null,
+      "text": "もうひとつ、大事な発見があります。その減り方が、いつ起きたか、です。",
+      "file": "voice/seg-66.wav",
+      "start": 619.26,
+      "duration": 7.3
+    },
+    {
+      "id": "C67",
+      "chapter": null,
+      "text": "外側が減ったのは、退職をまたぐ時期だけでした。そのあと一年半のあいだは、〇・一人ほどしか動いていません。誤差の範囲です。",
+      "file": "voice/seg-67.wav",
+      "start": 626.55,
+      "duration": 11.78
+    },
+    {
+      "id": "C68",
+      "chapter": null,
+      "text": "もし年を取ることが原因なら、減り続けるはずなんです。年は取り続けるんですから。",
+      "file": "voice/seg-68.wav",
+      "start": 638.34,
+      "duration": 6.98
+    },
+    {
+      "id": "C69",
+      "chapter": null,
+      "text": "ところが、止まりました。ですから研究者たちは、これは加齢によるものというより、退職に結びついた変化だろう、と書いています。",
+      "file": "voice/seg-69.wav",
+      "start": 645.31,
+      "duration": 11.08
+    },
+    {
+      "id": "C70",
+      "chapter": null,
+      "text": "年を取ったから減ったのではない。仕事をやめたから、その時だけ減った。そして、そこで止まった。",
+      "file": "voice/seg-70.wav",
+      "start": 656.4,
+      "duration": 9.29
+    },
+    {
+      "id": "C71",
+      "chapter": null,
+      "text": "もちろん、この調査にも限界があります。対象はフィンランドの公務員で、八割以上が女性でした。日本の男には、そのまま当てはまらない部分があります。",
+      "file": "voice/seg-71.wav",
+      "start": 665.69,
+      "duration": 13.97
+    },
+    {
+      "id": "C72",
+      "chapter": null,
+      "text": "日本の数字もあります。内閣府が、六十歳以上の人を日本・アメリカ・ドイツ・スウェーデンで比べた調査。二〇二〇年の暮れの調査です。",
+      "file": "voice/seg-72.wav",
+      "start": 679.65,
+      "duration": 13.58
+    },
+    {
+      "id": "C73",
+      "chapter": null,
+      "text": "家族以外に親しい友人がいない、と答えた日本の人は、三十一・三パーセント。男性だけを見ると、およそ四割です。ほかの三か国は、だいたい一割台でした。",
+      "file": "voice/seg-73.wav",
+      "start": 693.23,
+      "duration": 15.95
+    },
+    {
+      "id": "C74",
+      "chapter": null,
+      "text": "この数字を見て、私は日本が寂しい国だとは思いませんでした。思ったのは、もっと単純なことです。",
+      "file": "voice/seg-74.wav",
+      "start": 709.18,
+      "duration": 10.25
+    },
+    {
+      "id": "C75",
+      "chapter": null,
+      "text": "五人に二人。あの定食屋にいた男の人たちのうち、二人くらいは、定年のあと私と同じ席に座ることになります。",
+      "file": "voice/seg-75.wav",
+      "start": 719.43,
+      "duration": 9.99
+    },
+    {
+      "id": "C76",
+      "chapter": null,
+      "text": "私ひとりの性格の話にしては、人数が多すぎるんです。",
+      "file": "voice/seg-76.wav",
+      "start": 729.42,
+      "duration": 5.38
+    },
+    {
+      "id": "C77",
+      "chapter": null,
+      "text": "先週も私は、あの定食屋に行きました。同じ正午です。同じ席で、同じ日替わりを頼みました。",
+      "file": "voice/seg-77.wav",
+      "start": 734.8,
+      "duration": 10.37
+    },
+    {
+      "id": "C78",
+      "chapter": null,
+      "text": "まわりはやはりワイシャツで、社員証が揺れていて、社内の誰かの話でどっと笑っていました。向かいの椅子も、空いたままです。",
+      "file": "voice/seg-78.wav",
+      "start": 745.17,
+      "duration": 10.12
+    },
+    {
+      "id": "C79",
+      "chapter": null,
+      "text": "外のことは、本当に何ひとつ変わっていないんです。",
+      "file": "voice/seg-79.wav",
+      "start": 755.29,
+      "duration": 4.41
+    },
+    {
+      "id": "C80",
+      "chapter": null,
+      "text": "変わったのは、そこに座っている私のほうでした。自分が何を失ったのか、名前がわかったんです。",
+      "file": "voice/seg-80.wav",
+      "start": 759.7,
+      "duration": 8.9
+    },
+    {
+      "id": "C81",
+      "chapter": null,
+      "text": "近くにいること。約束せずに会ってしまうこと。気を抜いて話せる場所。三つです。どれも、私の中にあったものではありません。",
+      "file": "voice/seg-81.wav",
+      "start": 768.6,
+      "duration": 11.01
+    },
+    {
+      "id": "C82",
+      "chapter": null,
+      "text": "私のまわりに、組んであったものです。",
+      "file": "voice/seg-82.wav",
+      "start": 779.62,
+      "duration": 3.2
+    },
+    {
+      "id": "C83",
+      "chapter": null,
+      "text": "建物のほうは、立っています。あのフィンランドの調査が数えたとおり、いちばん内側の輪は、減っていませんでした。",
+      "file": "voice/seg-83.wav",
+      "start": 782.82,
+      "duration": 9.73
+    },
+    {
+      "id": "C84",
+      "chapter": null,
+      "text": "薄くなったのは外側です。深いところではありませんでした。",
+      "file": "voice/seg-84.wav",
+      "start": 792.55,
+      "duration": 5.64
+    },
+    {
+      "id": "C85",
+      "chapter": null,
+      "text": "店を出たのは、やはり十二時二十分でした。日差しは相変わらず強くて、影は足もとに短いままです。",
+      "file": "voice/seg-85.wav",
+      "start": 798.19,
+      "duration": 9.99
+    },
+    {
+      "id": "C86",
+      "chapter": null,
+      "text": "午後は、まだ丸ごと残っています。行かなければならない場所も、やはりありません。",
+      "file": "voice/seg-86.wav",
+      "start": 808.18,
+      "duration": 6.73
+    },
+    {
+      "id": "C87",
+      "chapter": null,
+      "text": "ですが、あの日と違っていることが、ひとつだけあります。私はもう、自分を責めていませんでした。",
+      "file": "voice/seg-87.wav",
+      "start": 814.91,
+      "duration": 8.71
+    },
+    {
+      "id": "C88",
+      "chapter": null,
+      "text": "友達を作る力が、なくなったわけではないんです。",
+      "file": "voice/seg-89.wav",
+      "start": 825.11,
+      "duration": 4.41
+    },
+    {
+      "id": "C89",
+      "chapter": null,
+      "text": "その仕事を、四十年ものあいだ代わりにやってくれていた足場が、外されただけなんです。",
+      "file": "voice/seg-90.wav",
+      "start": 829.52,
+      "duration": 7.49
+    }
+  ]
+}

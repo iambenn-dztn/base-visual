@@ -1,0 +1,41 @@
+{
+  "slug": "_sample-ja",
+  "fps": 30,
+  "totalDuration": 32.03,
+  "dryRun": true,
+  "narration": null,
+  "lang": "ja",
+  "voice": {
+    "provider": "gpt-sovits-local",
+    "voice_name": "keita",
+    "lang": "ja",
+    "speed": 0.95,
+    "seed": 42
+  },
+  "cues": [
+    {
+      "id": "C01",
+      "chapter": "第1章 — 問い",
+      "text": "四十九日はなぜ四十九日なのか。十王経は、七日ごとに七回の審判があると説きます。",
+      "file": null,
+      "start": 0,
+      "duration": 7.96
+    },
+    {
+      "id": "C02",
+      "chapter": null,
+      "text": "三途の川という名前を、私たちは子どものころから聞いています。ですが、あの川がどの経典から来たのかを教わったことは、ほとんどありません。",
+      "file": null,
+      "start": 8.56,
+      "duration": 13.67
+    },
+    {
+      "id": "C03",
+      "chapter": null,
+      "text": "日本では、亡くなった方の九十九パーセント以上が火葬されます。これは世界でも際立って高い数字です。",
+      "file": null,
+      "start": 22.23,
+      "duration": 9.8
+    }
+  ]
+}

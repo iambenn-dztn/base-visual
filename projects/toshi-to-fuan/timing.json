@@ -1,0 +1,713 @@
+{
+  "slug": "toshi-to-fuan",
+  "fps": 30,
+  "totalDuration": 804.88,
+  "dryRun": false,
+  "narration": "voice/narration.mp3",
+  "lang": "ja",
+  "voice": {
+    "provider": "gpt-sovits-local",
+    "voice_name": "keita",
+    "lang": "ja",
+    "speed": 0.95,
+    "seed": 42
+  },
+  "cues": [
+    {
+      "id": "C01",
+      "chapter": "第1章 — 午前三時",
+      "text": "目が覚めました。真っ暗です。何の音もしていません。",
+      "file": "voice/seg-00.wav",
+      "start": 0,
+      "duration": 6.5
+    },
+    {
+      "id": "C02",
+      "chapter": null,
+      "text": "枕元の時計を見ます。午前三時。数字が赤くにじんで見えました。今週、これで三度目です。",
+      "file": "voice/seg-01.wav",
+      "start": 6.5,
+      "duration": 9.5
+    },
+    {
+      "id": "C03",
+      "chapter": null,
+      "text": "仰向けのまま、天井を見ていました。カーテンの隙間から、街灯の光が細く入ってきています。天井を斜めに横切る、一本の帯になって。",
+      "file": "voice/seg-02.wav",
+      "start": 16,
+      "duration": 12.76
+    },
+    {
+      "id": "C04",
+      "chapter": null,
+      "text": "何かあったわけではないんです。昼間は普通でした。仕事にも行きましたし、人と笑って話もしました。",
+      "file": "voice/seg-03.wav",
+      "start": 28.77,
+      "duration": 8.73
+    },
+    {
+      "id": "C05",
+      "chapter": null,
+      "text": "ただ、この時間になると、その考えが来る。いつか自分にも終わりが来る、という、あの考えです。",
+      "file": "voice/seg-04.wav",
+      "start": 37.5,
+      "duration": 10.72
+    },
+    {
+      "id": "C06",
+      "chapter": null,
+      "text": "ずっと考えているわけではありません。三十分ほどでしょうか。やがてまた眠ります。朝が来れば、忘れています。",
+      "file": "voice/seg-05.wav",
+      "start": 48.22,
+      "duration": 9.95
+    },
+    {
+      "id": "C07",
+      "chapter": null,
+      "text": "それでも、また次の夜に来るんです。",
+      "file": "voice/seg-06.wav",
+      "start": 58.17,
+      "duration": 3.63
+    },
+    {
+      "id": "C08",
+      "chapter": null,
+      "text": "若いころは、こんなことはありませんでした。いつからでしょうか。はっきりした境目は、思い出せません。",
+      "file": "voice/seg-07.wav",
+      "start": 61.8,
+      "duration": 10.01
+    },
+    {
+      "id": "C09",
+      "chapter": null,
+      "text": "ただ、ここ何年かのあいだに、夜の三時という時間が、そういう時間に変わってしまった。それだけは確かなんです。",
+      "file": "voice/seg-08.wav",
+      "start": 71.81,
+      "duration": 11.04
+    },
+    {
+      "id": "C10",
+      "chapter": null,
+      "text": "こういう話は、誰にもしません。朝の食卓で言うようなことでもありませんし、言ったところで、心配をかけるだけですから。",
+      "file": "voice/seg-09.wav",
+      "start": 82.85,
+      "duration": 10.53
+    },
+    {
+      "id": "C11",
+      "chapter": null,
+      "text": "ですから、私はてっきり、これは自分だけの夜だと思っていたんです。",
+      "file": "voice/seg-10.wav",
+      "start": 93.38,
+      "duration": 6.12
+    },
+    {
+      "id": "C12",
+      "chapter": null,
+      "text": "不思議だったのは、その数日前のことでした。父を病院へ送っていった帰りの車の中です。父は八十を過ぎています。",
+      "file": "voice/seg-11.wav",
+      "start": 99.5,
+      "duration": 12.69
+    },
+    {
+      "id": "C13",
+      "chapter": null,
+      "text": "その父が、自分のあとのことを話しはじめました。どこに入るか、誰に何を頼んであるか。淡々と。",
+      "file": "voice/seg-12.wav",
+      "start": 112.2,
+      "duration": 8.99
+    },
+    {
+      "id": "C14",
+      "chapter": null,
+      "text": "屋根の修理の相談でもしているような調子でした。運転しながら、私はうまく相槌が打てませんでした。",
+      "file": "voice/seg-13.wav",
+      "start": 121.19,
+      "duration": 9.18
+    },
+    {
+      "id": "C15",
+      "chapter": null,
+      "text": "おかしいと思いませんか。年をとるほど、その日は近づいてくるはずです。近いほうが、怖いはずでしょう。",
+      "file": "voice/seg-14.wav",
+      "start": 130.37,
+      "duration": 8.86
+    },
+    {
+      "id": "C16",
+      "chapter": null,
+      "text": "なのに、どうして父のほうが落ち着いているんでしょう。夜中に目を覚ましているのは、私のほうなんです。",
+      "file": "voice/seg-15.wav",
+      "start": 139.24,
+      "duration": 10.21
+    },
+    {
+      "id": "C17",
+      "chapter": "第2章 — 山のかたち",
+      "text": "誰か、これを測った人はいないだろうか。そう思って調べはじめました。",
+      "file": "voice/seg-17.wav",
+      "start": 150.93,
+      "duration": 6.18
+    },
+    {
+      "id": "C18",
+      "chapter": null,
+      "text": "ありました。二〇〇七年、『デス・スタディーズ』という学術誌に載った、ラサックたちの調査です。",
+      "file": "voice/seg-18.wav",
+      "start": 157.12,
+      "duration": 7.91
+    },
+    {
+      "id": "C19",
+      "chapter": null,
+      "text": "十八歳から八十七歳まで、三百四人。一人ひとりに尺度で答えてもらって、年齢ごとに並べたものです。",
+      "file": "voice/seg-19.wav",
+      "start": 165.02,
+      "duration": 10.46
+    },
+    {
+      "id": "C20",
+      "chapter": null,
+      "text": "私は、結果はまっすぐ上がっていく線だろうと思っていました。年をとるほど近づくのだから、不安も増える。当たり前のように思えます。",
+      "file": "voice/seg-20.wav",
+      "start": 175.48,
+      "duration": 11.1
+    },
+    {
+      "id": "C21",
+      "chapter": null,
+      "text": "違いました。線はまっすぐではなかったんです。山が、二つありました。",
+      "file": "voice/seg-21.wav",
+      "start": 186.58,
+      "duration": 6.76
+    },
+    {
+      "id": "C22",
+      "chapter": null,
+      "text": "いちばん高いところは、二十代でした。男性も、女性も、そこが最高地点です。",
+      "file": "voice/seg-22.wav",
+      "start": 193.34,
+      "duration": 8.73
+    },
+    {
+      "id": "C23",
+      "chapter": null,
+      "text": "意外に聞こえるかもしれません。二十代といえば、そんなことを考える暇もない年頃のはずですから。",
+      "file": "voice/seg-23.wav",
+      "start": 202.08,
+      "duration": 9.05
+    },
+    {
+      "id": "C24",
+      "chapter": null,
+      "text": "ですが、思い返してみると、心当たりのある方もいるのではないでしょうか。眠れずに、天井を見ていた若い夜のことです。",
+      "file": "voice/seg-24.wav",
+      "start": 211.13,
+      "duration": 10.97
+    },
+    {
+      "id": "C25",
+      "chapter": null,
+      "text": "あれは特別なことではなかったんです。あの年代の山の上に、みんな立っていた、ということになります。",
+      "file": "voice/seg-25.wav",
+      "start": 222.1,
+      "duration": 9.31
+    },
+    {
+      "id": "C26",
+      "chapter": null,
+      "text": "そこから線は下がります。三十代、四十代。低い窪みになります。",
+      "file": "voice/seg-26.wav",
+      "start": 231.41,
+      "duration": 6.63
+    },
+    {
+      "id": "C27",
+      "chapter": null,
+      "text": "そして五十代。ここでもう一度、線が上がるんです。二つ目の山です。",
+      "file": "voice/seg-27.wav",
+      "start": 238.04,
+      "duration": 7.72
+    },
+    {
+      "id": "C28",
+      "chapter": null,
+      "text": "ここは正確に言わないといけません。この二つ目の山は、女性のグループに見られたものです。",
+      "file": "voice/seg-28.wav",
+      "start": 245.76,
+      "duration": 7.91
+    },
+    {
+      "id": "C29",
+      "chapter": null,
+      "text": "同じ調査で、男性にはこの五十代の山は出ていません。男性の線は、二十代の山を越えたあと、下がったままなんです。",
+      "file": "voice/seg-29.wav",
+      "start": 253.67,
+      "duration": 10.85
+    },
+    {
+      "id": "C30",
+      "chapter": null,
+      "text": "ですから、五十代になったら誰でも不安が跳ね上がる、という話ではありません。そう聞こえたなら、それは言いすぎです。",
+      "file": "voice/seg-30.wav",
+      "start": 264.51,
+      "duration": 10.97
+    },
+    {
+      "id": "C31",
+      "chapter": null,
+      "text": "ここで私は、手が止まりました。自分がどちらの説明に当てはまるにしても、共通していることが一つあったからです。",
+      "file": "voice/seg-31.wav",
+      "start": 275.48,
+      "duration": 10.33
+    },
+    {
+      "id": "C32",
+      "chapter": null,
+      "text": "私は、坂を下っている途中だと思っていました。年をとるにつれて、どんどん沈んでいくのだと。",
+      "file": "voice/seg-32.wav",
+      "start": 285.81,
+      "duration": 9.25
+    },
+    {
+      "id": "C33",
+      "chapter": null,
+      "text": "そうではなかったんです。山の上、あるいは山を越えたあたりに、いたんです。",
+      "file": "voice/seg-33.wav",
+      "start": 295.07,
+      "duration": 6.89
+    },
+    {
+      "id": "C34",
+      "chapter": null,
+      "text": "山というのは、そういうものです。上がったところがあるなら、その先には必ず、下りがあるということです。",
+      "file": "voice/seg-34.wav",
+      "start": 301.96,
+      "duration": 8.55
+    },
+    {
+      "id": "C35",
+      "chapter": null,
+      "text": "実際、この調査でいちばんはっきりしていたのは、そこでした。年齢とともに、線は下がっていく。しかも、かなりはっきりと。",
+      "file": "voice/seg-35.wav",
+      "start": 310.5,
+      "duration": 12.31
+    },
+    {
+      "id": "C36",
+      "chapter": null,
+      "text": "同じ論文には二つ目の調査もあって、十八歳から八十五歳までの女性百十三人に、別の尺度で答えてもらっています。",
+      "file": "voice/seg-36.wav",
+      "start": 322.82,
+      "duration": 10.72
+    },
+    {
+      "id": "C37",
+      "chapter": null,
+      "text": "尺度を変えても、人を変えても、出てきた形は同じでした。二つの山と、そのあとの長い下り。",
+      "file": "voice/seg-37.wav",
+      "start": 333.53,
+      "duration": 9.95
+    },
+    {
+      "id": "C38",
+      "chapter": null,
+      "text": "つまり、いちばん静かなのは、いちばん年をとった人たちだった、ということです。",
+      "file": "voice/seg-38.wav",
+      "start": 343.49,
+      "duration": 7.4
+    },
+    {
+      "id": "C39",
+      "chapter": null,
+      "text": "父の、あの車の中の声を思い出しました。あれは我慢していたわけではなかったのかもしれません。",
+      "file": "voice/seg-39.wav",
+      "start": 350.88,
+      "duration": 8.23
+    },
+    {
+      "id": "C40",
+      "chapter": "第3章 — 四十四組の食い違い",
+      "text": "それを、もっと直接に調べた研究があります。二〇一七年、『フロンティアズ・イン・メディシン』に載った、シノフという研究者の報告です。",
+      "file": "voice/seg-41.wav",
+      "start": 360.6,
+      "duration": 13.01
+    },
+    {
+      "id": "C41",
+      "chapter": null,
+      "text": "イスラエルで、高齢の方と、その成人した子ども。同じ家の二人を、一組として調べました。四十四組です。",
+      "file": "voice/seg-42.wav",
+      "start": 373.61,
+      "duration": 11.29
+    },
+    {
+      "id": "C42",
+      "chapter": null,
+      "text": "両方に、同じ十五点満点の尺度で答えてもらいます。点が高いほど、不安が強いということになります。",
+      "file": "voice/seg-43.wav",
+      "start": 384.9,
+      "duration": 10.08
+    },
+    {
+      "id": "C43",
+      "chapter": null,
+      "text": "高齢のご本人の平均は、四・〇でした。十五点のうち四です。",
+      "file": "voice/seg-44.wav",
+      "start": 394.98,
+      "duration": 5.86
+    },
+    {
+      "id": "C44",
+      "chapter": null,
+      "text": "その子どもたちが、自分自身について答えた点は、六・九。親より高いんです。",
+      "file": "voice/seg-45.wav",
+      "start": 400.84,
+      "duration": 7.53
+    },
+    {
+      "id": "C45",
+      "chapter": null,
+      "text": "そして、この研究のいちばん大事なところは、三つ目の数字です。子どもたちに、親はどれくらいだと思うかを答えてもらった。",
+      "file": "voice/seg-46.wav",
+      "start": 408.37,
+      "duration": 10.72
+    },
+    {
+      "id": "C46",
+      "chapter": null,
+      "text": "八・一でした。親本人の四・〇の、倍です。",
+      "file": "voice/seg-47.wav",
+      "start": 419.09,
+      "duration": 5.35
+    },
+    {
+      "id": "C47",
+      "chapter": null,
+      "text": "少し、飲み込むのに時間がかかりました。もう一度言います。いちばん静かだったのは親で、その親をいちばん不安だと見ていたのは、子どものほうだったんです。",
+      "file": "voice/seg-48.wav",
+      "start": 424.44,
+      "duration": 11.55
+    },
+    {
+      "id": "C48",
+      "chapter": null,
+      "text": "親の不安をいちばん心配しているのは、親ではない。子どもなんです。",
+      "file": "voice/seg-49.wav",
+      "start": 435.99,
+      "duration": 6.63
+    },
+    {
+      "id": "C49",
+      "chapter": null,
+      "text": "あの車の中で、うまく相槌が打てなかったのは、私のほうでした。父ではありません。",
+      "file": "voice/seg-50.wav",
+      "start": 442.62,
+      "duration": 7.34
+    },
+    {
+      "id": "C50",
+      "chapter": null,
+      "text": "父は、言いにくい話をしていたのではなかったんです。私が、聞きにくい話として受け取っていた。それだけのことでした。",
+      "file": "voice/seg-51.wav",
+      "start": 449.96,
+      "duration": 10.65
+    },
+    {
+      "id": "C51",
+      "chapter": null,
+      "text": "この研究には、もう一つ、聞いておきたい発見があります。高齢の方たちが「怖い」と答えたとき、その中身です。",
+      "file": "voice/seg-52.wav",
+      "start": 460.61,
+      "duration": 10.14
+    },
+    {
+      "id": "C52",
+      "chapter": null,
+      "text": "終わりそのもののことではありませんでした。答えの多くが向いていたのは、そこへ向かう過程に、痛みがあるかどうかでした。",
+      "file": "voice/seg-53.wav",
+      "start": 470.75,
+      "duration": 10.65
+    },
+    {
+      "id": "C53",
+      "chapter": null,
+      "text": "つまり、二つの別々のものが、一つの言葉に押し込められていたということです。",
+      "file": "voice/seg-54.wav",
+      "start": 481.4,
+      "duration": 7.08
+    },
+    {
+      "id": "C54",
+      "chapter": null,
+      "text": "そして、これは大事な違いなんです。なぜなら、痛みのことは、尋ねられることだからです。",
+      "file": "voice/seg-55.wav",
+      "start": 488.48,
+      "duration": 7.91
+    },
+    {
+      "id": "C55",
+      "chapter": null,
+      "text": "最期に苦しくないようにしてもらえるのか。それは黙って耐える話ではなくて、担当してくださる方がいて、先に話しておける話なんです。",
+      "file": "voice/seg-56.wav",
+      "start": 496.38,
+      "duration": 10.14
+    },
+    {
+      "id": "C56",
+      "chapter": null,
+      "text": "漠然と怖いものと、尋ねられるもの。この二つを分けておくだけでも、夜の重さは変わってくると思います。",
+      "file": "voice/seg-57.wav",
+      "start": 506.52,
+      "duration": 10.21
+    },
+    {
+      "id": "C57",
+      "chapter": null,
+      "text": "では、なぜ年をとると線が下がるんでしょうか。ここについては、一つの説明が出されています。",
+      "file": "voice/seg-59.wav",
+      "start": 517.72,
+      "duration": 9.12
+    },
+    {
+      "id": "C58",
+      "chapter": null,
+      "text": "一九九九年、カーステンセンたちが『アメリカン・サイコロジスト』に発表した考え方です。",
+      "file": "voice/seg-60.wav",
+      "start": 526.84,
+      "duration": 8.1
+    },
+    {
+      "id": "C59",
+      "chapter": null,
+      "text": "先に断っておきますが、これは不安を測った結果ではありません。なぜそうなるのかを説明するために出された、理論です。",
+      "file": "voice/seg-61.wav",
+      "start": 534.94,
+      "duration": 10.53
+    },
+    {
+      "id": "C60",
+      "chapter": null,
+      "text": "言っていることは、こうです。人は、残り時間をどう感じているかで、何を大事にするかの順番を入れ替える。",
+      "file": "voice/seg-62.wav",
+      "start": 545.47,
+      "duration": 9.44
+    },
+    {
+      "id": "C61",
+      "chapter": null,
+      "text": "残り時間が、まだいくらでもあると感じられているとき。人は、集めるほうを優先します。知識、経験、新しい出会い。広げていく方向です。",
+      "file": "voice/seg-63.wav",
+      "start": 554.91,
+      "duration": 15.51
+    },
+    {
+      "id": "C62",
+      "chapter": null,
+      "text": "ところが、残り時間が限られていると感じられるようになると、順番が入れ替わる。先に来るのは、いま目の前にある、意味のあるもののほうなんです。",
+      "file": "voice/seg-64.wav",
+      "start": 570.42,
+      "duration": 12.88
+    },
+    {
+      "id": "C63",
+      "chapter": null,
+      "text": "会う人の数は減るかもしれません。ですが、その減り方が肝心です。誰でもよかったのが、この人でなければ困る、に変わる。",
+      "file": "voice/seg-65.wav",
+      "start": 583.3,
+      "duration": 11.93
+    },
+    {
+      "id": "C64",
+      "chapter": null,
+      "text": "ここが、私がいちばん取り違えていたところでした。",
+      "file": "voice/seg-66.wav",
+      "start": 595.23,
+      "duration": 4.21
+    },
+    {
+      "id": "C65",
+      "chapter": null,
+      "text": "静かになった人を見て、私はずっと、あきらめたのだと思っていたんです。歳をとって、もう望まなくなったのだと。",
+      "file": "voice/seg-67.wav",
+      "start": 599.43,
+      "duration": 10.27
+    },
+    {
+      "id": "C66",
+      "chapter": null,
+      "text": "この説明が正しいとすれば、逆です。関心が消えたのではなくて、関心を向ける先が入れ替わった、ということになります。",
+      "file": "voice/seg-68.wav",
+      "start": 609.71,
+      "duration": 12.12
+    },
+    {
+      "id": "C67",
+      "chapter": null,
+      "text": "あきらめではありません。向きを変えただけなんです。",
+      "file": "voice/seg-69.wav",
+      "start": 621.83,
+      "duration": 4.21
+    },
+    {
+      "id": "C68",
+      "chapter": null,
+      "text": "ここまで数字を並べてきましたので、言っておかないといけないことが、三つあります。",
+      "file": "voice/seg-70.wav",
+      "start": 626.04,
+      "duration": 6.82
+    },
+    {
+      "id": "C69",
+      "chapter": null,
+      "text": "一つ。これはあくまで、大勢を並べたときに見えてくる傾向です。一人ひとりに当てはまる決まりではありません。",
+      "file": "voice/seg-71.wav",
+      "start": 632.86,
+      "duration": 9.82
+    },
+    {
+      "id": "C70",
+      "chapter": null,
+      "text": "八十歳で眠れない方もいます。五十歳でもう静かな方もいます。どちらも、おかしなことではないんです。",
+      "file": "voice/seg-72.wav",
+      "start": 642.68,
+      "duration": 10.08
+    },
+    {
+      "id": "C71",
+      "chapter": null,
+      "text": "二つ。シノフの研究は四十四組、一つの国の、入院しておられた方が対象です。数としては多くありません。証明された、という言い方はできません。",
+      "file": "voice/seg-73.wav",
+      "start": 652.76,
+      "duration": 15.12
+    },
+    {
+      "id": "C72",
+      "chapter": null,
+      "text": "三つ。どちらの調査も、本人が自分で答える尺度です。口に出せなかったものまでは、測れていません。",
+      "file": "voice/seg-74.wav",
+      "start": 667.88,
+      "duration": 10.65
+    },
+    {
+      "id": "C73",
+      "chapter": null,
+      "text": "正直に言えば、この三つ目が私には、いちばん引っかかっています。夜中のあの三十分を、紙の上の数字で言い当てられるとは思えませんから。",
+      "file": "voice/seg-75.wav",
+      "start": 678.53,
+      "duration": 12.44
+    },
+    {
+      "id": "C74",
+      "chapter": null,
+      "text": "それでも、残るものがあります。年齢とともに線が下がっていくという形は、別々の調査で、繰り返し出てきているんです。",
+      "file": "voice/seg-76.wav",
+      "start": 690.97,
+      "duration": 10.97
+    },
+    {
+      "id": "C75",
+      "chapter": "第4章 — 帰り道",
+      "text": "また、目が覚めました。同じ部屋です。同じ天井です。",
+      "file": "voice/seg-78.wav",
+      "start": 703.91,
+      "duration": 6.5
+    },
+    {
+      "id": "C76",
+      "chapter": null,
+      "text": "街灯の帯も、同じところを斜めに横切っています。何一つ、変わっていません。",
+      "file": "voice/seg-79.wav",
+      "start": 710.41,
+      "duration": 7.21
+    },
+    {
+      "id": "C77",
+      "chapter": null,
+      "text": "変わったのは、自分がどのあたりにいるのかが、わかったことだけです。",
+      "file": "voice/seg-80.wav",
+      "start": 717.62,
+      "duration": 5.67
+    },
+    {
+      "id": "C78",
+      "chapter": null,
+      "text": "私がいま立っているところは、もう測られていました。そして、そこから先にあるのは、下りなんです。",
+      "file": "voice/seg-81.wav",
+      "start": 723.3,
+      "duration": 9.57
+    },
+    {
+      "id": "C79",
+      "chapter": null,
+      "text": "これは気休めではありません。名前と年の付いた調査に、そう出ている、というだけのことです。",
+      "file": "voice/seg-82.wav",
+      "start": 732.87,
+      "duration": 8.93
+    },
+    {
+      "id": "C80",
+      "chapter": null,
+      "text": "その下り坂の先にあるものも、もうあきらめだとは思っていません。向きが変わるだけなのだと、いまは思っています。",
+      "file": "voice/seg-83.wav",
+      "start": 741.8,
+      "duration": 10.72
+    },
+    {
+      "id": "C81",
+      "chapter": null,
+      "text": "そして、もう一つ。あの車の中の父です。",
+      "file": "voice/seg-84.wav",
+      "start": 752.52,
+      "duration": 5.48
+    },
+    {
+      "id": "C82",
+      "chapter": null,
+      "text": "父は、何も隠していませんでした。淡々としていたのは、本当に淡々としていたからなんです。",
+      "file": "voice/seg-85.wav",
+      "start": 758.01,
+      "duration": 7.59
+    },
+    {
+      "id": "C83",
+      "chapter": null,
+      "text": "つまり、先に通った人が、すぐ隣に座っている。しかも、こちらから訊けるところにいるんです。",
+      "file": "voice/seg-86.wav",
+      "start": 765.59,
+      "duration": 9.25
+    },
+    {
+      "id": "C84",
+      "chapter": null,
+      "text": "今度、車を出すときに訊いてみようと思います。そちらはどうですか、と。",
+      "file": "voice/seg-87.wav",
+      "start": 774.85,
+      "duration": 5.86
+    },
+    {
+      "id": "C85",
+      "chapter": null,
+      "text": "この夜が、自分だけの夜ではなかった。それだけでも、天井の見え方は少し違ってきます。",
+      "file": "voice/seg-88.wav",
+      "start": 780.71,
+      "duration": 9.63
+    },
+    {
+      "id": "C86",
+      "chapter": null,
+      "text": "いちばん重い夜は、もう後ろにあるのかもしれません。そして、そのあとに来るものは、あきらめではないんです。",
+      "file": "voice/seg-89.wav",
+      "start": 790.34,
+      "duration": 9.18
+    },
+    {
+      "id": "C87",
+      "chapter": null,
+      "text": "ご不安が続くときは、かかりつけの先生にご相談ください。",
+      "file": "voice/seg-90.wav",
+      "start": 799.53,
+      "duration": 5.35
+    }
+  ]
+}

@@ -1,0 +1,657 @@
+{
+  "slug": "hitori-no-naka",
+  "fps": 30,
+  "totalDuration": 811.41,
+  "dryRun": false,
+  "narration": "voice/narration.mp3",
+  "lang": "ja",
+  "voice": {
+    "provider": "gpt-sovits-local",
+    "voice_name": "keita",
+    "lang": "ja",
+    "speed": 0.95,
+    "seed": 42
+  },
+  "cues": [
+    {
+      "id": "C01",
+      "chapter": "第1章 — 入口",
+      "text": "夜の十一時でした。お盆が終わって、子どもも孫も、夕方には帰っていったあとのことです。",
+      "file": "voice/seg-00.wav",
+      "start": 0,
+      "duration": 8.85
+    },
+    {
+      "id": "C02",
+      "chapter": null,
+      "text": "三日のあいだ、この部屋はずっと賑やかでした。孫が畳の上で寝てしまって、誰かが座布団を枕にしてやっていました。",
+      "file": "voice/seg-01.wav",
+      "start": 8.85,
+      "duration": 11.15
+    },
+    {
+      "id": "C03",
+      "chapter": null,
+      "text": "その三日が終わって、玄関で手を振って、車が角を曲がるまで見ていました。それから、家の中に戻ったんです。",
+      "file": "voice/seg-02.wav",
+      "start": 19.99,
+      "duration": 9.29
+    },
+    {
+      "id": "C04",
+      "chapter": null,
+      "text": "茶碗を洗って、湯のみを片づけて、座布団を畳んでいきました。一枚、二枚。手はもう勝手に動いています。",
+      "file": "voice/seg-03.wav",
+      "start": 29.29,
+      "duration": 10.83
+    },
+    {
+      "id": "C05",
+      "chapter": null,
+      "text": "五枚目を畳んでいたときです。何の前ぶれもなく、胸のあたりに、すうっと空いたところができました。",
+      "file": "voice/seg-04.wav",
+      "start": 40.11,
+      "duration": 8.92
+    },
+    {
+      "id": "C06",
+      "chapter": null,
+      "text": "おかしな言い方になりますが、その空いたところは、はじめてそこにできたものではありませんでした。",
+      "file": "voice/seg-05.wav",
+      "start": 49.03,
+      "duration": 7.01
+    },
+    {
+      "id": "C07",
+      "chapter": null,
+      "text": "みんながまだそこに座っていたとき。笑い声のまん中にいたとき。あのときにも、同じものが、確かにあったんです。",
+      "file": "voice/seg-06.wav",
+      "start": 56.03,
+      "duration": 10.51
+    },
+    {
+      "id": "C08",
+      "chapter": null,
+      "text": "そして、そう気づいたすぐあとに、もう一つの声がやってきました。自分で自分に言う声です。",
+      "file": "voice/seg-07.wav",
+      "start": 66.54,
+      "duration": 8.47
+    },
+    {
+      "id": "C09",
+      "chapter": null,
+      "text": "これだけ家族がいてくれるのに、私は何を贅沢なことを思っているんだろう。薄情な人間なんじゃないだろうか。",
+      "file": "voice/seg-08.wav",
+      "start": 75.01,
+      "duration": 9.29
+    },
+    {
+      "id": "C10",
+      "chapter": null,
+      "text": "この声のことを、私は長いあいだ、誰にも言ったことがありませんでした。言えば、きっと責められると思っていたからです。",
+      "file": "voice/seg-10.wav",
+      "start": 85.79,
+      "duration": 9.8
+    },
+    {
+      "id": "C11",
+      "chapter": null,
+      "text": "ですが、この十年ほどのあいだに、この胸の空いたところを、まっすぐ調べた人たちがいます。今日は、その話をします。",
+      "file": "voice/seg-11.wav",
+      "start": 95.59,
+      "duration": 11.39
+    },
+    {
+      "id": "C12",
+      "chapter": "第2章 — 二つの物差し",
+      "text": "まず、おかしな点をはっきりさせておきたいんです。人が多いほど寂しくないはずだ。ふつうはそう考えます。",
+      "file": "voice/seg-12.wav",
+      "start": 106.98,
+      "duration": 7.89
+    },
+    {
+      "id": "C13",
+      "chapter": null,
+      "text": "ところが、実際はそうなっていません。人に囲まれた三日間のまん中で、あの空いたところはちゃんとありました。",
+      "file": "voice/seg-13.wav",
+      "start": 114.87,
+      "duration": 9.11
+    },
+    {
+      "id": "C14",
+      "chapter": null,
+      "text": "そのうえ、逆のことも起きます。一日じゅう誰とも話さなかった日に、なぜか、ひどく落ちついていることがある。",
+      "file": "voice/seg-14.wav",
+      "start": 123.98,
+      "duration": 10.51
+    },
+    {
+      "id": "C15",
+      "chapter": null,
+      "text": "庭の草を抜いて、お茶を飲んで、それで一日が終わる。人はいないのに、寂しくない。こういう日が、確かにあるんです。",
+      "file": "voice/seg-15.wav",
+      "start": 134.49,
+      "duration": 12.29
+    },
+    {
+      "id": "C16",
+      "chapter": null,
+      "text": "つまり、「人がどれだけいるか」で寂しさを説明しようとすると、片っぽうも、もう片っぽうも、合わなくなります。",
+      "file": "voice/seg-16.wav",
+      "start": 146.78,
+      "duration": 9.67
+    },
+    {
+      "id": "C17",
+      "chapter": null,
+      "text": "ここで、カナダで行われたある調査のことを思い出しました。四十五歳から八十五歳まで、三万七十九人を集めた調査です。",
+      "file": "voice/seg-17.wav",
+      "start": 156.45,
+      "duration": 11.71
+    },
+    {
+      "id": "C18",
+      "chapter": null,
+      "text": "メネックさんたちの研究チームが、二千二十年に『プロス・ワン』という学術誌に出した報告です。",
+      "file": "voice/seg-18.wav",
+      "start": 168.16,
+      "duration": 7.96
+    },
+    {
+      "id": "C19",
+      "chapter": null,
+      "text": "この調査が上手だったのは、二つのことを、わざわざ別々に尋ねたところなんです。",
+      "file": "voice/seg-19.wav",
+      "start": 176.12,
+      "duration": 7.07
+    },
+    {
+      "id": "C20",
+      "chapter": null,
+      "text": "一つ目は、実際にどれくらい人と会っているか。家族と話す回数、近所づきあい、何かの集まりに出ているかどうか。",
+      "file": "voice/seg-20.wav",
+      "start": 183.19,
+      "duration": 10.51
+    },
+    {
+      "id": "C21",
+      "chapter": null,
+      "text": "これは外から数えられます。会った人の数、出かけた回数。こちらを、研究では社会的な孤立と呼んでいます。",
+      "file": "voice/seg-21.wav",
+      "start": 193.7,
+      "duration": 11.08
+    },
+    {
+      "id": "C22",
+      "chapter": null,
+      "text": "二つ目は、まったく別のことです。あなたは今、寂しいと感じていますか。こちらは、本人にしか分かりません。",
+      "file": "voice/seg-22.wav",
+      "start": 204.77,
+      "duration": 11.15
+    },
+    {
+      "id": "C23",
+      "chapter": null,
+      "text": "外から数える物差しと、内側でしか測れない物差し。この二つを、同じにせずに分けたんです。",
+      "file": "voice/seg-23.wav",
+      "start": 215.92,
+      "duration": 8.08
+    },
+    {
+      "id": "C24",
+      "chapter": null,
+      "text": "そうやって三万人あまりを並べてみたら、人は四つの欄に分かれました。この四つが、今日いちばん大事なところです。",
+      "file": "voice/seg-24.wav",
+      "start": 224,
+      "duration": 9.55
+    },
+    {
+      "id": "C25",
+      "chapter": null,
+      "text": "いちばん多かったのは、孤立してもいないし、寂しくもない人。七十四・七パーセント。四人のうち三人です。",
+      "file": "voice/seg-25.wav",
+      "start": 233.55,
+      "duration": 9.8
+    },
+    {
+      "id": "C26",
+      "chapter": null,
+      "text": "次が、十五・六パーセント。この人たちは、人づきあいの数でいえば少ないほうに入ります。ですが、寂しいとは感じていない。",
+      "file": "voice/seg-26.wav",
+      "start": 243.35,
+      "duration": 11.9
+    },
+    {
+      "id": "C27",
+      "chapter": null,
+      "text": "外から見れば、心配されるほうの側です。訪ねてくる人も少ない。それでも本人は、これでいい、と言っている。",
+      "file": "voice/seg-27.wav",
+      "start": 255.25,
+      "duration": 9.93
+    },
+    {
+      "id": "C28",
+      "chapter": null,
+      "text": "そしてその次が、六・七パーセントです。人づきあいの数は足りている。数えれば、まわりに人はいる。それなのに、寂しい。",
+      "file": "voice/seg-28.wav",
+      "start": 265.18,
+      "duration": 12.8
+    },
+    {
+      "id": "C29",
+      "chapter": null,
+      "text": "最後の三・〇パーセントが、その両方。孤立していて、寂しくもある人たちです。",
+      "file": "voice/seg-29.wav",
+      "start": 277.98,
+      "duration": 7.7
+    },
+    {
+      "id": "C30",
+      "chapter": null,
+      "text": "二番目と三番目が、ちょうど反対を向いています。人は少ないのに寂しくない人と、人はいるのに寂しい人。合わせて二割を超えます。",
+      "file": "voice/seg-30.wav",
+      "start": 285.68,
+      "duration": 12.35
+    },
+    {
+      "id": "C31",
+      "chapter": null,
+      "text": "私がしばらく動けなくなったのは、三番目の欄でした。六・七パーセント。人がいるのに寂しい人。",
+      "file": "voice/seg-32.wav",
+      "start": 299.2,
+      "duration": 9.87
+    },
+    {
+      "id": "C32",
+      "chapter": null,
+      "text": "あの晩、五枚目の座布団のところで私がいた場所が、報告書の中に、ちゃんと欄として載っていたということです。",
+      "file": "voice/seg-33.wav",
+      "start": 309.07,
+      "duration": 9.48
+    },
+    {
+      "id": "C33",
+      "chapter": null,
+      "text": "正直に言うと、私はそこで少しほっとしました。名前がついていて、人数が数えてある。それだけのことなんですが。",
+      "file": "voice/seg-34.wav",
+      "start": 318.55,
+      "duration": 11.08
+    },
+    {
+      "id": "C34",
+      "chapter": null,
+      "text": "人といる量と、寂しさの量。この二つは、もともと別々の物差しで測られているということなんです。",
+      "file": "voice/seg-35.wav",
+      "start": 329.63,
+      "duration": 9.74
+    },
+    {
+      "id": "C35",
+      "chapter": "第3章 — 深いところ",
+      "text": "では、その内側の物差しのほうは、いったい何を測っているのか。ここからが、もう一段深いところです。",
+      "file": "voice/seg-36.wav",
+      "start": 339.37,
+      "duration": 10.12
+    },
+    {
+      "id": "C36",
+      "chapter": null,
+      "text": "アメリカにカシオポという研究者がいました。ジョン・カシオポ。寂しさというものを、生涯かけて調べた人です。",
+      "file": "voice/seg-37.wav",
+      "start": 349.49,
+      "duration": 10.89
+    },
+    {
+      "id": "C37",
+      "chapter": null,
+      "text": "この人の見方が、少し変わっていました。寂しさを、性格の問題として見なかったんです。信号として見ました。",
+      "file": "voice/seg-38.wav",
+      "start": 360.37,
+      "duration": 9.23
+    },
+    {
+      "id": "C38",
+      "chapter": null,
+      "text": "たとえば、お腹がすく。喉が渇く。指をぶつければ痛い。どれも気持ちのいいものではありません。",
+      "file": "voice/seg-39.wav",
+      "start": 369.61,
+      "duration": 10.31
+    },
+    {
+      "id": "C39",
+      "chapter": null,
+      "text": "ですが、お腹がすくのは、心が弱いからではありませんね。そろそろ食べるころですよ、と体が知らせているだけです。痛みも同じで、あるから手を引っこめられる。",
+      "file": "voice/seg-40.wav",
+      "start": 379.92,
+      "duration": 15.4
+    },
+    {
+      "id": "C40",
+      "chapter": null,
+      "text": "カシオポは、寂しさをその列に並べました。飢えと、渇きと、痛みと、同じ列に。三つではなく、四つ目として。",
+      "file": "voice/seg-41.wav",
+      "start": 395.32,
+      "duration": 11.71
+    },
+    {
+      "id": "C41",
+      "chapter": null,
+      "text": "なぜそんな信号があるのか。遠い昔、人が群れから離れることは、そのまま命に関わったからだ、という考え方です。",
+      "file": "voice/seg-42.wav",
+      "start": 407.03,
+      "duration": 10.44
+    },
+    {
+      "id": "C42",
+      "chapter": null,
+      "text": "一人になった者に、うずくような感じを起こさせて、群れのほうへ引き戻す。その役目を負った仕組みだ、と。",
+      "file": "voice/seg-43.wav",
+      "start": 417.47,
+      "duration": 10.38
+    },
+    {
+      "id": "C43",
+      "chapter": null,
+      "text": "大事なのは、その信号が何によって鳴るかです。人の数ではありません。つながりが足りているかどうかの感じのほうです。",
+      "file": "voice/seg-44.wav",
+      "start": 427.85,
+      "duration": 10.76
+    },
+    {
+      "id": "C44",
+      "chapter": null,
+      "text": "この見方でいくと、話がひっくり返ります。寂しさを感じる力があるということは、人とつながる力が、まだ生きているということになる。",
+      "file": "voice/seg-45.wav",
+      "start": 438.61,
+      "duration": 12.03
+    },
+    {
+      "id": "C45",
+      "chapter": null,
+      "text": "壊れているから鳴るのではありません。働いているから鳴るんです。火災報知機と同じで、鳴らないほうが困る。",
+      "file": "voice/seg-46.wav",
+      "start": 450.64,
+      "duration": 9.42
+    },
+    {
+      "id": "C46",
+      "chapter": null,
+      "text": "ただ、この信号には、少し厄介なところもあります。ここも、隠さずに言っておきたいところです。",
+      "file": "voice/seg-48.wav",
+      "start": 461.23,
+      "duration": 8.85
+    },
+    {
+      "id": "C47",
+      "chapter": null,
+      "text": "ホークリーさんとカシオポが、二千十年に『行動医学年報』という専門誌にまとめた総説があります。そこに、こんなことが書かれています。",
+      "file": "voice/seg-49.wav",
+      "start": 470.07,
+      "duration": 10.83
+    },
+    {
+      "id": "C48",
+      "chapter": null,
+      "text": "寂しさを感じているとき、人は、まわりから拒まれる気配に、ふだんより敏感になる。",
+      "file": "voice/seg-50.wav",
+      "start": 480.9,
+      "duration": 7.19
+    },
+    {
+      "id": "C49",
+      "chapter": null,
+      "text": "これ自体は、身を守るための働きです。もう一度突き放されたら、こたえます。だから先に身構えておく。",
+      "file": "voice/seg-51.wav",
+      "start": 488.09,
+      "duration": 9.8
+    },
+    {
+      "id": "C50",
+      "chapter": null,
+      "text": "困るのは、この身構えが、意識より下のところで、自動で働いてしまうことなんです。瞬きと同じで、気づいたときには、もう動いている。",
+      "file": "voice/seg-52.wav",
+      "start": 497.9,
+      "duration": 11.9
+    },
+    {
+      "id": "C51",
+      "chapter": null,
+      "text": "だから、あくびを一つ見て、退屈させてしまったかと思う。返事が短かっただけで、冷たくされたように感じる。",
+      "file": "voice/seg-53.wav",
+      "start": 509.8,
+      "duration": 9.8
+    },
+    {
+      "id": "C52",
+      "chapter": null,
+      "text": "相手は、ただ眠かっただけかもしれません。ですが、その場でそこまで考えられる人は、そういません。",
+      "file": "voice/seg-54.wav",
+      "start": 519.6,
+      "duration": 9.67
+    },
+    {
+      "id": "C53",
+      "chapter": null,
+      "text": "そして、ほんの少しだけ、自分から引きます。ひとこと言うのをやめる。誘いを一度だけ断る。ごく小さな動きです。",
+      "file": "voice/seg-55.wav",
+      "start": 529.27,
+      "duration": 12.1
+    },
+    {
+      "id": "C54",
+      "chapter": null,
+      "text": "すると相手も、深く誘わなくなる。そうして、また同じところに戻ってくる。この一周を、研究では輪になった道にたとえています。",
+      "file": "voice/seg-56.wav",
+      "start": 541.37,
+      "duration": 13.24
+    },
+    {
+      "id": "C55",
+      "chapter": null,
+      "text": "ここで一つ、はっきりさせておきたいことがあります。この輪は、あなたがやっている失敗ではありません。",
+      "file": "voice/seg-57.wav",
+      "start": 554.62,
+      "duration": 7.7
+    },
+    {
+      "id": "C56",
+      "chapter": null,
+      "text": "誰にでも起こりうることなんです。身を守る仕組みが、少しだけ熱心に働きすぎている。それだけのことなんです。",
+      "file": "voice/seg-58.wav",
+      "start": 562.32,
+      "duration": 10.31
+    },
+    {
+      "id": "C57",
+      "chapter": null,
+      "text": "あなたが引いたのではなくて、引かせる仕組みのほうが、先に動いていた。しかもそれは、あなたを守るために働いていました。",
+      "file": "voice/seg-59.wav",
+      "start": 572.63,
+      "duration": 9.99
+    },
+    {
+      "id": "C58",
+      "chapter": null,
+      "text": "自分を責めていた人が、これを聞いて、もう一つ責める種を増やしてしまうなら、私はこの話をしないほうがましだと思っています。",
+      "file": "voice/seg-60.wav",
+      "start": 582.62,
+      "duration": 10.76
+    },
+    {
+      "id": "C59",
+      "chapter": null,
+      "text": "そのうえで、この話のどこまでが分かっていて、どこからが分かっていないのかを申し上げます。",
+      "file": "voice/seg-62.wav",
+      "start": 594.86,
+      "duration": 7.19
+    },
+    {
+      "id": "C60",
+      "chapter": null,
+      "text": "まず、今の輪の話は、多くの人を見たときの傾向です。一人ひとりの運命ではありません。その中に入って、また出ていった人は大勢います。",
+      "file": "voice/seg-63.wav",
+      "start": 602.05,
+      "duration": 12.93
+    },
+    {
+      "id": "C61",
+      "chapter": null,
+      "text": "輪と申し上げましたが、閉じきった輪ではありません。どの人の道にも、脇へ抜ける枝道がついています。",
+      "file": "voice/seg-64.wav",
+      "start": 614.98,
+      "duration": 9.67
+    },
+    {
+      "id": "C62",
+      "chapter": null,
+      "text": "次に、四つの欄の調査は、カナダで行われたものです。日本の数字ではありません。そのまま持ってくることはできません。",
+      "file": "voice/seg-65.wav",
+      "start": 624.65,
+      "duration": 10.25
+    },
+    {
+      "id": "C63",
+      "chapter": null,
+      "text": "それから、あの調査は、ある一時点で全員に尋ねたものです。同じ人を何年も追いかけて、変わっていく様子を見たものではない。",
+      "file": "voice/seg-66.wav",
+      "start": 634.9,
+      "duration": 11.9
+    },
+    {
+      "id": "C64",
+      "chapter": null,
+      "text": "そして、いちばん正直なところを言います。どうすればこの感じが必ず消えるのか。そこまでは、まだ分かっていません。",
+      "file": "voice/seg-67.wav",
+      "start": 646.8,
+      "duration": 11.08
+    },
+    {
+      "id": "C65",
+      "chapter": null,
+      "text": "分かっているのは、それが別の物差しで測られているということと、それが信号だということ。今日申し上げられるのは、そこまでです。",
+      "file": "voice/seg-68.wav",
+      "start": 657.88,
+      "duration": 11.46
+    },
+    {
+      "id": "C66",
+      "chapter": null,
+      "text": "一つだけ添えておきます。この感じが長く続いて、眠りや食事にまで届いているようなら、それはお医者さんに話していいことです。一人で抱える決まりは、どこにもありません。",
+      "file": "voice/seg-69.wav",
+      "start": 669.34,
+      "duration": 14.01
+    },
+    {
+      "id": "C67",
+      "chapter": "第4章 — 帰り道",
+      "text": "あの晩の和室に、戻ってきました。畳の上に、五枚目の座布団が、まだ畳まれずに置いてあります。",
+      "file": "voice/seg-70.wav",
+      "start": 683.35,
+      "duration": 9.67
+    },
+    {
+      "id": "C68",
+      "chapter": null,
+      "text": "今度は、すぐには畳みませんでした。少しのあいだ、そこに座っていました。",
+      "file": "voice/seg-71.wav",
+      "start": 693.02,
+      "duration": 6.56
+    },
+    {
+      "id": "C69",
+      "chapter": null,
+      "text": "胸の空いたところは、まだあります。消えてはいません。消えます、とは言えません。そこは、正直に申し上げておきます。",
+      "file": "voice/seg-72.wav",
+      "start": 699.58,
+      "duration": 10.95
+    },
+    {
+      "id": "C70",
+      "chapter": null,
+      "text": "ですが、あの晩と違っていることが、三つありました。",
+      "file": "voice/seg-73.wav",
+      "start": 710.53,
+      "duration": 4.71
+    },
+    {
+      "id": "C71",
+      "chapter": null,
+      "text": "一つ。この空いたところには、名前がついていて、数えた人がいて、報告書の中に欄があります。私がはじめてではなかった。",
+      "file": "voice/seg-74.wav",
+      "start": 715.23,
+      "duration": 11.33
+    },
+    {
+      "id": "C72",
+      "chapter": null,
+      "text": "あの晩、これを言ったら責められると思っていました。ですが、責められるどころか、数えられていたんです。",
+      "file": "voice/seg-75.wav",
+      "start": 726.57,
+      "duration": 9.48
+    },
+    {
+      "id": "C73",
+      "chapter": null,
+      "text": "二つ。これは、壊れたところから出ている音ではありませんでした。まだ働いているところから出ている音でした。",
+      "file": "voice/seg-76.wav",
+      "start": 736.05,
+      "duration": 10.57
+    },
+    {
+      "id": "C74",
+      "chapter": null,
+      "text": "鳴っているのは、つながりたいという側です。どうでもよくなった人の胸には、この音は立ちません。",
+      "file": "voice/seg-77.wav",
+      "start": 746.62,
+      "duration": 8.53
+    },
+    {
+      "id": "C75",
+      "chapter": null,
+      "text": "三つ。そしてこれが、私にはいちばん効きました。この空いたところは、あの三日間と、何も矛盾していなかったんです。",
+      "file": "voice/seg-78.wav",
+      "start": 755.15,
+      "duration": 11.26
+    },
+    {
+      "id": "C76",
+      "chapter": null,
+      "text": "孫が畳で寝てしまったこと。みんなで笑ったこと。玄関で手を振ったこと。あれは全部、本当のことです。",
+      "file": "voice/seg-79.wav",
+      "start": 766.41,
+      "duration": 11.08
+    },
+    {
+      "id": "C77",
+      "chapter": null,
+      "text": "そして、そのまん中に空いたところがあったことも、同じように本当のことでした。どちらかが嘘なのではありません。",
+      "file": "voice/seg-80.wav",
+      "start": 777.49,
+      "duration": 9.99
+    },
+    {
+      "id": "C78",
+      "chapter": null,
+      "text": "二つとも本当でいられるのは、それぞれが、別の物差しの上に載っているからなんです。",
+      "file": "voice/seg-81.wav",
+      "start": 787.48,
+      "duration": 6.88
+    },
+    {
+      "id": "C79",
+      "chapter": null,
+      "text": "大事な人たちのまん中で寂しさを感じたとしても、それは、薄情だということではありません。",
+      "file": "voice/seg-83.wav",
+      "start": 796.32,
+      "duration": 6.88
+    },
+    {
+      "id": "C80",
+      "chapter": null,
+      "text": "その二つは、もともと別々の物差しで測るものだった。ただ、それだけのことだったんです。",
+      "file": "voice/seg-84.wav",
+      "start": 803.2,
+      "duration": 8.21
+    }
+  ]
+}

@@ -1,0 +1,3112 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, height=1080">
+<title>一人の時間が心地よい日とつらい日の違い｜測ってわかった理由 — HyperFrames</title>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+<style>
+  /* Font Nhật NHÚNG — "Segoe UI" KHÔNG có glyph CJK. Khai ở #sub, #chap, #card, nhãn split
+   * VÀ trong chuỗi font canvas (JF) của mọi texture có chữ. */
+  @font-face{font-family:'BIZ UDPGothic';src:url('assets/fonts/BIZUDPGothic-Bold.ttf') format('truetype');font-weight:700;font-display:block;}
+  @font-face{font-family:'BIZ UDPGothic';src:url('assets/fonts/BIZUDPGothic-Regular.ttf') format('truetype');font-weight:400;font-display:block;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{width:1920px;height:1080px;overflow:hidden;background:#000;font-family:'BIZ UDPGothic',sans-serif;}
+  #root{position:relative;width:1920px;height:1080px;background:#000;}
+  #c{position:absolute;inset:0;display:block;z-index:0;}
+  /* nhãn chương GÓC TRÊN-TRÁI, lề ≥ 88px (ràng buộc C); thẻ chữ động bắt đầu từ 14% chiều cao
+   * nên không chạm nhãn chương (ràng buộc A); phụ đề ở đáy 7.4%. */
+  #chap{position:absolute;left:4.6%;top:7%;z-index:18;color:#F4EFE6;font-family:'BIZ UDPGothic',sans-serif;font-size:34px;font-weight:700;letter-spacing:6px;opacity:0;text-shadow:0 2px 18px rgba(0,0,0,.96),0 0 3px rgba(0,0,0,.9);white-space:nowrap;}
+  #card{position:absolute;left:50%;top:14%;transform:translateX(-50%);z-index:16;text-align:center;opacity:0;
+    max-width:84%;padding:.34em 1.3em .42em;border-radius:14px;white-space:nowrap;
+    background:radial-gradient(ellipse 100% 100% at 50% 50%,rgba(0,0,0,.58) 0%,rgba(0,0,0,.46) 55%,rgba(0,0,0,0) 100%);
+    text-shadow:0 2px 16px rgba(0,0,0,.9),0 0 3px rgba(0,0,0,.8);}
+  #card.mid{top:33%;}
+  #card .k1{font-size:52px;font-weight:700;color:#F4EFE6;letter-spacing:.05em;line-height:1.3;}
+  #card .k2{font-size:30px;font-weight:400;color:#E6DECF;letter-spacing:.03em;line-height:1.35;margin-top:.3em;}
+  #card.big .k1{font-size:118px;letter-spacing:.12em;}
+  #card.big .k2{font-size:40px;}
+  #card .k1 .dim{color:#9C968C;}
+  #card .k2 .lt{font-family:'BIZ UDPGothic',sans-serif;font-weight:400;opacity:.85;}
+  .sp{position:absolute;top:13%;transform:translateX(-50%);z-index:15;text-align:center;opacity:0;white-space:nowrap;
+    padding:.22em .9em .3em;border-radius:12px;
+    background:radial-gradient(ellipse 100% 100% at 50% 50%,rgba(0,0,0,.55) 0%,rgba(0,0,0,.40) 60%,rgba(0,0,0,0) 100%);
+    text-shadow:0 2px 14px rgba(0,0,0,.95),0 0 3px rgba(0,0,0,.85);}
+  .sp .a{font-size:44px;font-weight:700;letter-spacing:.12em;}
+  .sp .b{font-size:32px;font-weight:400;letter-spacing:.06em;margin-top:.2em;color:#EDE7DC;}
+  #spL{left:25%;} #spL .a{color:#FFE2B8;}
+  #spR{left:75%;} #spR .a{color:#D6E6FF;}
+  #sub{position:absolute;left:50%;bottom:7.4%;transform:translateX(-50%);z-index:20;
+    text-align:center;color:#f4f2ee;font-family:'BIZ UDPGothic',sans-serif;
+    font-size:56px;font-weight:700;line-height:1.35;
+    text-shadow:0 3px 20px rgba(0,0,0,.97),0 0 4px rgba(0,0,0,.97);
+    display:table;width:auto;max-width:90%;white-space:nowrap;margin-left:auto;margin-right:auto;
+    padding:.26em 1.15em;border-radius:10px;
+    background:radial-gradient(ellipse 100% 96% at 50% 50%,rgba(0,0,0,.66) 0%,rgba(0,0,0,.58) 42%,rgba(0,0,0,.28) 76%,rgba(0,0,0,0) 100%);}
+  #err{position:absolute;left:12px;top:12px;z-index:99;color:#ff9090;background:rgba(0,0,0,.82);padding:8px 10px;font:12px/1.5 monospace;max-width:90%;white-space:pre-wrap;border-radius:8px;display:none;}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="hitori-to-kodoku" data-start="0" data-duration="813.35" data-width="1920" data-height="1080">
+  <canvas id="c" class="clip" data-start="0.01" data-duration="813.35" data-track-index="0"></canvas>
+  <audio id="narr" class="clip" data-start="0" data-duration="813.35" data-track-index="1" src="projects/hitori-to-kodoku/voice/narration_mixed.mp3"></audio>
+  <div id="card" data-layout-allow-occlusion=""><div class="k1"></div><div class="k2"></div></div>
+  <div id="spL" class="sp" data-layout-allow-occlusion=""><div class="a"></div><div class="b"></div></div>
+  <div id="spR" class="sp" data-layout-allow-occlusion=""><div class="a"></div><div class="b"></div></div>
+  <div id="chap" data-layout-allow-occlusion=""></div>
+  <div id="sub" data-layout-allow-occlusion=""></div>
+  <div id="err"></div>
+<div id="outro-black" style="position:absolute;inset:0;z-index:90;background:#000;opacity:0;pointer-events:none"></div>
+</div>
+<script>
+/* ===== HFA:BEGIN — sinh tự động bởi scripts/inject-lib.mjs, ĐỪNG SỬA TAY ===== */
+/* ============================================================================
+ * hf-astro.js — bộ khung dùng chung cho composition Du Mục Vũ Trụ
+ *
+ * Trích từ các tập ĐÃ RENDER VÀ VERIFY (01–07). Trước khi có file này, mỗi tập
+ * tự dựng lại cùng một đoạn code (mulberry32, ACESFilmic, composer+bloom, lens
+ * pass, starfield, tra phụ đề, driver timeline) — nên bug đã sửa ở tập này lại
+ * tái xuất ở tập sau. Dùng file này thay vì chép tay.
+ *
+ * CÁCH DÙNG: KHÔNG nạp bằng thẻ script ngoài. Preview/render server của HyperFrames
+ *      không phục vụ file .js tuỳ ý trong project — nó trả về SPA shell HTML cho
+ *      đường dẫn đó, browser parse "doctype html" thành lỗi cú pháp và tập chết
+ *      (đã kiểm chứng: curl -D- trả về 200 text/html, 593 byte). Composition phải
+ *      TỰ CHỨA. Nhúng bằng:
+ *
+ *          node scripts/inject-lib.mjs --html index.html
+ *
+ *      Lệnh này dán nội dung file này vào đầu khối code của tập, giữa hai mốc
+ *      HFA:BEGIN / HFA:END. Chạy lại được nhiều lần. Định nghĩa một global: HFA.
+ *      Yêu cầu three.min.js + EffectComposer/RenderPass/ShaderPass/UnrealBloomPass
+ *      đã nạp trước đó.
+ *
+ * LUẬT TẤT ĐỊNH: file này không dùng Date.now / performance.now / Math.random /
+ * requestAnimationFrame / setTimeout. Mọi thứ là hàm thuần của t hoặc của seed.
+ * ========================================================================== */
+(function (global) {
+  'use strict';
+
+  var HFA = {};
+
+  /* ---- PRNG có seed ------------------------------------------------------
+   * Math.random() bị cấm (render phải tất định). Mỗi cụm vật thể dùng MỘT
+   * seed riêng — dùng chung một chuỗi cho hai cụm thì thêm/bớt hạt ở cụm này
+   * sẽ xê dịch layout cụm kia.
+   */
+  HFA.mulberry32 = function (a) {
+    return function () {
+      a |= 0; a = (a + 0x6D2B79F5) | 0;
+      var t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  };
+
+  /* ---- helper toán -------------------------------------------------------- */
+  HFA.clamp = function (x, a, b) { return Math.min(b, Math.max(a, x)); };
+
+  HFA.smooth = function (x) { x = HFA.clamp(x, 0, 1); return x * x * (3 - 2 * x); };
+
+  /** Bao lồi mềm: 0 ngoài [a,b], lên/xuống mượt trong dải f giây ở hai mép.
+   *
+   * Hoà chéo đặt ĐỐI XỨNG quanh mốc cảnh: cảnh chỉ nhú lên từ a-f/2 và tắt hẳn
+   * ở b+f/2, nên hai cảnh liền nhau chồng đúng f giây và tổng trọng số luôn = 1
+   * (không chớp đen). Bản cũ dùng a-f .. a+f với mẫu số 2f: cảnh mới hiện sớm
+   * cả f giây trước mốc và cảnh cũ nán lại thêm f giây sau mốc, tổng thời gian
+   * dính hình là 2f — chuyển cảnh nhoè, hình cue trước còn đọng khi lời đã sang
+   * ý mới. Xem tập mat-trang t=167,33s (Trái Đất + Sao Hoả + Mặt Trăng chồng nhau).
+   */
+  HFA.band = function (t, a, b, f) {
+    f = f || 0.8;
+    var h = f * 0.5;
+    if (t < a - h || t > b + h) return 0;
+    var up = HFA.smooth((t - (a - h)) / f);
+    var dn = HFA.smooth(((b + h) - t) / f);
+    return Math.min(1, Math.min(up, dn));
+  };
+
+  /* ---- cửa sổ cảnh --------------------------------------------------------
+   * SC = {A:[start,end], B:[...], ...} theo GIÂY THẬT (lấy từ timing.json cue.start).
+   * Trả về loc(t,k) ∈ [0,1] (tiến độ trong cảnh) và inSc(t,k).
+   */
+  HFA.scenes = function (SC) {
+    return {
+      SC: SC,
+      loc: function (t, k) {
+        var w = SC[k];
+        return Math.min(1, Math.max(0, (t - w[0]) / (w[1] - w[0])));
+      },
+      inSc: function (t, k) { var w = SC[k]; return t >= w[0] && t < w[1]; }
+    };
+  };
+
+  /* ---- shader lens — PASS CUỐI, kiêm luôn tone mapping + mã hoá sRGB --------
+   *
+   * ⚠ VÌ SAO PASS NÀY PHẢI TỰ TONE MAP:
+   * three.js chỉ chèn ACES + sRGB vào shader của VẬT LIỆU nó tự dựng. Một
+   * ShaderMaterial thô trong ShaderPass KHÔNG được chèn — nên khi pass cuối ghi
+   * ra màn hình, ảnh chưa hề được mã hoá sRGB.
+   * Đo thật (xám #808080, r128): vẽ thẳng = 197, qua EffectComposer = 143.
+   * Sai lệch đó là lý do các tập 01–07 ra tối hơn và sai gamma.
+   *
+   * Vì vậy chuỗi mới là: cảnh vẽ TUYẾN TÍNH vào target HDR (không tone map)
+   * → bloom ăn giá trị HDR thật → pass này mới ACES + sRGB ở bước cuối.
+   * Bloom đứng TRƯỚC tone mapping mới đúng thứ tự điện ảnh: vùng cực sáng
+   * (quang cầu, đĩa bồi tụ) chưa bị nén ngọn nên quầng sáng nở tự nhiên.
+   *
+   * Thứ tự trong shader: CA → vignette → fade (đều ở TUYẾN TÍNH, vì chúng là
+   * phơi sáng) → ACES → sRGB → grain + flash (ở không gian hiển thị, vì grain
+   * phim và chớp trắng là hiện tượng của bản in, không phải của ánh sáng).
+   * Grain seed theo t, KHÔNG theo đồng hồ — cùng t phải cho cùng frame.
+   */
+  HFA.LensShader = {
+    uniforms: {
+      tDiffuse: { value: null }, uT: { value: 0 }, uVig: { value: 0.34 },
+      uCA: { value: 0.0015 }, uGrain: { value: 0.045 },
+      uFade: { value: 1.0 }, uFlash: { value: 0.0 },
+      uExposure: { value: 1.02 }, uToneMap: { value: 1.0 }
+    },
+    vertexShader:
+      'varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',
+    fragmentShader: [
+      'varying vec2 vUv;uniform sampler2D tDiffuse;',
+      'uniform float uT,uVig,uCA,uGrain,uFade,uFlash,uExposure,uToneMap;',
+      'float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}',
+      // ACES — SAO CHÉP ĐÚNG bản three.js r128 dùng cho ACESFilmicToneMapping
+      // (ma trận vào/ra + RRTAndODTFit + tiền tỉ lệ /0.6). KHÔNG dùng xấp xỉ
+      // Narkowicz: nó sáng hơn ~4% ở vùng trung, đo được (206 vs 197 trên xám
+      // giữa) và sẽ lệch với mọi tài liệu/preset tính theo three.js.
+      'vec3 rrt(vec3 v){vec3 a=v*(v+0.0245786)-0.000090537;',
+      '  vec3 b=v*(0.983729*v+0.4329510)+0.238081;return a/b;}',
+      'vec3 aces(vec3 color){',
+      '  const mat3 mIn=mat3(0.59719,0.07600,0.02840, 0.35458,0.90834,0.13383, 0.04823,0.01566,0.83777);',
+      '  const mat3 mOut=mat3(1.60475,-0.10208,-0.00327, -0.53108,1.10813,-0.07276, -0.07367,-0.00605,1.07602);',
+      '  color/=0.6;',
+      '  color=mIn*color; color=rrt(color); color=mOut*color;',
+      '  return clamp(color,0.0,1.0);}',
+      // tuyến tính → sRGB, đúng công thức chuẩn (không phải pow(1/2.2) cho nhanh)
+      'vec3 toSRGB(vec3 c){c=max(c,vec3(0.0));',
+      '  return mix(c*12.92,1.055*pow(c,vec3(1.0/2.4))-0.055,step(vec3(0.0031308),c));}',
+      'void main(){',
+      '  vec2 d=vUv-0.5;float r=dot(d,d);',
+      '  vec2 off=d*uCA*(1.0+r*2.2);',
+      '  vec3 col;',
+      '  col.r=texture2D(tDiffuse,vUv+off).r;',
+      '  col.g=texture2D(tDiffuse,vUv).g;',
+      '  col.b=texture2D(tDiffuse,vUv-off).b;',
+      // --- còn ở TUYẾN TÍNH: vignette + fade là phơi sáng ---
+      '  float vig=smoothstep(1.02,uVig,r*2.0);',
+      '  col*=mix(1.0,vig,0.85);',
+      '  col*=uFade;',
+      // --- tone map + mã hoá hiển thị ---
+      '  col=mix(col*uExposure,aces(col*uExposure),uToneMap);',
+      '  col=toSRGB(col);',
+      // --- không gian hiển thị: grain + chớp trắng ---
+      '  float g=h(vUv*vec2(1920.0,1080.0)+fract(uT)*97.3)-0.5;',
+      '  col+=g*uGrain;',
+      '  col=mix(col,vec3(1.0,0.98,0.94),uFlash);',
+      '  gl_FragColor=vec4(clamp(col,0.0,1.0),1.0);',
+      '}'
+    ].join('\n')
+  };
+
+  /* ---- dựng sân khấu ------------------------------------------------------
+   * Trả về {renderer, scene, camera, composer, bloom, lens, W, H, loadTex}.
+   * Ánh sáng mặc định (amb/key/rim) tắt được bằng opt.lights=false.
+   */
+  HFA.createStage = function (opt) {
+    opt = opt || {};
+    var W = opt.width || 1920, H = opt.height || 1080;
+    var canvas = typeof opt.canvas === 'string'
+      ? document.getElementById(opt.canvas)
+      : (opt.canvas || document.getElementById('c'));
+
+    var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: false });
+    renderer.setPixelRatio(1);
+    renderer.setSize(W, H);
+    renderer.setClearColor(opt.clearColor != null ? opt.clearColor : 0x08080a, 1);
+
+    // Tone mapping + sRGB CỐ Ý tắt ở đây: cả hai được làm ở pass lens cuối cùng.
+    // Bật ở đây thì cảnh bị nén dải TRƯỚC khi bloom nhìn thấy (quầng sáng bẹt),
+    // rồi lại không được mã hoá sRGB lúc ghi ra màn hình (xem chú thích LensShader).
+    renderer.toneMapping = THREE.NoToneMapping;
+    renderer.outputEncoding = THREE.LinearEncoding;
+
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(
+      opt.fov || 46, W / H, opt.near || 0.05, opt.far || 60000);
+    camera.position.set(0, 0, 60);
+
+    if (opt.lights !== false) {
+      var amb = new THREE.AmbientLight(0x232838, 0.85); scene.add(amb);
+      var key = new THREE.DirectionalLight(0xffe8d2, 1.05); key.position.set(6, 4, 8); scene.add(key);
+      var rim = new THREE.DirectionalLight(0x6f9cff, 0.4); rim.position.set(-8, -3, -6); scene.add(rim);
+      scene.userData.lights = { amb: amb, key: key, rim: rim };
+    }
+
+    /* --- render target: MSAA + HDR -------------------------------------------
+     * `antialias:true` ở trên CHỈ tác dụng lên framebuffer mặc định. Đi qua
+     * EffectComposer là vẽ vào target offscreen, và target đó KHÔNG multisample
+     * theo mặc định — nên cờ antialias thành vô nghĩa và mọi rìa bị răng cưa.
+     * WebGLMultisampleRenderTarget (có từ r111) khôi phục MSAA thật.
+     * HalfFloat giữ giá trị >1.0 để bloom ăn được highlight HDR thật.
+     */
+    var samples = opt.msaa != null ? opt.msaa : 4;
+    var rtOpts = {
+      minFilter: THREE.LinearFilter,
+      magFilter: THREE.LinearFilter,
+      format: THREE.RGBAFormat,
+      type: opt.hdr === false ? THREE.UnsignedByteType : THREE.HalfFloatType
+    };
+    var rt;
+    if (samples > 0 && typeof THREE.WebGLMultisampleRenderTarget === 'function') {
+      rt = new THREE.WebGLMultisampleRenderTarget(W, H, rtOpts);
+      rt.samples = samples;
+    } else {
+      rt = new THREE.WebGLRenderTarget(W, H, rtOpts);
+      if (samples > 0) console.warn('[hf-astro] không có WebGLMultisampleRenderTarget — chạy không MSAA.');
+    }
+
+    var composer = new THREE.EffectComposer(renderer, rt);
+    composer.addPass(new THREE.RenderPass(scene, camera));
+
+    /* Ngưỡng bloom: cảnh giờ là HDR TUYẾN TÍNH, không còn bị nén về [0,1] như
+     * trước. Highlight thật nằm TRÊN 1.0, nên ngưỡng cũ 0.62 (chỉnh cho ảnh đã
+     * tone map) sẽ làm cả những vùng sáng vừa cũng loé. Mặc định nâng lên 1.0. */
+    var bloom = new THREE.UnrealBloomPass(
+      new THREE.Vector2(W, H),
+      opt.bloomStrength != null ? opt.bloomStrength : 0.78,
+      opt.bloomRadius != null ? opt.bloomRadius : 0.7,
+      opt.bloomThreshold != null ? opt.bloomThreshold : (opt.hdr === false ? 0.62 : 1.0));
+    composer.addPass(bloom);
+
+    // Bản sao uniforms để hai stage không dùng chung state.
+    var lensDef = {
+      uniforms: THREE.UniformsUtils.clone(HFA.LensShader.uniforms),
+      vertexShader: HFA.LensShader.vertexShader,
+      fragmentShader: HFA.LensShader.fragmentShader
+    };
+    var lens = new THREE.ShaderPass(lensDef);
+    lens.renderToScreen = true;
+    lens.uniforms.uExposure.value = opt.exposure != null ? opt.exposure : 1.02;
+    composer.addPass(lens);
+
+    var texLoader = new THREE.TextureLoader();
+    texLoader.setCrossOrigin('anonymous');
+    function loadTex(path, enc) {
+      var tx = texLoader.load(path);
+      if (enc) tx.encoding = enc;
+      tx.anisotropy = renderer.capabilities.getMaxAnisotropy();
+      return tx;
+    }
+
+    var stage = {
+      renderer: renderer, scene: scene, camera: camera,
+      composer: composer, bloom: bloom, lens: lens, rt: rt,
+      W: W, H: H, loadTex: loadTex,
+      clearColor: opt.clearColor != null ? opt.clearColor : 0x08080a
+    };
+
+    /* --- environment map (IBL) ----------------------------------------------
+     * MeshStandardMaterial là vật liệu PBR: nó phản xạ MÔI TRƯỜNG. Không có
+     * envMap thì kim loại và bề mặt bóng mất gần hết thông tin phản xạ, chỉ còn
+     * highlight từ đèn → ra chất nhựa sơn. (Tập "Vàng" là ví dụ rõ nhất.)
+     * Dựng một bầu trời tối có vài đốm sáng, nướng qua PMREM MỘT LẦN lúc khởi
+     * tạo → tất định, không phụ thuộc t, mọi MeshStandardMaterial hưởng ngay
+     * qua scene.environment mà không phải sửa từng vật liệu.
+     */
+    if (opt.environment !== false) {
+      stage.environment = HFA.buildEnvironment(renderer, scene, opt.environmentSeed || 4242);
+    }
+
+    return stage;
+  };
+
+  /** Bầu trời sao mờ nướng thành envMap PMREM. Trả về texture (đã gán scene.environment). */
+  HFA.buildEnvironment = function (renderer, scene, seed) {
+    var pr = HFA.mulberry32(seed);
+    var cv = document.createElement('canvas');
+    cv.width = 512; cv.height = 256;
+    var cx = cv.getContext('2d');
+
+    // nền: gradient rất tối, hơi lạnh ở dưới, ấm nhạt ở trên (ánh sáng thiên hà)
+    var gr = cx.createLinearGradient(0, 0, 0, 256);
+    gr.addColorStop(0, '#0a0d16'); gr.addColorStop(0.5, '#070910'); gr.addColorStop(1, '#05060b');
+    cx.fillStyle = gr; cx.fillRect(0, 0, 512, 256);
+
+    // dải Ngân Hà mờ vắt ngang → cho phản xạ có hướng, tránh env phẳng lì
+    var bandGr = cx.createLinearGradient(0, 96, 0, 160);
+    bandGr.addColorStop(0, 'rgba(70,80,110,0)');
+    bandGr.addColorStop(0.5, 'rgba(120,130,165,0.30)');
+    bandGr.addColorStop(1, 'rgba(70,80,110,0)');
+    cx.fillStyle = bandGr; cx.fillRect(0, 96, 512, 64);
+
+    // vài nguồn sáng nhỏ để kim loại có điểm loé
+    for (var i = 0; i < 220; i++) {
+      var x = pr() * 512, y = pr() * 256, s = pr() < 0.06 ? 2.2 : 1.0;
+      var b = 0.35 + pr() * 0.65;
+      cx.fillStyle = 'rgba(255,252,245,' + b.toFixed(3) + ')';
+      cx.fillRect(x, y, s, s);
+    }
+
+    var tex = new THREE.CanvasTexture(cv);
+    tex.mapping = THREE.EquirectangularReflectionMapping;
+    tex.encoding = THREE.sRGBEncoding;
+
+    var pmrem = new THREE.PMREMGenerator(renderer);
+    pmrem.compileEquirectangularShader();
+    var env = pmrem.fromEquirectangular(tex).texture;
+    pmrem.dispose();
+    tex.dispose();
+
+    scene.environment = env;   // KHÔNG gán scene.background — nền do starfield lo
+    return env;
+  };
+
+  /* ---- CHỌN MÀU SAO CHO SỐNG SÓT QUA ACES ---------------------------------
+   * Bài học đo được ở tập 08, tốn 3 vòng sửa mới ra. Đọc trước khi chọn bảng màu.
+   *
+   * ACES nén mạnh vùng sáng. Càng đẩy độ sáng lên, sắc càng bị kéo về trắng/xám.
+   * Nên SẮC PHẢI ĐẾN TỪ TỈ LỆ GIỮA CÁC KÊNH, không đến từ độ sáng.
+   *
+   * Đo thật (bão hoà còn lại sau khi qua chuỗi ACES của three.js r128):
+   *   (0.42, 0.60, 1.05)  → còn 11–25%  → ra XÁM BÊ TÔNG. Đừng dùng.
+   *   (0.10, 0.32, 1.00)  → còn 37–67%  → ra LAM THẬT.
+   *
+   * Quy tắc rút ra:
+   *   - Kênh yếu nên ≤ 0.2× kênh mạnh. Nâng kênh yếu lên là giết sắc.
+   *   - Kênh mạnh giữ quanh 1.0, đừng hơn.
+   *   - Muốn SÁNG hơn thì tăng emissive (vượt ngưỡng bloom), ĐỪNG nâng kênh yếu.
+   *
+   * Hệ quả cho chữ và sơ đồ: bloom làm NHOÈ MẤT NÉT CHỮ. Nét biểu đồ và typo phải
+   * để DƯỚI ngưỡng bloom (<1.0). Muốn chữ rõ hơn thì tăng độ dày nét, không tăng
+   * emissive.
+   *
+   * Chống cháy trắng: giữ diện tích có luminance >0.85 (sau tonemap) dưới ~12%
+   * khung. Cần một vùng sáng rộng thì đẩy bằng SỐ LƯỢNG hạt nhỏ, đừng đẩy bằng
+   * độ sáng của hạt lớn.
+   */
+  HFA.saturationAfterACES = function (r, g, b) {
+    // Ước lượng nhanh xem một màu tuyến tính có giữ được sắc sau ACES không.
+    // Trả về {before, after} ∈ [0,1]. after < 0.3 nghĩa là sẽ ra xám.
+    function aces(v) {
+      // xấp xỉ đủ dùng để SO SÁNH các màu với nhau (không phải bản đầy đủ)
+      return Math.max(0, Math.min(1, (v * (2.51 * v + 0.03)) / (v * (2.43 * v + 0.59) + 0.14)));
+    }
+    function sat(x, y, z) {
+      var mx = Math.max(x, y, z), mn = Math.min(x, y, z);
+      return mx <= 0 ? 0 : (mx - mn) / mx;
+    }
+    return { before: sat(r, g, b), after: sat(aces(r), aces(g), aces(b)) };
+  };
+
+  /* ---- sprite hạt tròn mềm (tránh hạt vuông) ------------------------------ */
+  HFA.dotTex = function (rr, gg, bb) {
+    var cv = document.createElement('canvas');
+    cv.width = cv.height = 64;
+    var cx = cv.getContext('2d');
+    var gr = cx.createRadialGradient(32, 32, 0, 32, 32, 32);
+    gr.addColorStop(0, 'rgba(' + rr + ',' + gg + ',' + bb + ',1)');
+    gr.addColorStop(0.4, 'rgba(' + rr + ',' + gg + ',' + bb + ',0.55)');
+    gr.addColorStop(1, 'rgba(0,0,0,0)');
+    cx.fillStyle = gr; cx.fillRect(0, 0, 64, 64);
+    var tx = new THREE.CanvasTexture(cv);
+    tx.encoding = THREE.sRGBEncoding;
+    return tx;
+  };
+
+  /* ---- BỐN LỖI ĐÃ LÀM CHẾT HÀNG CHỤC CẢNH — đọc trước khi dựng tập mới -----
+   *
+   * Cả bốn đều KHÔNG bị `hyperframes validate` bắt, vì validate chỉ lấy vài mẫu
+   * thời gian. Chúng chỉ lộ ra khi render ảnh và NHÌN. Rút từ tập 09–12.
+   *
+   * 1. BIẾN BỊ CHE (shadowing).
+   *    Tập "nước": một mesh tên `grain` bị che bởi `var grain = 0.040` (lượng
+   *    grain của lens) khai báo ngay trong renderAtTime → mọi cảnh từ S19 trở đi
+   *    chết. Đặt tên mesh khác hẳn tên biến cục bộ; đối chiếu danh sách biến
+   *    top-level với biến trong renderAtTime trước khi giao.
+   *
+   * 2. GỌI UNIFORM KHÔNG TỒN TẠI.
+   *    Tập "photon": gọi `.uniforms.uEm` trên kết quả của HFA.buildStars — hàm
+   *    đó CHỈ có `uOp`. Ném TypeError, 17 cảnh liên tiếp đứng hình. Kiểm API
+   *    thư viện trước khi gọi, đừng đoán tên uniform.
+   *
+   * 3. SAI TỈ LỆ SÂN KHẤU.
+   *    Tập "nước": nguyên tử r=1.30 đặt trên mặt cầu r=140 với camera cách 2.7
+   *    → hai quả cầu phủ kín khung, ống liên kết thành tấm phẳng. Tính trước
+   *    tỉ lệ vật thể so với khoảng cách camera, đừng chỉnh mò sau.
+   *
+   * 4. CHỮ QUÁ NHỎ KHÔNG ĐỌC NỔI.
+   *    Tập "nước": chữ cao 0.42 world ở khoảng cách camera 28 → ra dưới 18px
+   *    trên 1080p. Cần ≥26px. Với mỗi shot có chữ, tính trước
+   *    `px ≈ (h_world / (2 * d * tan(fov/2))) * 1080` rồi mới chốt camera.
+   *    Muốn chữ rõ hơn thì TĂNG ĐỘ DÀY NÉT, đừng tăng emissive — bloom làm
+   *    nhoè mất nét chữ. Giữ chữ và sơ đồ DƯỚI ngưỡng bloom 1.0.
+   */
+
+  /* ---- CHỮ TIẾNG VIỆT TRÊN CANVAS: CANVAS PHẢI ĐỦ CAO CHO DẤU ------------
+   *
+   * Lỗi hệ thống, đo được ở tập quasar: 72/121 nhãn bị CẮT MẤT DẤU.
+   *
+   * Cơ chế: canvas 2D đặt `textBaseline='middle'` canh em-box vào giữa chiều
+   * cao canvas. Nhưng dấu tiếng Việt nhô RA NGOÀI em-box — mũ/sắc/huyền/ngã/hỏi
+   * nhô lên trên cap-height (chồng hai tầng như `ế`, `ộ`), dấu nặng thụt xuống
+   * dưới baseline. Canvas chật thì chữ cái vẫn vẽ, dấu rơi ra ngoài vùng vẽ.
+   * Triệu chứng: "vài chục nghìn ly" render ra "vai chuc nghin ly" dù mã nguồn
+   * viết đúng dấu.
+   *
+   * Ngưỡng an toàn đo được: `hpx >= fpx * 2.4 * số_dòng`.
+   * ⚠ Ngưỡng 2.0 KHÔNG đủ — một nhãn ở tỉ lệ 2.09 vẫn bị cắt.
+   *
+   * Nới canvas kéo theo HAI hệ quả phải xử cùng lúc, nếu không sẽ hỏng kiểu khác:
+   *   1. Tỉ lệ khung của plane phải tính theo chiều cao THẬT sau khi nở, không
+   *      theo `hpx` gốc — nếu không mọi chữ bị KÉO GIÃN NGANG.
+   *   2. Trần bù `glyphFrac` phải chia cho hệ số nở — canvas cao hơn làm
+   *      glyphFrac tụt, trần giữ nguyên thì chữ NHỎ ĐI THẬT (đo được 32px → 21px).
+   *
+   * Dùng `HFA.canvasHeightForText` khi tự dựng nhãn canvas.
+   *
+   * ---- CHỮ NHẬT (kanji/kana) THÌ KHÁC ------------------------------------
+   * Kanji KHÔNG có dấu nhô ra ngoài em-box: chữ nằm gọn trong hộp vuông.
+   * Đo thật ngày 2026-09-21 (BIZ UDPGothic 700, headless Chrome, "位牌と仏壇"):
+   *   ascent 27.7px + descent 27.3px = 55.0px ở font 56px → tỉ lệ ~0.98.
+   * Tức hệ số 2.4 của tiếng Việt CẤP DƯ hơn gấp đôi. Không gây cắt chữ, nhưng
+   * canvas cao gấp đôi làm `glyphFrac` tụt một nửa → chữ NHỎ ĐI THẬT trên màn
+   * hình (đúng cơ chế đã ghi ở hệ quả 2 bên trên). Vì thế tách hệ số theo chữ.
+   * Vẫn để dư 1.45 cho phần nhô của 〜 ー ゛ ゜ và chữ Latin lẫn trong câu Nhật.
+   */
+  var CJK_RE = /[぀-ヿ㐀-䶿一-鿿＀-￯]/;
+
+  /** true nếu chuỗi có chữ Nhật (kana/kanji/toàn角). */
+  HFA.isCJK = function (s) { return CJK_RE.test(String(s || '')); };
+
+  /**
+   * Chiều cao canvas tối thiểu cho nhãn chữ.
+   * @param fontPx cỡ chữ px
+   * @param lines  số dòng
+   * @param requestedHpx chiều cao mong muốn (lấy max)
+   * @param text   (tuỳ chọn) chữ sẽ vẽ — có chữ Nhật thì dùng hệ số 1.45 thay vì 2.4.
+   *               Bỏ trống = giữ nguyên hành vi cũ (2.4) cho các tập tiếng Việt.
+   */
+  HFA.canvasHeightForText = function (fontPx, lines, requestedHpx, text) {
+    var k = (text != null && HFA.isCJK(text)) ? 1.45 : 2.4;
+    var need = Math.ceil(fontPx * k * (lines || 1));
+    return Math.max(requestedHpx || 0, need);
+  };
+
+  /** px ước tính của một vật cao `hWorld` ở khoảng cách `dist`, camera fov độ.
+   *
+   * ⚠ HÀM NÀY ĐO PLANE, KHÔNG ĐO CHỮ. Với nhãn vẽ bằng canvas texture, chữ dài
+   * làm font bị thu nhỏ cho vừa canvas trong khi plane vẫn giữ nguyên kích
+   * thước → glyph thật chỉ chiếm 55–62% chiều cao plane. Đo được ở tập quasar:
+   * hàm báo 49px trong khi chữ trên frame render chỉ **4px**.
+   *
+   * Với nhãn canvas, truyền `glyphFrac` (tỉ lệ chiều cao glyph / chiều cao
+   * plane, thường 0.55–0.68) làm tham số thứ 5, hoặc tốt hơn: cho `textTex`
+   * trả về glyphFrac thật rồi chia hWorld cho nó khi dựng plane.
+   *
+   * Cách đáng tin duy nhất vẫn là ĐO TRÊN FRAME ĐÃ RENDER. Ngưỡng đọc được:
+   * ≥26px @1080p.
+   */
+  HFA.estimatePx = function (hWorld, dist, fovDeg, screenH, glyphFrac) {
+    var f = (fovDeg || 46) * Math.PI / 180;
+    var px = (hWorld / (2 * dist * Math.tan(f / 2))) * (screenH || 1080);
+    return px * (glyphFrac == null ? 1 : glyphFrac);
+  };
+
+  /* ---- starfield màu theo nhiệt độ ----------------------------------------
+   * ⚠ BÁN KÍNH: radius PHẢI lớn hơn khoảng cách camera XA NHẤT trong cả timeline.
+   * Camera bay ra ngoài quả cầu sao → nhìn thấy "quả bóng vũ trụ" bo tròn. Đây là
+   * lỗi đã xảy ra thật. Truyền opt.maxCamDist để bật cảnh báo tự động.
+   * Hằng số trong gl_PointSize phải BẰNG ĐÚNG radius, nếu không sao đổi độ to khi
+   * đổi bán kính — nên nó được nội suy vào shader ngay dưới đây.
+   */
+  HFA.buildStars = function (opt) {
+    opt = opt || {};
+    var R = opt.radius || 9000;
+    var N = opt.count || 3600;
+    var pr = HFA.mulberry32(opt.seed || 20260808);
+
+    if (opt.maxCamDist && R <= opt.maxCamDist * 1.5) {
+      console.warn('[hf-astro] starfield radius ' + R + ' quá nhỏ so với camera xa nhất ' +
+        opt.maxCamDist + ' — sẽ lộ "quả bóng vũ trụ". Tăng radius lên >' +
+        Math.ceil(opt.maxCamDist * 2) + ' (và giữ < camera.far).');
+    }
+
+    var pos = new Float32Array(N * 3), col = new Float32Array(N * 3), siz = new Float32Array(N);
+    var tmp = new THREE.Vector3();
+    for (var i = 0; i < N; i++) {
+      var u = pr(), v = pr();
+      var theta = Math.acos(2 * u - 1), phi = 2 * Math.PI * v;
+      tmp.set(Math.sin(theta) * Math.cos(phi), Math.cos(theta) * 0.8, Math.sin(theta) * Math.sin(phi))
+        .normalize().multiplyScalar(R);
+      pos[i * 3] = tmp.x; pos[i * 3 + 1] = tmp.y; pos[i * 3 + 2] = tmp.z;
+
+      // màu theo nhiệt độ: xanh nóng → trắng → vàng nhạt
+      var tt = pr(), c = new THREE.Color();
+      if (tt < 0.14) c.setRGB(0.6, 0.72, 1.0);
+      else if (tt < 0.5) c.setRGB(0.85, 0.9, 1.0);
+      else if (tt < 0.8) c.setRGB(0.9, 0.92, 1.0);
+      else c.setRGB(0.8, 0.82, 0.95);
+      c.multiplyScalar(0.3 + pr() * 0.5);
+      col[i * 3] = c.r; col[i * 3 + 1] = c.g; col[i * 3 + 2] = c.b;
+
+      siz[i] = (pr() < 0.05 ? 2.6 : 1.0) * (0.8 + pr() * 1.4);
+    }
+
+    var g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    g.setAttribute('color', new THREE.BufferAttribute(col, 3));
+    g.setAttribute('aS', new THREE.BufferAttribute(siz, 1));
+
+    var m = new THREE.ShaderMaterial({
+      uniforms: { uOp: { value: 1 } },
+      transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+      vertexShader:
+        'attribute float aS;attribute vec3 color;varying vec3 vC;' +
+        'void main(){vC=color;vec4 mv=modelViewMatrix*vec4(position,1.0);' +
+        'gl_PointSize=aS*(' + R.toFixed(1) + '/-mv.z);gl_Position=projectionMatrix*mv;}',
+      fragmentShader:
+        'varying vec3 vC;uniform float uOp;' +
+        'void main(){vec2 d=gl_PointCoord-0.5;float r=length(d);' +
+        'float a=smoothstep(0.5,0.0,r);gl_FragColor=vec4(vC,a*uOp);}'
+    });
+
+    var pts = new THREE.Points(g, m);
+    pts.userData.radius = R;
+    return pts;
+  };
+
+  /* ---- TÍCH LUỸ ĐA MẪU: khử răng cưa + motion blur thật -------------------
+   *
+   * Chỉ làm được vì renderAtTime(t) là HÀM THUẦN, không trạng thái: gọi lại với
+   * t nào cũng cho đúng kết quả của t đó. Render offline nên được phép trả giá
+   * bằng thời gian để đổi lấy chất lượng — đây là thứ engine realtime không có.
+   *
+   * Mỗi frame xuất ra lấy N mẫu:
+   *   - t rải đều trong khoảng 1/fps      → MOTION BLUR thật theo quỹ đạo
+   *   - camera lệch dưới-một-pixel        → SUPERSAMPLING, khử cả răng cưa
+   *     shader/specular mà MSAA không xử lý được
+   * rồi cộng trung bình.
+   *
+   * Giá: thời gian capture ×N. Nháp để samples=1, bản giao hàng đặt 4.
+   *
+   * CÁCH DÙNG — trong file tập:
+   *   HFA.enableAccumulation(stage, {samples:4, fps:30});
+   *   ... window.__time""lines[id] = HFA.makeTimeline(id, TOTAL, renderAtTime);
+   * makeTimeline tự phát hiện stage đã bật tích luỹ nếu bạn truyền stage:
+   *   HFA.makeTimeline(id, TOTAL, renderAtTime, stage)
+   */
+  HFA.enableAccumulation = function (stage, o) {
+    o = o || {};
+    var N = Math.max(1, o.samples || 1);
+    if (N === 1) {
+      // tắt tích luỹ → PHẢI trả composer về chế độ vẽ thẳng ra màn hình,
+      // nếu không màn hình đen (không pass nào ghi ra nữa).
+      stage.accum = null;
+      stage.composer.renderToScreen = true;
+      return stage;
+    }
+
+    /* Chuyển hướng đầu ra composer vào texture thay vì màn hình.
+     * ⚠ PHẢI đặt trên COMPOSER, không phải trên pass: EffectComposer.render()
+     * gán lại pass.renderToScreen mỗi frame theo công thức
+     *   pass.renderToScreen = composer.renderToScreen && làPassCuốiCùng
+     * nên mọi thiết lập trực tiếp lên lens.renderToScreen đều bị xoá. (Đo được:
+     * đặt trên pass thì cả read/write buffer đều chứa dữ liệu TRƯỚC lens.) */
+    stage.composer.renderToScreen = false;
+
+    var rtOpts = {
+      minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter,
+      format: THREE.RGBAFormat, type: THREE.HalfFloatType
+    };
+    var accumRT = new THREE.WebGLRenderTarget(stage.W, stage.H, rtOpts);
+
+    // quad toàn màn hình dùng để cộng dồn rồi để xuất ra
+    var quadScene = new THREE.Scene();
+    var quadCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+    var quadMat = new THREE.ShaderMaterial({
+      uniforms: { tSrc: { value: null }, uWeight: { value: 1 / N } },
+      transparent: true, depthTest: false, depthWrite: false,
+      blending: THREE.CustomBlending,
+      blendEquation: THREE.AddEquation,
+      blendSrc: THREE.OneFactor, blendDst: THREE.OneFactor,   // cộng thuần
+      vertexShader: 'varying vec2 vUv;void main(){vUv=uv;gl_Position=vec4(position.xy,0.0,1.0);}',
+      fragmentShader: 'varying vec2 vUv;uniform sampler2D tSrc;uniform float uWeight;' +
+        'void main(){gl_FragColor=vec4(texture2D(tSrc,vUv).rgb*uWeight,1.0);}'
+    });
+    quadScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), quadMat));
+
+    var outMat = new THREE.ShaderMaterial({
+      uniforms: { tSrc: { value: accumRT.texture } },
+      depthTest: false, depthWrite: false,
+      vertexShader: 'varying vec2 vUv;void main(){vUv=uv;gl_Position=vec4(position.xy,0.0,1.0);}',
+      fragmentShader: 'varying vec2 vUv;uniform sampler2D tSrc;' +
+        'void main(){gl_FragColor=vec4(texture2D(tSrc,vUv).rgb,1.0);}'
+    });
+    var outScene = new THREE.Scene();
+    outScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), outMat));
+
+    stage.accum = {
+      samples: N, fps: o.fps || 30,
+      rt: accumRT, quadScene: quadScene, quadCam: quadCam,
+      quadMat: quadMat, outScene: outScene
+    };
+    return stage;
+  };
+
+  /* Vị trí lệch subpixel — chuỗi Halton (2,3): phân bố đều hơn ngẫu nhiên,
+   * và tất định tuyệt đối (không đụng tới PRNG chung). */
+  function halton(i, b) {
+    var f = 1, r = 0;
+    while (i > 0) { f /= b; r += f * (i % b); i = Math.floor(i / b); }
+    return r;
+  }
+
+  /** Vẽ MỘT frame tại t. Tự dùng tích luỹ nếu stage đã bật, không thì vẽ thẳng. */
+  HFA.renderFrame = function (stage, renderAtTime, t) {
+    var acc = stage && stage.accum;
+    if (!acc) { renderAtTime(t); return; }   // renderAtTime tự gọi composer.render()
+
+    var r = stage.renderer, cam = stage.camera, N = acc.samples;
+    var dt = 1 / acc.fps;
+    var prevAutoClear = r.autoClear;
+
+    // xoá bộ tích luỹ ĐÚNG MỘT LẦN, trước vòng lặp
+    r.setRenderTarget(acc.rt);
+    r.setClearColor(0x000000, 1);
+    r.clear(true, true, true);
+    r.setRenderTarget(null);
+
+    for (var i = 0; i < N; i++) {
+      // lệch dưới-một-pixel (Halton, tất định)
+      var jx = halton(i + 1, 2) - 0.5, jy = halton(i + 1, 3) - 0.5;
+      cam.setViewOffset(stage.W, stage.H, jx, jy, stage.W, stage.H);
+
+      // trải t trong đúng một frame → motion blur
+      var tt = t + ((i + 0.5) / N - 0.5) * dt;
+      r.setClearColor(stage.clearColor, 1);   // trả màu nền cho RenderPass
+      renderAtTime(tt < 0 ? 0 : tt);
+
+      /* ⚠ autoClear PHẢI tắt ở đây.
+       * renderer.autoClear mặc định TRUE → mỗi r.render() xoá sạch target trước
+       * khi vẽ. Cộng dồn mà không tắt thì 3 mẫu đầu bị xoá, chỉ mẫu cuối sống
+       * sót và nó mang trọng số 1/N → ảnh tối đúng N lần. (Đã dính lỗi này:
+       * ảnh ra tối bằng 1/4 với N=4.) */
+      // pass cuối có needsSwap=true nên sau render(), kết quả nằm ở readBuffer
+      acc.quadMat.uniforms.tSrc.value = stage.composer.readBuffer.texture;
+      r.autoClear = false;
+      r.setRenderTarget(acc.rt);
+      r.render(acc.quadScene, acc.quadCam);
+      r.setRenderTarget(null);
+      r.autoClear = prevAutoClear;
+    }
+
+    cam.clearViewOffset();
+    r.setClearColor(stage.clearColor, 1);
+    r.render(acc.outScene, acc.quadCam);   // xuất ra màn hình
+  };
+
+  /* ---- phụ đề -------------------------------------------------------------
+   * CUES = [{t, s}] do scripts/gen-captions.mjs sinh, đã cắt sẵn MỘT DÒNG:
+   * ≤42 ký tự với tiếng Việt, ≤22 ký tự toàn角 với tiếng Nhật (chữ Nhật rộng gấp đôi).
+   * Đừng cắt tay và đừng đổi mảng này bằng tay.
+   */
+  HFA.subtitleAt = function (CUES, t) {
+    var s = '';
+    for (var i = 0; i < CUES.length; i++) {
+      if (CUES[i].t <= t + 0.001) s = CUES[i].s; else break;
+    }
+    return s;
+  };
+
+  HFA.applySubtitle = function (el, CUES, t) {
+    if (!el) return;
+    var s = HFA.subtitleAt(CUES, t);
+    if (el.textContent !== s) el.textContent = s;   // chỉ ghi khi đổi
+  };
+
+  /* ---- nhãn chương --------------------------------------------------------
+   * marks = [{t, x:'CHƯƠNG 1'}, ...]; hiện `hold` giây rồi tắt mượt.
+   */
+  HFA.applyChapter = function (el, marks, t, hold) {
+    if (!el) return 0;
+    hold = hold || 5.5;
+    var show = 0, txt = '';
+    for (var i = 0; i < marks.length; i++) {
+      var m = marks[i];
+      if (t >= m.t && t < m.t + hold) {
+        show = HFA.band(t, m.t + 0.3, m.t + hold - 0.7, 0.6);
+        txt = m.x;
+      }
+    }
+    if (el.textContent !== txt) el.textContent = txt;
+    el.style.opacity = show.toFixed(3);
+    return show;
+  };
+
+  /* ---- fade vào/ra toàn cục ----------------------------------------------- */
+  HFA.globalFade = function (t, TOTAL, inSec, outSec) {
+    return HFA.smooth(t / (inSec || 1.5)) * HFA.smooth((TOTAL - t) / (outSec || 3.0));
+  };
+
+  /* ---- dựng timeline ------------------------------------------------------
+   * ⚠ HÀM NÀY KHÔNG TỰ ĐĂNG KÝ — và đó là chủ ý.
+   * StaticGuard của HyperFrames QUÉT VĂN BẢN file composition để tìm chuỗi
+   * `window.__timelines`. Giấu phần đăng ký vào thư viện này làm guard báo
+   * "Missing window.__timelines registration" và render ra frame tĩnh.
+   * (Đã kiểm chứng bằng hyperframes validate.)
+   *
+   * Vì vậy file tập PHẢI tự viết hai dòng đăng ký. Mẫu (thay SLUG bằng slug thật,
+   * và viết bằng cú pháp ngoặc vuông bình thường — ở đây tách chữ để chính bản
+   * hướng dẫn này không bị StaticGuard đếm nhầm thành một đăng ký có thật):
+   *
+   *     window.__time""lines = window.__time""lines || {};
+   *     window.__time""lines[ "SLUG" ] = HFA.makeTimeline("SLUG", TOTAL, renderAtTime);
+   *
+   * SLUG phải trùng data-composition-id của div gốc.
+   * (StaticGuard quét VĂN BẢN, kể cả trong comment — đừng viết ví dụ đăng ký
+   *  nguyên dạng ở bất kỳ đâu trong file dùng chung này.)
+   *
+   * Đổi lại, hàm này lo phần dễ sai: driver clk tuyến tính, bọc try/catch để
+   * lỗi hiện lên #err (thay vì ra frame đen không rõ lý do), và vẽ frame đầu.
+   */
+  HFA.makeTimeline = function (id, TOTAL, renderAtTime, stage) {
+    if (!document.querySelector('[data-composition-id="' + id + '"]')) {
+      console.warn('[hf-astro] không thấy [data-composition-id="' + id + '"] — ' +
+        'khoá timeline phải trùng id của div gốc.');
+    }
+    function safeRender(t) {
+      try {
+        // truyền stage (đã enableAccumulation) → mỗi frame lấy N mẫu
+        if (stage && stage.accum) HFA.renderFrame(stage, renderAtTime, t);
+        else renderAtTime(t);
+      } catch (err) {
+        var eb = document.getElementById('err');
+        if (eb) {
+          eb.style.display = 'block';
+          eb.textContent = 'renderAtTime@' + t.toFixed(2) + ': ' + err.message;
+        }
+        throw err;
+      }
+    }
+    var tl = gsap.timeline({ paused: true });
+    var clk = { t: 0 };
+    tl.to(clk, { t: TOTAL, duration: TOTAL, ease: 'none', onUpdate: function () { safeRender(clk.t); } }, 0);
+    safeRender(0);          // vẽ frame đầu
+    return tl;
+  };
+
+  global.HFA = HFA;
+})(window);
+/* ===== HFA:END ===== */
+
+/* ============================================================================
+ * 一人の時間が心地よい日とつらい日の違い｜測ってわかった理由
+ * slug: hitori-to-kodoku · 57 shot · 73 cue · 4 chương
+ *
+ * Nguồn thời gian: projects/hitori-to-kodoku/timing.json (giọng THẬT). KHÔNG remap.
+ * Mốc shot = cue.start thật / mốc phụ đề trong cues.json.
+ *
+ * ⚠⚠ QUY ƯỚC THỜI GIAN (lỗi "pass mà sai" số 1):
+ *   File này KHÔNG dùng HFA.scenes().loc(). Hàm shot nhận (t, u):
+ *     t = giây CẢNH tuyệt đối theo timing.json,  u = GIÂY trôi qua trong shot.
+ *   Mọi sự kiện hình neo vào t tuyệt đối lấy từ mốc phụ đề (lỗi số 2).
+ *
+ * ẨN DỤ TRUNG TÂM: MỘT căn 六畳 hướng đông, dựng MỘT LẦN về hình học. Thứ Ba và thứ Năm chỉ
+ * đổi light rig + vật liệu qua một tham số w (1 = thứ Ba ấm/mềm, 0 = thứ Năm lạnh/cứng):
+ * nhiệt độ màu mặt trời, bán kính bóng (PCF Vogel-disk), độ nhám/phản xạ bề mặt, bụi trong nắng,
+ * độ bão hoà. Hướng nắng, vị trí đồ vật: KHÔNG đổi. Chương 4 chỉ ấm lại tới w≈0.55.
+ * Pass SplitRender vẽ cùng phòng hai nửa khung với hai trạng thái (thứ Ba | thứ Năm).
+ *
+ * Tất định: không rAF/Date.now/Math.random/setTimeout/+= dt. Ngẫu nhiên = mulberry32.
+ * ========================================================================== */
+var SLUG = "hitori-to-kodoku";
+var TOTAL = 813.35;
+var SCENE_END = 806.29;   /* độ dài CẢNH gốc (= narration) — không đổi khi áp lead/tail */
+var LEAD_S = 2;           /* intro lặng (audio.json.lead) — nhãn chương tra theo thời gian THẬT */
+var W = 1920, H = 1080;
+
+var clamp = HFA.clamp, smooth = HFA.smooth, band = HFA.band;
+function ease(x){ x = clamp(x,0,1); return x*x*x*(x*(x*6-15)+10); }
+function ramp(t,a,b){ return ease((t-a)/(b-a)); }
+function lin(t,a,b){ return clamp((t-a)/(b-a),0,1); }
+function lerp(a,b,p){ return a+(b-a)*p; }
+function bump(t,a,b){ var x = clamp((t-a)/(b-a),0,1); return Math.sin(x*Math.PI); }
+
+/* nhãn chương — mốc THẬT (cue.start + LEAD_S) vì applyChapter tra theo _tReal */
+var CHAPTERS = [
+  {t:0.00   + LEAD_S + 0.3, x:'第1章　入口'},
+  {t:128.98 + LEAD_S, x:'第2章　十五分の椅子'},
+  {t:327.25 + LEAD_S, x:'第3章　選んだ一人、落ちた一人'},
+  {t:639.40 + LEAD_S, x:'第4章　帰り道'}
+];
+
+/* =========================================================================
+ * BÓNG MỀM/CỨNG ĐIỀU KHIỂN ĐƯỢC — vá chunk PCF của r128 TRƯỚC khi vật liệu nào compile.
+ * PCF gốc 17 mẫu lưới cố định: bán kính lớn → thấy rõ 5 "bóng ma" chồng nhau. Thay bằng
+ * đĩa Vogel 24 mẫu xoay theo hash của toạ độ pixel (tĩnh theo pixel, KHÔNG theo thời gian →
+ * tất định). shadowRadius ≈ 1 → mép bóng sắc (thứ Năm); ≈ 14 → mép nhoè (thứ Ba).
+ * ========================================================================= */
+(function patchPCF(){
+  var ch = THREE.ShaderChunk.shadowmap_pars_fragment;
+  var re = /#if defined\( SHADOWMAP_TYPE_PCF \)\s*\n\s*vec2 texelSize = vec2\( 1\.0 \) \/ shadowMapSize;[\s\S]*?\) \* \( 1\.0 \/ 17\.0 \);/;
+  if(!re.test(ch)){ console.warn('[kodoku] không vá được chunk PCF — dùng PCF gốc'); return; }
+  THREE.ShaderChunk.shadowmap_pars_fragment = ch.replace(re,
+    '#if defined( SHADOWMAP_TYPE_PCF )\n' +
+    '\t\t\tvec2 texelSize = vec2( 1.0 ) / shadowMapSize;\n' +
+    '\t\t\tfloat vgA = fract( sin( dot( gl_FragCoord.xy, vec2( 12.9898, 78.233 ) ) ) * 43758.5453 ) * 6.2831853;\n' +
+    '\t\t\tfloat vgS = 0.0;\n' +
+    '\t\t\tfor ( int vk = 0; vk < 24; vk ++ ) {\n' +
+    '\t\t\t\tfloat vr = sqrt( ( float( vk ) + 0.5 ) / 24.0 );\n' +
+    '\t\t\t\tfloat vth = float( vk ) * 2.3999632 + vgA;\n' +
+    '\t\t\t\tvgS += texture2DCompare( shadowMap, shadowCoord.xy + vec2( cos( vth ), sin( vth ) ) * vr * texelSize * shadowRadius, shadowCoord.z );\n' +
+    '\t\t\t}\n' +
+    '\t\t\tshadow = vgS / 24.0;');
+})();
+
+/* =========================================================================
+ * SÂN KHẤU
+ * ========================================================================= */
+var stage = HFA.createStage({
+  canvas:'c', width:W, height:H, fov:50, near:0.02, far:300,
+  clearColor:0x000000, lights:false, environment:false,
+  bloomStrength:0.42, bloomRadius:0.55, bloomThreshold:1.35, exposure:1.0
+});
+var renderer = stage.renderer, scene = stage.scene, camera = stage.camera, composer = stage.composer;
+var lens = stage.lens;
+lens.uniforms.uCA.value = 0.0006;
+lens.uniforms.uGrain.value = 0.024;
+lens.uniforms.uVig.value = 0.42;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFShadowMap;
+var MAXANI = renderer.capabilities.getMaxAnisotropy();
+var subEl = document.getElementById('sub');
+var chapEl = document.getElementById('chap');
+var cardEl = document.getElementById('card');
+var cardK1 = cardEl.querySelector('.k1'), cardK2 = cardEl.querySelector('.k2');
+var spL = document.getElementById('spL'), spR = document.getElementById('spR');
+var camB = new THREE.PerspectiveCamera(50, W/H, 0.02, 300);   /* camera nửa phải khi split khác góc */
+
+/* ---- chỉnh màu split-aware (tuyến tính, TRƯỚC lens) ---------------------- */
+var grade = new THREE.ShaderPass({
+  uniforms:{ tDiffuse:{value:null}, uSplit:{value:2.0}, uSatL:{value:1.0}, uSatR:{value:1.0},
+    uMulL:{value:new THREE.Vector3(1,1,1)}, uMulR:{value:new THREE.Vector3(1,1,1)}, uLine:{value:0.0} },
+  vertexShader:'varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',
+  fragmentShader:[
+    'varying vec2 vUv;uniform sampler2D tDiffuse;uniform float uSplit,uSatL,uSatR,uLine;uniform vec3 uMulL,uMulR;',
+    'void main(){vec4 c=texture2D(tDiffuse,vUv);float l=dot(c.rgb,vec3(0.2126,0.7152,0.0722));',
+    ' float sd=step(uSplit,vUv.x);float sat=mix(uSatL,uSatR,sd);vec3 mu=mix(uMulL,uMulR,sd);',
+    ' vec3 col=max(mix(vec3(l),c.rgb,sat)*mu,0.0);',
+    ' float d=abs(vUv.x-uSplit)*1920.0;',
+    ' col=mix(col,col*0.18,uLine*smoothstep(5.0,0.0,d));',
+    ' col+=uLine*vec3(0.55,0.52,0.48)*smoothstep(1.2,0.0,d)*0.6;',
+    ' gl_FragColor=vec4(col,1.0);}'].join('\n')
+});
+composer.insertPass(grade, 2);
+
+/* ---- pass vẽ cảnh có chia đôi khung (thay RenderPass của createStage) ---- */
+class SplitPass extends THREE.Pass {
+  constructor(sc){ super(); this.scene = sc; this.needsSwap = false; this.split = -1;
+    this.camL = camera; this.camR = null; this.preL = null; this.preR = null; }
+  render(r, writeBuffer, readBuffer){
+    var tg = this.renderToScreen ? null : readBuffer;
+    var oa = r.autoClear; r.autoClear = false;
+    r.setClearColor(0x000000, 1);
+    if(this.split <= 0 || this.split >= 1 || !tg){
+      if(tg){ tg.scissorTest = false; }
+      r.setRenderTarget(tg); r.clear();
+      if(this.preL) this.preL();
+      r.render(this.scene, this.camL);
+    } else {
+      var w = tg.width, h = tg.height, xs = Math.max(1, Math.min(w-1, Math.round(w*this.split)));
+      tg.scissorTest = true;
+      tg.scissor.set(0, 0, xs, h); r.setRenderTarget(tg); r.clear();
+      if(this.preL) this.preL();
+      r.render(this.scene, this.camL);
+      tg.scissor.set(xs, 0, w-xs, h); r.setRenderTarget(tg); r.clear();
+      if(this.preR) this.preR();
+      r.render(this.scene, this.camR || this.camL);
+      tg.scissorTest = false; tg.scissor.set(0, 0, w, h); r.setRenderTarget(tg);
+    }
+    r.autoClear = oa;
+  }
+}
+var splitPass = new SplitPass(scene);
+composer.passes[0] = splitPass;
+
+/* =========================================================================
+ * TIỆN ÍCH: canvas, noise tuần hoàn (texture liền mép), texture chữ hoãn vẽ
+ * ========================================================================= */
+function mkCanvas(w,h){ var c = document.createElement('canvas'); c.width = w; c.height = h; return c; }
+function cvTex(cv, o){ o = o || {}; var tx = new THREE.CanvasTexture(cv);
+  if(!o.linear) tx.encoding = THREE.sRGBEncoding; tx.anisotropy = MAXANI;
+  if(o.rep){ tx.wrapS = tx.wrapT = THREE.RepeatWrapping; tx.repeat.set(o.rep[0], o.rep[1]); }
+  return tx; }
+function PNoise(seed){ var r = HFA.mulberry32(seed); var P = new Float32Array(65536);
+  for(var i=0;i<65536;i++) P[i] = r();
+  return function(x,y,px,py){
+    var xi = Math.floor(x), yi = Math.floor(y), fx = x-xi, fy = y-yi;
+    var x0 = ((xi%px)+px)%px, x1 = (x0+1)%px, y0 = ((yi%py)+py)%py, y1 = (y0+1)%py;
+    var a = P[(y0&255)*256+(x0&255)], b = P[(y0&255)*256+(x1&255)], c = P[(y1&255)*256+(x0&255)], d = P[(y1&255)*256+(x1&255)];
+    var u = fx*fx*(3-2*fx), v = fy*fy*(3-2*fy);
+    return a+(b-a)*u+(c-a)*v+(a-b-c+d)*u*v; }; }
+function pfbm(n,x,y,px,py,oct){ var s=0,a=0.5,f=1,nm=0; for(var o=0;o<oct;o++){ s+=a*n(x*f,y*f,px*f,py*f); nm+=a; a*=0.5; f*=2; } return s/nm; }
+function hash2(x,y){ var h = Math.sin(x*127.1+y*311.7)*43758.5453; return h-Math.floor(h); }
+/** lưới thô nx×ny của fn(u,v) (u,v∈[0,1)) + tra song tuyến có quấn mép — noise tần số thấp không cần tính từng pixel */
+function grid(nx, ny, fn){ var a = new Float32Array(nx*ny); for(var j=0;j<ny;j++) for(var i=0;i<nx;i++) a[j*nx+i] = fn(i/nx, j/ny);
+  return function(u, v){ var x = u*nx, y = v*ny, xi = Math.floor(x), yi = Math.floor(y), fx = x-xi, fy = y-yi;
+    var x0 = ((xi%nx)+nx)%nx, x1 = (x0+1)%nx, y0 = ((yi%ny)+ny)%ny, y1 = (y0+1)%ny;
+    var A = a[y0*nx+x0], B = a[y0*nx+x1], C = a[y1*nx+x0], D = a[y1*nx+x1];
+    return A + (B-A)*fx + (C-A)*fy + (A-B-C+D)*fx*fy; }; }
+
+var JF = '"BIZ UDPGothic", sans-serif';
+var TEXT_TEX = [];
+var FONT_READY = false;
+/** Texture CÓ CHỮ: canvas tạo ngay, nhưng chỉ VẼ sau khi font Nhật nạp xong (lỗi 6 — không
+ *  bao giờ dựng/vẽ lười trong renderAtTime). */
+function textTex(w,h,draw,o){ var cv = mkCanvas(w,h); var tx = cvTex(cv, o);
+  TEXT_TEX.push({cv:cv, tx:tx, draw:draw}); return tx; }
+function drawTextTextures(){
+  for(var i=0;i<TEXT_TEX.length;i++){ var o = TEXT_TEX[i]; var cx = o.cv.getContext('2d');
+    cx.setTransform(1,0,0,1,0,0); cx.clearRect(0,0,o.cv.width,o.cv.height);
+    o.draw(cx, o.cv.width, o.cv.height); o.tx.needsUpdate = true; } }
+/** vẽ chữ vừa khung: thu font nếu rộng quá maxW */
+function fitText(cx, s, x, y, px, maxW, weight){
+  var f = px; cx.font = (weight||700)+' '+f+'px '+JF;
+  var w = cx.measureText(s).width; if(w > maxW){ f = Math.floor(px*maxW/w); cx.font = (weight||700)+' '+f+'px '+JF; }
+  cx.fillText(s, x, y); return f; }
+
+/** Nhãn phẳng (plane) có chữ, dựng trong block dựng. hWorld = chiều cao plane. */
+function labelPlane(text, o){
+  o = o || {}; var fpx = o.px || 72, cw = o.cw || 1024;
+  var ch = HFA.canvasHeightForText(fpx, 1, o.ch || 0, text);
+  var tx = textTex(cw, ch, function(cx,w,h){
+    cx.textAlign = o.align || 'center'; cx.textBaseline = 'middle';
+    if(o.bg){ cx.fillStyle = o.bg; cx.fillRect(0,0,w,h); }
+    cx.fillStyle = o.color || '#F2EDE4';
+    var x = (o.align === 'left') ? 16 : (o.align === 'right' ? w-16 : w/2);
+    fitText(cx, text, x, h/2, fpx, w-32, o.weight||700);
+  });
+  var wW = o.wWorld || 1.0, hW = wW*ch/cw;
+  var m = new THREE.MeshBasicMaterial({map:tx, transparent:true, depthWrite:false, color:new THREE.Color(o.gain||0.92, o.gain||0.92, o.gain||0.92)});
+  var me = new THREE.Mesh(new THREE.PlaneGeometry(wW, hW), m);
+  me.renderOrder = 10; return me;
+}
+
+/* ---- vật liệu có hai trạng thái (thứ Ba ↔ thứ Năm) ------------------------ */
+var ROOM_MATS = [];
+/** rw/rc = độ nhám ấm/lạnh; ew/ec = cường độ phản xạ môi trường; bw/bc = bumpScale */
+function rmat(p, rw, rc, ew, ec, bw, bc){
+  var m = new THREE.MeshStandardMaterial(p);
+  m.userData.st = {rw:rw, rc:rc, ew:ew, ec:ec, bw:(bw==null?(p.bumpScale||0):bw), bc:(bc==null?(p.bumpScale||0):bc)};
+  ROOM_MATS.push(m); return m; }
+function smat(col, rough, metal, extra){ var p = {color:col, roughness:rough==null?0.8:rough, metalness:metal||0};
+  if(extra) for(var k in extra) p[k] = extra[k]; return new THREE.MeshStandardMaterial(p); }
+function shadowAll(o, cast, recv){ o.traverse(function(c){ if(c.isMesh){ c.castShadow = cast; c.receiveShadow = recv; } }); }
+
+/** hộp bo tròn: ExtrudeGeometry của hình chữ nhật bo góc + bevel r */
+function rbox(w,h,d,r,seg){
+  r = Math.min(r, w/2-0.001, h/2-0.001, d/2-0.001);
+  var sw = w-2*r, sh = h-2*r, rc = Math.min(r, sw/2-0.0005, sh/2-0.0005); if(rc < 0.0005) rc = 0.0005;
+  var s = new THREE.Shape(), x0 = -sw/2, y0 = -sh/2;
+  s.moveTo(x0+rc, y0); s.lineTo(x0+sw-rc, y0); s.quadraticCurveTo(x0+sw, y0, x0+sw, y0+rc);
+  s.lineTo(x0+sw, y0+sh-rc); s.quadraticCurveTo(x0+sw, y0+sh, x0+sw-rc, y0+sh);
+  s.lineTo(x0+rc, y0+sh); s.quadraticCurveTo(x0, y0+sh, x0, y0+sh-rc);
+  s.lineTo(x0, y0+rc); s.quadraticCurveTo(x0, y0, x0+rc, y0);
+  var g = new THREE.ExtrudeGeometry(s, {depth:Math.max(0.0005,d-2*r), bevelEnabled:true, bevelThickness:r, bevelSize:r, bevelSegments:seg||3, curveSegments:6});
+  g.center(); return g;
+}
+function box(w,h,d){ return new THREE.BoxGeometry(w,h,d); }
+function meshAt(g, m, x, y, z, par){ var me = new THREE.Mesh(g, m); me.position.set(x,y,z); if(par) par.add(me); return me; }
+/** hộp theo biên [x0,x1]×[y0,y1]×[z0,z1] */
+function slab(x0,x1,y0,y1,z0,z1,m,par){ return meshAt(box(x1-x0,y1-y0,z1-z0), m, (x0+x1)/2,(y0+y1)/2,(z0+z1)/2, par); }
+
+/* =========================================================================
+ * TEXTURE THỦ TỤC (không chữ — vẽ ngay)
+ * ========================================================================= */
+/* ---- chiếu tatami: 1.8m × 0.9m ↦ 2048 × 1024. Sợi cói chạy theo cạnh NGẮN; mỗi "目" ~15mm;
+ *      viền 畳縁 vải sẫm ở hai cạnh DÀI. Cói đã ngả vàng (không xanh mới). ---- */
+var TATAMI = (function(){
+  var w = 2048, h = 1024, cv = mkCanvas(w,h), bc = mkCanvas(w,h);
+  var cx = cv.getContext('2d'), bx = bc.getContext('2d');
+  var id = cx.createImageData(w,h), bd = bx.createImageData(w,h);
+  var n = PNoise(11), n2 = PNoise(12);
+  var HERI = 30, G = 17.1;
+  var NS = Math.ceil(w/1.7)+1, strandH = new Float32Array(NS);
+  for(var q=0;q<NS;q++) strandH[q] = hash2(q, 3.1);
+  var gAlong = grid(NS, 64, function(u,v){ return pfbm(n, u*NS*0.37, v*1024/140, 1024, 8, 3); });
+  var gHue = grid(160, 80, function(u,v){ return pfbm(n2, u*2048/420, v*1024/260, 5, 4, 3); });
+  var gHeri = grid(64, 16, function(u,v){ return pfbm(n2, u*32, v*64, 32, 64, 2); });
+  for(var y=0;y<h;y++){ for(var x=0;x<w;x++){
+    var i = (y*w+x)*4, r, g, b, bump;
+    if(y < HERI || y >= h-HERI){
+      var yy = y < HERI ? y : (h-1-y);
+      var wv = ((x>>1)+(y>>1))&1 ? 0.92 : 1.0;
+      var lo = 0.85 + 0.15*gHeri(x/w, y/h);
+      var edge = yy > HERI-3 ? 0.55 : 1.0;
+      r = 30*wv*lo*edge; g = 32*wv*lo*edge; b = 38*wv*lo*edge; bump = 0.35 + 0.1*wv;
+    } else {
+      var gx = (x % G)/G;
+      var ridge = Math.sin(Math.PI*gx);               /* mỗi 目 hơi phồng */
+      var groove = Math.exp(-Math.pow(gx*G, 2)/1.4);  /* rãnh tối giữa hai 目 */
+      var sid = Math.floor(x/1.7);
+      var strand = strandH[sid];
+      var along = gAlong(sid/NS, y/h);
+      var hue = gHue(x/w, y/h);
+      var lum = (0.80 + 0.14*ridge + 0.10*(strand-0.5) + 0.12*(along-0.5)) * (1.0 - 0.38*groove);
+      var warp = (y % 23) < 1.3 ? 0.93 : 1.0;
+      lum *= warp;
+      r = (176 + 22*hue + 10*(strand-0.5)) * lum;
+      g = (160 + 12*hue) * lum;
+      b = (98 - 10*hue) * lum;
+      bump = 0.5 + 0.35*ridge - 0.45*groove + 0.08*(strand-0.5);
+    }
+    id.data[i] = r; id.data[i+1] = g; id.data[i+2] = b; id.data[i+3] = 255;
+    var bb = clamp(bump,0,1)*255; bd.data[i] = bb; bd.data[i+1] = bb; bd.data[i+2] = bb; bd.data[i+3] = 255;
+  } }
+  cx.putImageData(id,0,0); bx.putImageData(bd,0,0);
+  return {map:cvTex(cv), bump:cvTex(bc,{linear:true})};
+})();
+
+/* ---- 聚楽壁 (tường đất cát): hạt cát + loang tần số thấp. Liền mép (noise tuần hoàn). ---- */
+var PLASTER = (function(){
+  var w = 1024, h = 1024, cv = mkCanvas(w,h), bc = mkCanvas(w,h);
+  var cx = cv.getContext('2d'), bx = bc.getContext('2d');
+  var id = cx.createImageData(w,h), bd = bx.createImageData(w,h);
+  var n = PNoise(21);
+  var gLo = grid(128, 128, function(u,v){ return pfbm(n, u*4, v*4, 4, 4, 4); });
+  for(var y=0;y<h;y++){ for(var x=0;x<w;x++){
+    var i = (y*w+x)*4;
+    var lo = gLo(x/w, y/h);
+    var gr = hash2(x, y), gr2 = hash2(x*0.5|0, y*0.5|0);
+    var sp = gr > 0.985 ? -0.22 : (gr < 0.02 ? 0.10 : 0);
+    var l = 0.90 + 0.10*(lo-0.5)*2 + 0.05*(gr2-0.5) + sp;
+    id.data[i] = 206*l; id.data[i+1] = 189*l; id.data[i+2] = 154*l; id.data[i+3] = 255;
+    var b = clamp(0.5 + 0.35*(gr2-0.5) + sp*1.5 + 0.2*(lo-0.5), 0, 1)*255;
+    bd.data[i] = b; bd.data[i+1] = b; bd.data[i+2] = b; bd.data[i+3] = 255;
+  } }
+  cx.putImageData(id,0,0); bx.putImageData(bd,0,0);
+  return {cv:cv, bc:bc};
+})();
+function plasterMat(wm, hm){
+  var mp = cvTex(PLASTER.cv, {rep:[wm/1.3, hm/1.3]}), bp = cvTex(PLASTER.bc, {linear:true, rep:[wm/1.3, hm/1.3]});
+  return rmat({map:mp, bumpMap:bp, bumpScale:0.0025, color:0xffffff}, 1.0, 0.78, 0.12, 0.45, 0.0022, 0.0034);
+}
+
+/* ---- vân gỗ: dọc theo v (chiều dài). Một texture sáng trung tính, nhuộm bằng material.color ---- */
+var WOOD = (function(){
+  var w = 512, h = 2048, cv = mkCanvas(w,h), bc = mkCanvas(w,h);
+  var cx = cv.getContext('2d'), bx = bc.getContext('2d');
+  var id = cx.createImageData(w,h), bd = bx.createImageData(w,h);
+  var n = PNoise(31), n2 = PNoise(32);
+  var gW = grid(128, 256, function(u,v){ return pfbm(n, u*4, v*4, 4, 4, 4); });
+  var gP = grid(512, 256, function(u,v){ return pfbm(n2, u*512/3, v*2048/90, 171, 23, 2); });
+  for(var y=0;y<h;y++){ for(var x=0;x<w;x++){
+    var i = (y*w+x)*4;
+    var wp = gW(x/w, y/h);
+    var ring = (x/512)*7 + wp*2.6;
+    var f = ring - Math.floor(ring);
+    var late = Math.pow(1 - Math.abs(f*2-1), 6);
+    var pore = gP(x/w, y/h);
+    var l = 0.92 - 0.26*late - 0.10*(pore-0.5);
+    id.data[i] = 222*l; id.data[i+1] = 186*l; id.data[i+2] = 138*l; id.data[i+3] = 255;
+    var b = clamp(0.55 - 0.35*late - 0.25*(pore-0.5), 0, 1)*255;
+    bd.data[i] = b; bd.data[i+1] = b; bd.data[i+2] = b; bd.data[i+3] = 255;
+  } }
+  cx.putImageData(id,0,0); bx.putImageData(bd,0,0);
+  return {cv:cv, bc:bc};
+})();
+function woodMat(col, rep, rw, rc){
+  rep = rep || [1,1];
+  var mp = cvTex(WOOD.cv, {rep:rep}), bp = cvTex(WOOD.bc, {linear:true, rep:rep});
+  return rmat({map:mp, bumpMap:bp, bumpScale:0.0012, color:col}, rw==null?0.72:rw, rc==null?0.36:rc, 0.3, 0.95, 0.0010, 0.0016);
+}
+
+/* ---- vải dệt (áo, bọc bàn là, đệm ghế): liền mép, trung tính ---- */
+var FABRIC = (function(){
+  var w = 256, h = 256, cv = mkCanvas(w,h), bc = mkCanvas(w,h);
+  var cx = cv.getContext('2d'), bx = bc.getContext('2d');
+  var id = cx.createImageData(w,h), bd = bx.createImageData(w,h);
+  var n = PNoise(41);
+  var gS = grid(64, 64, function(u,v){ return pfbm(n, u*8, v*8, 8, 8, 2); });
+  for(var y=0;y<h;y++){ for(var x=0;x<w;x++){
+    var i = (y*w+x)*4;
+    var over = (((x>>2)+(y>>2))&1);
+    var tx = Math.sin((x%4)/4*Math.PI), ty = Math.sin((y%4)/4*Math.PI);
+    var th = over ? tx : ty;
+    var slub = gS(x/w, y/h);
+    var l = 0.86 + 0.10*th + 0.06*(slub-0.5);
+    id.data[i] = 240*l; id.data[i+1] = 240*l; id.data[i+2] = 240*l; id.data[i+3] = 255;
+    var b = clamp(0.3 + 0.6*th, 0, 1)*255; bd.data[i] = b; bd.data[i+1] = b; bd.data[i+2] = b; bd.data[i+3] = 255;
+  } }
+  cx.putImageData(id,0,0); bx.putImageData(bd,0,0);
+  return {cv:cv, bc:bc};
+})();
+function fabricMat(col, rep, rw, rc){
+  rep = rep || [6,6];
+  return rmat({map:cvTex(FABRIC.cv,{rep:rep}), bumpMap:cvTex(FABRIC.bc,{linear:true,rep:rep}), bumpScale:0.0008, color:col},
+    rw==null?1.0:rw, rc==null?0.6:rc, 0.12, 0.5, 0.0007, 0.0011);
+}
+/* áo sọc */
+var STRIPE = (function(){ var cv = mkCanvas(256,256), cx = cv.getContext('2d');
+  cx.fillStyle = '#f2f2ee'; cx.fillRect(0,0,256,256);
+  cx.fillStyle = 'rgba(70,98,150,0.55)'; for(var x=0;x<256;x+=32){ cx.fillRect(x,0,5,256); }
+  cx.fillStyle = 'rgba(70,98,150,0.25)'; for(var x2=16;x2<256;x2+=32){ cx.fillRect(x2,0,2,256); }
+  return cv; })();
+
+/* ---- giấy 襖 (fusuma): nền giấy + hoa văn 青海波 mica rất mờ ---- */
+var FUSUMA_TEX = (function(){
+  var w = 512, h = 1024, cv = mkCanvas(w,h), cx = cv.getContext('2d');
+  var id = cx.createImageData(w,h), n = PNoise(51);
+  var gF = grid(128, 256, function(u,v){ return pfbm(n, u*8, v*16, 8, 16, 3); });
+  for(var y=0;y<h;y++){ for(var x=0;x<w;x++){ var i = (y*w+x)*4;
+    var l = 0.93 + 0.05*(gF(x/w, y/h)-0.5) + 0.02*(hash2(x,y)-0.5);
+    id.data[i] = 234*l; id.data[i+1] = 227*l; id.data[i+2] = 208*l; id.data[i+3] = 255; } }
+  cx.putImageData(id,0,0);
+  cx.strokeStyle = 'rgba(255,250,235,0.20)'; cx.lineWidth = 2;
+  for(var row=0; row<22; row++){ for(var col=-1; col<9; col++){
+    var cxp = col*64 + (row%2)*32, cyp = row*48 + 40;
+    for(var k=0;k<4;k++){ cx.beginPath(); cx.arc(cxp, cyp, 30-k*7, Math.PI, 2*Math.PI); cx.stroke(); } } }
+  return cvTex(cv);
+})();
+
+/* ---- quầng sáng tròn (halo của quả cầu sáng) ---- */
+var GLOW_TEX = (function(){ var cv = mkCanvas(256,256), cx = cv.getContext('2d');
+  var g = cx.createRadialGradient(128,128,0,128,128,128);
+  g.addColorStop(0,'rgba(255,255,255,1)'); g.addColorStop(0.18,'rgba(255,255,255,0.55)');
+  g.addColorStop(0.45,'rgba(255,255,255,0.12)'); g.addColorStop(1,'rgba(255,255,255,0)');
+  cx.fillStyle = g; cx.fillRect(0,0,256,256); var tx = cvTex(cv, {linear:true}); return tx; })();
+
+/* ---- vữa/xi măng studio sáng (phòng thí nghiệm) ---- */
+var STUDIO_TEX = (function(){ var w = 512, h = 512, cv = mkCanvas(w,h), cx = cv.getContext('2d');
+  var id = cx.createImageData(w,h), n = PNoise(61);
+  var gT = grid(128, 128, function(u,v){ return pfbm(n, u*4, v*4, 4, 4, 4); });
+  for(var y=0;y<h;y++){ for(var x=0;x<w;x++){ var i = (y*w+x)*4;
+    var l = 0.95 + 0.05*(gT(x/w, y/h)-0.5)*2 + 0.015*(hash2(x,y)-0.5);
+    id.data[i] = 200*l; id.data[i+1] = 199*l; id.data[i+2] = 195*l; id.data[i+3] = 255; } }
+  cx.putImageData(id,0,0); return cv; })();
+
+/* ---- envMap trong nhà: tường be, cửa sổ sáng phía đông — nướng PMREM một lần ---- */
+(function buildEnv(){
+  var cv = mkCanvas(512,256), cx = cv.getContext('2d');
+  var g = cx.createLinearGradient(0,0,0,256);
+  g.addColorStop(0,'#6d5f4c'); g.addColorStop(0.45,'#8a7a62'); g.addColorStop(0.6,'#7a6a52'); g.addColorStop(1,'#4a3f30');
+  cx.fillStyle = g; cx.fillRect(0,0,512,256);
+  cx.fillStyle = '#f4f2ea'; cx.fillRect(360, 70, 70, 60);
+  cx.fillStyle = 'rgba(255,248,230,0.5)'; cx.fillRect(340, 60, 110, 80);
+  cx.fillStyle = '#b8a888'; cx.fillRect(0, 170, 512, 20);
+  var tx = new THREE.CanvasTexture(cv); tx.mapping = THREE.EquirectangularReflectionMapping; tx.encoding = THREE.sRGBEncoding;
+  var pm = new THREE.PMREMGenerator(renderer); pm.compileEquirectangularShader();
+  scene.environment = pm.fromEquirectangular(tx).texture; pm.dispose(); tx.dispose();
+})();
+
+/* =========================================================================
+ * NHÓM & ÁNH SÁNG
+ * ========================================================================= */
+var G = {};
+function reg(name){ var g = new THREE.Group(); g.visible = false; scene.add(g); G[name] = g; return g; }
+var ROOM = reg('room');
+
+/* Mặt trời 10 giờ sáng, cửa sổ hướng đông: cao ~39°, lệch nam ~14°. HƯỚNG KHÔNG ĐỔI giữa hai ngày. */
+var SUN_DIR0 = new THREE.Vector3(0.74, 0.62, 0.18).normalize();
+var SUN = new THREE.DirectionalLight(0xffffff, 3.0);
+SUN.castShadow = true;
+SUN.shadow.mapSize.set(4096, 4096);
+SUN.shadow.camera.left = -3.9; SUN.shadow.camera.right = 3.9;
+SUN.shadow.camera.top = 3.9; SUN.shadow.camera.bottom = -3.9;
+SUN.shadow.camera.near = 1; SUN.shadow.camera.far = 24;
+SUN.shadow.bias = -0.00025; SUN.shadow.normalBias = 0.012;
+SUN.target.position.set(-0.2, 1.0, 0); scene.add(SUN); scene.add(SUN.target);
+var HEMI_R = new THREE.HemisphereLight(0xffffff, 0x444444, 0.5); scene.add(HEMI_R);
+/* BỂ 4 ĐÈN ĐIỂM DÙNG CHUNG: mỗi vật liệu PBR lặp qua MỌI đèn điểm trong cảnh (kể cả đèn cường độ 0),
+ * nên 14 đèn riêng lẻ làm shader nặng gấp ba. Mỗi sân khấu gán lại vị trí/màu/cường độ theo frame. */
+var PL = [0,1,2,3].map(function(){ var l = new THREE.PointLight(0xffffff, 0, 3, 2); scene.add(l); return l; });
+function usePL(i, x, y, z, col, I, dist){ var l = PL[i]; l.position.set(x, y, z); l.color.copy(col); l.intensity = I; l.distance = dist; }
+var BOUNCE = PL[0], WINF = PL[1];
+function setSun(shift){
+  var d = new THREE.Vector3(0.74, 0.62 + 0.05*shift, 0.18 + 0.13*shift).normalize();
+  SUN.position.copy(SUN.target.position).addScaledVector(d, 11); return d; }
+var SUN_D = setSun(0);
+
+/* Đèn dùng chung cho các sân khấu khác (đặt lại vị trí theo shot — hàm thuần của shot) */
+var KEY = new THREE.DirectionalLight(0xffffff, 0);
+KEY.castShadow = true; KEY.shadow.mapSize.set(2048, 2048);
+KEY.shadow.camera.near = 0.5; KEY.shadow.camera.far = 30;
+KEY.shadow.bias = -0.0003; KEY.shadow.normalBias = 0.01;
+scene.add(KEY); scene.add(KEY.target);
+var HEMI_S = new THREE.HemisphereLight(0xffffff, 0x333333, 0); scene.add(HEMI_S);
+function keyAt(cx, cy, cz, dx, dy, dz, I, col, span, rad){
+  KEY.target.position.set(cx, cy, cz);
+  KEY.position.set(cx+dx, cy+dy, cz+dz);
+  KEY.intensity = I; KEY.color.copy(col);
+  var c = KEY.shadow.camera; c.left = -span; c.right = span; c.top = span; c.bottom = -span; c.updateProjectionMatrix();
+  KEY.shadow.radius = rad || 6;
+}
+
+/* =========================================================================
+ * CĂN 六畳 (3.6 × 2.7 m, trần 2.4) — dựng MỘT LẦN
+ *   x: tây(-1.8) → đông(+1.8, cửa sổ)   z: bắc(-1.35) → nam(+1.35)   y: sàn chiếu = 0
+ * ========================================================================= */
+var RX = 1.8, RZ = 1.35, RH = 2.4;
+var WIN = {y0:0.80, y1:1.90, z0:-0.75, z1:0.85};
+
+/* ---- chiếu tatami: sáu tấm, xếp kiểu 六畳 (không có góc bốn tấm gặp nhau) ---- */
+var mTatami = rmat({map:TATAMI.map, bumpMap:TATAMI.bump, bumpScale:0.0035, color:0xffffff}, 0.93, 0.56, 0.22, 0.75, 0.0030, 0.0048);
+(function(){
+  var L = [[-1.35,-0.45,1],[0,-0.9,0],[1.35,-0.45,1],[0,0,0],[-0.9,0.9,0],[0.9,0.9,0]];
+  var g = box(1.796, 0.055, 0.896);
+  for(var i=0;i<L.length;i++){
+    var m = meshAt(g, mTatami, L[i][0], -0.0275, L[i][1], ROOM);
+    m.rotation.y = (L[i][2] ? Math.PI/2 : 0) + ((i%2) ? Math.PI : 0);
+    m.receiveShadow = true; m.castShadow = false;
+  }
+  var under = slab(-RX-0.2, RX+0.2, -0.12, -0.056, -RZ-0.2, RZ+0.2, smat(0x1a140e, 0.9), ROOM); under.receiveShadow = true;
+})();
+
+/* ---- tường ---- */
+var mWood = woodMat(0xE8D2B0, [1,1], 0.72, 0.36);       /* hinoki sáng: cột, khung */
+var mWoodD = woodMat(0x9C6C44, [1,1], 0.70, 0.34);      /* gỗ sẫm: trần, bàn */
+var WALLT = 0.12;
+(function walls(){
+  var pE = plasterMat(2.7, 2.4), pW = plasterMat(2.7, 2.4), pN = plasterMat(3.6, 2.4), pS = plasterMat(3.6, 2.4);
+  /* đông — khoét cửa sổ */
+  slab(RX, RX+WALLT, 0, WIN.y0, -RZ-WALLT, RZ+WALLT, pE, ROOM);
+  slab(RX, RX+WALLT, WIN.y1, RH, -RZ-WALLT, RZ+WALLT, pE, ROOM);
+  slab(RX, RX+WALLT, WIN.y0, WIN.y1, -RZ-WALLT, WIN.z0, pE, ROOM);
+  slab(RX, RX+WALLT, WIN.y0, WIN.y1, WIN.z1, RZ+WALLT, pE, ROOM);
+  /* tây — khoét lối 襖 */
+  slab(-RX-WALLT, -RX, 1.80, RH, -RZ-WALLT, RZ+WALLT, pW, ROOM);
+  slab(-RX-WALLT, -RX, 0, 1.80, -RZ-WALLT, -0.90, pW, ROOM);
+  slab(-RX-WALLT, -RX, 0, 1.80, 0.90, RZ+WALLT, pW, ROOM);
+  /* bắc, nam */
+  slab(-RX, RX, 0, RH, -RZ-WALLT, -RZ, pN, ROOM);
+  slab(-RX, RX, 0, RH, RZ, RZ+WALLT, pS, ROOM);
+  /* trần gỗ + mái che dày (chặn nắng: chỉ cửa sổ cho nắng vào) */
+  var ceil = slab(-RX-WALLT, RX+WALLT, RH, RH+0.05, -RZ-WALLT, RZ+WALLT, woodMat(0xA77B52, [3,1], 0.8, 0.45), ROOM);
+  ceil.name = 'ceil';
+  var roof = slab(-3.3, RX+WALLT, RH+0.05, RH+0.35, -2.8, 2.8, smat(0x111111, 1), ROOM); roof.name = 'roof';
+  /* cột góc + 長押 + 畳寄せ */
+  var P = [[-RX+0.05,-RZ+0.05],[RX-0.05,-RZ+0.05],[-RX+0.05,RZ-0.05],[RX-0.05,RZ-0.05]];
+  for(var i=0;i<P.length;i++) slab(P[i][0]-0.055,P[i][0]+0.055, 0, RH, P[i][1]-0.055, P[i][1]+0.055, mWood, ROOM);
+  slab(-RX, RX, 1.86, 1.94, -RZ, -RZ+0.035, mWood, ROOM);
+  slab(-RX, RX, 1.86, 1.94, RZ-0.035, RZ, mWood, ROOM);
+  slab(-RX, RX, 0, 0.035, -RZ, -RZ+0.015, mWood, ROOM);
+  slab(-RX, RX, 0, 0.035, RZ-0.015, RZ, mWood, ROOM);
+  slab(-RX, RX, RH-0.05, RH, -RZ, -RZ+0.04, mWood, ROOM);
+  slab(-RX, RX, RH-0.05, RH, RZ-0.04, RZ, mWood, ROOM);
+  /* 竿縁 trên trần */
+  for(var k=-3;k<=3;k++) slab(-RX, RX, RH-0.025, RH, k*0.36-0.012, k*0.36+0.012, mWoodD, ROOM).name = 'ceil';
+})();
+
+/* ---- cửa sổ: khung gỗ 田 (bóng in xuống chiếu thành bốn ô vuông) ---- */
+var WINDOW = new THREE.Group(); ROOM.add(WINDOW);
+(function(){
+  var xs = RX+0.045, fw = 0.038, fd = 0.05;
+  function bar(y0,y1,z0,z1){ slab(xs-fd/2, xs+fd/2, y0, y1, z0, z1, mWood, WINDOW); }
+  bar(WIN.y0, WIN.y0+fw, WIN.z0, WIN.z1); bar(WIN.y1-fw, WIN.y1, WIN.z0, WIN.z1);
+  bar(WIN.y0, WIN.y1, WIN.z0, WIN.z0+fw); bar(WIN.y0, WIN.y1, WIN.z1-fw, WIN.z1);
+  var zm = (WIN.z0+WIN.z1)/2, ym = (WIN.y0+WIN.y1)/2;
+  bar(WIN.y0, WIN.y1, zm-0.026, zm+0.026);      /* 召合せ giữa hai cánh */
+  bar(ym-0.016, ym+0.016, WIN.z0, WIN.z1);      /* 桟 ngang */
+  /* bậu cửa + khuôn trong */
+  slab(RX-0.07, RX+0.02, WIN.y0-0.04, WIN.y0, WIN.z0-0.06, WIN.z1+0.06, mWood, WINDOW);
+  slab(RX-0.03, RX+0.02, WIN.y1, WIN.y1+0.045, WIN.z0-0.06, WIN.z1+0.06, mWood, WINDOW);
+  slab(RX-0.03, RX+0.02, WIN.y0, WIN.y1, WIN.z0-0.05, WIN.z0, mWood, WINDOW);
+  slab(RX-0.03, RX+0.02, WIN.y0, WIN.y1, WIN.z1, WIN.z1+0.05, mWood, WINDOW);
+  shadowAll(WINDOW, true, true);
+  /* kính: không đổ bóng */
+  var gm = new THREE.MeshStandardMaterial({color:0xffffff, roughness:0.05, metalness:0, transparent:true, opacity:0.07, envMapIntensity:1.2, depthWrite:false});
+  var gl = new THREE.Mesh(new THREE.PlaneGeometry(WIN.z1-WIN.z0, WIN.y1-WIN.y0), gm);
+  gl.position.set(xs+0.005, ym, zm); gl.rotation.y = -Math.PI/2; WINDOW.add(gl);
+})();
+
+/* ---- ngoài cửa sổ: trời + vườn nhoè (nền phát sáng, không đổ/nhận bóng) ---- */
+var SKY_CV = (function(){ var w = 1024, h = 512, cv = mkCanvas(w,h), cx = cv.getContext('2d');
+  var g = cx.createLinearGradient(0,0,0,h);
+  g.addColorStop(0,'#9fbde0'); g.addColorStop(0.55,'#e6eef2'); g.addColorStop(0.72,'#f4f2e8'); g.addColorStop(1,'#cfd6c8');
+  cx.fillStyle = g; cx.fillRect(0,0,w,h);
+  var pr = HFA.mulberry32(71);
+  cx.filter = 'blur(10px)';
+  for(var i=0;i<140;i++){ var x = pr()*w, y = 300 + pr()*220, r = 20 + pr()*60;
+    cx.fillStyle = 'rgba(' + (70+pr()*40|0) + ',' + (95+pr()*40|0) + ',' + (60+pr()*30|0) + ',0.55)';
+    cx.beginPath(); cx.arc(x, y, r, 0, 6.283); cx.fill(); }
+  cx.fillStyle = 'rgba(200,196,186,0.8)'; cx.fillRect(0, 450, w, 62);
+  cx.filter = 'none';
+  return cv; })();
+var skyMat = new THREE.MeshBasicMaterial({map:cvTex(SKY_CV), color:new THREE.Color(1.6,1.6,1.6)});
+var skyMesh = meshAt(new THREE.PlaneGeometry(16, 8), skyMat, 6.0, 1.6, 0.0, ROOM);
+skyMesh.rotation.y = -Math.PI/2; skyMesh.castShadow = false; skyMesh.receiveShadow = false;
+
+/* ---- cành lá ngoài cửa sổ: đổ bóng lá lay nhẹ vào mảng nắng (cùng nhịp hai ngày) ---- */
+var LEAF_CV = (function(){ var cv = mkCanvas(512,512), cx = cv.getContext('2d'), pr = HFA.mulberry32(81);
+  cx.strokeStyle = 'rgba(52,44,30,1)'; cx.lineWidth = 7;
+  cx.beginPath(); cx.moveTo(0, 60); cx.quadraticCurveTo(220, 150, 470, 250); cx.stroke();
+  cx.lineWidth = 3;
+  for(var i=0;i<75;i++){ var s = pr(); var bx = 470*s, by = 60 + 190*s + (pr()-0.5)*40;
+    var a = pr()*6.283, L = 26 + pr()*20;
+    cx.save(); cx.translate(bx + Math.cos(a)*12, by + Math.sin(a)*12); cx.rotate(a);
+    cx.fillStyle = 'rgba(' + (40+pr()*30|0) + ',' + (70+pr()*40|0) + ',' + (30+pr()*20|0) + ',1)';
+    cx.beginPath(); cx.ellipse(L*0.5, 0, L*0.5, L*0.2, 0, 0, 6.283); cx.fill(); cx.restore(); }
+  return cv; })();
+var LEAVES = [];
+(function(){
+  var lt = cvTex(LEAF_CV);
+  var lm = new THREE.MeshStandardMaterial({map:lt, alphaTest:0.5, side:THREE.DoubleSide, color:0x8a9a70, roughness:0.9});
+  var dm = new THREE.MeshDepthMaterial({depthPacking:THREE.RGBADepthPacking, map:lt, alphaTest:0.5});
+  var spots = [[3.2, 2.45, -0.75, 0.3]];
+  for(var i=0;i<spots.length;i++){
+    var m = meshAt(new THREE.PlaneGeometry(1.4, 1.4), lm, spots[i][0], spots[i][1], spots[i][2], ROOM);
+    m.rotation.set(0.2, -Math.PI/2 + 0.25, spots[i][3]);
+    m.customDepthMaterial = dm; m.castShadow = true; m.receiveShadow = false;
+    m.userData.base = m.rotation.z; m.userData.ph = i*1.7; LEAVES.push(m);
+  }
+})();
+
+/* ---- 襖 + hành lang phía tây (cho cảnh "tự mở cửa bước vào") ---- */
+var FUS = [];
+(function(){
+  var frameM = smat(0x1b1714, 0.45, 0.0);
+  var hikM = smat(0x3a2e22, 0.35, 0.7);
+  var pm = rmat({map:FUSUMA_TEX, color:0xffffff}, 0.95, 0.72, 0.10, 0.35);
+  function panel(zc, xTrack){
+    var g = new THREE.Group();
+    meshAt(box(0.018, 1.76, 0.88), pm, 0, 0.9, 0, g);
+    slab(-0.012, 0.012, 0.0, 0.02, -0.46, 0.46, frameM, g);
+    slab(-0.012, 0.012, 1.78, 1.80, -0.46, 0.46, frameM, g);
+    slab(-0.012, 0.012, 0.0, 1.80, -0.46, -0.44, frameM, g);
+    slab(-0.012, 0.012, 0.0, 1.80, 0.44, 0.46, frameM, g);
+    var hk = new THREE.CylinderGeometry(0.03, 0.03, 0.026, 24);
+    var h1 = meshAt(hk, hikM, 0, 0.88, 0.33, g); h1.rotation.z = Math.PI/2;
+    g.position.set(xTrack, 0, zc); shadowAll(g, true, true); ROOM.add(g); return g;
+  }
+  FUS.push(panel(-0.45, -RX-0.035));     /* cánh trong (phía phòng) */
+  FUS.push(panel( 0.45, -RX-0.085));     /* cánh ngoài (phía hành lang) — cánh trượt khi mở */
+  slab(-RX-WALLT, -RX, 1.80, 1.85, -0.92, 0.92, mWood, ROOM);   /* 鴨居 */
+  slab(-RX-WALLT, -RX, 0.0, 0.012, -0.92, 0.92, mWood, ROOM);   /* 敷居 */
+  slab(-RX-WALLT-0.02, -RX+0.02, 0, 1.85, -0.97, -0.9, mWood, ROOM);
+  slab(-RX-WALLT-0.02, -RX+0.02, 0, 1.85, 0.9, 0.97, mWood, ROOM);
+  /* hành lang */
+  var hf = woodMat(0x7A5234, [2,6], 0.55, 0.35);
+  slab(-3.1, -RX-WALLT, -0.04, 0.0, -2.6, 2.6, hf, ROOM).receiveShadow = true;
+  var hp = plasterMat(5.2, 2.4);
+  slab(-3.25, -3.1, 0, RH, -2.6, 2.6, hp, ROOM);
+  slab(-3.25, -RX, 0, RH, -2.75, -2.6, hp, ROOM);
+  slab(-3.25, -RX, 0, RH, 2.6, 2.75, hp, ROOM);
+  slab(-3.25, -RX-WALLT, RH, RH+0.05, -2.75, 2.75, woodMat(0x8C6340, [2,1]), ROOM).name = 'hallceil';
+})();
+var HALL_L = PL[2];
+
+/* ---- đồ đạc ---- */
+var mFabW = fabricMat(0xF2F0EA, [10,10]);        /* áo trắng */
+var mFabB = fabricMat(0xB8CCE0, [10,10]);        /* áo xanh nhạt */
+var mFabS = rmat({map:cvTex(STRIPE,{rep:[3,3]}), bumpMap:cvTex(FABRIC.bc,{linear:true,rep:[10,10]}), bumpScale:0.0008, color:0xffffff}, 1.0, 0.6, 0.12, 0.5);
+var mCover = fabricMat(0xD9CFBF, [8,8]);         /* bọc bàn là */
+var mMetal = rmat({color:0xC9CCD0, metalness:1.0, roughness:0.32}, 0.34, 0.16, 0.9, 1.3);
+var mPlast = rmat({color:0xE9EEF0, roughness:0.4}, 0.42, 0.24, 0.5, 1.0);
+var mDark = rmat({color:0x2a2c30, roughness:0.5}, 0.5, 0.3, 0.4, 0.9);
+var mCera = rmat({color:0xE8E4D6, roughness:0.2}, 0.22, 0.10, 0.8, 1.3);
+
+/* bàn là ngồi (座式アイロン台) dọc theo x, phía nam phòng */
+var BOARD = new THREE.Group(); ROOM.add(BOARD);
+(function(){
+  var s = new THREE.Shape();
+  s.moveTo(-0.46, -0.19); s.lineTo(0.20, -0.19);
+  s.bezierCurveTo(0.40, -0.19, 0.52, -0.08, 0.52, 0.0);
+  s.bezierCurveTo(0.52, 0.08, 0.40, 0.19, 0.20, 0.19);
+  s.lineTo(-0.46, 0.19); s.lineTo(-0.46, -0.19);
+  var g = new THREE.ExtrudeGeometry(s, {depth:0.018, bevelEnabled:true, bevelThickness:0.012, bevelSize:0.012, bevelSegments:4, curveSegments:24});
+  g.rotateX(-Math.PI/2);
+  var top = new THREE.Mesh(g, mCover); top.position.y = 0.215; BOARD.add(top);
+  var tm = mMetal;
+  function leg(x){
+    var c = new THREE.CatmullRomCurve3([new THREE.Vector3(x,0.012,-0.17), new THREE.Vector3(x,0.16,-0.15), new THREE.Vector3(x,0.205,-0.10),
+      new THREE.Vector3(x,0.205,0.10), new THREE.Vector3(x,0.16,0.15), new THREE.Vector3(x,0.012,0.17)]);
+    meshAt(new THREE.TubeGeometry(c, 40, 0.009, 8, false), tm, 0,0,0, BOARD);
+    meshAt(new THREE.SphereGeometry(0.014, 12, 8), mDark, x, 0.012, -0.17, BOARD);
+    meshAt(new THREE.SphereGeometry(0.014, 12, 8), mDark, x, 0.012, 0.17, BOARD);
+  }
+  leg(-0.33); leg(0.24);
+  /* áo đang là: tấm vải trải trên mặt bàn */
+  var sh = new THREE.Shape(); sh.moveTo(-0.34,-0.16); sh.lineTo(0.18,-0.16); sh.lineTo(0.24,-0.10); sh.lineTo(0.24,0.10); sh.lineTo(0.18,0.16); sh.lineTo(-0.34,0.16); sh.lineTo(-0.34,-0.16);
+  var sg = new THREE.ExtrudeGeometry(sh, {depth:0.003, bevelEnabled:true, bevelThickness:0.002, bevelSize:0.004, bevelSegments:2, curveSegments:8});
+  sg.rotateX(-Math.PI/2);
+  var cloth = new THREE.Mesh(sg, mFabB); cloth.position.set(0.02, 0.247, 0); BOARD.add(cloth);
+  BOARD.position.set(0.12, 0, 0.66);
+  shadowAll(BOARD, true, true);
+})();
+
+/* bàn ủi: đế thép hình giọt nước + thân nhựa + tay cầm + dây */
+var IRON = new THREE.Group(); ROOM.add(IRON);
+(function(){
+  var s = new THREE.Shape();
+  s.moveTo(-0.11, -0.055); s.lineTo(0.02, -0.055); s.quadraticCurveTo(0.10, -0.045, 0.135, 0.0);
+  s.quadraticCurveTo(0.10, 0.045, 0.02, 0.055); s.lineTo(-0.11, 0.055); s.quadraticCurveTo(-0.12, 0.0, -0.11, -0.055);
+  var sole = new THREE.ExtrudeGeometry(s, {depth:0.006, bevelEnabled:true, bevelThickness:0.002, bevelSize:0.002, bevelSegments:2, curveSegments:18});
+  sole.rotateX(-Math.PI/2);
+  meshAt(sole, mMetal, 0, 0.002, 0, IRON);
+  var body = new THREE.ExtrudeGeometry(s, {depth:0.03, bevelEnabled:true, bevelThickness:0.016, bevelSize:0.012, bevelSegments:5, curveSegments:18});
+  body.rotateX(-Math.PI/2); var b = meshAt(body, mPlast, 0, 0.026, 0, IRON); b.scale.set(0.92, 1, 0.9);
+  var hc = new THREE.CatmullRomCurve3([new THREE.Vector3(-0.085,0.07,0), new THREE.Vector3(-0.07,0.115,0), new THREE.Vector3(0.0,0.125,0), new THREE.Vector3(0.06,0.10,0), new THREE.Vector3(0.075,0.07,0)]);
+  meshAt(new THREE.TubeGeometry(hc, 30, 0.014, 10, false), mPlast, 0,0,0, IRON);
+  shadowAll(IRON, true, true);
+  /* dựng đứng trên gót (tư thế nghỉ) ở đầu sau của bàn */
+  IRON.rotation.set(0, 0.2, Math.PI/2);
+  IRON.position.set(-0.24+0.12, 0.25+0.11, 0.66-0.02);
+  /* dây điện: toạ độ THẾ GIỚI (không xoay theo thân) — từ gót bàn ủi, rủ khỏi mép nam của bàn, chạy trên chiếu */
+  var cc = new THREE.CatmullRomCurve3([new THREE.Vector3(-0.115,0.255,0.64), new THREE.Vector3(-0.14,0.252,0.78), new THREE.Vector3(-0.16,0.205,0.9),
+    new THREE.Vector3(-0.16,0.012,1.0), new THREE.Vector3(0.1,0.006,1.18), new THREE.Vector3(0.55,0.006,1.30)]);
+  var cord = meshAt(new THREE.TubeGeometry(cc, 60, 0.0042, 6, false), mDark, 0,0,0, ROOM); cord.castShadow = true; cord.receiveShadow = true;
+})();
+
+/* chồng áo gấp trên chiếu (số áo theo t — mỗi chiếc đặt xuống nhẹ) */
+var SHIRTS = [];
+(function(){
+  var mats = [mFabW, mFabS, mFabB, mFabW, mFabS, mFabW];
+  var g = rbox(0.30, 0.034, 0.24, 0.012, 3);
+  var cg = new THREE.TorusGeometry(0.05, 0.009, 6, 16, Math.PI);
+  for(var i=0;i<6;i++){
+    var s = new THREE.Group();
+    meshAt(g, mats[i], 0, 0.017, 0, s);
+    var col = meshAt(cg, mats[i], -0.10, 0.036, 0, s); col.rotation.set(-Math.PI/2, 0, Math.PI/2); col.scale.set(1, 1, 0.6);
+    s.position.set(-0.52, i*0.036, 0.86); s.rotation.y = 0.12 + (hash2(i,7)-0.5)*0.08;
+    shadowAll(s, true, true); ROOM.add(s); SHIRTS.push(s);
+  }
+})();
+
+/* ちゃぶ台 (bàn tròn thấp) phía tây-nam */
+var TABLE = new THREE.Group(); ROOM.add(TABLE);
+(function(){
+  var tm = woodMat(0x8E5E38, [2,1], 0.55, 0.28);
+  meshAt(new THREE.CylinderGeometry(0.42, 0.42, 0.028, 64), tm, 0, 0.316, 0, TABLE);
+  meshAt(new THREE.CylinderGeometry(0.40, 0.40, 0.03, 48), tm, 0, 0.29, 0, TABLE);
+  for(var i=0;i<4;i++){ var a = i*Math.PI/2 + Math.PI/4;
+    meshAt(box(0.045, 0.28, 0.045), tm, Math.cos(a)*0.28, 0.14, Math.sin(a)*0.28, TABLE); }
+  TABLE.position.set(-0.95, 0, 0.30);
+  shadowAll(TABLE, true, true);
+})();
+var TABLE_Y = 0.330;
+
+/* điện thoại trên bàn: màn hình có hai trạng thái (menu tắt nguồn / tối) */
+function phoneBody(par){
+  var g = new THREE.Group();
+  meshAt(rbox(0.074, 0.009, 0.155, 0.004, 3), mDark, 0, 0.0045, 0, g);
+  var scr = new THREE.Mesh(new THREE.PlaneGeometry(0.068, 0.148), new THREE.MeshBasicMaterial({color:0x000000}));
+  scr.rotation.x = -Math.PI/2; scr.position.y = 0.0093; g.add(scr);
+  var glass = new THREE.Mesh(new THREE.PlaneGeometry(0.07, 0.15), new THREE.MeshStandardMaterial({color:0x000000, roughness:0.06, metalness:0.0, transparent:true, opacity:0.35, envMapIntensity:1.4}));
+  glass.rotation.x = -Math.PI/2; glass.position.y = 0.0096; g.add(glass);
+  shadowAll(g, true, true); g.userData.scr = scr; if(par) par.add(g); return g;
+}
+var PHONE_R = phoneBody(ROOM);
+PHONE_R.position.set(-0.84, TABLE_Y, 0.16); PHONE_R.rotation.y = 0.35;
+var TX_POWER = textTex(340, 740, function(cx,w,h){
+  var g = cx.createLinearGradient(0,0,0,h); g.addColorStop(0,'#1c2430'); g.addColorStop(1,'#0c1016');
+  cx.fillStyle = g; cx.fillRect(0,0,w,h);
+  cx.fillStyle = 'rgba(255,255,255,0.14)'; cx.beginPath(); cx.roundRect ? cx.roundRect(30,120,w-60,86,43) : cx.rect(30,120,w-60,86); cx.fill();
+  cx.fillStyle = '#e24a3b'; cx.beginPath(); cx.arc(76,163,34,0,6.283); cx.fill();
+  cx.strokeStyle = '#fff'; cx.lineWidth = 5; cx.beginPath(); cx.arc(76,166,15,-1.1,4.25); cx.stroke();
+  cx.beginPath(); cx.moveTo(76,146); cx.lineTo(76,164); cx.stroke();
+  cx.fillStyle = '#f2f2f2'; cx.textAlign = 'left'; cx.textBaseline = 'middle';
+  fitText(cx, 'スライドで電源オフ', 124, 163, 26, w-150, 700);
+  cx.textAlign = 'center'; fitText(cx, 'キャンセル', w/2, 640, 28, w-40, 400);
+});
+var TX_BLACK = null;
+
+/* 本棚 góc tây-bắc + sách (cuốn "đang đọc dở" là SHELF_BOOK) */
+var SHELF = new THREE.Group(); ROOM.add(SHELF);
+var SHELF_BOOK = null, SHELF_BOOK_HOME = new THREE.Vector3();
+(function(){
+  var sm = woodMat(0x7A5436, [1,1], 0.6, 0.3);
+  var x0 = -1.65, x1 = -0.62, zb = -RZ, zf = -RZ+0.30, hgt = 0.95;
+  slab(x0, x0+0.02, 0, hgt, zb, zf, sm, SHELF); slab(x1-0.02, x1, 0, hgt, zb, zf, sm, SHELF);
+  slab(x0, x1, hgt-0.02, hgt, zb, zf, sm, SHELF); slab(x0, x1, 0, 0.04, zb, zf, sm, SHELF);
+  slab(x0, x1, 0.04, hgt, zb, zb+0.01, sm, SHELF);
+  slab(x0, x1, 0.46, 0.48, zb, zf, sm, SHELF);
+  var pr = HFA.mulberry32(91);
+  var cols = [0x5b3a2e,0x2f4a5a,0x6b6a4a,0x8a7b62,0x3c3c46,0x7a3b32,0xb3a58a,0x4e5b3f,0x2b2f38,0x9b8a6c];
+  var shelves = [0.04, 0.48];
+  for(var s=0;s<2;s++){ var x = x0+0.035;
+    while(x < x1-0.08){ var bw = 0.022 + pr()*0.028, bh = 0.30 + pr()*0.10, bd = 0.20 + pr()*0.05;
+      var m = rmat({color:cols[(pr()*cols.length)|0], roughness:0.8}, 0.85, 0.5, 0.2, 0.7);
+      var bk = meshAt(box(bw, bh, bd), m, x+bw/2, shelves[s]+bh/2, zb+0.02+bd/2, SHELF);
+      if(s === 1 && !SHELF_BOOK && x > x0+0.4){ SHELF_BOOK = bk; SHELF_BOOK_HOME.copy(bk.position); bk.userData.dim = [bw,bh,bd]; }
+      x += bw + 0.002; }
+    if(s === 0){ /* vài cuốn nằm ngang cuối ngăn dưới */ }
+  }
+  shadowAll(SHELF, true, true);
+})();
+
+/* 振り子時計 (đồng hồ quả lắc) tường bắc */
+var CLOCK = new THREE.Group(); ROOM.add(CLOCK);
+var CLK = {};
+(function(){
+  var cm = woodMat(0x5A3A24, [1,1], 0.5, 0.25);
+  slab(-0.17, 0.17, -0.34, 0.34, 0, 0.1, cm, CLOCK);
+  var face = textTex(512, 512, function(cx,w,h){
+    cx.fillStyle = '#EFE6D2'; cx.beginPath(); cx.arc(256,256,250,0,6.283); cx.fill();
+    cx.strokeStyle = '#3a2f22'; cx.lineWidth = 6; cx.beginPath(); cx.arc(256,256,232,0,6.283); cx.stroke();
+    cx.fillStyle = '#2a2219'; cx.textAlign = 'center'; cx.textBaseline = 'middle';
+    for(var i=1;i<=12;i++){ var a = i/12*6.283 - 1.5708; fitText(cx, String(i), 256+Math.cos(a)*188, 262+Math.sin(a)*188, 52, 90, 700); }
+    for(var k=0;k<60;k++){ var a2 = k/60*6.283; var r0 = (k%5===0)?214:222;
+      cx.lineWidth = (k%5===0)?5:2; cx.beginPath(); cx.moveTo(256+Math.cos(a2)*r0, 256+Math.sin(a2)*r0); cx.lineTo(256+Math.cos(a2)*230, 256+Math.sin(a2)*230); cx.stroke(); }
+  });
+  var fm = rmat({map:face, color:0xffffff}, 0.8, 0.5, 0.2, 0.6);
+  var fc = meshAt(new THREE.CircleGeometry(0.135, 48), fm, 0, 0.17, 0.101, CLOCK);
+  var hm = smat(0x1c1712, 0.4, 0.3);
+  function hand(len, wid, z){ var g = new THREE.Group(); meshAt(box(wid, len, 0.003), hm, 0, len/2-0.015, 0, g); g.position.set(0, 0.17, z); CLOCK.add(g); return g; }
+  CLK.h = hand(0.075, 0.009, 0.106); CLK.m = hand(0.11, 0.006, 0.109); CLK.s = hand(0.12, 0.0025, 0.112);
+  meshAt(new THREE.CylinderGeometry(0.008,0.008,0.012,16), hm, 0, 0.17, 0.113, CLOCK).rotation.x = Math.PI/2;
+  /* ô kính dưới + quả lắc */
+  meshAt(box(0.26, 0.34, 0.004), smat(0x140d08, 0.9), 0, -0.14, 0.102, CLOCK);
+  meshAt(box(0.012, 0.35, 0.012), smat(0x5A3A24, 0.5), -0.136, -0.14, 0.108, CLOCK); meshAt(box(0.012, 0.35, 0.012), smat(0x5A3A24, 0.5), 0.136, -0.14, 0.108, CLOCK);
+  var pend = new THREE.Group(); pend.position.set(0, 0.02, 0.108); CLOCK.add(pend);
+  var brass = smat(0xC9A45C, 0.3, 1.0);
+  meshAt(box(0.006, 0.24, 0.004), brass, 0, -0.12, 0, pend);
+  var bob = meshAt(new THREE.CylinderGeometry(0.035, 0.035, 0.008, 32), brass, 0, -0.25, 0, pend); bob.rotation.x = Math.PI/2;
+  CLK.p = pend;
+  var gl = new THREE.Mesh(new THREE.PlaneGeometry(0.26, 0.34), new THREE.MeshStandardMaterial({color:0xffffff, roughness:0.05, transparent:true, opacity:0.10, envMapIntensity:1.2, depthWrite:false}));
+  gl.position.set(0, -0.14, 0.116); CLOCK.add(gl);
+  CLOCK.position.set(0.45, 1.55, -RZ);
+  shadowAll(CLOCK, true, true);
+})();
+function setClock(sec){
+  var s = sec % 60, m = (sec/60) % 60, h = (sec/3600) % 12;
+  var sTick = Math.floor(s) + smooth(clamp((s - Math.floor(s))/0.12, 0, 1));   /* kim giây nhảy từng nấc */
+  CLK.s.rotation.z = -sTick/60*6.2831853; CLK.m.rotation.z = -m/60*6.2831853; CLK.h.rotation.z = -h/12*6.2831853;
+  CLK.p.rotation.z = 0.10*Math.sin(sec*Math.PI);
+}
+
+/* lịch treo tường nam: ô thứ Năm ghi 「お昼　そば」 — gạch, rồi thành khoảng trống */
+var CAL = new THREE.Group(); ROOM.add(CAL);
+var CALP = {};
+var CAL_W = 0.44, CAL_H = 0.62;
+/* ô lưới: 7 cột × 5 hàng trong vùng [0.06..0.94]×[0.46..0.96] của tờ lịch (toạ độ uv, v từ trên) */
+function calCell(col, row){ var u0 = 0.06 + col*(0.88/7), v0 = 0.50 + row*(0.46/5); return {u0:u0, v0:v0, du:0.88/7, dv:0.46/5}; }
+var CAL_THU = calCell(4, 2);   /* 木 hàng 3 = ngày 16 */
+(function(){
+  var tx = textTex(880, 1240, function(cx,w,h){
+    cx.fillStyle = '#F6F2E8'; cx.fillRect(0,0,w,h);
+    /* tranh phong cảnh màu nước ở nửa trên */
+    var g = cx.createLinearGradient(0,40,0,520); g.addColorStop(0,'#c9d8e4'); g.addColorStop(1,'#eae6da');
+    cx.fillStyle = g; cx.fillRect(40,40,w-80,440);
+    cx.fillStyle = 'rgba(96,118,120,0.55)'; cx.beginPath(); cx.moveTo(40,420); cx.lineTo(260,230); cx.lineTo(420,360); cx.lineTo(600,200); cx.lineTo(w-40,380); cx.lineTo(w-40,480); cx.lineTo(40,480); cx.fill();
+    cx.fillStyle = 'rgba(70,96,80,0.6)'; cx.beginPath(); cx.moveTo(40,440); cx.quadraticCurveTo(300,390,520,440); cx.quadraticCurveTo(700,410,w-40,430); cx.lineTo(w-40,480); cx.lineTo(40,480); cx.fill();
+    cx.fillStyle = '#2b2622'; cx.textAlign = 'left'; cx.textBaseline = 'middle';
+    fitText(cx, '10月', 52, 530, 46, 300, 700);
+    var dn = ['日','月','火','水','木','金','土'];
+    for(var c=0;c<7;c++){ var cc = calCell(c,0);
+      cx.fillStyle = c===0 ? '#b23a2e' : (c===6 ? '#2f5b8a' : '#3a342e'); cx.textAlign = 'center';
+      fitText(cx, dn[c], (cc.u0+cc.du/2)*w, 0.475*h, 30, 80, 700); }
+    cx.strokeStyle = 'rgba(60,52,44,0.35)'; cx.lineWidth = 2;
+    for(var r=0;r<=5;r++){ var y = (0.50 + r*0.46/5)*h; cx.beginPath(); cx.moveTo(0.06*w, y); cx.lineTo(0.94*w, y); cx.stroke(); }
+    for(var c2=0;c2<=7;c2++){ var x = (0.06 + c2*0.88/7)*w; cx.beginPath(); cx.moveTo(x, 0.50*h); cx.lineTo(x, 0.96*h); cx.stroke(); }
+    var d = 1 - 3;   /* ngày 1 rơi vào thứ Tư (cột 3) */
+    for(var rr=0; rr<5; rr++){ for(var c3=0;c3<7;c3++){ d++; if(d<1||d>31) continue; var ce = calCell(c3, rr);
+      cx.fillStyle = c3===0 ? '#b23a2e' : (c3===6 ? '#2f5b8a' : '#2e2924'); cx.textAlign = 'left';
+      fitText(cx, String(d), ce.u0*w+10, ce.v0*h+24, 28, 60, 700); } }
+    /* ghi chú tay ở ô thứ Năm 16 */
+    var th = CAL_THU;
+    cx.fillStyle = '#23407a'; cx.textAlign = 'center';
+    fitText(cx, 'お昼', (th.u0+th.du/2)*w, (th.v0+th.dv*0.52)*h, 30, th.du*w-12, 700);
+    fitText(cx, 'そば', (th.u0+th.du/2)*w, (th.v0+th.dv*0.80)*h, 30, th.du*w-12, 700);
+    cx.strokeStyle = 'rgba(35,64,122,0.8)'; cx.lineWidth = 3; cx.beginPath(); cx.ellipse((th.u0+th.du/2)*w, (th.v0+th.dv*0.66)*h, th.du*w*0.46, th.dv*h*0.36, 0, 0, 6.283); cx.stroke();
+  });
+  var pm = rmat({map:tx, color:0xffffff}, 0.9, 0.7, 0.1, 0.35);
+  var pg = new THREE.PlaneGeometry(CAL_W, CAL_H, 1, 1);
+  var p = meshAt(pg, pm, 0, 0, 0.004, CAL); p.receiveShadow = true;
+  meshAt(box(CAL_W+0.01, 0.018, 0.012), smat(0x2d2a26, 0.5, 0.4), 0, CAL_H/2+0.004, 0.006, CAL);
+  meshAt(new THREE.CylinderGeometry(0.004,0.004,0.02,8), smat(0x999999,0.3,1), 0, CAL_H/2+0.03, 0.01, CAL).rotation.x = Math.PI/2;
+  /* nét gạch đỏ ngang ô */
+  var th2 = CAL_THU, cxw = (th2.u0+th2.du/2-0.5)*CAL_W, cyw = (0.5-(th2.v0+th2.dv*0.66))*CAL_H;
+  var strike = meshAt(new THREE.PlaneGeometry(th2.du*CAL_W*0.92, 0.0045), new THREE.MeshBasicMaterial({color:new THREE.Color(0.45,0.06,0.05), transparent:true}), cxw, cyw, 0.0055, CAL);
+  var strike2 = meshAt(new THREE.PlaneGeometry(th2.du*CAL_W*0.92, 0.0035), strike.material, cxw, cyw-0.006, 0.0056, CAL);
+  CALP.strike = [strike, strike2]; CALP.sx = th2.du*CAL_W*0.92;
+  /* ô trống: mặt phẳng đen trong ô, lớn dần */
+  var vm = new THREE.MeshBasicMaterial({color:0x000000, transparent:true, opacity:1});
+  var vd = meshAt(new THREE.PlaneGeometry(th2.du*CAL_W, th2.dv*CAL_H), vm, (th2.u0+th2.du/2-0.5)*CAL_W, (0.5-(th2.v0+th2.dv/2))*CAL_H, 0.0062, CAL);
+  CALP.void = vd; CALP.cx = vd.position.x; CALP.cy = vd.position.y;
+  CAL.position.set(-0.55, 1.36, RZ-0.012); CAL.rotation.y = Math.PI;
+  shadowAll(CAL, false, true);
+})();
+
+/* đèn trần giấy (tắt — ban ngày) */
+(function(){
+  var pts = []; for(var i=0;i<=16;i++){ var a = i/16*Math.PI; pts.push(new THREE.Vector2(Math.sin(a)*0.23+0.001, -Math.cos(a)*0.17)); }
+  var sh = meshAt(new THREE.LatheGeometry(pts, 40), rmat({color:0xF0E9DA, roughness:0.95, side:THREE.DoubleSide}, 0.95, 0.8, 0.1, 0.3), 0, RH-0.62, 0, ROOM);
+  sh.name = 'lamp';
+  var cord = meshAt(new THREE.CylinderGeometry(0.004,0.004,0.45,6), smat(0x222222,0.6), 0, RH-0.23, 0, ROOM); cord.name = 'lampcord';
+  shadowAll(sh, true, true);
+})();
+
+/* ---- tia nắng thể tích qua cửa sổ (lăng trụ) + bụi trong nắng ---- */
+function beamGeo(dir){
+  var c = [[WIN.y0,WIN.z0],[WIN.y0,WIN.z1],[WIN.y1,WIN.z1],[WIN.y1,WIN.z0]];
+  var Wp = [], Fp = [];
+  for(var i=0;i<4;i++){ var P = new THREE.Vector3(RX+0.02, c[i][0], c[i][1]);
+    var s = P.y/dir.y; Wp.push(P); Fp.push(P.clone().addScaledVector(dir, -s)); }
+  var pos = [], uv = [];
+  for(var k=0;k<4;k++){ var a = Wp[k], b = Wp[(k+1)%4], cc = Fp[(k+1)%4], d = Fp[k];
+    pos.push(a.x,a.y,a.z, b.x,b.y,b.z, cc.x,cc.y,cc.z,  a.x,a.y,a.z, cc.x,cc.y,cc.z, d.x,d.y,d.z);
+    uv.push(0,0, 1,0, 1,1,  0,0, 1,1, 0,1); }
+  var g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos,3)); g.setAttribute('uv', new THREE.Float32BufferAttribute(uv,2));
+  return g;
+}
+var shaftMat = new THREE.ShaderMaterial({
+  uniforms:{uCol:{value:new THREE.Color(1,0.8,0.55)}, uOp:{value:0.0}},
+  transparent:true, depthWrite:false, side:THREE.DoubleSide, blending:THREE.AdditiveBlending,
+  vertexShader:'varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',
+  fragmentShader:'varying vec2 vUv;uniform vec3 uCol;uniform float uOp;void main(){float e=sin(3.14159*vUv.x);e=pow(e,1.6);float l=mix(1.0,0.35,vUv.y);gl_FragColor=vec4(uCol*uOp*e*l,1.0);}'
+});
+var SHAFT = new THREE.Mesh(beamGeo(SUN_D), shaftMat); SHAFT.renderOrder = 5; ROOM.add(SHAFT);
+
+var DUST = (function(){
+  var N = 1400, pr = HFA.mulberry32(101), pos = new Float32Array(N*3), ph = new Float32Array(N), sz = new Float32Array(N);
+  for(var i=0;i<N;i++){ var s = pr();
+    var y = 0.05 + pr()*1.8, z = WIN.z0 - 0.2 + pr()*(WIN.z1-WIN.z0+0.4) - 0.35*s;
+    var x = -0.6 + pr()*2.35;
+    pos[i*3] = x; pos[i*3+1] = y; pos[i*3+2] = z; ph[i] = pr()*100; sz[i] = 0.4 + pr()*pr()*1.6; }
+  var g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(pos,3));
+  g.setAttribute('aPh', new THREE.BufferAttribute(ph,1)); g.setAttribute('aS', new THREE.BufferAttribute(sz,1));
+  var m = new THREE.ShaderMaterial({
+    uniforms:{uT:{value:0}, uOp:{value:0}, uDir:{value:SUN_D.clone()}, uCol:{value:new THREE.Color(1,0.85,0.6)}, uMaxPx:{value:6.0}, uScale:{value:900.0}},
+    transparent:true, depthWrite:false, blending:THREE.AdditiveBlending,
+    vertexShader:[
+      'attribute float aPh;attribute float aS;uniform float uT;uniform vec3 uDir;uniform float uMaxPx,uScale;varying float vA;',
+      'void main(){vec3 p=position;',
+      ' p.x+=0.05*sin(uT*0.11+aPh)+0.02*sin(uT*0.37+aPh*1.7);',
+      ' p.y+=0.06*sin(uT*0.07+aPh*0.6)-0.02*sin(uT*0.23+aPh);',
+      ' p.z+=0.05*sin(uT*0.09+aPh*1.3);',
+      ' float s=(1.82-p.x)/uDir.x; vec3 q=p+uDir*s;',
+      ' float inY=smoothstep(0.80,0.86,q.y)*(1.0-smoothstep(1.84,1.90,q.y));',
+      ' float inZ=smoothstep(-0.75,-0.69,q.z)*(1.0-smoothstep(0.79,0.85,q.z));',
+      ' float tw=0.55+0.45*sin(uT*1.3+aPh*3.0);',
+      ' vA=inY*inZ*tw*step(0.0,s);',
+      ' vec4 mv=modelViewMatrix*vec4(p,1.0);',
+      ' float d=-mv.z; vA*=smoothstep(0.25,0.6,d);',
+      ' gl_PointSize=min(uMaxPx,aS*(uScale/d));gl_Position=projectionMatrix*mv;}'].join('\n'),
+    fragmentShader:'uniform vec3 uCol;uniform float uOp;varying float vA;void main(){vec2 d=gl_PointCoord-0.5;float a=smoothstep(0.5,0.0,length(d));gl_FragColor=vec4(uCol*a*vA*uOp,1.0);}'
+  });
+  var p = new THREE.Points(g, m); p.frustumCulled = false; p.renderOrder = 6; ROOM.add(p); return p;
+})();
+
+/* hơi nước bàn ủi (thứ Ba) — sợi hơi mảnh, tất định */
+var STEAM_I = (function(){
+  var N = 160, pr = HFA.mulberry32(111), a = new Float32Array(N*3), ph = new Float32Array(N);
+  for(var i=0;i<N;i++){ a[i*3] = (pr()-0.5)*0.05; a[i*3+1] = 0; a[i*3+2] = (pr()-0.5)*0.05; ph[i] = pr(); }
+  var g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(a,3)); g.setAttribute('aPh', new THREE.BufferAttribute(ph,1));
+  var m = new THREE.ShaderMaterial({ uniforms:{uT:{value:0}, uOp:{value:0}, uCol:{value:new THREE.Color(1,1,1)}, uRise:{value:0.35}, uMaxPx:{value:28.0}},
+    transparent:true, depthWrite:false, blending:THREE.AdditiveBlending,
+    vertexShader:['attribute float aPh;uniform float uT,uRise,uMaxPx;varying float vA;',
+      'void main(){float life=fract(uT*0.22+aPh);vec3 p=position;p.y+=life*uRise;p.x+=sin(life*5.0+aPh*20.0)*0.03*life;p.z+=cos(life*4.0+aPh*13.0)*0.03*life;',
+      ' vA=smoothstep(0.0,0.15,life)*(1.0-life);vec4 mv=modelViewMatrix*vec4(p,1.0);gl_PointSize=min(uMaxPx,(10.0+life*40.0)*(1.0/-mv.z));gl_Position=projectionMatrix*mv;}'].join('\n'),
+    fragmentShader:'uniform vec3 uCol;uniform float uOp;varying float vA;void main(){vec2 d=gl_PointCoord-0.5;float a=smoothstep(0.5,0.0,length(d));gl_FragColor=vec4(uCol*a*vA*uOp*0.12,1.0);}' });
+  var p = new THREE.Points(g, m); p.frustumCulled = false; p.renderOrder = 7; return p;
+})();
+STEAM_I.position.set(-0.10, 0.30, 0.64); ROOM.add(STEAM_I);
+
+/* bàn — đồ của chương 4: sách mở, bưu thiếp, bút, chén trà */
+function openBook(par, pageTex){
+  var g = new THREE.Group();
+  var cov = rmat({color:0x5b3a2e, roughness:0.8}, 0.85, 0.5, 0.2, 0.6);
+  meshAt(box(0.30, 0.006, 0.21), cov, 0, 0.003, 0, g);
+  var pm = rmat({map:pageTex, color:0xffffff, side:THREE.DoubleSide}, 0.95, 0.75, 0.1, 0.35);
+  for(var s=-1;s<=1;s+=2){
+    var pg = new THREE.PlaneGeometry(0.14, 0.2, 16, 1); var p = pg.attributes.position;
+    for(var i=0;i<p.count;i++){ var x = p.getX(i); var u = Math.abs(x+0.07)/0.14; p.setZ(i, Math.sin(u*Math.PI)*0.012 + (1-u)*0.004); }
+    pg.computeVertexNormals();
+    var m = meshAt(pg, pm, s*0.072, 0.012, 0, g); m.rotation.x = -Math.PI/2;
+    if(s < 0){ m.scale.x = -1; }
+    meshAt(box(0.14, 0.01, 0.2), rmat({color:0xEDE6D4, roughness:0.95}, 0.95, 0.8, 0.1, 0.3), s*0.072, 0.008, 0, g);
+  }
+  shadowAll(g, true, true); if(par) par.add(g); return g;
+}
+var PAGE_TEX = (function(){ var cv = mkCanvas(256, 360), cx = cv.getContext('2d');
+  cx.fillStyle = '#F1EBDC'; cx.fillRect(0,0,256,360);
+  cx.fillStyle = 'rgba(40,36,30,0.55)';
+  for(var c=0;c<14;c++){ var x = 226 - c*15; var len = 250 + ((c*37)%60); if(c===9) len = 120; cx.fillRect(x, 40, 3.2, len); }
+  return cvTex(cv); })();
+var BOOK_T = openBook(ROOM, PAGE_TEX);
+BOOK_T.position.set(-1.02, TABLE_Y, 0.38); BOOK_T.rotation.y = 0.25;
+
+var POSTCARD = new THREE.Group(); ROOM.add(POSTCARD);
+var PC_MAT = null;
+(function(){
+  var tx = textTex(600, 890, function(cx,w,h){
+    cx.fillStyle = '#FAF6EC'; cx.fillRect(0,0,w,h);
+    cx.strokeStyle = '#c0442f'; cx.lineWidth = 3; for(var i=0;i<7;i++){ cx.strokeRect(40+i*52, 40, 44, 58); }
+    cx.fillStyle = '#1f2c4a'; cx.textAlign = 'left'; cx.textBaseline = 'middle';
+    var L = ['先日は電話をありがとう。','','「また今度」の今度ですが、','来月の第二土曜日は','いかがでしょう。','','今度こそ、あのそば屋で。'];
+    for(var k=0;k<L.length;k++){ if(L[k]) fitText(cx, L[k], 48, 210 + k*84, 40, w-90, 700); }
+  });
+  PC_MAT = new THREE.ShaderMaterial({ uniforms:{map:{value:tx}, uRev:{value:0}, uLight:{value:new THREE.Color(1,1,1)}},
+    vertexShader:'varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',
+    fragmentShader:[
+      'uniform sampler2D map;uniform float uRev;uniform vec3 uLight;varying vec2 vUv;',
+      'vec3 lin(vec3 c){return pow(c,vec3(2.2));}',
+      'void main(){vec3 c=lin(texture2D(map,vUv).rgb);',
+      ' float line=floor((1.0-vUv.y-0.19)/0.0944);',   /* mỗi dòng 84px / 890 */
+      ' float prog=uRev*7.0-line;',
+      ' float shown=(1.0-vUv.y)<0.19?1.0:smoothstep(vUv.x-0.02,vUv.x+0.02,prog);',
+      ' vec3 paper=lin(vec3(0.98,0.965,0.925));',
+      ' vec3 col=mix(paper,c,shown);',
+      ' gl_FragColor=vec4(col*uLight,1.0);}'].join('\n') });
+  var p = meshAt(new THREE.PlaneGeometry(0.1, 0.148), PC_MAT, 0, 0.0012, 0, POSTCARD); p.rotation.x = -Math.PI/2;
+  var pen = new THREE.Group();
+  meshAt(new THREE.CylinderGeometry(0.0045, 0.0045, 0.13, 12), smat(0x1b2440, 0.35, 0.2), 0, 0, 0, pen);
+  meshAt(new THREE.ConeGeometry(0.0045, 0.014, 12), smat(0xC8C8C8, 0.3, 1.0), 0, -0.072, 0, pen);
+  pen.rotation.set(Math.PI/2, 0, 0.5); pen.position.set(0.075, 0.005, 0.01); POSTCARD.add(pen);
+  shadowAll(pen, true, false);
+  POSTCARD.position.set(-0.74, TABLE_Y, 0.40); POSTCARD.rotation.y = 0.63;
+})();
+
+var TEACUP = new THREE.Group(); ROOM.add(TEACUP);
+(function(){
+  var pts = [new THREE.Vector2(0.0,0.0), new THREE.Vector2(0.026,0.0), new THREE.Vector2(0.028,0.004), new THREE.Vector2(0.024,0.006),
+    new THREE.Vector2(0.03,0.012), new THREE.Vector2(0.035,0.05), new THREE.Vector2(0.037,0.085), new THREE.Vector2(0.034,0.086), new THREE.Vector2(0.032,0.05), new THREE.Vector2(0.027,0.014), new THREE.Vector2(0.0,0.012)];
+  meshAt(new THREE.LatheGeometry(pts, 48), mCera, 0,0,0, TEACUP);
+  var tea = meshAt(new THREE.CircleGeometry(0.0325, 40), rmat({color:0x8a7a2a, roughness:0.08}, 0.08, 0.05, 1.0, 1.2), 0, 0.066, 0, TEACUP); tea.rotation.x = -Math.PI/2;
+  shadowAll(TEACUP, true, true);
+  TEACUP.position.set(-0.78, TABLE_Y, 0.12);
+})();
+var STEAM_C = STEAM_I.clone(); STEAM_C.material = STEAM_I.material.clone(); STEAM_C.position.set(-0.78, TABLE_Y+0.09, 0.12); ROOM.add(STEAM_C);
+
+shadowAll(ROOM, true, true);
+skyMesh.castShadow = false; skyMesh.receiveShadow = false;
+SHAFT.castShadow = false; DUST.castShadow = false; STEAM_I.castShadow = false; STEAM_C.castShadow = false;
+LEAVES.forEach(function(l){ l.receiveShadow = false; });
+ROOM.traverse(function(o){ if(o.isMesh && o.material && o.material.transparent && o.material.opacity < 0.5) o.castShadow = false; });
+CAL.traverse(function(o){ if(o.isMesh) o.castShadow = false; });
+
+/* =========================================================================
+ * TRẠNG THÁI PHÒNG — w: 1 = thứ Ba (ấm/mềm), 0 = thứ Năm (lạnh/cứng)
+ * Cùng hướng nắng, cùng cường độ tổng — chỉ đổi PHẨM CHẤT ánh sáng và bề mặt.
+ * ========================================================================= */
+var C_SUN_W = new THREE.Color(1.00, 0.63, 0.34), C_SUN_C = new THREE.Color(0.78, 0.90, 1.00);
+var C_SKY_W = new THREE.Color(0.62, 0.48, 0.34), C_SKY_C = new THREE.Color(0.40, 0.47, 0.58);
+var C_GND_W = new THREE.Color(0.40, 0.28, 0.16), C_GND_C = new THREE.Color(0.20, 0.22, 0.25);
+var C_BNC_W = new THREE.Color(1.00, 0.72, 0.42), C_BNC_C = new THREE.Color(0.78, 0.85, 0.90);
+var C_WIN_W = new THREE.Color(1.00, 0.86, 0.66), C_WIN_C = new THREE.Color(0.72, 0.84, 1.00);
+var C_SKYM_W = new THREE.Color(1.75, 1.45, 1.05), C_SKYM_C = new THREE.Color(1.35, 1.55, 1.85);
+var C_SH_W = new THREE.Color(1.0, 0.72, 0.42), C_SH_C = new THREE.Color(0.75, 0.86, 1.0);
+var _c = new THREE.Color();
+var ROOM_SHIFT = 0;
+function applyRoom(w){
+  w = clamp(w, 0, 1);
+  var ws = smooth(w);
+  SUN.color.copy(C_SUN_C).lerp(C_SUN_W, ws);
+  SUN.intensity = lerp(3.3, 3.0, ws);
+  SUN.shadow.radius = lerp(1.0, 15.0, ws*ws);
+  HEMI_R.color.copy(C_SKY_C).lerp(C_SKY_W, ws); HEMI_R.groundColor.copy(C_GND_C).lerp(C_GND_W, ws);
+  HEMI_R.intensity = lerp(0.62, 0.78, ws);
+  BOUNCE.color.copy(C_BNC_C).lerp(C_BNC_W, ws); BOUNCE.intensity = lerp(1.0, 1.55, ws);
+  WINF.color.copy(C_WIN_C).lerp(C_WIN_W, ws); WINF.intensity = lerp(0.9, 1.0, ws);
+  skyMat.color.copy(C_SKYM_C).lerp(C_SKYM_W, ws);
+  for(var i=0;i<ROOM_MATS.length;i++){ var m = ROOM_MATS[i], s = m.userData.st;
+    m.roughness = lerp(s.rc, s.rw, ws); m.envMapIntensity = lerp(s.ec, s.ew, ws);
+    if(m.bumpMap) m.bumpScale = lerp(s.bc, s.bw, ws); }
+  shaftMat.uniforms.uCol.value.copy(C_SH_C).lerp(C_SH_W, ws);
+  shaftMat.uniforms.uOp.value = lerp(0.018, 0.075, ws);
+  DUST.material.uniforms.uOp.value = lerp(0.0, 1.0, ws*ws);
+  DUST.material.uniforms.uCol.value.copy(C_SH_C).lerp(C_SH_W, ws);
+  STEAM_I.material.uniforms.uOp.value = STEAM_ON * lerp(0.0, 1.0, ws);
+  PC_MAT.uniforms.uLight.value.setRGB(lerp(0.40,0.55,ws), lerp(0.43,0.47,ws), lerp(0.48,0.38,ws));
+}
+var STEAM_ON = 0;
+/* grade theo trạng thái: thứ Năm nhạt màu ("何もかも色が薄く") */
+function gradeFor(w, extraDesat){ var ws = smooth(clamp(w,0,1));
+  return { sat: lerp(0.66, 1.06, ws) * (1 - (extraDesat||0)), mul: [lerp(0.96,1.04,ws), lerp(0.99,1.0,ws), lerp(1.05,0.93,ws)] }; }
+
+/* =========================================================================
+ * PHÒNG THÍ NGHIỆM (第2章 · 第3章) — không gian trung tính, KHÔNG mang bảng màu ấm/lạnh
+ * của căn phòng. Tâm ghế A ở (LX, 0, 0), ghế quay về +z.
+ * ========================================================================= */
+var LX = 60;
+var LAB = reg('lab');
+(function cyclorama(){
+  var prof = [];
+  for(var i=0;i<=10;i++) prof.push([0, 10 - i*1.3]);
+  for(var k=1;k<=18;k++){ var th = k/18*Math.PI/2; prof.push([2 - 2*Math.cos(th), -3 - 2*Math.sin(th)]); }
+  for(var j=1;j<=6;j++) prof.push([2 + j*1.3, -5]);
+  var pos = [], uv = [], idx = [];
+  var acc = 0;
+  for(var p=0;p<prof.length;p++){
+    if(p>0){ var dy = prof[p][0]-prof[p-1][0], dz = prof[p][1]-prof[p-1][1]; acc += Math.sqrt(dy*dy+dz*dz); }
+    pos.push(-40, prof[p][0], prof[p][1], 40, prof[p][0], prof[p][1]); uv.push(0, acc/4, 20, acc/4);
+  }
+  for(var q=0;q<prof.length-1;q++){ var a = q*2; idx.push(a, a+1, a+2, a+1, a+3, a+2); }
+  var g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos,3));
+  g.setAttribute('uv', new THREE.Float32BufferAttribute(uv,2)); g.setIndex(idx); g.computeVertexNormals();
+  var m = new THREE.MeshStandardMaterial({map:cvTex(STUDIO_TEX,{rep:[1,1]}), color:0x7E7C77, roughness:0.96, side:THREE.DoubleSide, envMapIntensity:0.2});
+  var me = new THREE.Mesh(g, m); me.position.x = LX; me.receiveShadow = true; LAB.add(me);
+})();
+
+function buildChair(fab, legC){
+  var g = new THREE.Group();
+  var lm = smat(legC || 0x5a3e28, 0.55);
+  meshAt(rbox(0.70, 0.26, 0.66, 0.05, 3), fab, 0, 0.22, 0, g);
+  meshAt(rbox(0.54, 0.12, 0.54, 0.05, 3), fab, 0, 0.40, 0.04, g);
+  var bk = meshAt(rbox(0.70, 0.54, 0.16, 0.06, 3), fab, 0, 0.62, -0.26, g); bk.rotation.x = -0.12;
+  meshAt(rbox(0.12, 0.24, 0.66, 0.05, 3), fab, -0.30, 0.45, 0, g);
+  meshAt(rbox(0.12, 0.24, 0.66, 0.05, 3), fab, 0.30, 0.45, 0, g);
+  var lg = new THREE.CylinderGeometry(0.018, 0.013, 0.09, 12);
+  var L = [[-0.3,-0.27],[0.3,-0.27],[-0.3,0.27],[0.3,0.27]];
+  for(var i=0;i<4;i++) meshAt(lg, lm, L[i][0], 0.045, L[i][1], g);
+  shadowAll(g, true, true); return g;
+}
+var labFab = new THREE.MeshStandardMaterial({map:cvTex(FABRIC.cv,{rep:[5,5]}), bumpMap:cvTex(FABRIC.bc,{linear:true,rep:[5,5]}), bumpScale:0.0012, color:0x8E8A7E, roughness:0.95});
+var CHAIR_A = buildChair(labFab); CHAIR_A.position.set(LX, 0, 0); LAB.add(CHAIR_A);
+var CHAIR_B = buildChair(labFab); CHAIR_B.position.set(LX+3.4, 0, 0.3); CHAIR_B.rotation.y = -0.55; LAB.add(CHAIR_B);
+
+/* bàn phụ + giấy: trang đầu bài báo 2018 + phiếu hỏi cảm xúc */
+var STABLE = new THREE.Group(); LAB.add(STABLE);
+(function(){
+  var tm = smat(0xD8D4CC, 0.6, 0.0);
+  slab(-0.30, 0.30, 0.53, 0.56, -0.22, 0.22, tm, STABLE);
+  var lgm = smat(0x6d6a64, 0.4, 0.6);
+  var L = [[-0.27,-0.19],[0.27,-0.19],[-0.27,0.19],[0.27,0.19]];
+  for(var i=0;i<4;i++) meshAt(new THREE.CylinderGeometry(0.012,0.012,0.53,10), lgm, L[i][0], 0.265, L[i][1], STABLE);
+  STABLE.position.set(LX+0.88, 0, 0.10);
+  shadowAll(STABLE, true, true);
+})();
+var JOURNAL_TX = textTex(1024, 1448, function(cx,w,h){
+  cx.fillStyle = '#FBFAF6'; cx.fillRect(0,0,w,h);
+  cx.fillStyle = '#6a6a6a'; cx.textAlign = 'left'; cx.textBaseline = 'middle';
+  fitText(cx, 'Personality and Social Psychology Bulletin', 70, 70, 28, 620, 400);
+  cx.textAlign = 'right'; fitText(cx, '2018, Vol. 44(1) 92–106', w-70, 70, 28, 360, 400);
+  cx.fillStyle = '#9a9a9a'; cx.fillRect(70, 100, w-140, 3);
+  cx.fillStyle = '#111'; cx.textAlign = 'left';
+  fitText(cx, 'Solitude as an Approach to', 70, 250, 64, w-140, 700);
+  fitText(cx, 'Affective Self-Regulation', 70, 330, 64, w-140, 700);
+  cx.fillStyle = '#333';
+  fitText(cx, 'Thuy-vy T. Nguyen, Richard M. Ryan,', 70, 440, 34, w-140, 400);
+  fitText(cx, 'and Edward L. Deci', 70, 488, 34, w-140, 400);
+  cx.fillStyle = '#555'; fitText(cx, 'Abstract', 70, 590, 30, 300, 700);
+  /*本文は判読させない — 灰色の行ブロック（内容を捏造しない） */
+  cx.fillStyle = 'rgba(80,80,80,0.28)';
+  for(var r=0;r<12;r++){ var ww = (r===11) ? 420 : (w-140 - ((r*53)%70)); cx.fillRect(70, 630 + r*38, ww, 14); }
+  for(var c=0;c<2;c++){ for(var r2=0;r2<14;r2++){ var ww2 = 400 - ((r2*37+c*11)%60); cx.fillRect(70 + c*460, 1120 + r2*22 - 0, ww2, 9); } }
+});
+var PAPER_J = meshAt(new THREE.PlaneGeometry(0.21, 0.297), new THREE.MeshStandardMaterial({map:JOURNAL_TX, roughness:0.9}), -0.135, 0.5615, 0.0, STABLE);
+PAPER_J.rotation.set(-Math.PI/2, 0, 0.06); PAPER_J.receiveShadow = true;
+(function(){ /* xấp giấy bên dưới */
+  var sm = smat(0xF2F0EA, 0.9);
+  for(var i=0;i<3;i++){ var s = meshAt(box(0.21, 0.0015, 0.297), sm, -0.135 + i*0.004, 0.5605 - i*0.0015, 0.004*i, STABLE); s.rotation.y = 0.06 - i*0.03; s.receiveShadow = true; s.castShadow = true; }
+})();
+var QUEST_TX = textTex(1024, 1408, function(cx,w,h){
+  cx.fillStyle = '#FBFAF6'; cx.fillRect(0,0,w,h);
+  cx.fillStyle = '#1d1d1d'; cx.textAlign = 'left'; cx.textBaseline = 'middle';
+  fitText(cx, 'いまの気持ち', 70, 110, 64, w-140, 700);
+  cx.fillStyle = '#555'; fitText(cx, '十五分の前と後に、それぞれ答える', 70, 190, 34, w-140, 400);
+  cx.fillStyle = '#999'; cx.fillRect(70, 240, w-140, 3);
+  var items = ['わくわくする','いらいらする','落ちついている','さびしい'];
+  for(var i=0;i<4;i++){ var y = 360 + i*230;
+    cx.fillStyle = '#1d1d1d'; cx.textAlign = 'left'; fitText(cx, items[i], 70, y, 52, 430, 700);
+    for(var k=0;k<5;k++){ cx.strokeStyle = '#444'; cx.lineWidth = 4; cx.beginPath(); cx.arc(560 + k*95, y, 30, 0, 6.283); cx.stroke();
+      cx.fillStyle = '#777'; cx.textAlign = 'center'; fitText(cx, String(k+1), 560 + k*95, y+64, 26, 60, 400); } }
+  cx.fillStyle = '#777'; cx.textAlign = 'left'; fitText(cx, '1 まったくない ― 5 とても', 70, 1300, 30, w-140, 400);
+});
+var CLIP = new THREE.Group(); STABLE.add(CLIP);
+meshAt(box(0.235, 0.004, 0.325), smat(0x7a5a3a, 0.7), 0, 0, 0, CLIP);
+var PAPER_Q = meshAt(new THREE.PlaneGeometry(0.215, 0.296), new THREE.MeshStandardMaterial({map:QUEST_TX, roughness:0.9}), 0, 0.0025, 0.012, CLIP);
+PAPER_Q.rotation.x = -Math.PI/2;
+meshAt(box(0.09, 0.012, 0.03), smat(0xB8B8B8, 0.3, 1.0), 0, 0.006, -0.145, CLIP);
+CLIP.position.set(0.14, 0.562, 0.0); CLIP.rotation.y = -0.08;
+shadowAll(CLIP, true, true);
+/* ô tô sáng đánh dấu mục trên phiếu (hiện lần lượt) */
+var QHL = [];
+(function(){ for(var i=0;i<3;i++){ var m = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.034), new THREE.MeshBasicMaterial({color:new THREE.Color(1.0,0.86,0.35), transparent:true, opacity:0, depthWrite:false}));
+  m.rotation.x = -Math.PI/2; m.position.set(0, 0.0032, 0.012 - 0.148 + (360 + i*230)/1408*0.296); m.renderOrder = 4; CLIP.add(m); QHL.push(m); } })();
+
+/* khay dưới sàn: điện thoại + sách (bị mang ra ngoài — "không được mang vào") */
+var TRAY = new THREE.Group(); LAB.add(TRAY);
+var PHONE_L = phoneBody(TRAY); PHONE_L.position.set(-0.1, 0, 0);
+var BOOK_L = new THREE.Group(); TRAY.add(BOOK_L);
+meshAt(box(0.15, 0.025, 0.21), smat(0x3f5a6a, 0.7), 0, 0.0125, 0, BOOK_L);
+meshAt(box(0.143, 0.02, 0.2), smat(0xEEE8D8, 0.95), 0.004, 0.0125, 0, BOOK_L);
+BOOK_L.position.set(0.12, 0, 0.02); BOOK_L.rotation.y = 0.3;
+shadowAll(TRAY, true, true);
+TRAY.position.set(LX-0.72, 0, 0.55);
+
+/* sách mở đặt trên đệm ghế (実験２) */
+var BOOK_C = openBook(LAB, PAGE_TEX); BOOK_C.position.set(LX, 0.465, 0.12); BOOK_C.rotation.set(-0.05, 0.15, 0);
+
+/* đồng hồ phòng thí nghiệm: tròn tối giản, KHÔNG phải đồng hồ quả lắc của căn phòng */
+var LCLK = new THREE.Group(); LAB.add(LCLK);
+var LCK = {};
+(function(){
+  meshAt(new THREE.CylinderGeometry(0.36, 0.36, 0.05, 64), smat(0xEDEDEA, 0.4, 0.0), 0, 0, 0, LCLK).rotation.x = Math.PI/2;
+  meshAt(new THREE.TorusGeometry(0.36, 0.022, 12, 64), smat(0x2a2a2a, 0.35, 0.6), 0, 0, 0.02, LCLK);
+  var face = textTex(512, 512, function(cx,w,h){
+    cx.fillStyle = '#F7F7F4'; cx.beginPath(); cx.arc(256,256,256,0,6.283); cx.fill();
+    cx.strokeStyle = '#222'; cx.fillStyle = '#222'; cx.textAlign = 'center'; cx.textBaseline = 'middle';
+    for(var k=0;k<60;k++){ var a = k/60*6.283; var r0 = (k%5===0)?206:222; cx.lineWidth = (k%5===0)?7:2.5;
+      cx.beginPath(); cx.moveTo(256+Math.cos(a)*r0, 256+Math.sin(a)*r0); cx.lineTo(256+Math.cos(a)*238, 256+Math.sin(a)*238); cx.stroke(); }
+    var nums = {12:1,3:1,6:1,9:1};
+    for(var n in nums){ var a2 = n/12*6.283 - 1.5708; fitText(cx, String(n), 256+Math.cos(a2)*165, 262+Math.sin(a2)*165, 56, 90, 700); }
+  });
+  meshAt(new THREE.CircleGeometry(0.34, 64), new THREE.MeshStandardMaterial({map:face, roughness:0.6}), 0, 0, 0.026, LCLK);
+  var sec = new THREE.ShaderMaterial({ uniforms:{uF:{value:0}}, transparent:true, depthWrite:false,
+    vertexShader:'varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',
+    fragmentShader:'uniform float uF;varying vec2 vUv;void main(){vec2 d=vUv-0.5;float a=atan(d.x,d.y);if(a<0.0)a+=6.2831853;float r=length(d);if(r>0.5)discard;float on=step(a,uF*6.2831853)*step(0.02,r);gl_FragColor=vec4(0.85,0.32,0.22,0.30*on);}' });
+  LCK.sec = sec;
+  var s = meshAt(new THREE.CircleGeometry(0.33, 64), sec, 0, 0, 0.028, LCLK); s.renderOrder = 3;
+  var hm = smat(0x1a1a1a, 0.4, 0.3);
+  function hand(len, wid, z, m){ var g = new THREE.Group(); meshAt(box(wid, len, 0.004), m||hm, 0, len/2-0.03, 0, g); g.position.z = z; LCLK.add(g); return g; }
+  LCK.h = hand(0.18, 0.018, 0.034); LCK.m = hand(0.27, 0.012, 0.038); LCK.s = hand(0.29, 0.005, 0.042, smat(0xB0302a, 0.4));
+  LCLK.position.set(LX+2.35, 2.75, -4.96);
+  shadowAll(LCLK, false, true);
+})();
+
+/* quả cầu sáng (vùng cảm xúc) — lõi fresnel + quầng + đèn điểm nhuộm ghế */
+function makeOrb(col, r, lightRange){
+  var g = new THREE.Group();
+  var cm = new THREE.ShaderMaterial({ uniforms:{uC:{value:col.clone()}, uI:{value:0}}, transparent:true, depthWrite:false, blending:THREE.AdditiveBlending,
+    vertexShader:'varying vec3 vN;varying vec3 vV;void main(){vec4 mv=modelViewMatrix*vec4(position,1.0);vN=normalize(normalMatrix*normal);vV=normalize(-mv.xyz);gl_Position=projectionMatrix*mv;}',
+    fragmentShader:'uniform vec3 uC;uniform float uI;varying vec3 vN;varying vec3 vV;void main(){float nd=max(dot(normalize(vN),normalize(vV)),0.0);float core=pow(nd,2.2)*1.6+pow(nd,12.0)*2.5;gl_FragColor=vec4(uC*core*uI,1.0);}' });
+  var core = new THREE.Mesh(new THREE.SphereGeometry(r, 40, 24), cm); g.add(core);
+  var hm = new THREE.SpriteMaterial({map:GLOW_TEX, color:col.clone(), transparent:true, depthWrite:false, blending:THREE.AdditiveBlending, opacity:1});
+  var halo = new THREE.Sprite(hm); halo.scale.set(r*9, r*9, 1); g.add(halo);
+  g.userData = {cm:cm, hm:hm, col:col.clone(), r:r, range:lightRange || 3.2};
+  return g;
+}
+function setOrb(o, I, lightK, idx){ o.userData.cm.uniforms.uI.value = I; o.userData.hm.color.copy(o.userData.col).multiplyScalar(0.55*I); o.visible = I > 0.002;
+  if(idx != null && I > 0.002 && lightK > 0){ usePL(idx, o.position.x, o.position.y, o.position.z, o.userData.col, I*lightK, o.userData.range); } }
+var ORB_DEF = [
+  {p:[-1.35, 2.05, -0.70], c:new THREE.Color(1.00, 0.52, 0.16), r:0.16, lbl:'わくわく'},
+  {p:[ 1.35, 2.05, -0.70], c:new THREE.Color(0.22, 0.42, 1.00), r:0.16, lbl:'不安・いらいら'},
+  {p:[-1.20, 0.80,  0.25], c:new THREE.Color(1.00, 0.78, 0.50), r:0.115, lbl:'落ちつき'},
+  {p:[ 1.20, 0.80,  0.25], c:new THREE.Color(0.52, 0.62, 0.92), r:0.115, lbl:'寂しさ・悲しさ'}
+];
+var ORBS = [], ORB_LBL = [];
+ORB_DEF.forEach(function(d){
+  var o = makeOrb(d.c, d.r); o.position.set(LX+d.p[0], d.p[1], d.p[2]); LAB.add(o); ORBS.push(o);
+  var l = labelPlane(d.lbl, {px:80, wWorld:2.3, gain:0.9}); l.position.set(LX+d.p[0], d.p[1]-d.r-0.26, d.p[2]); LAB.add(l); ORB_LBL.push(l);
+});
+var PARTNER = makeOrb(new THREE.Color(1.0, 0.70, 0.40), 0.14, 3.0); PARTNER.position.set(LX+2.72, 0.98, 1.05); LAB.add(PARTNER);
+var SINGLE = makeOrb(new THREE.Color(1.0, 0.86, 0.62), 0.07, 2.4); SINGLE.position.set(LX, 1.55, -0.05); LAB.add(SINGLE);
+
+/* hai sợi sáng (実験３): thẳng = "được bảo nghĩ gì", uốn = "tự chọn nghĩ gì" */
+function glowTube(pts, col, rad){
+  var cv = new THREE.CatmullRomCurve3(pts);
+  var g = new THREE.TubeGeometry(cv, 200, rad, 8, false);
+  var m = new THREE.ShaderMaterial({ uniforms:{uC:{value:col.clone()}, uI:{value:0}}, transparent:true, depthWrite:false, blending:THREE.AdditiveBlending,
+    vertexShader:'varying vec3 vN;varying vec3 vV;void main(){vec4 mv=modelViewMatrix*vec4(position,1.0);vN=normalize(normalMatrix*normal);vV=normalize(-mv.xyz);gl_Position=projectionMatrix*mv;}',
+    fragmentShader:'uniform vec3 uC;uniform float uI;varying vec3 vN;varying vec3 vV;void main(){float nd=max(dot(normalize(vN),normalize(vV)),0.0);gl_FragColor=vec4(uC*(0.4+1.4*pow(nd,1.5))*uI,1.0);}' });
+  var me = new THREE.Mesh(g, m); me.userData.n = g.index.count; me.frustumCulled = false; return me;
+}
+var TH_A = glowTube([new THREE.Vector3(LX-0.05,1.15,-0.1), new THREE.Vector3(LX-0.45,1.75,-0.35), new THREE.Vector3(LX-0.85,2.35,-0.6), new THREE.Vector3(LX-1.25,2.95,-0.85)], new THREE.Color(0.95,0.92,0.85), 0.012);
+var TH_B = glowTube([new THREE.Vector3(LX+0.05,1.15,-0.1), new THREE.Vector3(LX+0.35,1.45,-0.05), new THREE.Vector3(LX+0.15,1.85,-0.3), new THREE.Vector3(LX+0.65,2.1,-0.25),
+  new THREE.Vector3(LX+0.55,2.55,-0.55), new THREE.Vector3(LX+1.05,2.8,-0.5), new THREE.Vector3(LX+1.2,3.1,-0.8)], new THREE.Color(1.0,0.78,0.45), 0.014);
+LAB.add(TH_A); LAB.add(TH_B);
+function setTube(me, prog, I){ var n = Math.floor(me.userData.n*clamp(prog,0,1)/3)*3; me.geometry.setDrawRange(0, n); me.material.uniforms.uI.value = I; me.visible = n > 0 && I > 0.001; }
+
+/* =========================================================================
+ * ĐỒNG HỒ KIM "気持ちの針" — mặt số có vùng ấm (よい) / lạnh (嫌な), biên độ tắt dần
+ * ========================================================================= */
+var GX = 120;
+var GAUGE = reg('gauge');
+var GNEEDLE = new THREE.Group();
+(function(){
+  var bd = smat(0x0d0c0b, 1.0); var back = meshAt(new THREE.PlaneGeometry(12, 7), bd, GX, 1.2, -0.6, GAUGE); back.receiveShadow = true;
+  var hou = woodMat(0x6B4428, [1,1], 0.45, 0.45);
+  var H0 = new THREE.Group(); GAUGE.add(H0); H0.position.set(GX, 1.25, 0);
+  meshAt(rbox(1.04, 0.70, 0.16, 0.04, 4), hou, 0, 0, 0, H0);
+  var face = textTex(1024, 640, function(cx,w,h){
+    var g = cx.createLinearGradient(0,0,0,h); g.addColorStop(0,'#F3ECDC'); g.addColorStop(1,'#E6DCC6'); cx.fillStyle = g; cx.fillRect(0,0,w,h);
+    var px = 512, py = 560, R = 400;
+    function P(a, r){ return [px + Math.sin(a)*r, py - Math.cos(a)*r]; }
+    var A = 55*Math.PI/180;
+    for(var s=-1;s<=1;s+=2){ for(var k=0;k<40;k++){ var a0 = s*(0.12 + k/40*(A-0.12)), a1 = s*(0.12 + (k+1)/40*(A-0.12));
+      var al = 0.10 + 0.55*(k/40);
+      cx.strokeStyle = s<0 ? 'rgba(222,120,40,'+al.toFixed(3)+')' : 'rgba(60,110,200,'+al.toFixed(3)+')';
+      cx.lineWidth = 34; cx.beginPath(); cx.arc(px, py, R-20, -Math.PI/2 + Math.min(a0,a1), -Math.PI/2 + Math.max(a0,a1)); cx.stroke(); } }
+    cx.strokeStyle = '#2b241c'; cx.lineWidth = 3; cx.beginPath(); cx.arc(px, py, R, -Math.PI/2 - A, -Math.PI/2 + A); cx.stroke();
+    for(var t=-10;t<=10;t++){ var a = t/10*A; var p0 = P(a, R), p1 = P(a, R + ((t%5===0)?34:18)); cx.lineWidth = (t%5===0)?5:2.5;
+      cx.beginPath(); cx.moveTo(p0[0],p0[1]); cx.lineTo(p1[0],p1[1]); cx.stroke(); }
+    cx.fillStyle = '#2b241c'; cx.textAlign = 'center'; cx.textBaseline = 'middle';
+    fitText(cx, '気持ちの針', px, 60, 44, 400, 700);
+    cx.fillStyle = '#8a4a14'; fitText(cx, 'よい気持ち', 190, 420, 40, 260, 700);
+    cx.fillStyle = '#244a8a'; fitText(cx, '嫌な気持ち', 834, 420, 40, 260, 700);
+    cx.fillStyle = '#3a3228'; fitText(cx, 'しずか', px, 250, 34, 200, 700);
+    cx.fillStyle = '#6a5a48'; fitText(cx, '強い', 130, 330, 30, 120, 400); fitText(cx, '強い', 894, 330, 30, 120, 400);
+  });
+  var fm = new THREE.MeshStandardMaterial({map:face, roughness:0.75});
+  meshAt(new THREE.PlaneGeometry(0.88, 0.55), fm, 0, 0.0, 0.081, H0).receiveShadow = true;
+  /* kim: pivot tại (0, -0.203) của mặt số */
+  GNEEDLE.position.set(0, -0.203, 0.092); H0.add(GNEEDLE);
+  var nm = smat(0x7a1a12, 0.4, 0.2);
+  var ng = new THREE.CylinderGeometry(0.0012, 0.0045, 0.36, 8); ng.translate(0, 0.18, 0);
+  meshAt(ng, nm, 0, 0, 0, GNEEDLE);
+  meshAt(new THREE.CylinderGeometry(0.022, 0.022, 0.016, 32), smat(0x2a2016, 0.35, 0.7), 0, -0.203, 0.094, H0).rotation.x = Math.PI/2;
+  var gl = new THREE.Mesh(new THREE.PlaneGeometry(0.9, 0.57), new THREE.MeshStandardMaterial({color:0xffffff, roughness:0.04, transparent:true, opacity:0.08, envMapIntensity:1.5, depthWrite:false}));
+  gl.position.set(0, 0, 0.1); H0.add(gl);
+  shadowAll(H0, true, true); gl.castShadow = false;
+})();
+
+/* =========================================================================
+ * BÀN VIẾT + SỔ NHẬT KÝ HAI TUẦN (調査４)
+ * ========================================================================= */
+var DX = 180;
+var DESK = reg('desk');
+var DIARY_WANT = [1,1,0,1,1,1,0,1,1,0,1,1,1,0];
+var DMARKS = [], DBARS = [];
+(function(){
+  meshAt(new THREE.PlaneGeometry(10, 6), plasterMat(10, 6), DX, 1.6, -1.2, DESK).receiveShadow = true;
+  var top = slab(DX-1.0, DX+1.0, 0.72, 0.76, -0.55, 0.55, woodMat(0x9A6A42, [5,0.6], 0.5, 0.5), DESK);
+  var cov = smat(0x2f3a44, 0.75); slab(DX-0.33, DX+0.33, 0.76, 0.768, -0.225, 0.225, cov, DESK);
+  var L = textTex(768, 1024, function(cx,w,h){
+    cx.fillStyle = '#F7F3E8'; cx.fillRect(0,0,w,h);
+    cx.fillStyle = '#1f2630'; cx.textAlign = 'left'; cx.textBaseline = 'middle';
+    fitText(cx, 'ひとりの時間の記録', 50, 70, 50, w-100, 700);
+    cx.fillStyle = '#4a4f55'; fitText(cx, '二週間・毎日十五分', 50, 128, 32, w-100, 400);
+    cx.fillStyle = '#333'; cx.textAlign = 'center';
+    fitText(cx, 'そうしたかった', 400, 196, 30, 220, 700); fitText(cx, 'しかたなく', 620, 196, 30, 200, 700);
+    cx.strokeStyle = 'rgba(40,50,60,0.35)'; cx.lineWidth = 2;
+    for(var r=0;r<=14;r++){ var y = 226 + r*54; cx.beginPath(); cx.moveTo(40, y); cx.lineTo(w-40, y); cx.stroke(); }
+    cx.beginPath(); cx.moveTo(290, 170); cx.lineTo(290, 226+14*54); cx.stroke();
+    cx.beginPath(); cx.moveTo(510, 170); cx.lineTo(510, 226+14*54); cx.stroke();
+    cx.fillStyle = '#444'; cx.textAlign = 'left';
+    for(var r2=0;r2<14;r2++) fitText(cx, (r2+1)+'日目', 60, 253 + r2*54, 28, 200, 400);
+  });
+  var R = textTex(768, 1024, function(cx,w,h){
+    cx.fillStyle = '#F7F3E8'; cx.fillRect(0,0,w,h);
+    cx.fillStyle = '#1f2630'; cx.textAlign = 'left'; cx.textBaseline = 'middle';
+    fitText(cx, 'その日の落ちつき', 50, 70, 50, w-100, 700);
+    cx.strokeStyle = '#333'; cx.lineWidth = 4; cx.beginPath(); cx.moveTo(80, 820); cx.lineTo(w-60, 820); cx.stroke();
+    cx.beginPath(); cx.moveTo(80, 820); cx.lineTo(80, 200); cx.stroke();
+    cx.fillStyle = '#333'; cx.textAlign = 'center';
+    fitText(cx, 'そうしたかった日', 260, 870, 32, 280, 700); fitText(cx, 'しかたなかった日', 560, 870, 32, 280, 700);
+    cx.fillStyle = '#777'; fitText(cx, '※説明のためのイメージ', w/2, 960, 28, w-100, 400);
+  });
+  function page(tx, x){ var m = meshAt(new THREE.PlaneGeometry(0.30, 0.40), new THREE.MeshStandardMaterial({map:tx, roughness:0.92}), DX+x, 0.771, 0, DESK); m.rotation.x = -Math.PI/2; m.receiveShadow = true; return m; }
+  page(L, -0.155); page(R, 0.155);
+  /* ○ đánh dấu (vẽ nét, không cần font) */
+  var mk = mkCanvas(128,128), mx = mk.getContext('2d'); mx.strokeStyle = '#b3342a'; mx.lineWidth = 10; mx.beginPath(); mx.arc(64,64,44,0,6.283); mx.stroke();
+  var mt = cvTex(mk);
+  for(var i=0;i<14;i++){ var col = DIARY_WANT[i] ? 400 : 620;
+    var m = new THREE.Mesh(new THREE.PlaneGeometry(0.028, 0.028), new THREE.MeshBasicMaterial({map:mt, transparent:true, opacity:0, depthWrite:false, color:new THREE.Color(0.8,0.8,0.8)}));
+    m.rotation.x = -Math.PI/2; m.position.set(DX-0.155 - 0.15 + col/768*0.30, 0.7725, -0.20 + (253+i*54)/1024*0.40); m.renderOrder = 4; DESK.add(m); DMARKS.push(m); }
+  /* cột 3D trên trang phải */
+  var bw = smat(0xD9A15A, 0.55), bf = smat(0x6F86A8, 0.55);
+  [[260, bw],[560, bf]].forEach(function(b){ var g = new THREE.Group(); var me = meshAt(box(0.05, 1, 0.03), b[1], 0, 0.5, 0, g);
+    g.position.set(DX+0.155 - 0.15 + b[0]/768*0.30, 0.772, -0.20 + 820/1024*0.40 - 0.016); g.scale.y = 0.001; DESK.add(g); shadowAll(g, true, true); DBARS.push(g); });
+  var pen = new THREE.Group();
+  meshAt(new THREE.CylinderGeometry(0.005, 0.005, 0.14, 12), smat(0x202a38, 0.3, 0.3), 0, 0, 0, pen);
+  pen.rotation.set(Math.PI/2, 0, -0.7); pen.position.set(DX+0.42, 0.77, 0.12); DESK.add(pen);
+  shadowAll(DESK, true, true);
+})();
+
+/* =========================================================================
+ * SƠ ĐỒ HAI TRỤC ĐỘC LẬP: "một mình" ⟂ "tự chọn"
+ * ========================================================================= */
+var AX = 240;
+var AXES = reg('axes');
+var AXP = {};
+(function(){
+  var lm = new THREE.MeshBasicMaterial({color:new THREE.Color(0.78,0.75,0.70)});
+  var hx = meshAt(box(3.0, 0.012, 0.012), lm, AX, 0, 0, AXES);
+  var vy = meshAt(box(0.012, 1.6, 0.012), lm, AX, 0, 0, AXES);
+  var cone = new THREE.ConeGeometry(0.035, 0.09, 16);
+  var c1 = meshAt(cone, lm, AX+1.53, 0, 0, AXES); c1.rotation.z = -Math.PI/2;
+  var c2 = meshAt(cone, lm, AX-1.53, 0, 0, AXES); c2.rotation.z = Math.PI/2;
+  var c3 = meshAt(cone, lm, AX, 0.83, 0, AXES);
+  var c4 = meshAt(cone, lm, AX, -0.83, 0, AXES); c4.rotation.z = Math.PI;
+  function L(txt, x, y, o){ o = o || {}; var p = labelPlane(txt, {px:74, wWorld:o.w||1.8, gain:o.gain||0.86, color:o.color}); p.position.set(AX+x, y, 0.01); AXES.add(p); return p; }
+  AXP.l = [L('一人', 1.30, 0.14), L('誰かといる', -1.25, 0.14), L('自分で選んだ', 0.72, 0.93), L('押しつけられた', 0.78, -0.93)];
+  /* góc phần tư: ánh nhẹ */
+  AXP.qT = meshAt(new THREE.PlaneGeometry(1.45, 0.78), new THREE.MeshBasicMaterial({color:new THREE.Color(0.9,0.6,0.3), transparent:true, opacity:0, depthWrite:false}), AX+0.75, 0.40, -0.01, AXES);
+  AXP.qB = meshAt(new THREE.PlaneGeometry(1.45, 0.78), new THREE.MeshBasicMaterial({color:new THREE.Color(0.3,0.45,0.8), transparent:true, opacity:0, depthWrite:false}), AX+0.75, -0.40, -0.01, AXES);
+  AXP.tue = makeOrb(new THREE.Color(1.0,0.6,0.25), 0.07, 0.1); AXP.tue.position.set(AX+0.75, 0.38, 0.05); AXES.add(AXP.tue);
+  AXP.thu = makeOrb(new THREE.Color(0.35,0.55,1.0), 0.07, 0.1); AXP.thu.position.set(AX+0.75, -0.42, 0.05); AXES.add(AXP.thu);
+  AXP.tl = L('火曜日', 0.75, 0.58, {w:1.3, color:'#FFD9A8'}); AXP.hl = L('木曜日', 0.75, -0.22, {w:1.3, color:'#CFE0FF'});
+})();
+
+/* =========================================================================
+ * TÁN XẠ ~450 NGƯỜI (2022): trục ngang đổi từ "hướng nội" sang "sống tự chủ"
+ * ========================================================================= */
+var SX = 300;
+var SCAT = reg('scat');
+var SCP = {};
+(function(){
+  var lm = new THREE.MeshBasicMaterial({color:new THREE.Color(0.72,0.70,0.66)});
+  meshAt(box(2.9, 0.01, 0.01), lm, SX, -0.85, 0, SCAT);
+  meshAt(box(0.01, 1.85, 0.01), lm, SX-1.45, 0.075, 0, SCAT);
+  var N = 450, pr = HFA.mulberry32(131);
+  function gauss(){ var u = Math.max(1e-6, pr()), v = pr(); return Math.sqrt(-2*Math.log(u))*Math.cos(6.2831853*v); }
+  var A = [], B = [], Z = [], D = [];
+  for(var i=0;i<N;i++){
+    var xi = clamp(gauss()*0.42, -1.25, 1.25), yi = clamp(gauss()*0.36, -0.78, 0.9);
+    A.push([xi, yi]);
+    var xa = clamp(gauss()*0.42, -1.25, 1.25);
+    var yb = clamp(0.36*xa + gauss()*0.26, -0.78, 0.9);
+    B.push([xa, yb]); Z.push((pr()-0.5)*0.35); D.push(pr()*0.35);
+  }
+  SCP.A = A; SCP.B = B; SCP.Z = Z; SCP.D = D; SCP.N = N;
+  var im = new THREE.InstancedMesh(new THREE.SphereGeometry(0.02, 12, 8), new THREE.MeshStandardMaterial({color:0xE9DFCB, roughness:0.45, emissive:new THREE.Color(0.10,0.08,0.05)}), N);
+  im.castShadow = false; im.receiveShadow = false; SCAT.add(im); SCP.im = im;
+  SCP.trend = meshAt(box(2.6, 0.012, 0.012), new THREE.MeshBasicMaterial({color:new THREE.Color(0.95,0.7,0.35), transparent:true, opacity:0, depthWrite:false}), SX, 0.04, 0.2, SCAT);
+  function L(txt, x, y, o){ o = o || {}; var p = labelPlane(txt, {px:72, wWorld:o.w||1.6, gain:0.86, align:o.align, color:o.color}); p.position.set(SX+x, y, 0.02); SCAT.add(p); return p; }
+  SCP.ly = L('一人の時間を楽しむ気持ち', -0.62, 1.03, {w:1.9, align:'left'});
+  SCP.lxA = L('内向的な性格　→', 0.55, -1.02, {w:1.7, align:'right'});
+  SCP.lxB = L('自律的な暮らし方　→', 0.55, -1.02, {w:1.7, align:'right', color:'#FFE0B0'});
+  SCP.note = L('※点は説明のためのイメージ', -0.70, -1.02, {w:1.25, align:'left', color:'#B8B2A6'});
+})();
+var _m4 = new THREE.Matrix4(), _q = new THREE.Quaternion(), _s3 = new THREE.Vector3(1,1,1), _v3 = new THREE.Vector3();
+function setScatter(morph, t){
+  for(var i=0;i<SCP.N;i++){ var k = smooth(clamp((morph - SCP.D[i]) / 0.65, 0, 1));
+    var x = lerp(SCP.A[i][0], SCP.B[i][0], k), y = lerp(SCP.A[i][1], SCP.B[i][1], k);
+    y += 0.006*Math.sin(t*0.6 + i);
+    _v3.set(SX + x, y, SCP.Z[i]); _m4.compose(_v3, _q, _s3); SCP.im.setMatrixAt(i, _m4); }
+  SCP.im.instanceMatrix.needsUpdate = true;
+  var slope = 0.36*smooth(clamp((morph-0.3)/0.9,0,1));
+  SCP.trend.rotation.z = Math.atan(slope);
+}
+
+/* =========================================================================
+ * DẢI NGÀY: mỗi viên = một ngày, mười năm nối dài. Mười lăm phút = một vạch sáng mảnh.
+ * ========================================================================= */
+var YX = 360;
+var DAYS = reg('days');
+var DYP = {};
+(function(){
+  var N = 3650, sp = 0.24;
+  var im = new THREE.InstancedMesh(box(0.2, 0.012, 0.2), new THREE.MeshStandardMaterial({color:0xffffff, roughness:0.7}), N);
+  var col = new THREE.Color();
+  for(var i=0;i<N;i++){ _v3.set(YX, 0, -i*sp); _m4.compose(_v3, _q, _s3); im.setMatrixAt(i, _m4);
+    var yr = (i % 365) === 0 && i > 0;
+    if(yr) col.setRGB(0.92, 0.74, 0.46); else col.setRGB(0.60, 0.58, 0.54);
+    im.setColorAt(i, col); }
+  im.instanceMatrix.needsUpdate = true; if(im.instanceColor) im.instanceColor.needsUpdate = true;
+  im.receiveShadow = true; im.castShadow = false; im.frustumCulled = false; DAYS.add(im);
+  var sl = meshAt(box(0.0021, 0.016, 0.2), new THREE.MeshBasicMaterial({color:new THREE.Color(6.0, 4.2, 2.2)}), YX-0.0985, 0.001, 0, DAYS);
+  DYP.sliver = sl;
+  var fl = meshAt(new THREE.PlaneGeometry(6, 1000), new THREE.MeshStandardMaterial({color:0x0b0b0c, roughness:0.35, envMapIntensity:0.1}), YX, -0.02, -498, DAYS);
+  fl.rotation.x = -Math.PI/2; fl.receiveShadow = true;
+})();
+
+/* =========================================================================
+ * GÓC BẾP: bếp ga + ấm nước (第4章 やかん)
+ * ========================================================================= */
+var KX = 420;
+var KITCH = reg('kitch');
+var KP = {};
+(function(){
+  var tile = (function(){ var cv = mkCanvas(512,512), cx = cv.getContext('2d'); cx.fillStyle = '#9aa0a0'; cx.fillRect(0,0,512,512);
+    for(var y=0;y<4;y++) for(var x=0;x<4;x++){ var l = 225 + ((x*7+y*13)%9); cx.fillStyle = 'rgb('+l+','+(l-2)+','+(l-8)+')'; cx.fillRect(x*128+3, y*128+3, 122, 122); }
+    return cv; })();
+  var wall = meshAt(new THREE.PlaneGeometry(4, 2.4), new THREE.MeshStandardMaterial({map:cvTex(tile,{rep:[6,3.6]}), roughness:0.25, envMapIntensity:0.6}), KX, 1.2, -0.42, KITCH); wall.receiveShadow = true;
+  var winM = new THREE.MeshBasicMaterial({color:new THREE.Color(1.3,1.45,1.7)}); KP.winM = winM;
+  meshAt(new THREE.PlaneGeometry(0.9, 0.6), winM, KX-0.95, 1.55, -0.41, KITCH);
+  slab(KX-1.45, KX-0.45, 1.23, 1.26, -0.42, -0.35, mWood, KITCH);
+  var ctr = slab(KX-2, KX+2, 0.80, 0.85, -0.42, 0.25, new THREE.MeshStandardMaterial({color:0xC9C6C0, roughness:0.35, metalness:0.6}), KITCH);
+  slab(KX-2, KX+2, 0.0, 0.80, -0.40, 0.23, smat(0x8A8378, 0.7), KITCH);
+  var st = new THREE.Group(); KITCH.add(st); st.position.set(KX, 0.85, -0.08);
+  slab(-0.31, 0.31, 0.0, 0.11, -0.22, 0.22, smat(0x1b1b1d, 0.35, 0.3), st);
+  slab(-0.30, 0.30, 0.11, 0.115, -0.21, 0.21, new THREE.MeshStandardMaterial({color:0x0e0e10, roughness:0.12, metalness:0.1, envMapIntensity:1.4}), st);
+  slab(-0.31, 0.31, 0.0, 0.1, 0.20, 0.225, smat(0x2a2a2c, 0.4, 0.4), st);
+  var gm = smat(0x141414, 0.6, 0.5);
+  [-0.15, 0.15].forEach(function(x){
+    meshAt(new THREE.CylinderGeometry(0.055, 0.06, 0.02, 32), smat(0x3a3530, 0.4, 0.8), x, 0.125, 0, st);
+    meshAt(new THREE.CylinderGeometry(0.04, 0.04, 0.012, 32), smat(0x1a1a1a, 0.5, 0.5), x, 0.14, 0, st);
+    for(var k=0;k<4;k++){ var a = k*Math.PI/2 + Math.PI/4; var b = meshAt(box(0.12, 0.012, 0.012), gm, x + Math.cos(a)*0.06, 0.16, Math.sin(a)*0.06, st); b.rotation.y = -a; }
+  });
+  /* ấm nước inox trên họng phải */
+  var kt = new THREE.Group(); st.add(kt); kt.position.set(0.15, 0.166, 0);
+  var pr = [[0,0],[0.10,0],[0.112,0.01],[0.118,0.05],[0.112,0.10],[0.095,0.14],[0.06,0.165],[0.045,0.17],[0.044,0.175],[0.0,0.176]];
+  var pts = pr.map(function(p){ return new THREE.Vector2(p[0], p[1]); });
+  var km = new THREE.MeshStandardMaterial({color:0xD8DADC, roughness:0.2, metalness:1.0, envMapIntensity:1.6});
+  meshAt(new THREE.LatheGeometry(pts, 64), km, 0, 0, 0, kt);
+  meshAt(new THREE.SphereGeometry(0.018, 16, 12), smat(0x151515, 0.4), 0, 0.19, 0, kt);
+  var sc = new THREE.CatmullRomCurve3([new THREE.Vector3(-0.09,0.05,0), new THREE.Vector3(-0.15,0.10,0), new THREE.Vector3(-0.19,0.16,0), new THREE.Vector3(-0.21,0.19,0)]);
+  meshAt(new THREE.TubeGeometry(sc, 30, 0.014, 12, false), km, 0, 0, 0, kt);
+  var hc = new THREE.CatmullRomCurve3([new THREE.Vector3(0.06,0.15,0), new THREE.Vector3(0.05,0.26,0), new THREE.Vector3(0.0,0.29,0), new THREE.Vector3(-0.05,0.26,0), new THREE.Vector3(-0.06,0.15,0)]);
+  meshAt(new THREE.TubeGeometry(hc, 40, 0.011, 10, false), smat(0x151515, 0.45), 0, 0, 0, kt);
+  kt.rotation.y = 0.5;
+  KP.spout = new THREE.Vector3(-0.21, 0.19, 0).applyAxisAngle(new THREE.Vector3(0,1,0), 0.5).add(new THREE.Vector3(KX+0.15, 0.85+0.166, -0.08));
+  /* ngọn lửa xanh: vòng lưỡi lửa */
+  var fm = new THREE.ShaderMaterial({ uniforms:{uI:{value:0}}, transparent:true, depthWrite:false, blending:THREE.AdditiveBlending, side:THREE.DoubleSide,
+    vertexShader:'varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',
+    fragmentShader:'uniform float uI;varying vec2 vUv;void main(){float y=vUv.y;vec3 c=mix(vec3(0.15,0.35,2.6),vec3(0.5,0.3,1.2),y);float a=(1.0-y)*smoothstep(0.0,0.15,y+0.1)*uI;gl_FragColor=vec4(c*a,1.0);}' });
+  KP.fl = [];
+  for(var i=0;i<18;i++){ var a2 = i/18*6.2831853; var c = new THREE.Mesh(new THREE.ConeGeometry(0.008, 0.03, 8, 1, true), fm);
+    c.position.set(0.15 + Math.cos(a2)*0.047, 0.152, Math.sin(a2)*0.047); c.rotation.set(Math.sin(a2)*0.5, 0, -Math.cos(a2)*0.5); st.add(c); KP.fl.push(c); }
+  KP.fm = fm;
+  shadowAll(KITCH, true, true);
+  KP.fl.forEach(function(c){ c.castShadow = false; c.receiveShadow = false; });
+})();
+var STEAM_K = (function(){
+  var N = 500, pr = HFA.mulberry32(141), a = new Float32Array(N*3), ph = new Float32Array(N);
+  for(var i=0;i<N;i++){ a[i*3] = (pr()-0.5)*0.01; a[i*3+1] = 0; a[i*3+2] = (pr()-0.5)*0.01; ph[i] = pr(); }
+  var g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(a,3)); g.setAttribute('aPh', new THREE.BufferAttribute(ph,1));
+  var m = new THREE.ShaderMaterial({ uniforms:{uT:{value:0}, uOp:{value:0}, uV:{value:1}, uMaxPx:{value:60.0}},
+    transparent:true, depthWrite:false, blending:THREE.AdditiveBlending,
+    vertexShader:['attribute float aPh;uniform float uT,uV,uMaxPx;varying float vA;',
+      'void main(){float life=fract(uT*0.5*uV+aPh);vec3 p=position;',
+      ' p.x+=-life*0.22*uV; p.y+=life*0.30+life*life*0.25; p.x+=sin(life*6.0+aPh*30.0)*0.02*life; p.z+=cos(life*5.0+aPh*17.0)*0.03*life;',
+      ' vA=smoothstep(0.0,0.08,life)*(1.0-life);vec4 mv=modelViewMatrix*vec4(p,1.0);gl_PointSize=min(uMaxPx,(6.0+life*70.0)*(1.0/-mv.z));gl_Position=projectionMatrix*mv;}'].join('\n'),
+    fragmentShader:'uniform float uOp;varying float vA;void main(){vec2 d=gl_PointCoord-0.5;float a=smoothstep(0.5,0.0,length(d));gl_FragColor=vec4(vec3(0.9,0.93,1.0)*a*vA*uOp*0.32,1.0);}' });
+  var p = new THREE.Points(g, m); p.frustumCulled = false; p.position.copy(KP.spout); KITCH.add(p); return p;
+})();
+
+/* =========================================================================
+ * ĐIỆN THOẠI ĐÊM TRƯỚC (cuộc gọi) — cận cảnh, tối, chỉ màn hình sáng
+ * ========================================================================= */
+var PX = 480;
+var PHSET = reg('phset');
+var PHONE_N = phoneBody(PHSET);
+(function(){
+  slab(PX-1.2, PX+1.2, -0.04, 0.0, -0.8, 0.8, woodMat(0x5a3b24, [2,1], 0.45, 0.45), PHSET).receiveShadow = true;
+  PHONE_N.position.set(PX, 0, 0); PHONE_N.rotation.y = -0.25;
+  var call = textTex(340, 740, function(cx,w,h){
+    var g = cx.createLinearGradient(0,0,0,h); g.addColorStop(0,'#26384a'); g.addColorStop(1,'#101820'); cx.fillStyle = g; cx.fillRect(0,0,w,h);
+    cx.fillStyle = '#e8eef4'; cx.textAlign = 'center'; cx.textBaseline = 'middle';
+    fitText(cx, '21:14', w/2, 60, 30, 200, 400);
+    cx.fillStyle = 'rgba(255,255,255,0.18)'; cx.beginPath(); cx.arc(w/2, 250, 70, 0, 6.283); cx.fill();
+    cx.fillStyle = 'rgba(255,255,255,0.55)'; cx.beginPath(); cx.arc(w/2, 232, 26, 0, 6.283); cx.fill(); cx.beginPath(); cx.ellipse(w/2, 290, 44, 26, 0, Math.PI, 2*Math.PI); cx.fill();
+    cx.fillStyle = '#f2f4f6'; fitText(cx, '着信', w/2, 380, 44, w-40, 700);
+    fitText(cx, '古い友人', w/2, 440, 30, w-40, 400);
+    cx.fillStyle = '#d9443a'; cx.beginPath(); cx.arc(90, 620, 40, 0, 6.283); cx.fill();
+    cx.fillStyle = '#34b35a'; cx.beginPath(); cx.arc(w-90, 620, 40, 0, 6.283); cx.fill();
+    cx.fillStyle = '#e8eef4'; fitText(cx, '拒否', 90, 690, 24, 100, 400); fitText(cx, '応答', w-90, 690, 24, 100, 400);
+  });
+  PHONE_N.userData.scr.material = new THREE.MeshBasicMaterial({map:call, color:new THREE.Color(1.1,1.1,1.1)});
+  /* cặp kính + cốc trong bóng tối cho có đời sống */
+  var gl = new THREE.Group(); PHSET.add(gl); gl.position.set(PX+0.2, 0.012, 0.12);
+  var fr = smat(0x2a2420, 0.4, 0.5);
+  meshAt(new THREE.TorusGeometry(0.024, 0.0022, 8, 24), fr, -0.03, 0, 0, gl).rotation.x = Math.PI/2;
+  meshAt(new THREE.TorusGeometry(0.024, 0.0022, 8, 24), fr, 0.03, 0, 0, gl).rotation.x = Math.PI/2;
+  var mug = meshAt(new THREE.CylinderGeometry(0.04, 0.036, 0.09, 32, 1, true), smat(0x3c4a52, 0.5), PX-0.22, 0.045, -0.12, PHSET); mug.material.side = THREE.DoubleSide;
+  shadowAll(PHSET, true, true);
+})();
+
+/* ---- phụ đề: sinh bởi scripts/gen-captions.mjs (≤22 ký tự toàn角, mốc THẬT) — đừng sửa tay ---- */
+const CUES=[
+ {t:2.00,s:"火曜日の、午前十時のことです。"},
+ {t:5.14,s:"洗濯物を干し終えて、"},
+ {t:7.24,s:"私は六畳の部屋でアイロンをかけていました。"},
+ {t:11.64,s:"東向きの窓から、日が斜めに入ってきます。"},
+ {t:16.18,s:"畳の上に、窓枠の影が四角く落ちています。"},
+ {t:20.71,s:"その朝、"},
+ {t:21.53,s:"私は自分で決めて、"},
+ {t:23.38,s:"携帯電話の電源を切っていました。"},
+ {t:26.67,s:"今日はどこにも行かない。"},
+ {t:29.13,s:"誰にも会わない。"},
+ {t:30.78,s:"そう決めた日でした。"},
+ {t:32.82,s:"シャツを一枚ずつ畳んでいくと、"},
+ {t:35.79,s:"部屋の静けさが、"},
+ {t:37.38,s:"少しずつ体に染みてくるようでした。ああ、"},
+ {t:41.34,s:"いい時間だな、"},
+ {t:42.73,s:"と思ったのを覚えています。"},
+ {t:46.79,s:"その二日後の木曜日です。"},
+ {t:49.15,s:"同じ午前十時。同じ部屋で、"},
+ {t:51.70,s:"同じようにアイロンをかけていました。"},
+ {t:55.23,s:"日の入り方も、畳の影も、"},
+ {t:57.78,s:"火曜日とまったく同じです。"},
+ {t:60.55,s:"部屋には、私のほかに誰もいません。"},
+ {t:64.17,s:"それも同じでした。"},
+ {t:66.08,s:"違っていたのは、"},
+ {t:67.58,s:"前の晩にかかってきた一本の電話です。"},
+ {t:70.96,s:"昔からの友人と、この日、"},
+ {t:73.22,s:"会う約束をしていました。"},
+ {t:75.47,s:"急な用事ができたから、また今度にしてほしい。"},
+ {t:80.64,s:"よくあることです。"},
+ {t:82.76,s:"私も、いいよ、と言って電話を切りました。"},
+ {t:87.45,s:"それなのに、"},
+ {t:88.60,s:"その朝の部屋は、"},
+ {t:90.13,s:"なんというか、"},
+ {t:91.47,s:"どこか重たかったんです。静けさが、"},
+ {t:94.72,s:"染みてくるのではなく、"},
+ {t:96.82,s:"のしかかってくる感じがしました。"},
+ {t:99.89,s:"火曜日は心地よかった一人の時間が、木曜日は、"},
+ {t:104.66,s:"つらかった。部屋も、光も、"},
+ {t:107.48,s:"一人であることも、"},
+ {t:109.43,s:"何ひとつ変わっていないのにです。"},
+ {t:112.89,s:"同じ一人のはずなのに、"},
+ {t:114.77,s:"なぜこんなに違うんだろう。"},
+ {t:116.99,s:"アイロンを置いて、"},
+ {t:118.53,s:"私はしばらくそのことを考えていました。"},
+ {t:121.78,s:"実は、この違いを、"},
+ {t:123.47,s:"実験室で本当に測った人たちがいます。"},
+ {t:126.85,s:"その結果を、順番にたどってみたいと思います。"},
+ {t:130.98,s:"先に一つ、断っておきたいことがあります。"},
+ {t:134.99,s:"人の数と寂しさは別のものだ、"},
+ {t:137.79,s:"という研究は、"},
+ {t:139.19,s:"これまでにもたくさんあります。"},
+ {t:142.20,s:"ですが、"},
+ {t:143.02,s:"今日比べたいのは、"},
+ {t:144.86,s:"そこではありません。"},
+ {t:146.91,s:"人の数は、どちらもゼロ。"},
+ {t:149.37,s:"まったく同じ一人の時間どうしの違いなんです。"},
+ {t:153.87,s:"アメリカのロチェスター大学に、"},
+ {t:156.41,s:"一人の時間を専門に調べて"},
+ {t:158.44,s:"いる研究者がいました。"},
+ {t:160.30,s:"トゥイ・ヴィ・グエンさんという人です。"},
+ {t:163.51,s:"グエンさんは、"},
+ {t:164.78,s:"リチャード・ライアン、"},
+ {t:166.78,s:"エドワード・デシと"},
+ {t:168.42,s:"いう二人の心理学者と組んで、"},
+ {t:170.97,s:"四つの実験を行いました。"},
+ {t:173.14,s:"二千十八年に、"},
+ {t:174.67,s:"アメリカの社会心理学の専門誌に出た報告です。"},
+ {t:179.48,s:"題名を訳すと、"},
+ {t:181.01,s:"気持ちを整える方法としての一人の時間、"},
+ {t:185.16,s:"となります。"},
+ {t:186.47,s:"最初の実験は、とても簡単なものです。"},
+ {t:190.46,s:"大学の学生に、"},
+ {t:192.01,s:"座り心地のいい椅子に、"},
+ {t:194.44,s:"一人で十五分座ってもらう。"},
+ {t:197.32,s:"携帯電話は持ち込めません。"},
+ {t:200.12,s:"誰とも話さない。本もない。"},
+ {t:202.92,s:"ただ座っているだけです。"},
+ {t:205.50,s:"比べる相手として、"},
+ {t:207.24,s:"別の学生たちには、"},
+ {t:208.98,s:"同じ十五分を、"},
+ {t:210.33,s:"人と世間話をして過ごしてもらいました。"},
+ {t:213.99,s:"十五分の前と後で、"},
+ {t:215.90,s:"そのときの気持ちを細かく答えてもらいます。"},
+ {t:220.35,s:"わくわくする。"},
+ {t:221.84,s:"いらいらする。"},
+ {t:223.32,s:"落ちついている。"},
+ {t:225.02,s:"そういう項目です。"},
+ {t:226.93,s:"結果は、はっきりしていました。"},
+ {t:229.55,s:"一人で座っていた人たちだけ、"},
+ {t:232.00,s:"強い気持ちが静まっていたんです。"},
+ {t:234.79,s:"不安や怒りのような、強い嫌な気持ちが下がる。"},
+ {t:239.59,s:"ここまでは、予想どおりかもしれません。"},
+ {t:243.74,s:"ところが、"},
+ {t:244.60,s:"わくわくするような、"},
+ {t:246.32,s:"強いよい気持ちも、"},
+ {t:247.86,s:"同じように下がっていました。"},
+ {t:250.27,s:"一人でいると、"},
+ {t:251.66,s:"気持ちの針が、"},
+ {t:253.05,s:"よい方にも悪い方にも大きく振れなくなる。"},
+ {t:257.01,s:"研究では、これを、"},
+ {t:258.79,s:"気持ちを静める働きとして報告しています。"},
+ {t:262.76,s:"次の実験では、"},
+ {t:264.17,s:"一人の十五分に、"},
+ {t:265.79,s:"本を読むかどうかで違いが"},
+ {t:268.21,s:"出るかを確かめました。"},
+ {t:270.44,s:"結果は、同じでした。"},
+ {t:272.14,s:"本を読んでいても、"},
+ {t:273.66,s:"何もしなくても、"},
+ {t:275.02,s:"一人でいれば、"},
+ {t:276.21,s:"気持ちは静まっていったんです。"},
+ {t:278.74,s:"つまり、"},
+ {t:279.36,s:"この静まり方は、"},
+ {t:280.59,s:"何をするかで決まるのではありません。"},
+ {t:283.38,s:"一人でいること、"},
+ {t:284.61,s:"そのものが起こしているということです。"},
+ {t:288.72,s:"ここで、火曜日と木曜日のことを考えました。"},
+ {t:293.05,s:"静まる。それ自体は、"},
+ {t:295.11,s:"どちらの日にも起きていたはずです。"},
+ {t:298.61,s:"火曜日には、それが穏やかさとして届きました。"},
+ {t:302.97,s:"木曜日には、"},
+ {t:304.16,s:"張りが抜けて、"},
+ {t:305.55,s:"何もかも色が薄くなったように感じられた。"},
+ {t:309.52,s:"同じ静まり方が、"},
+ {t:311.30,s:"ある日は休息になり、"},
+ {t:313.52,s:"ある日は空っぽになる。"},
+ {t:315.96,s:"正直に言うと、私はここで少し混乱しました。"},
+ {t:320.62,s:"では、その差は、どこから来るのか。"},
+ {t:323.68,s:"グエンさんたちが三つ目の実験で確かめたのが、"},
+ {t:327.63,s:"まさにそこでした。"},
+ {t:329.25,s:"三つ目の実験でも、"},
+ {t:331.37,s:"学生たちは一人で十五分座ります。"},
+ {t:335.15,s:"違うのは、その十五分に、何を考えるかです。"},
+ {t:340.10,s:"ある人たちには、"},
+ {t:341.61,s:"楽しいことを考えてくださいと頼みました。"},
+ {t:345.40,s:"別の人たちには、"},
+ {t:346.91,s:"何を考えるかを、"},
+ {t:348.43,s:"自分で選んでもらいました。"},
+ {t:350.88,s:"すると、"},
+ {t:351.59,s:"この人たちでは、"},
+ {t:353.02,s:"わくわくするような強いよい気持ちが、"},
+ {t:356.22,s:"下がらなかったんです。"},
+ {t:358.18,s:"不安や怒りのほうは、ちゃんと静まる。"},
+ {t:362.37,s:"落ちつきは得られる。"},
+ {t:364.69,s:"それでいて、心の張りは失われない。"},
+ {t:368.64,s:"寂しさや悲しさも、増えませんでした。"},
+ {t:373.99,s:"四つ目の調査は、実験室の外です。"},
+ {t:377.36,s:"百五十人あまりの学生に、二週間、"},
+ {t:380.72,s:"ふだんの暮らしの中で、"},
+ {t:383.04,s:"一人の時間を毎日十五分ずつとって"},
+ {t:386.41,s:"もらいました。"},
+ {t:387.88,s:"そして、"},
+ {t:388.65,s:"その日の気持ちと一緒に、"},
+ {t:390.94,s:"なぜ一人でいたのかも書いてもらいます。"},
+ {t:394.58,s:"自分がそうしたかったからか。"},
+ {t:397.25,s:"それとも、そうするしかなかったからか。"},
+ {t:400.89,s:"自分から望んで一人でいたときほど、"},
+ {t:403.90,s:"人は落ちついて、"},
+ {t:405.32,s:"ストレスも軽くなっていました。"},
+ {t:407.98,s:"一人の時間が、"},
+ {t:409.22,s:"ちゃんと休息になっていたんです。"},
+ {t:412.06,s:"四つの実験をつなげると、"},
+ {t:414.16,s:"一つの言葉が浮かんできます。"},
+ {t:416.60,s:"研究者たちが中心に置いたのは、"},
+ {t:419.22,s:"自律性という言葉でした。"},
+ {t:421.32,s:"英語ではオートノミーといいます。"},
+ {t:424.24,s:"ライアンとデシは、"},
+ {t:425.89,s:"この言葉を柱に"},
+ {t:427.17,s:"した自己決定理論という考え方を、"},
+ {t:430.09,s:"四十年ほどかけて育ててきた人たちです。"},
+ {t:433.56,s:"自律性と聞くと、"},
+ {t:435.18,s:"一人で何でもできること、"},
+ {t:437.62,s:"と思うかもしれません。"},
+ {t:439.85,s:"実は、この理論での意味は少し違います。"},
+ {t:443.71,s:"自分のしていることを、"},
+ {t:445.85,s:"自分で納得して選んでいる感じ。"},
+ {t:448.76,s:"やらされているのではなく、"},
+ {t:451.28,s:"自分から向かっている感じ。"},
+ {t:453.80,s:"それを自律性と呼んでいるんです。"},
+ {t:456.91,s:"だから、"},
+ {t:457.74,s:"一人でいることと、自律性は、別の話です。"},
+ {t:461.89,s:"一人でも自律的でいられるし、"},
+ {t:464.79,s:"一人であることを押しつけられることもある。"},
+ {t:470.63,s:"ここで、"},
+ {t:471.46,s:"火曜日と木曜日が、"},
+ {t:473.31,s:"きれいに分かれました。"},
+ {t:475.58,s:"火曜日の一人は、私が選んだものでした。"},
+ {t:479.50,s:"電話を切ったのも、"},
+ {t:481.36,s:"どこにも行かないと決めたのも、私です。"},
+ {t:485.28,s:"木曜日の一人は、"},
+ {t:486.96,s:"選んだものではありませんでした。"},
+ {t:490.31,s:"予定が消えて、"},
+ {t:491.77,s:"そこにできた空白に、"},
+ {t:493.87,s:"私が落ちたんです。"},
+ {t:495.75,s:"部屋も、光も、一人であることも同じ。"},
+ {t:499.61,s:"違っていたのは、そこに入った道筋だけでした。"},
+ {t:504.33,s:"自分で入ったのか、落ちたのか。"},
+ {t:507.55,s:"一人の時間が心地よいか、つらいか。"},
+ {t:510.80,s:"それを分けていたのは、"},
+ {t:512.91,s:"一人であることそのものではなく、"},
+ {t:515.97,s:"それを自分で選んだかどうかだった、"},
+ {t:519.22,s:"ということです。"},
+ {t:520.75,s:"ライアンは、"},
+ {t:521.86,s:"この結果について、"},
+ {t:523.53,s:"自分から進んで一人になるとき、"},
+ {t:526.30,s:"得るものは大きい、"},
+ {t:527.97,s:"それは昔からの知恵でもあった、"},
+ {t:530.75,s:"と話しています。"},
+ {t:532.23,s:"一人が好きな性格の人だけの話では、"},
+ {t:535.54,s:"と思われるかもしれません。"},
+ {t:538.07,s:"私も最初はそう思いました。"},
+ {t:540.60,s:"ところが、"},
+ {t:541.68,s:"グエンさんたちは二千二十二年に、"},
+ {t:545.13,s:"別の学生たち四百五十人ほどの日記を調べて、"},
+ {t:549.66,s:"こう報告しています。"},
+ {t:551.82,s:"一人の時間を楽しめるかどうかは、"},
+ {t:554.57,s:"内向的な性格かどうかとは、"},
+ {t:556.80,s:"はっきりしたつながりが見られなかった。"},
+ {t:560.06,s:"つながっていたのは、"},
+ {t:561.78,s:"ふだん自律的に暮らして"},
+ {t:563.67,s:"いるかどうかのほうでした。"},
+ {t:565.90,s:"内向きか外向きか、"},
+ {t:567.62,s:"という生まれつきの向きよりも、"},
+ {t:570.49,s:"自分で選んで暮らしているかどうか。"},
+ {t:573.74,s:"そちらのほうに近いところにある、"},
+ {t:576.80,s:"ということです。"},
+ {t:579.81,s:"ただ、"},
+ {t:580.39,s:"ここで正直に申し上げて"},
+ {t:582.53,s:"おかなければならないことがあります。"},
+ {t:586.03,s:"この研究の、限界のところです。"},
+ {t:588.94,s:"四つの実験で調べられたのは、"},
+ {t:591.82,s:"主に大学生でした。"},
+ {t:593.68,s:"一人でいた時間も、実験室では十五分です。"},
+ {t:597.80,s:"二週間の記録にしても、"},
+ {t:600.06,s:"十五分ずつの一人の時間でした。"},
+ {t:603.15,s:"何年も一人で暮らしている人や、"},
+ {t:605.84,s:"年を重ねてから一人になった人に、"},
+ {t:608.70,s:"この結果がそのまま当てはまるかどうか。"},
+ {t:612.11,s:"それは、この研究からはわかりません。"},
+ {t:615.32,s:"長い一人暮らしには、体のことも、"},
+ {t:618.33,s:"お金のことも、"},
+ {t:619.65,s:"思い出のことも絡んできます。"},
+ {t:622.29,s:"十五分の実験で、"},
+ {t:623.79,s:"そこまで言えるとは、"},
+ {t:625.68,s:"私は思っていません。"},
+ {t:627.57,s:"それでも、"},
+ {t:628.48,s:"自分で選んだかどうか、"},
+ {t:630.48,s:"という問いそのものは、"},
+ {t:632.48,s:"年齢に関係なく、"},
+ {t:633.94,s:"自分に向けてみることができる。"},
+ {t:636.67,s:"私なりに言えば、"},
+ {t:638.12,s:"そこまでは言っていいと思っています。"},
+ {t:641.40,s:"あの木曜日の、午前十時の部屋に戻ります。"},
+ {t:645.33,s:"アイロンを置いたまま、"},
+ {t:647.50,s:"私は畳の上の四角い影を見ていました。"},
+ {t:651.04,s:"予定は、もう戻ってきません。"},
+ {t:653.89,s:"友人の用事がなくなるわけでもない。"},
+ {t:657.35,s:"空いた一日そのものは、"},
+ {t:659.59,s:"私には変えられないものでした。"},
+ {t:662.65,s:"変えられるとしたら、"},
+ {t:664.47,s:"そこへの入り方のほうです。"},
+ {t:666.84,s:"落ちてしまった空白を、"},
+ {t:668.84,s:"あらためて自分で選び直すことはできるのか。"},
+ {t:672.67,s:"私はアイロン台を片づけて、棚から一冊、"},
+ {t:676.18,s:"ずっと読みかけにしていた本を出してきました。"},
+ {t:680.25,s:"それから、やかんを火にかけました。"},
+ {t:683.39,s:"空いた時間を埋めるためではありません。"},
+ {t:687.01,s:"今日の午前は、これをすると決めた。実は、"},
+ {t:690.81,s:"その決めるというところが欲しかったんです。"},
+ {t:694.81,s:"お湯がわくまでのあいだに、"},
+ {t:697.55,s:"友人へのはがきを一枚書きました。また今度、"},
+ {t:701.99,s:"の今度を、"},
+ {t:703.04,s:"こちらから一つ提案する文面です。"},
+ {t:706.42,s:"正直なところ、"},
+ {t:707.64,s:"それで部屋がすっかり軽くなったわけで"},
+ {t:710.77,s:"はありません。"},
+ {t:711.99,s:"火曜日と同じになった、とは言えません。"},
+ {t:715.30,s:"ですが、"},
+ {t:716.14,s:"のしかかってくる感じは、"},
+ {t:718.66,s:"少しずつ引いていきました。"},
+ {t:721.39,s:"窓の影が畳の上を動いていくのを、"},
+ {t:724.74,s:"私は落ちついて見ていられたんです。"},
+ {t:728.31,s:"これが研究の結果と同じことなのかどうか、"},
+ {t:732.17,s:"確かめるすべは私にはありません。"},
+ {t:735.25,s:"私一人の、ある朝のことです。"},
+ {t:737.95,s:"ただ、"},
+ {t:738.53,s:"つらさが何週間も抜けないようなときは、"},
+ {t:742.20,s:"工夫だけで何とかする話ではありません。"},
+ {t:745.88,s:"身近な人や、お医者さんに話していいことです。"},
+ {t:751.60,s:"一人の時間は、"},
+ {t:752.96,s:"それだけでは、"},
+ {t:754.33,s:"心地よくもつらくもありません。"},
+ {t:757.25,s:"一人でいると、気持ちは静まっていく。"},
+ {t:760.75,s:"そこまでは、"},
+ {t:761.92,s:"四つの実験で繰り返し見られたことです。"},
+ {t:765.62,s:"その静けさが休息になるか、空っぽになるか。"},
+ {t:769.74,s:"それを分けるものの一つが、"},
+ {t:772.29,s:"そこに自分で入ったかどうか、なんです。"},
+ {t:776.02,s:"空いた時間そのものは、"},
+ {t:778.36,s:"選べないことがあります。ですが、"},
+ {t:781.77,s:"そこへの入り方は、"},
+ {t:783.69,s:"あとからでも選び直せる。"},
+ {t:786.25,s:"あの木曜日の朝、"},
+ {t:787.95,s:"私が確かめられたのは、"},
+ {t:790.30,s:"そこまででした。"},
+ {t:793.96,s:"畳の上の影は、"},
+ {t:795.54,s:"火曜日と同じ角度で、"},
+ {t:797.80,s:"同じ四角を描いていました。"},
+ {t:800.75,s:"やかんが鳴りました。"},
+ {t:802.79,s:"私はお茶を一杯いれて、"},
+ {t:805.03,s:"読みかけの本の続きに戻りました。"}
+];
+
+/* màn hình điện thoại trong phòng: luôn giữ map (tránh đổi define shader), bật/tắt bằng màu */
+var PHONE_R_SCR = new THREE.MeshBasicMaterial({map:TX_POWER, color:new THREE.Color(0,0,0)});
+PHONE_R.userData.scr.material = PHONE_R_SCR;
+PHONE_L.userData.scr.material = new THREE.MeshBasicMaterial({color:0x050608});
+
+/* =========================================================================
+ * CAMERA
+ * ========================================================================= */
+var _look = new THREE.Vector3();
+function setCam(c, A){
+  c.position.set(A[0],A[1],A[2]);
+  if(A[7] === 'down') c.up.set(0,0,-1); else c.up.set(0,1,0);
+  _look.set(A[3],A[4],A[5]); c.lookAt(_look);
+  if(c.fov !== A[6]){ c.fov = A[6]; c.updateProjectionMatrix(); }
+}
+function cm(A,B,k){ var q = []; for(var i=0;i<7;i++) q.push(A[i]+(B[i]-A[i])*k); if(A[7]) q.push(A[7]); return q; }
+function drift(A, t, amt){ var q = A.slice(); q[0] += Math.sin(t*0.21)*0.012*amt; q[1] += Math.sin(t*0.17+1.0)*0.007*amt; q[2] += Math.cos(t*0.19)*0.010*amt; return q; }
+function setFar(c, f){ if(c.far !== f){ c.far = f; c.updateProjectionMatrix(); } }
+
+var RC = {
+  WIDE:   [-1.62,1.30,1.22,  0.55,0.52,-0.30, 52],
+  WIDE_B: [-1.52,1.25,1.12,  0.62,0.48,-0.34, 50],
+  PATCH_A:[-0.40,1.62,0.70,  0.30,0.00,-0.45, 42],
+  PATCH_B:[-0.12,1.60,0.80,  0.48,0.00,-0.50, 42],
+  PHONE:  [-0.66,0.60,0.00, -0.84,0.335,0.16, 30],
+  PHONE2: [-0.45,0.86,-0.22, -0.95,0.33,0.30, 42],
+  STACK:  [-0.02,0.80,1.30, -0.50,0.10,0.80, 42],
+  STACK2: [-0.95,0.95,1.18,  0.55,0.45,-0.45, 46],
+  CORNER: [ 1.60,2.12,1.20, -0.40,0.35,-0.35, 52],
+  HEAVY:  [ 1.25,1.52,0.95, -0.30,0.22,-0.15, 44],
+  CLOCKC: [ 0.45,1.64,-0.40,  0.45,1.64,-1.35, 30],
+  IRONC:  [ 0.28,0.60,1.18, -0.12,0.33,0.64, 34],
+  CALC:   [-0.58,1.30,0.66, -0.58,1.25,1.35, 34],
+  CALIN:  [-0.605,1.217,1.25, -0.605,1.217,1.34, 34],
+  TOP:    [ 0.00,6.40,0.00,  0.00,0.00,0.00, 34, 'down'],
+  HALL:   [-2.92,1.22,0.32, -1.80,1.00,0.12, 46],
+  FALL0:  [ 0.62,2.30,-0.25,  0.62,0.00,-0.30, 62, 'down'],
+  FALL1:  [ 0.62,1.72,-0.25,  0.62,0.00,-0.30, 62, 'down'],
+  WINC:   [ 0.45,1.12,0.40,  1.80,1.32,0.05, 46],
+  DOORIN: [ 0.95,1.22,0.25, -1.80,0.95,0.05, 46],
+  BOARDM: [-0.78,0.98,1.22,  0.15,0.25,0.55, 42],
+  FROMWIN:[ 1.55,1.30,1.10, -1.00,0.60,-0.25, 50],
+  SHELFC: [-0.80,0.98,-0.30, -1.10,0.62,-1.20, 40],
+  TABLE:  [-0.52,0.78,0.92, -0.92,0.33,0.30, 38],
+  PCARD:  [-0.63,0.64,0.55, -0.74,0.33,0.40, 30],
+  LOWPATCH:[-0.95,0.82,0.95, 0.40,0.00,-0.45, 44]
+};
+var LC = {
+  LW0:  [LX,1.45,6.2,  LX,0.90,0.0, 38],
+  LW1:  [LX,1.25,3.8,  LX,0.75,0.0, 40],
+  PJ:   [LX+0.76,1.02,0.42, LX+0.745,0.56,0.08, 34],
+  PJ2:  [LX+0.62,0.82,0.36, LX+0.745,0.56,0.05, 30],
+  PQ:   [LX+1.03,0.98,0.42, LX+1.02,0.56,0.09, 36],
+  TQ:   [LX-1.30,1.25,2.30, LX+0.25,0.55,0.0, 42],
+  ZONES:[LX,1.28,5.0,  LX,1.18,-0.2, 42],
+  ZONES2:[LX+0.9,1.30,4.6, LX,1.10,-0.2, 42],
+  PANA: [LX,1.2,3.4,  LX,0.70,0.0, 40],
+  PANB: [LX+2.6,1.2,3.9, LX+2.9,0.80,0.5, 40],
+  BOOKC:[LX-0.70,1.05,1.35, LX+0.05,0.50,0.10, 36],
+  LOW:  [LX+1.35,0.70,2.60, LX,1.00,-0.2, 44],
+  HIGH: [LX-2.2,2.6,3.2, LX,0.6,0.0, 40]
+};
+
+/* =========================================================================
+ * TRẠNG THÁI KHUNG — reset mỗi frame rồi shot ghi đè (hàm thuần của t)
+ * ========================================================================= */
+var S;
+function resetS(){
+  S = { set:'room', w:1, split:-1, wR:0, camR:null, satX:0, satXR:0, line:0,
+    phoneR:0, phoneVis:1, shirts:3, steam:0, strike:0, voidK:0, fus:0, boardAway:0, ironVis:1, bookOut:0, bookT:0,
+    pc:-1, teacup:0, shift:0, top:0, hall:0,
+    orbs:[0,0,0,0], lbl:0, partner:0, single:0, thA:0, thB:0, thI:0, lclk:0, tray:0, bookC:0, qhl:[0,0,0], chairB:0,
+    labKey:1.05, labHemi:0.42, labSat:0.92,
+    needle:0, marks:0, bars:0, axT:0, axTue:0, axThu:0, scat:0, dotS:1, lxB:0,
+    flame:0, steamK:0, steamV:1, kwarm:0, phOn:1, exp:1.0 };
+}
+
+/* ---- shot: a = mốc bắt đầu (giây cảnh), cut = cắt cứng vào (không nhúng tối) ---- */
+var SHOTS = [
+ /* ============ 第1章 入口 ============ */
+ {k:'S01', a:0.00, f:function(t,u){ S.w = 1; S.steam = 1; setCam(camera, cm(RC.WIDE, RC.WIDE_B, ease(u/9.6))); }},
+ {k:'S02', a:9.64, f:function(t,u){ S.w = 1; S.steam = 1; setCam(camera, cm(RC.PATCH_A, RC.PATCH_B, ease(u/9.1))); }},
+ {k:'S03', a:18.71, f:function(t,u){ S.w = 1; S.steam = 1;
+    S.phoneR = 1 - ramp(t, 21.9, 22.9);
+    setCam(camera, cm(RC.PHONE, RC.PHONE2, ramp(t, 24.4, 30.4))); }},
+ {k:'S04', a:30.82, f:function(t,u){ S.w = 1; S.steam = 1;
+    S.shirts = 3 + ramp(t,31.2,31.9) + ramp(t,33.9,34.6) + ramp(t,36.6,37.3);
+    setCam(camera, cm(drift(RC.STACK, t, 1), RC.STACK2, ramp(t, 38.8, 42.6))); }},
+ {k:'S05', a:44.79, f:function(t,u){ S.w = 0; setCam(camera, RC.WIDE); }},
+ {k:'S06', a:53.23, f:function(t,u){ S.w = 0; setCam(camera, RC.PATCH_A); }},
+ {k:'S06b', a:58.50, f:function(t,u){ S.w = 0; setCam(camera, drift(RC.CORNER, t, 0.6)); }},
+ {k:'S07', a:64.08, f:function(t,u){ S.set = 'phset'; S.phOn = 1;
+    setCam(camera, cm([PX+0.16,0.40,0.42, PX,0.0,0.0, 34],[PX+0.12,0.32,0.33, PX,0.0,0.0, 32], ease(u/4.9))); }},
+ {k:'S08', a:69.00, f:function(t,u){ S.w = 0; S.strike = ramp(t, 74.2, 75.6);
+    setCam(camera, cm(RC.CALC, [-0.59,1.28,0.84, -0.59,1.24,1.35, 34], ease(u/16))); }},
+ {k:'S09', a:85.45, f:function(t,u){ S.w = 0; S.satX = 0.10*ramp(t,92.7,96.5);
+    setCam(camera, cm(RC.CORNER, RC.HEAVY, ramp(t, 86.0, 97.5))); }},
+ {k:'S10', a:97.89, f:function(t,u){ S.w = 1; S.wR = 0; S.split = 0.5; S.line = 1; setCam(camera, RC.WIDE); }},
+ {k:'S11', a:110.89, f:function(t,u){ S.w = 0; setCam(camera, cm(RC.CLOCKC, [0.45,1.64,-0.55, 0.45,1.64,-1.35, 30], ease(u/4.1))); }},
+ {k:'S11b', a:115.00, f:function(t,u){ S.w = 0; setCam(camera, cm(RC.IRONC, [0.20,0.52,1.05, -0.12,0.33,0.64, 32], ease(u/4.8))); }},
+ {k:'S12', a:119.78, f:function(t,u){ S.set = 'lab'; S.labKey = 1.05; setCam(camera, cm(LC.LW0, LC.LW1, ease(u/9.2))); }},
+ /* ============ 第2章 十五分の椅子 ============ */
+ {k:'S13', a:128.98, f:function(t,u){ S.w = 1; S.wR = 0; S.split = 0.5; S.line = 1; S.top = 1;
+    var q = RC.TOP.slice(); q[1] = 6.4 - 0.5*ease(u/22); setCam(camera, q); }},
+ {k:'S14', a:151.87, f:function(t,u){ S.set = 'lab'; setCam(camera, drift(LC.PJ, t, 0.4)); }},
+ {k:'S15', a:171.14, f:function(t,u){ S.set = 'lab'; setCam(camera, cm(LC.PJ2, [LX+0.66,0.76,0.30, LX+0.745,0.56,0.02, 28], ease(u/13))); }},
+ {k:'S16', a:184.47, f:function(t,u){ S.set = 'lab'; S.lclkVis = 1; S.lclk = ramp(t, 192.4, 195.0);
+    setCam(camera, cm(LC.LW0, [LX+0.3,1.35,4.9, LX+0.3,1.2,-0.6, 40], ease(u/10.8))); }},
+ {k:'S17', a:195.32, f:function(t,u){ S.set = 'lab'; S.tray = ramp(t, 198.2, 200.6); S.lclk = 1; S.lclkVis = 1;
+    setCam(camera, drift(LC.TQ, t, 0.8)); }},
+ {k:'S18', a:203.50, f:function(t,u){ S.set = 'lab'; S.chairB = 1; S.partner = ramp(t, 206.0, 208.6);
+    setCam(camera, cm(LC.PANA, LC.PANB, ramp(t, 204.0, 210.8))); }},
+ {k:'S19', a:211.99, f:function(t,u){ S.set = 'lab';
+    S.qhl = [bump(t,218.1,219.9), bump(t,219.6,221.4), bump(t,221.1,223.2)];
+    setCam(camera, drift(LC.PQ, t, 0.3)); }},
+ {k:'S20', a:224.93, f:function(t,u){ S.set = 'lab'; S.lbl = ramp(t, 225.2, 226.4); S.labKey = 0.55; S.labHemi = 0.28;
+    var strong = 1 - 0.35*ramp(t, 227.6, 231.0);
+    var tr = strong - 0.35*ramp(t, 232.8, 236.5);
+    var tl = strong - 0.35*ramp(t, 241.8, 245.8);
+    S.orbs = [tl, tr, 0.55 + 0.15*ramp(t,229,233), 0.55];
+    setCam(camera, drift(LC.ZONES, t, 0.6)); }},
+ {k:'S21', a:248.27, f:function(t,u){ S.set = 'gauge';
+    var amp = 0.80*(t < 249.7 ? 1 : (0.10 + 0.90*Math.exp(-(t-249.7)/2.6)));
+    S.needle = amp*(0.78*Math.sin(6.2831853*0.36*(t-248.27)+0.5) + 0.22*Math.sin(6.2831853*0.93*(t-248.27)+1.3));
+    setCam(camera, cm([GX+0.10,1.22,1.70, GX,1.20,0, 36],[GX+0.03,1.15,1.20, GX,1.12,0, 36], ease(u/12.5))); }},
+ {k:'S22', a:260.76, f:function(t,u){ S.set = 'lab'; S.bookC = 1; setCam(camera, cm(LC.BOOKC, [LX-0.55,0.92,1.10, LX+0.05,0.50,0.10, 34], ease(u/7.7))); }},
+ {k:'S22b', a:268.44, f:function(t,u){ S.set = 'lab'; S.bookC = 1; S.lbl = 1; S.labKey = 0.55; S.labHemi = 0.28;
+    var k = ramp(t, 270.0, 275.5);
+    S.orbs = [1-0.65*k, 1-0.65*k, 0.55+0.15*k, 0.55];
+    setCam(camera, drift(LC.ZONES2, t, 0.6)); }},
+ {k:'S23', a:276.74, f:function(t,u){ S.set = 'lab'; S.bookC = 0; S.labKey = 0.6; S.labHemi = 0.3; S.lbl = 0.6;
+    S.orbs = [0.35, 0.35, 0.7, 0.55];
+    setCam(camera, cm(LC.HIGH, [LX-1.7,2.2,3.6, LX,0.7,0.0, 40], ease(u/10))); }},
+ {k:'S24', a:286.72, f:function(t,u){ S.w = 1; S.wR = 0; S.line = 1;
+    S.split = 0.5 + 0.28*ramp(t,296.6,298.4) - 0.56*ramp(t,301.0,302.8);
+    S.satXR = 0.28*ramp(t, 302.2, 306.5);
+    setCam(camera, drift(RC.BOARDM, t, 0.5)); }},
+ {k:'S25', a:307.52, f:function(t,u){ S.w = 1; S.wR = 0; S.line = 1; S.split = 0.5; S.satXR = 0.22;
+    setCam(camera, drift(RC.FROMWIN, t, 0.5)); }},
+ {k:'S26', a:318.62, f:function(t,u){ S.set = 'lab'; S.labKey = 0.3; S.labHemi = 0.16; S.single = 0.45*ramp(t,319.5,322);
+    setCam(camera, cm([LX,1.3,5.6, LX,0.9,0, 38], [LX,1.2,4.4, LX,0.9,0, 38], ease(u/8.6))); }},
+ /* ============ 第3章 選んだ一人、落ちた一人 ============ */
+ {k:'S27', a:327.25, f:function(t,u){ S.set = 'lab'; S.labKey = 0.55; S.labHemi = 0.28; S.thI = 1;
+    S.thA = ramp(t, 339.4, 342.8); S.thB = ramp(t, 346.0, 349.5);
+    setCam(camera, cm([LX-0.6,1.3,4.2, LX,1.5,-0.3, 42],[LX+0.2,1.4,4.0, LX,1.6,-0.3, 42], ease(u/21.6))); }},
+ {k:'S28', a:348.88, f:function(t,u){ S.set = 'lab'; S.lbl = 1; S.labKey = 0.55; S.labHemi = 0.28; S.thI = 0.45; S.thA = 1; S.thB = 1;
+    S.orbs = [1.0, 1.0 - 0.62*ramp(t,356.2,359.4), 0.55 + 0.38*ramp(t,360.4,363.0), 0.52];
+    setCam(camera, drift(LC.ZONES, t, 0.6)); }},
+ {k:'S29', a:371.99, f:function(t,u){ S.set = 'desk';
+    S.marks = 14*lin(t, 386.4, 397.6); S.bars = ramp(t, 399.2, 404.0);
+    var A = [DX-0.02,1.52,0.70, DX-0.02,0.77,-0.02, 38], B = [DX+0.05,1.30,0.52, DX+0.03,0.77,-0.02, 38], C = [DX+0.30,1.12,0.52, DX+0.16,0.80,0.04, 36];
+    setCam(camera, t < 398.5 ? cm(A, B, ramp(t, 373, 397)) : cm(B, C, ramp(t, 398.5, 402.5))); }},
+ {k:'S30', a:410.06, f:function(t,u){ S.set = 'lab'; S.labKey = 0.25; S.labHemi = 0.14; S.single = 0.5 + 0.5*ramp(t, 416.6, 418.0);
+    setCam(camera, cm([LX-1.2,1.4,3.6, LX,1.2,-0.2, 38],[LX+1.2,1.4,3.6, LX,1.2,-0.2, 38], ease(u/21.5))); }},
+ {k:'S31', a:431.56, f:function(t,u){ S.set = 'lab'; S.labKey = 0.45; S.labHemi = 0.22; S.single = 0.7;
+    setCam(camera, cm(LC.LOW, [LX+0.95,0.62,2.2, LX,1.0,-0.2, 44], ease(u/23.3))); }},
+ {k:'S32', a:454.91, f:function(t,u){ S.set = 'axes'; S.axT = ramp(t, 455.2, 457.0);
+    S.axTue = ramp(t, 459.6, 460.8); S.axThu = ramp(t, 462.6, 463.8);
+    setCam(camera, drift([AX+0.05,-0.12,3.8, AX+0.05,-0.12,0, 40], t, 0.4)); }},
+ {k:'S33', a:468.63, f:function(t,u){ S.w = 1; S.hall = 1; S.fus = ramp(t, 473.6, 477.4);
+    setCam(camera, cm(RC.HALL, [-2.62,1.20,0.30, -1.20,0.90,0.10, 46], ramp(t, 477.0, 483.0))); }},
+ {k:'S34', a:483.28, f:function(t,u){ S.w = 0; S.strike = 1; S.voidK = ramp(t, 488.3, 489.9);
+    setCam(camera, cm(cm(RC.CALC, [-0.59,1.28,0.84, -0.59,1.24,1.35, 34], ease(u/5)), RC.CALIN, ramp(t, 489.9, 492.2))); }},
+ {k:'S34b', a:492.20, cut:true, f:function(t,u){ S.w = 0; setCam(camera, cm(RC.FALL0, RC.FALL1, ease(u/1.6))); }},
+ {k:'S35', a:493.75, f:function(t,u){ S.w = 1; S.wR = 0; S.split = 0.5; S.line = 1; S.fus = 1; S.hall = 1;
+    setCam(camera, [-2.62,1.20,0.30+0.15, -1.20,0.90,0.10+0.15, 46]);
+    S.camR = cm(RC.FALL1, [0.62,1.60,-0.25, 0.62,0.0,-0.30, 62], ease(u/11.8)); }},
+ {k:'S36', a:505.55, f:function(t,u){ S.w = 0.5; setCam(camera, cm(RC.WIDE, RC.WIDE_B, ease(u/13.2))); }},
+ {k:'S37', a:518.75, f:function(t,u){ S.w = 1; setCam(camera, cm(RC.WINC, [0.62,1.10,0.30, 1.80,1.32,0.05, 44], ease(u/11.5))); }},
+ {k:'S38', a:530.23, f:function(t,u){ S.set = 'scat'; S.dotS = ramp(t, 530.6, 533.0);
+    S.scat = lin(t, 558.1, 563.6); S.lxB = ramp(t, 558.1, 559.6);
+    setCam(camera, drift([SX+0.05,0.25,5.6, SX+0.05,0.25,0, 40], t, 0.5)); }},
+ {k:'S39', a:577.81, f:function(t,u){ S.set = 'lab'; S.labKey = 0.8; S.labHemi = 0.35; S.labSat = 0.55;
+    setCam(camera, cm([LX+0.9,1.00,0.95, LX+0.745,0.56,0.12, 40],[LX+0.55,1.25,1.8, LX+0.5,0.6,0.0, 40], ramp(t, 579, 598))); }},
+ {k:'S40', a:601.15, f:function(t,u){ S.set = 'days';
+    var A = [YX-0.03,0.075,0.19, YX-0.095,0.0,-0.01, 40], B = [YX+0.55,0.55,1.05, YX-0.05,0.0,-1.2, 40], C = [YX+1.3,1.55,2.4, YX,0.0,-22.0, 40];
+    setCam(camera, t < 606.7 ? A : (t < 614 ? cm(A, B, ramp(t,606.7,613.2)) : cm(B, C, ramp(t, 614, 624.5)))); }},
+ {k:'S41', a:625.57, f:function(t,u){ S.set = 'lab'; S.labKey = 0.28; S.labHemi = 0.15; S.single = 0.8;
+    setCam(camera, cm([LX-0.9,0.95,2.2, LX,1.1,-0.1, 40],[LX-0.6,0.95,1.8, LX,1.2,-0.1, 40], ease(u/13.8))); }},
+ /* ============ 第4章 帰り道 ============ */
+ {k:'S42', a:639.40, f:function(t,u){ S.w = 0; setCam(camera, drift(RC.LOWPATCH, t, 0.5)); }},
+ {k:'S43', a:649.04, f:function(t,u){ S.w = 0; S.strike = 1; setCam(camera, cm(RC.CALC, [-0.59,1.28,0.80, -0.59,1.24,1.35, 34], ease(u/11.6))); }},
+ {k:'S44', a:660.65, f:function(t,u){ S.w = 0; setCam(camera, cm(RC.DOORIN, [0.60,1.20,0.20, -1.80,0.95,0.05, 44], ease(u/10))); }},
+ {k:'S45', a:670.67, f:function(t,u){ S.w = 0.02; S.ironVis = 0; S.boardAway = ramp(t, 671.0, 673.8);
+    setCam(camera, RC.WIDE_B); }},
+ {k:'S45b', a:674.20, f:function(t,u){ S.w = 0.04; S.ironVis = 0; S.boardAway = 1; S.bookOut = ramp(t, 674.6, 677.6);
+    setCam(camera, drift(RC.SHELFC, t, 0.4)); }},
+ {k:'S46', a:678.30, f:function(t,u){ S.set = 'kitch'; S.flame = ramp(t, 678.7, 679.2); S.kwarm = 0.05;
+    setCam(camera, cm([KX+0.45,1.25,0.75, KX+0.12,1.0,-0.1, 38],[KX+0.35,1.18,0.62, KX+0.12,1.0,-0.1, 36], ease(u/3.1))); }},
+ {k:'S47', a:681.39, f:function(t,u){ S.w = 0.06 + 0.06*lin(t,681.4,692.8); S.ironVis = 0; S.boardAway = 1; S.bookOut = 2; S.bookT = 1;
+    setCam(camera, cm(RC.TABLE, [-0.60,0.70,0.80, -0.95,0.33,0.34, 36], ease(u/11.4))); }},
+ {k:'S48', a:692.81, f:function(t,u){ S.w = 0.12 + 0.06*lin(t,692.8,704.4); S.ironVis = 0; S.boardAway = 1; S.bookOut = 2; S.bookT = 1;
+    S.pc = lin(t, 695.5, 703.6);
+    setCam(camera, drift(RC.PCARD, t, 0.25)); }},
+ {k:'S49', a:704.42, f:function(t,u){ S.w = 0.18; S.ironVis = 0; S.boardAway = 1; S.bookOut = 2; S.bookT = 1; S.pc = 1;
+    setCam(camera, cm(RC.WIDE, RC.WIDE_B, ease(u/8.9))); }},
+ {k:'S50', a:713.30, f:function(t,u){ S.w = 0.18 + 0.34*ramp(t, 714.5, 724.5); S.ironVis = 0; S.boardAway = 1; S.bookOut = 2; S.bookT = 1; S.pc = 1;
+    S.shift = 0.4*ramp(t, 716.0, 726.0);
+    setCam(camera, drift(RC.LOWPATCH, t, 0.4)); }},
+ {k:'S51', a:726.31, f:function(t,u){ S.w = 0.52; S.ironVis = 0; S.boardAway = 1; S.bookOut = 2; S.bookT = 1; S.pc = 1;
+    setCam(camera, cm(RC.WINC, [0.62,1.10,0.30, 1.80,1.32,0.05, 44], ease(u/9.6))); }},
+ {k:'S52', a:735.95, f:function(t,u){ S.w = 0.52; S.ironVis = 0; S.boardAway = 1; S.bookOut = 2; S.bookT = 1; S.pc = 1;
+    setCam(camera, drift(RC.FROMWIN, t, 0.5)); }},
+ {k:'S53', a:749.60, f:function(t,u){ S.set = 'gauge';
+    var amp = 0.34*(0.12 + 0.88*Math.exp(-(t-751.0)/3.2)); if(t < 751) amp = 0.34;
+    S.needle = amp*(0.78*Math.sin(6.2831853*0.30*(t-749.6)+0.2) + 0.22*Math.sin(6.2831853*0.8*(t-749.6)+1.0));
+    setCam(camera, cm([GX-0.05,1.20,1.30, GX,1.18,0, 36],[GX-0.02,1.22,1.55, GX,1.20,0, 36], ease(u/14))); }},
+ {k:'S54', a:763.62, f:function(t,u){ S.w = 1; S.wR = 0; S.split = 0.5; S.line = 1; S.satXR = 0.2; S.ironVis = 0; S.boardAway = 1; S.bookOut = 2; S.bookT = 1; S.pc = 1;
+    setCam(camera, drift(RC.CORNER, t, 0.5)); }},
+ {k:'S55', a:774.02, f:function(t,u){ S.w = 0.55; S.hall = 1; S.fus = ramp(t, 779.8, 783.6); S.ironVis = 0; S.boardAway = 1; S.bookOut = 2; S.bookT = 1; S.pc = 1;
+    setCam(camera, cm(RC.HALL, [-2.55,1.18,0.30, -1.10,0.85,0.10, 46], ramp(t, 783.0, 791.5))); }},
+ {k:'S56', a:791.96, f:function(t,u){ S.w = 0.55; S.ironVis = 0; S.boardAway = 1; S.bookOut = 2; S.bookT = 1; S.pc = 1;
+    setCam(camera, cm(RC.PATCH_A, RC.PATCH_B, ease(u/6.8)*0.4)); }},
+ {k:'S57', a:798.75, f:function(t,u){ S.set = 'kitch'; S.flame = 1; S.steamK = 1; S.steamV = 1.8; S.kwarm = 0.5;
+    setCam(camera, cm([KX+0.30,1.20,0.50, KX+0.02,1.08,-0.05, 34],[KX+0.26,1.18,0.44, KX+0.02,1.10,-0.05, 34], ease(u/2))); }},
+ {k:'S57b', a:800.80, f:function(t,u){ S.w = 0.55; S.ironVis = 0; S.boardAway = 1; S.bookOut = 2; S.bookT = 1; S.pc = 1; S.teacup = 1; S.phoneVis = 0;
+    setCam(camera, cm(RC.TABLE, [-0.60,0.66,0.76, -0.90,0.34,0.26, 36], ease(u/5.5))); }}
+];
+var DIP = 0.30;   /* nhúng tối ngắn giữa hai shot (giây mỗi phía) */
+function shotIndex(t){ for(var i=SHOTS.length-1;i>=0;i--){ if(t >= SHOTS[i].a) return i; } return 0; }
+
+/* =========================================================================
+ * THẺ CHỮ ĐỘNG (nguồn, con số, khái niệm) — top 14%, không đè nhãn chương/phụ đề
+ * ========================================================================= */
+var CARDS = [
+  {a:151.9, b:161.3, k1:'ロチェスター大学（アメリカ）', k2:'トゥイ・ヴィ・グエン　<span class="lt">Thuy-vy T. Nguyen</span>'},
+  {a:161.6, b:168.8, k1:'リチャード・ライアン　／　エドワード・デシ', k2:'<span class="lt">Richard M. Ryan　/　Edward L. Deci</span>'},
+  {a:169.0, b:171.0, k1:'四つの実験', k2:''},
+  {a:171.2, b:178.8, k1:'2018年　社会心理学の専門誌', k2:'<span class="lt">Personality and Social Psychology Bulletin 44(1): 92–106</span>'},
+  {a:179.0, b:184.2, k1:'気持ちを整える方法としての一人の時間', k2:'<span class="lt">Solitude as an Approach to Affective Self-Regulation</span>'},
+  {a:184.6, b:192.2, k1:'実験１', k2:''},
+  {a:192.4, b:195.1, k1:'一人で、十五分', k2:''},
+  {a:195.4, b:203.3, k1:'携帯電話なし・会話なし・本なし', k2:''},
+  {a:203.6, b:211.8, k1:'比べる群：人と世間話をする十五分', k2:''},
+  {a:212.1, b:224.7, k1:'十五分の前と後で、気持ちを答える', k2:''},
+  {a:227.7, b:241.5, k1:'一人の群だけ、強い気持ちが静まった', k2:''},
+  {a:241.8, b:248.0, k1:'強いよい気持ちも、下がった', k2:''},
+  {a:255.1, b:260.5, k1:'気持ちを静める働き', k2:'<span class="lt">deactivation effect</span>'},
+  {a:260.9, b:268.2, k1:'実験２　本を読む／何もしない', k2:''},
+  {a:268.5, b:276.5, k1:'結果は、同じ', k2:''},
+  {a:276.8, b:281.2, k1:'何をするか、ではなく', k2:''},
+  {a:281.4, b:286.5, k1:'一人でいること、そのもの', k2:''},
+  {a:318.7, b:327.0, k1:'その差は、どこから？', k2:''},
+  {a:333.2, b:338.0, k1:'実験３　十五分に、何を考えるか', k2:''},
+  {a:338.2, b:343.2, k1:'楽しいことを考えて、と頼む', k2:''},
+  {a:343.5, b:348.7, k1:'何を考えるか、自分で選ぶ', k2:''},
+  {a:349.0, b:356.0, k1:'強いよい気持ちが、下がらなかった', k2:''},
+  {a:356.3, b:366.4, k1:'不安・怒りは静まる　落ちつきは得られる', k2:''},
+  {a:366.7, b:371.8, k1:'寂しさ・悲しさも、増えない', k2:''},
+  {a:372.1, b:385.6, k1:'調査４　実験室の外で', k2:'百五十人あまり・二週間・毎日十五分（分析対象157人）'},
+  {a:386.0, b:398.6, k1:'なぜ一人でいたのか', k2:'そうしたかった　／　そうするしかなかった'},
+  {a:399.0, b:409.8, k1:'望んで一人でいた日ほど', k2:'落ちつき、ストレスが軽い'},
+  {a:417.2, b:419.2, cls:'big mid', k1:'自律性', k2:''},
+  {a:419.3, b:422.0, cls:'big mid', k1:'自律性', k2:'<span class="lt">autonomy</span>（オートノミー）'},
+  {a:422.2, b:431.3, cls:'mid', k1:'自己決定理論', k2:'ライアン & デシ　—　四十年ほどかけて育ててきた考え方'},
+  {a:433.3, b:441.5, k1:'<span class="dim">自律性 ≠</span>　一人で何でもできること', k2:''},
+  {a:441.8, b:446.6, k1:'自分で納得して、選んでいる感じ', k2:''},
+  {a:446.9, b:454.7, k1:'やらされている、ではなく', k2:'自分から向かっている'},
+  {a:473.7, b:483.0, k1:'火曜日の一人は、私が選んだ', k2:''},
+  {a:483.4, b:491.6, k1:'木曜日の一人は、選んでいない', k2:'予定が消えて、できた空白に'},
+  {a:505.7, b:513.8, k1:'分けていたのは、一人であることではなく', k2:''},
+  {a:514.0, b:518.5, k1:'自分で選んだかどうか', k2:''},
+  {a:521.6, b:530.0, k1:'「自分から進んで一人になるとき、得るものは大きい」', k2:'リチャード・ライアン（ロチェスター大学の広報記事より）'},
+  {a:538.7, b:549.6, k1:'2022年　大学生 約四百五十人の日記', k2:'<span class="lt">Nguyen, Weinstein & Ryan — PLOS ONE 17(5)</span>'},
+  {a:552.7, b:558.0, k1:'内向的な性格とは　はっきりしたつながりなし', k2:''},
+  {a:558.2, b:563.7, k1:'自律的に暮らしているかどうかと、つながりあり', k2:''},
+  {a:564.0, b:577.5, k1:'生まれつきの向きより、自分で選んで暮らしているか', k2:''},
+  {a:578.5, b:586.7, k1:'この研究の限界', k2:''},
+  {a:587.0, b:591.5, k1:'この研究の限界', k2:'・主に大学生'},
+  {a:591.7, b:595.6, k1:'この研究の限界', k2:'・主に大学生　・実験室では十五分'},
+  {a:595.8, b:600.9, k1:'この研究の限界', k2:'・主に大学生　・実験室では十五分　・記録も二週間'},
+  {a:601.2, b:610.0, k1:'十五分と、何年もの一人暮らし', k2:'一日のうちの、細い一本の線'},
+  {a:610.1, b:613.1, k1:'この研究からは、わからない', k2:''},
+  {a:613.4, b:620.1, k1:'体のこと・お金のこと・思い出のこと', k2:''},
+  {a:626.5, b:639.0, k1:'自分で選んだかどうか', k2:'という問いは、年齢に関係なく向けられる'},
+  {a:736.5, b:749.3, k1:'つらさが何週間も続くときは', k2:'身近な人や、お医者さんに話していい'}
+];
+var SPLITL = [
+  {a:98.3,  b:110.6, L:'火曜日', Lb:'', R:'木曜日', Rb:''},
+  {a:135.2, b:144.7, L:'火曜日', Lb:'', R:'木曜日', Rb:''},
+  {a:144.9, b:151.6, L:'火曜日', Lb:'人の数　0', R:'木曜日', Rb:'人の数　0'},
+  {a:287.0, b:296.4, L:'火曜日', Lb:'静まる', R:'木曜日', Rb:'静まる'},
+  {a:296.6, b:300.8, L:'火曜日', Lb:'穏やかさ', R:'', Rb:''},
+  {a:301.0, b:307.3, L:'', Lb:'', R:'木曜日', Rb:'色が薄くなる'},
+  {a:309.3, b:311.3, L:'休息', Lb:'', R:'', Rb:''},
+  {a:311.5, b:318.4, L:'休息', Lb:'', R:'空っぽ', Rb:''},
+  {a:494.0, b:502.1, L:'火曜日', Lb:'', R:'木曜日', Rb:''},
+  {a:502.3, b:505.4, L:'自分で入った', Lb:'', R:'落ちた', Rb:''},
+  {a:763.8, b:770.1, L:'休息', Lb:'', R:'空っぽ', Rb:''},
+  {a:770.3, b:773.8, L:'自分で入った', Lb:'', R:'落ちた', Rb:''}
+];
+var _cardKey = '', _spKeyL = '', _spKeyR = '';
+function applyCards(t){
+  var best = null, op = 0;
+  for(var i=0;i<CARDS.length;i++){ var c = CARDS[i]; var v = band(t, c.a, c.b, 0.5); if(v > 0.001){ best = c; op = v; } }
+  var key = best ? (best.k1 + '|' + best.k2 + '|' + (best.cls||'')) : '';
+  if(key !== _cardKey){ _cardKey = key;
+    cardK1.innerHTML = best ? best.k1 : ''; cardK2.innerHTML = best ? best.k2 : '';
+    cardK2.style.display = (best && best.k2) ? 'block' : 'none';
+    cardEl.className = best && best.cls ? best.cls : ''; }
+  cardEl.style.opacity = op.toFixed(3);
+  var sb = null, so = 0;
+  for(var j=0;j<SPLITL.length;j++){ var s = SPLITL[j]; var v2 = band(t, s.a, s.b, 0.4); if(v2 > 0.001){ sb = s; so = v2; } }
+  function fill(el, a, b, keyName){ var k = a + '|' + b;
+    if(el['_k'] !== k){ el['_k'] = k; el.querySelector('.a').textContent = a; el.querySelector('.b').textContent = b; el.querySelector('.b').style.display = b ? 'block' : 'none'; }
+    el.style.opacity = (a ? so : 0).toFixed(3); }
+  fill(spL, sb ? sb.L : '', sb ? sb.Lb : '');
+  fill(spR, sb ? sb.R : '', sb ? sb.Rb : '');
+}
+
+/* =========================================================================
+ * CẬP NHẬT TỪNG SÂN KHẤU theo S
+ * ========================================================================= */
+var _shaftShift = 0;
+var _boardHome = BOARD.position.clone();
+function updateRoom(t){
+  BOUNCE.position.set(0.25, 0.35, -0.3); BOUNCE.distance = 4.2;
+  WINF.position.set(1.35, 1.4, 0.05); WINF.distance = 3.4;
+  HALL_L.position.set(-2.6, 2.1, 0.0); HALL_L.distance = 4.5; HALL_L.color.setRGB(1.0, 0.91, 0.8);
+  /* hướng nắng (chỉ S50 dịch nhẹ — "窓の影が畳の上を動いていく") */
+  SUN_D = setSun(S.shift);
+  if(Math.abs(S.shift - _shaftShift) > 1e-4){ _shaftShift = S.shift; SHAFT.geometry.dispose(); SHAFT.geometry = beamGeo(SUN_D); }
+  DUST.material.uniforms.uDir.value.copy(SUN_D);
+  DUST.material.uniforms.uT.value = t; STEAM_I.material.uniforms.uT.value = t; STEAM_C.material.uniforms.uT.value = t;
+  STEAM_ON = S.steam;
+  STEAM_C.material.uniforms.uOp.value = S.teacup ? 1.4 : 0; STEAM_C.visible = !!S.teacup;
+  for(var i=0;i<LEAVES.length;i++){ var l = LEAVES[i]; l.rotation.z = l.userData.base + 0.035*Math.sin(t*0.9 + l.userData.ph) + 0.015*Math.sin(t*2.3 + l.userData.ph*2.0); }
+  /* đồng hồ: thứ Ba 10:00 + t; thứ Năm 10:00 + (t - 44.79); chương 4 ≈ 10:40 */
+  var clk = (t < 44.79) ? (36000 + 30 + t) : (t < 639.4 ? (36000 + 30 + (t - 44.79)) : (36000 + 2400 + (t - 639.4)));
+  setClock(clk);
+  /* áo */
+  for(var s=0;s<SHIRTS.length;s++){ var k = clamp(S.shirts - s, 0, 1);
+    SHIRTS[s].visible = k > 0.001; SHIRTS[s].position.y = s*0.036 + 0.06*(1 - ease(k)); }
+  PHONE_R_SCR.color.setScalar(0.95*S.phoneR);
+  PHONE_R.visible = !!S.phoneVis && !S.bookT;
+  /* lịch */
+  for(var q=0;q<CALP.strike.length;q++){ var st = CALP.strike[q]; st.scale.x = Math.max(0.001, S.strike); st.position.x = CALP.cx - CALP.sx*(1 - S.strike)/2; st.visible = S.strike > 0.001; }
+  var vk = S.voidK; CALP.void.visible = vk > 0.001; CALP.void.scale.set(Math.max(0.001, ease(vk)), Math.max(0.001, ease(vk)), 1);
+  /* 襖: cánh ngoài trượt về phía bắc */
+  FUS[1].position.z = 0.45 - 0.82*ease(S.fus);
+  HALL_L.intensity = S.hall ? 0.35 : 0.0;
+  /* bàn là cất đi: nâng lên, dựng đứng sát tường nam */
+  var ba = ease(S.boardAway);
+  BOARD.position.set(lerp(_boardHome.x, 0.95, ba), lerp(0, 0.43, ba) + 0.12*Math.sin(Math.PI*ba), lerp(_boardHome.z, 1.285, ba));
+  BOARD.rotation.set(-1.45*ba, 0, 0);
+  IRON.visible = !!S.ironVis;
+  IRON_CORD.visible = !!S.ironVis;
+  /* sách lấy từ kệ */
+  if(SHELF_BOOK){ var bo = S.bookOut; SHELF_BOOK.visible = bo < 1.5;
+    var kb = ease(clamp(bo,0,1));
+    SHELF_BOOK.position.set(SHELF_BOOK_HOME.x, SHELF_BOOK_HOME.y + 0.10*kb, SHELF_BOOK_HOME.z + 0.55*kb); SHELF_BOOK.rotation.set(0, 0, 0.15*kb); }
+  BOOK_T.visible = !!S.bookT;
+  POSTCARD.visible = S.pc >= 0; PC_MAT.uniforms.uRev.value = Math.max(0, S.pc);
+  TEACUP.visible = !!S.teacup;
+  var tv = !S.top; ROOM_TOP.forEach(function(o){ o.visible = tv; });
+}
+var IRON_CORD = null, ROOM_TOP = [];
+ROOM.traverse(function(o){ if(o.name === 'ceil' || o.name === 'roof' || o.name === 'lamp' || o.name === 'lampcord' || o.name === 'hallceil') ROOM_TOP.push(o); });
+ROOM.children.forEach(function(o){ if(o.isMesh && o.geometry && o.geometry.type === 'TubeGeometry' && o.material === mDark) IRON_CORD = o; });
+
+function updateLab(t){
+  keyAt(LX, 0.6, 0, 1.6, 6.0, 4.2, S.labKey, new THREE.Color(1.0,0.98,0.95), 4.5, 9);
+  HEMI_S.color.setRGB(0.82,0.84,0.88); HEMI_S.groundColor.setRGB(0.32,0.31,0.30); HEMI_S.intensity = S.labHemi;
+  for(var i=0;i<4;i++){ setOrb(ORBS[i], S.orbs[i], 1.0, i); ORB_LBL[i].material.opacity = S.lbl*(0.45 + 0.55*clamp(S.orbs[i],0,1)); ORB_LBL[i].visible = S.lbl > 0.001; ORB_LBL[i].quaternion.copy(camera.quaternion); }
+  setOrb(PARTNER, 1.1*S.partner, 1.4, 1); setOrb(SINGLE, 1.6*S.single, 0.9, 3);
+  CHAIR_B.visible = !!S.chairB;
+  setTube(TH_A, S.thA, 0.9*S.thI); setTube(TH_B, S.thB, 1.1*S.thI);
+  LCLK.visible = !!S.lclkVis;
+  var f = S.lclk; LCK.sec.uniforms.uF.value = f*0.25;
+  LCK.m.rotation.z = -f*0.25*6.2831853 - 0.4; LCK.h.rotation.z = -(10 + f*0.25)/12*6.2831853; LCK.s.rotation.z = -((t*6.2831853/60) % 6.2831853);
+  TRAY.position.x = LX - 0.72 - 2.6*ease(S.tray);
+  BOOK_C.visible = !!S.bookC;
+  for(var q=0;q<3;q++) QHL[q].material.opacity = 0.35*S.qhl[q];
+}
+function updateOthers(t){
+  if(S.set === 'gauge'){
+    keyAt(GX, 1.25, 0, -1.0, 1.4, 2.6, 1.15, new THREE.Color(1.0,0.95,0.86), 1.4, 4);
+    HEMI_S.color.setRGB(0.6,0.62,0.66); HEMI_S.groundColor.setRGB(0.1,0.1,0.1); HEMI_S.intensity = 0.18;
+    GNEEDLE.rotation.z = -clamp(S.needle, -0.93, 0.93);
+  } else if(S.set === 'desk'){
+    keyAt(DX, 0.76, 0, -2.4, 2.8, 0.8, 1.15, new THREE.Color(1.0,0.97,0.92), 1.4, 5);
+    HEMI_S.color.setRGB(0.85,0.86,0.9); HEMI_S.groundColor.setRGB(0.35,0.3,0.25); HEMI_S.intensity = 0.32;
+    for(var i=0;i<DMARKS.length;i++) DMARKS[i].material.opacity = clamp(S.marks - i, 0, 1);
+    DBARS[0].scale.y = Math.max(0.001, 0.095*ease(S.bars)); DBARS[1].scale.y = Math.max(0.001, 0.04*ease(S.bars));
+  } else if(S.set === 'axes'){
+    KEY.intensity = 0; HEMI_S.intensity = 0.6;
+    var a = S.axT; AXES.traverse(function(o){ if(o.isMesh && o.material && o.material.isMeshBasicMaterial && o.material.map){ o.material.opacity = a; } });
+    AXP.qT.material.opacity = 0.16*S.axTue; AXP.qB.material.opacity = 0.16*S.axThu;
+    setOrb(AXP.tue, 1.4*S.axTue, 0); setOrb(AXP.thu, 1.4*S.axThu, 0);
+    AXP.tl.material.opacity = S.axTue; AXP.hl.material.opacity = S.axThu;
+  } else if(S.set === 'scat'){
+    keyAt(SX, 0, 0, 1.0, 3.0, 4.0, 1.8, new THREE.Color(1,0.97,0.92), 3, 4);
+    HEMI_S.color.setRGB(0.8,0.8,0.85); HEMI_S.groundColor.setRGB(0.2,0.2,0.2); HEMI_S.intensity = 0.7;
+    setScatter(S.scat, t);
+    if(S.dotS < 0.999){ for(var d=0; d<SCP.N; d++){ SCP.im.getMatrixAt(d, _m4); _m4.decompose(_v3, _q, _s3); var sc = Math.max(0.001, smooth(clamp(S.dotS*1.4 - SCP.D[d], 0, 1))); _s3.set(sc,sc,sc); _m4.compose(_v3, _q, _s3); SCP.im.setMatrixAt(d, _m4); } _s3.set(1,1,1); _q.set(0,0,0,1); }
+    SCP.trend.material.opacity = 0.9*S.scat;
+    SCP.lxA.material.opacity = 1 - S.lxB; SCP.lxB.material.opacity = S.lxB;
+  } else if(S.set === 'days'){
+    keyAt(YX, 0, -2, -2.0, 6.0, 3.0, 0.75, new THREE.Color(1,0.96,0.9), 6, 2);
+    HEMI_S.color.setRGB(0.7,0.72,0.78); HEMI_S.groundColor.setRGB(0.1,0.1,0.1); HEMI_S.intensity = 0.45;
+  } else if(S.set === 'kitch'){
+    var kc = new THREE.Color(0.80,0.90,1.0).lerp(new THREE.Color(1.0,0.86,0.68), S.kwarm);
+    keyAt(KX, 1.0, -0.1, -2.0, 1.6, 1.6, 2.4, kc, 1.3, 5);
+    HEMI_S.color.copy(kc).multiplyScalar(0.8); HEMI_S.groundColor.setRGB(0.25,0.22,0.2); HEMI_S.intensity = 0.55;
+    KP.winM.color.copy(kc).multiplyScalar(1.6);
+    var fl = S.flame; KP.fm.uniforms.uI.value = fl*1.3;
+    for(var i2=0;i2<KP.fl.length;i2++){ var c = KP.fl[i2]; var fk = 0.85 + 0.15*Math.sin(t*23.0 + i2*1.7) + 0.08*Math.sin(t*41.0 + i2*3.1); c.scale.set(1, Math.max(0.001, fl*fk), 1); c.visible = fl > 0.01; }
+    if(fl > 0.01) usePL(0, KX+0.15, 1.02, -0.08, new THREE.Color(0.35,0.5,1.0), 0.25*fl, 1.2);
+    STEAM_K.material.uniforms.uT.value = t; STEAM_K.material.uniforms.uOp.value = S.steamK*1.6; STEAM_K.material.uniforms.uV.value = S.steamV;
+    STEAM_K.visible = S.steamK > 0.001;
+  } else if(S.set === 'phset'){
+    KEY.intensity = 0; HEMI_S.color.setRGB(0.4,0.45,0.6); HEMI_S.groundColor.setRGB(0.05,0.05,0.06); HEMI_S.intensity = 0.06;
+    usePL(0, PX, 0.12, 0, new THREE.Color(0.55,0.72,1.0), 0.55*S.phOn, 1.4);
+  }
+}
+
+/* =========================================================================
+ * renderAtTime — HÀM THUẦN CỦA t
+ * ========================================================================= */
+var SETS = ['room','lab','gauge','desk','axes','scat','days','kitch','phset'];
+var SET_GROUP = {room:ROOM, lab:LAB, gauge:GAUGE, desk:DESK, axes:AXES, scat:SCAT, days:DAYS, kitch:KITCH, phset:PHSET};
+function renderAtTime(t){
+  /* LEADTAIL:APPLIED — dịch timeline sang phải 2s cho intro lặng.
+     Cảnh vẫn dùng mốc gốc của timing.json; chỉ tới muộn hơn 2s. */
+  var _tReal = t;                    /* thời gian THẬT của video, cho phụ đề */
+  t = Math.max(0, t - 2);   /* thời gian CẢNH, đã trừ intro */
+
+  t = clamp(t, 0, SCENE_END);
+  resetS();
+  var si = shotIndex(t), sh = SHOTS[si];
+  sh.f(t, t - sh.a);
+  for(var i=0;i<SETS.length;i++) SET_GROUP[SETS[i]].visible = (SETS[i] === S.set);
+  setFar(camera, S.set === 'days' ? 1100 : 300);
+
+  /* đèn: tắt hết rồi bật theo sân khấu */
+  SUN.intensity = 0; HEMI_R.intensity = 0; for(var p=0;p<PL.length;p++) PL[p].intensity = 0;
+  KEY.intensity = 0; HEMI_S.intensity = 0;
+  var gL = gradeFor(1), gR = gL;
+  if(S.set === 'room'){
+    updateRoom(t);
+    if(S.split > 0 && S.split < 1){
+      splitPass.split = S.split;
+      splitPass.preL = function(){ applyRoom(S.w); };
+      splitPass.preR = function(){ applyRoom(S.wR); };
+      if(S.camR){ setCam(camB, S.camR); splitPass.camR = camB; } else splitPass.camR = camera;
+      gL = gradeFor(S.w, S.satX); gR = gradeFor(S.wR, S.satXR);
+    } else {
+      splitPass.split = -1; splitPass.preL = null; splitPass.preR = null;
+      applyRoom(S.w); gL = gradeFor(S.w, S.satX); gR = gL;
+    }
+    HALL_L.intensity = S.hall ? 0.35 : 0.0;
+  } else {
+    splitPass.split = -1; splitPass.preL = null; splitPass.preR = null;
+    if(S.set === 'lab'){ updateLab(t); gL = {sat:S.labSat, mul:[1,1,1]}; }
+    else { updateOthers(t); gL = {sat:0.96, mul:[1,1,1]}; if(S.set === 'kitch') gL = gradeFor(S.kwarm*0.6); }
+    gR = gL;
+  }
+  grade.uniforms.uSplit.value = (S.split > 0 && S.split < 1) ? S.split : 2.0;
+  grade.uniforms.uSatL.value = gL.sat; grade.uniforms.uSatR.value = gR.sat;
+  grade.uniforms.uMulL.value.set(gL.mul[0], gL.mul[1], gL.mul[2]); grade.uniforms.uMulR.value.set(gR.mul[0], gR.mul[1], gR.mul[2]);
+  grade.uniforms.uLine.value = (S.split > 0 && S.split < 1) ? S.line : 0;
+
+  /* nhúng tối giữa shot + fade đầu/cuối tập */
+  var b = (si+1 < SHOTS.length) ? SHOTS[si+1].a : SCENE_END + 10;
+  var fin = sh.cut ? 1 : smooth((t - sh.a)/DIP);
+  var nextCut = (si+1 < SHOTS.length) && SHOTS[si+1].cut;
+  var fout = nextCut ? 1 : smooth((b - t)/DIP);
+  var fade = Math.min(fin, fout);
+  if(sh.k === 'S04') fade = Math.min(fade, smooth((43.4 - t)/0.9));
+  if(sh.k === 'S05') fade = Math.min(fade, smooth((t - 44.79)/0.5));
+  if(sh.k === 'S34') fade = Math.min(fade, 1 - smooth((t - 491.3)/0.9));
+  fade = Math.min(fade, smooth(t/1.4), smooth((SCENE_END + 0.3 - t)/2.6));
+  lens.uniforms.uFade.value = fade;
+  lens.uniforms.uT.value = t;
+  lens.uniforms.uExposure.value = S.exp;
+
+  applyCards(t);
+  HFA.applySubtitle(subEl, CUES, _tReal);
+  /* LEADTAIL:APPLIED — màn hình đen 5s cuối: nhạc chạy tiếp, hình tắt dần. */
+  (function(){
+    var ob = document.getElementById('outro-black');
+    if(!ob) return;
+    var f = (_tReal - 808.35) / 1.2;         /* 1.2s chuyển sang đen */
+    ob.style.opacity = String(Math.max(0, Math.min(1, f)));
+  })();
+  HFA.applyChapter(chapEl, CHAPTERS, _tReal);
+  composer.render();
+}
+
+/* ---- font Nhật: chỉ VẼ texture có chữ SAU KHI font nạp xong (không vẽ lười trong render) ---- */
+if(document.fonts && document.fonts.load){
+  Promise.all([
+    document.fonts.load('700 96px "BIZ UDPGothic"'),
+    document.fonts.load('400 96px "BIZ UDPGothic"')
+  ]).then(function(){
+    FONT_READY = true;
+    drawTextTextures();
+    var tl = window.__timelines && window.__timelines["hitori-to-kodoku"];
+    renderAtTime(tl ? tl.time() : 0);
+  });
+}
+
+/* ⚠ Dòng đăng ký phải nằm NGUYÊN DẠNG trong file này — StaticGuard quét VĂN BẢN.
+ * Khoá trùng ĐÚNG data-composition-id của div gốc. */
+window.__timelines = window.__timelines || {};
+window.__timelines["hitori-to-kodoku"] = HFA.makeTimeline("hitori-to-kodoku", TOTAL, renderAtTime);
+</script>
+</body>
+</html>

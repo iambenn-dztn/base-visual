@@ -19,6 +19,7 @@
 | 10 | `nuoc-co-hon-mat-troi` | Nước — Có Trước Cả Mặt Trời | 2026-09-16 | 18:11 |
 | 11 | `dai-oxy-hoa` | Đại Oxy Hoá — Lần Trái Đất Tự Đầu Độc Mình | 2026-09-16 | 17:52 |
 | 12 | `quasar` | Quasar — Ngọn Hải Đăng Ở Rìa Thời Gian | 2026-09-16 | 19:32 |
+| 13 | `mat-trang` | Mặt Trăng — Mảnh Trái Đất Bị Văng Ra | 2026-09-20 | 14:57 ⚠ |
 
 ---
 
@@ -48,6 +49,8 @@
 
 **12 · Quasar** — **tập thứ HAI của kênh về hố đen**, góc NHÌN TỪ XA QUA THỜI GIAN (tập 04 cũ trong `archive/` đã làm góc rơi vào trong); quasar sáng hơn toàn bộ thiên hà chứa nó (~4.000 tỉ Mặt Trời) phát ra từ vùng hẹp hơn quỹ đạo Sao Hải Vương; **tên "quasar" = quasi-stellar radio source, một lời thú nhận không biết**; **Maarten Schmidt 1963 đọc quang phổ 3C 273**, vạch hydro dịch đỏ lớn → vật ở rất xa → độ sáng thật khổng lồ; **lập luận nhấp nháy giới hạn kích thước**: vật không đổi độ sáng nhanh hơn thời gian ánh sáng băng qua nó (D ≤ c·Δt), quasar biến thiên trong vài giờ → vùng phát sáng vài giờ ánh sáng; **nguồn năng lượng là HẤP DẪN chứ không phải hợp hạch**: sao chuyển 0,7% khối lượng thành năng lượng, đĩa bồi tụ chuyển 6–30% tuỳ spin hố đen (gấp 10–40 lần); ma sát trong đĩa nung khí tới hàng triệu độ, năng lượng thoát ra TRƯỚC chân trời sự kiện; jet tương đối tính dài ~200.000 năm ánh sáng; tương quan khối lượng hố đen ↔ phình thiên hà (~0,1%). **Cú lật:** quasar là hiện tượng của vũ trụ TRẺ, đỉnh ~10 tỉ năm trước khi thiên hà còn đầy khí; khí cạn thì tắt → **mọi quasar ta nhìn thấy đều là di ảnh của một cỗ máy đã ngừng chạy**; hố đen 4 triệu Mặt Trời ở tâm Ngân Hà có thể từng sáng, giờ im lặng. Hook: "sáng hơn cả thiên hà, và nó đã tắt từ lâu". Câu chốt: "Không chết. Không hỏng. Chỉ là hết đồ ăn, và đang đợi."
 
+**13 · Mặt Trăng, Mảnh Trái Đất Bị Văng Ra** — trụ D (Trái Đất), khung bí ẩn; **nghịch lý kích thước**: đường kính Mặt Trăng > 1/4 Trái Đất, không hành tinh đá nào khác có vệ tinh tỉ lệ như vậy (Phobos/Deimos là đá bắt được), nhiều người gọi Trái Đất–Mặt Trăng là hệ đôi; **ba chi tiết không khớp**: quá to, **lõi sắt bé** (bán kính ~350 km, 1–3% khối lượng, "quả đào mất hạt"), **khô** (thiếu nước/Na/K, như bị nướng); ba giả thuyết cũ gãy (tách ra kiểu George Darwin: thiếu lượng quay; bị bắt lấy: không có phanh, không giải thích thiếu sắt; sinh cùng lúc: phải có lõi sắt như Trái Đất); **bằng chứng = đồng vị oxy đá Apollo** (dấu vân tay nơi sinh trong hệ Mặt Trời) **trùng lớp phủ Trái Đất**; Herwartz 2014 đo chênh mười mấy phần triệu vs Young 2016 không thấy chênh; **va chạm Theia** (cỡ Sao Hoả, ~9 km/s, va chạm xiên, ~4,5 tỉ năm trước): lớp phủ văng thành đĩa đá bốc hơi, lõi sắt Theia chìm vào lõi Trái Đất → giải thích cả ba chi tiết; Mặt Trăng kết lại ở ~3 R⊕ (~20.000 km), vài chục năm hoặc vài giờ tuỳ mô hình; **khủng hoảng đồng vị chưa khép**: mô phỏng chuẩn cho đĩa 60–80% từ Theia, hai hướng giải (va chạm nóng trộn đều / synestia, hoặc Theia vốn giống Trái Đất); **gương phản xạ Apollo 11/14/15 + hai Lunokhod, laser đi về ~2,5 s, 3,8 cm/năm** (bằng tốc độ móng tay mọc); thuỷ triều: bướu lệch kéo Mặt Trăng lên quỹ đạo cao, hãm Trái Đất; **ngày 5 giờ → 22 giờ (san hô Devon, Wells 1963: ~400 vân ngày/năm) → 24 giờ**, dài thêm ~2 ms/thế kỷ; **Laskar 1993**: Mặt Trăng giữ trục nghiêng ổn định, không có nó trục lật hàng chục độ. Hook: "nó quá to so với hành tinh của nó". **Cú lật:** đảo chiều motif "thứ quen thuộc đến từ nơi khác" (#03 vàng, #10 nước): Mặt Trăng là thứ duy nhất trên trời **từ chính nơi này mà ra**. Câu chốt: "Mỗi đêm tôi ngẩng lên, tôi đang nhìn một mảnh của nơi tôi đứng. Và nó đang chậm rãi rời đi."
+
 ---
 
 ## ⚠️ Khái niệm ĐÃ XUẤT HIỆN nhiều lần — cẩn thận khi tái dùng
@@ -60,7 +63,11 @@
 - **Motif "hạt xuyên qua / vô hình"**: #01 (vật chất tối vô hình) và #04 (neutrino xuyên qua) — đừng để tập thứ ba lặp lại cảm giác này.
 - **Nguồn gốc nguyên tố / "bạn được làm từ gì"**: #02, #03, #05 theo góc SAO; #08 theo góc BIG BANG (phản-hook: cũ hơn sao). Bốn tập rồi — tập mới đụng chủ đề này phải đổi góc rất rõ.
 - **Deuterium**: đã dùng ở HAI tập — #08 (nút thắt deuterium trong BBN, góc hạt nhân) và #10 (tỉ lệ D/H làm dấu vân tay truy nguồn gốc nước, góc phân tử + đo đạc hệ Mặt Trời). Hai góc đã tách bạch rõ; tập thứ ba đụng deuteri gần như chắc chắn sẽ trùng, tránh.
-- **Nguồn gốc vật chất trên Trái Đất đến từ nơi khác**: #03 (vàng từ kilonova + late veneer) và #10 (nước từ đám mây phân tử, chở tới bằng tiểu hành tinh). Cùng motif "thứ quen thuộc quanh ta không sinh ra ở đây" — tập mới dùng lại phải đổi hẳn cơ chế vận chuyển và loại bằng chứng.
+- **Nguồn gốc vật chất trên Trái Đất đến từ nơi khác**: #03 (vàng từ kilonova + late veneer) và #10 (nước từ đám mây phân tử, chở tới bằng tiểu hành tinh). Cùng motif "thứ quen thuộc quanh ta không sinh ra ở đây" — tập mới dùng lại phải đổi hẳn cơ chế vận chuyển và loại bằng chứng. **#13 đã dùng cú đảo chiều** (Mặt Trăng từ chính Trái Đất mà ra) làm cú lật chính; cả hai chiều của motif này đều đã xài.
+- **Đồng vị làm bằng chứng nguồn gốc — nay đã BA tập**: #08 (deuterium trong BBN), #10 (D/H truy nguồn nước), #13 (ba đồng vị oxy làm "dấu vân tay nơi sinh" cho đá Mặt Trăng). Cảnh "đo tỉ lệ đồng vị rồi bừng ngộ" đã lặp; tập mới cần loại bằng chứng khác (tuổi phóng xạ, từ trường cổ, địa chấn...).
+- **Apollo / đá mang về từ Mặt Trăng / gương phản xạ laser**: #13 dùng trọn (400 kg đá, đồng vị oxy, Lunar Laser Ranging 3,8 cm/năm). Tập mới về Mặt Trăng hoặc thám hiểm phải đổi hẳn góc (ví dụ: nước ở cực, mặt xa, Artemis).
+- **Thuỷ triều / độ dài ngày / trục nghiêng Trái Đất**: #13 đã dùng (ngày 5 h → 22 h → 24 h, san hô Devon, Laskar 1993). Đừng lặp lại làm cú lật.
+- **Va chạm hành tinh sơ khai / Trái Đất non nóng đỏ**: #13 (Theia). Tập "Trái Đất hoàn hảo" nếu làm lại phải tránh dựng lại cảnh này.
 - **Big Bang / vũ trụ sơ khai**: #06 (entropy thấp lúc đầu) và #08 (20 phút đầu). Góc còn trống: thời kỳ lạm phát, tái kết hợp/CMB.
 - **Tái kết hợp / CMB**: #09 đã dùng (ánh sáng cổ nhất, 380.000 năm, Penzias & Wilson). Không còn "trống" như ghi ở dòng trên.
 - **Giãn nở thời gian / thuyết tương đối**: `archive/tap-04` (hố đen) và #09 (thời gian riêng của photon). Tập mới đụng thuyết tương đối phải đổi góc rõ.
@@ -69,7 +76,7 @@
 - **Motif "thứ quen thuộc quanh ta từng khác hẳn / thảm hoạ hoá ra là món quà"**: #11 khai thác trọn vẹn với oxy. Đừng lặp cấu trúc đảo chiều này làm cú lật chính.
 - **Tuyệt chủng hàng loạt / khủng hoảng hành tinh**: #11 đã dùng (Đại Oxy hoá + băng hà Huronian). Tập mới đụng tuyệt chủng phải đổi tác nhân và kỷ địa chất.
 
-## Hàng đợi sản xuất — 1 tập còn lại (cập nhật 2026-09-16, đã làm xong `quasar`)
+## Hàng đợi sản xuất — 1 tập còn lại (cập nhật 2026-09-20, đã làm xong `mat-trang`; `mang-vu-tru` vẫn trong hàng đợi: đã có script/storyboard/voice, CHƯA dựng hình)
 
 Thứ tự đã sắp để không hai tập liền nhau cùng địa hạt. Làm tuần tự, mỗi tập xong hẳn khâu 5
 mới sang tập sau (HyperFrames chỉ render một `index.html` ở gốc nên không chạy song song được).
@@ -81,12 +88,56 @@ mới sang tập sau (HyperFrames chỉ render một `index.html` ở gốc nên
 Lấy từ danh sách an toàn bên dưới. Làm xong tập nào thì chuyển nó lên bảng chính và
 gỡ khỏi hàng đợi này.
 
-## Ý tưởng CHƯA làm (an toàn, không trùng)
+## Kho chủ đề (chưa làm, không trùng) — phải qua cổng bằng chứng cầu
 Đa vũ trụ, lỗ giun, du hành thời gian, mạng vũ trụ, Sao Hoả, sự sống bắt đầu từ đâu, trước Big Bang. Xem thêm roadmap 15 tiêu đề trong `episodes.html`.
+
+⚠ Danh sách này là ý tưởng, **chưa phải bằng chứng cầu**. Theo `docs/chien-luoc-kenh.md` mục 4,
+một chủ đề chỉ được vào Khâu 0 khi (a) hình dạng của nó đã thắng ở ≥2 kênh thước với bội số ≥2,
+hoặc (b) nó cùng hình dạng với một tập nội bộ có bội số ≥2 ở bảng Số liệu dưới. "Chưa ai làm" là
+cờ đỏ, không phải cờ xanh. Khi có bằng chứng, ghi vào cột "Bằng chứng" của bảng sau:
+
+| Chủ đề | Trụ (A–E) | Bằng chứng cầu (kênh · bội số · ngày) | Trạng thái |
+|---|---|---|---|
+| Mạng vũ trụ | E | _(chưa có; đang trong hàng đợi vì đã sinh voice)_ | đang làm (script/storyboard/voice xong, chưa dựng hình) |
+| Mặt Trăng | D | _(chưa có; chọn theo lý do nội bộ, xem `projects/mat-trang/packaging.md`)_ | đã làm (#13), chưa có bằng chứng cầu — điền số để lần sau có |
+| | | | |
+
+## Số liệu — điền tay sau khi đăng (48h · 7 ngày · 28 ngày)
+Luật: **bội số = view 28 ngày ÷ trung vị view 28 ngày của kênh** (trung vị, không trung bình).
+≥2× = thắng, làm thêm 3–5 tập cùng hình dạng. ≤0,5× = mổ theo thứ tự rẻ → đắt: đổi bìa/tiêu đề
+→ xem retention → sửa hook. Đọc số từ tập thứ 3, không đợi đủ 10. Chi tiết `docs/chien-luoc-kenh.md` mục 6.
+
+`render` thêm một dòng trống khi đóng gói; người vận hành điền. **Chưa có số cho 13 tập đầu**:
+việc đầu tiên là điền, tính trung vị, tìm outlier nội bộ.
+
+| # | Slug | View 48h | View 7d | View 28d | CTR | AVD | Bội số | Kết luận |
+|---|---|---|---|---|---|---|---|---|
+| 01 | `vat-chat-toi` | | | | | | | |
+| 02 | `nguyen-to-cacbon` | | | | | | | |
+| 03 | `nguyen-to-vang` | | | | | | | |
+| 04 | `hat-neutrino` | | | | | | | |
+| 05 | `nguyen-to-sat` | | | | | | | |
+| 06 | `mui-ten-thoi-gian` | | | | | | | |
+| 07 | `nguyen-tu-rong` | | | | | | | |
+| 08 | `nguyen-to-dau-tien` | | | | | | | |
+| 09 | `photon-khong-gia` | | | | | | | |
+| 10 | `nuoc-co-hon-mat-troi` | | | | | | | |
+| 11 | `dai-oxy-hoa` | | | | | | | |
+| 12 | `quasar` | | | | | | | |
+| 13 | `mat-trang` | | | | | | | |
+
+Trung vị 28d của kênh: _____ · Tập vượt 20.000 view: _____ (cửa lớn sau 10 tập + 3 tháng)
 
 > ⚠️ **Đã có bản cũ, KHÔNG an toàn để làm lại nguyên xi:** sao neutron, hố đen, nghịch lý Fermi,
 > Trái Đất hoàn hảo — xem mục "Tập 01–04" dưới đây. Muốn làm lại thì phải đổi góc rõ rệt.
 > Kịch bản Trái Đất hoàn hảo chưa dựng nằm ở `projects/_ideas/kichban-traidat.md`.
+
+
+> ⚠ **Tập 01–13 render TRƯỚC 2026-09-21 mang lỗi hoà chéo `HFA.band`:** cảnh mới hiện sớm và cảnh
+> cũ nán lại, mỗi bên f giây, nên chuyển cảnh nhoè và dính hình cue trước (rõ nhất ở `mat-trang`
+> t=167,45s: Trái Đất + Sao Hoả + Mặt Trăng chồng nhau). Đã sửa trong `assets/lib/hf-astro.js`
+> ngày 2026-09-21; các tập render từ đó trở đi chuyển cảnh dứt khoát. Người vận hành quyết định
+> **giữ bản `mat-trang` đã render**, không render lại.
 
 ---
 

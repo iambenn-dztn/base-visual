@@ -1,0 +1,2018 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, height=1080">
+<title>悲しみが薄れるのは薄情なのか｜記憶研究が答えた問い — HyperFrames</title>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+<style>
+  @font-face{font-family:'BIZ UDPGothic';src:url('assets/fonts/BIZUDPGothic-Bold.ttf') format('truetype');font-weight:700;font-display:block;}
+  @font-face{font-family:'BIZ UDPGothic';src:url('assets/fonts/BIZUDPGothic-Regular.ttf') format('truetype');font-weight:400;font-display:block;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{width:1920px;height:1080px;overflow:hidden;background:#000000;font-family:'BIZ UDPGothic',sans-serif;}
+  #root{position:relative;width:1920px;height:1080px;background:#000;}
+  #c{position:absolute;inset:0;display:block;z-index:0;}
+  #vig{position:absolute;inset:0;pointer-events:none;z-index:6;background:radial-gradient(ellipse at center,rgba(0,0,0,0) 56%,rgba(4,4,4,.42) 100%);}
+  #chap{position:absolute;left:4.2%;bottom:20.5%;z-index:18;color:#3a2c18;color:#5a4326;color:#4a3620;color:#f4e9d4;font-family:'BIZ UDPGothic',sans-serif;font-size:34px;font-weight:700;letter-spacing:6px;opacity:0;text-shadow:0 2px 18px rgba(0,0,0,.96);white-space:nowrap;}
+  #sub{position:absolute;left:50%;bottom:8.2%;transform:translateX(-50%);z-index:20;width:min(1500px,88%);text-align:center;color:#f4f2ee;font-family:'BIZ UDPGothic',sans-serif;font-size:56px;font-weight:700;line-height:1.35;text-shadow:0 3px 20px rgba(0,0,0,.97),0 0 4px rgba(0,0,0,.97);
+  display:table;width:auto;max-width:96%;white-space:nowrap;margin-left:auto;margin-right:auto;
+  padding:.26em 1.15em;border-radius:10px;
+  background:radial-gradient(ellipse 100% 96% at 50% 50%,rgba(0,0,0,.66) 0%,rgba(0,0,0,.58) 42%,rgba(0,0,0,.28) 76%,rgba(0,0,0,0) 100%);}
+  #err{position:absolute;left:12px;top:12px;z-index:99;color:#ff9090;background:rgba(0,0,0,.82);padding:8px 10px;font:12px/1.5 monospace;max-width:90%;white-space:pre-wrap;border-radius:8px;display:none;}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="omoide-yasashii" data-start="0" data-duration="828.13" data-width="1920" data-height="1080">
+  <canvas id="c" class="clip" data-start="0.01" data-duration="828.13" data-track-index="0"></canvas>
+  <audio id="narr" class="clip" data-start="0" data-duration="828.13" data-track-index="1" src="projects/omoide-yasashii/voice/narration_mixed.mp3"></audio>
+  <div id="vig"></div>
+  <div id="chap" data-layout-allow-occlusion=""></div>
+  <div id="sub" data-layout-allow-occlusion=""></div>
+  <div id="err"></div>
+<div id="outro-black" style="position:absolute;inset:0;z-index:90;background:#000;opacity:0;pointer-events:none"></div>
+</div>
+<script>
+/* ===== HFA:BEGIN — sinh tự động bởi scripts/inject-lib.mjs, ĐỪNG SỬA TAY ===== */
+/* ============================================================================
+ * hf-astro.js — bộ khung dùng chung cho composition Du Mục Vũ Trụ
+ *
+ * Trích từ các tập ĐÃ RENDER VÀ VERIFY (01–07). Trước khi có file này, mỗi tập
+ * tự dựng lại cùng một đoạn code (mulberry32, ACESFilmic, composer+bloom, lens
+ * pass, starfield, tra phụ đề, driver timeline) — nên bug đã sửa ở tập này lại
+ * tái xuất ở tập sau. Dùng file này thay vì chép tay.
+ *
+ * CÁCH DÙNG: KHÔNG nạp bằng thẻ script ngoài. Preview/render server của HyperFrames
+ *      không phục vụ file .js tuỳ ý trong project — nó trả về SPA shell HTML cho
+ *      đường dẫn đó, browser parse "doctype html" thành lỗi cú pháp và tập chết
+ *      (đã kiểm chứng: curl -D- trả về 200 text/html, 593 byte). Composition phải
+ *      TỰ CHỨA. Nhúng bằng:
+ *
+ *          node scripts/inject-lib.mjs --html index.html
+ *
+ *      Lệnh này dán nội dung file này vào đầu khối code của tập, giữa hai mốc
+ *      HFA:BEGIN / HFA:END. Chạy lại được nhiều lần. Định nghĩa một global: HFA.
+ *      Yêu cầu three.min.js + EffectComposer/RenderPass/ShaderPass/UnrealBloomPass
+ *      đã nạp trước đó.
+ *
+ * LUẬT TẤT ĐỊNH: file này không dùng Date.now / performance.now / Math.random /
+ * requestAnimationFrame / setTimeout. Mọi thứ là hàm thuần của t hoặc của seed.
+ * ========================================================================== */
+(function (global) {
+  'use strict';
+
+  var HFA = {};
+
+  /* ---- PRNG có seed ------------------------------------------------------
+   * Math.random() bị cấm (render phải tất định). Mỗi cụm vật thể dùng MỘT
+   * seed riêng — dùng chung một chuỗi cho hai cụm thì thêm/bớt hạt ở cụm này
+   * sẽ xê dịch layout cụm kia.
+   */
+  HFA.mulberry32 = function (a) {
+    return function () {
+      a |= 0; a = (a + 0x6D2B79F5) | 0;
+      var t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  };
+
+  /* ---- helper toán -------------------------------------------------------- */
+  HFA.clamp = function (x, a, b) { return Math.min(b, Math.max(a, x)); };
+
+  HFA.smooth = function (x) { x = HFA.clamp(x, 0, 1); return x * x * (3 - 2 * x); };
+
+  /** Bao lồi mềm: 0 ngoài [a,b], lên/xuống mượt trong dải f giây ở hai mép.
+   *
+   * Hoà chéo đặt ĐỐI XỨNG quanh mốc cảnh: cảnh chỉ nhú lên từ a-f/2 và tắt hẳn
+   * ở b+f/2, nên hai cảnh liền nhau chồng đúng f giây và tổng trọng số luôn = 1
+   * (không chớp đen). Bản cũ dùng a-f .. a+f với mẫu số 2f: cảnh mới hiện sớm
+   * cả f giây trước mốc và cảnh cũ nán lại thêm f giây sau mốc, tổng thời gian
+   * dính hình là 2f — chuyển cảnh nhoè, hình cue trước còn đọng khi lời đã sang
+   * ý mới. Xem tập mat-trang t=167,33s (Trái Đất + Sao Hoả + Mặt Trăng chồng nhau).
+   */
+  HFA.band = function (t, a, b, f) {
+    f = f || 0.8;
+    var h = f * 0.5;
+    if (t < a - h || t > b + h) return 0;
+    var up = HFA.smooth((t - (a - h)) / f);
+    var dn = HFA.smooth(((b + h) - t) / f);
+    return Math.min(1, Math.min(up, dn));
+  };
+
+  /* ---- cửa sổ cảnh --------------------------------------------------------
+   * SC = {A:[start,end], B:[...], ...} theo GIÂY THẬT (lấy từ timing.json cue.start).
+   * Trả về loc(t,k) ∈ [0,1] (tiến độ trong cảnh) và inSc(t,k).
+   */
+  HFA.scenes = function (SC) {
+    return {
+      SC: SC,
+      loc: function (t, k) {
+        var w = SC[k];
+        return Math.min(1, Math.max(0, (t - w[0]) / (w[1] - w[0])));
+      },
+      inSc: function (t, k) { var w = SC[k]; return t >= w[0] && t < w[1]; }
+    };
+  };
+
+  /* ---- shader lens — PASS CUỐI, kiêm luôn tone mapping + mã hoá sRGB --------
+   *
+   * ⚠ VÌ SAO PASS NÀY PHẢI TỰ TONE MAP:
+   * three.js chỉ chèn ACES + sRGB vào shader của VẬT LIỆU nó tự dựng. Một
+   * ShaderMaterial thô trong ShaderPass KHÔNG được chèn — nên khi pass cuối ghi
+   * ra màn hình, ảnh chưa hề được mã hoá sRGB.
+   * Đo thật (xám #808080, r128): vẽ thẳng = 197, qua EffectComposer = 143.
+   * Sai lệch đó là lý do các tập 01–07 ra tối hơn và sai gamma.
+   *
+   * Vì vậy chuỗi mới là: cảnh vẽ TUYẾN TÍNH vào target HDR (không tone map)
+   * → bloom ăn giá trị HDR thật → pass này mới ACES + sRGB ở bước cuối.
+   * Bloom đứng TRƯỚC tone mapping mới đúng thứ tự điện ảnh: vùng cực sáng
+   * (quang cầu, đĩa bồi tụ) chưa bị nén ngọn nên quầng sáng nở tự nhiên.
+   *
+   * Thứ tự trong shader: CA → vignette → fade (đều ở TUYẾN TÍNH, vì chúng là
+   * phơi sáng) → ACES → sRGB → grain + flash (ở không gian hiển thị, vì grain
+   * phim và chớp trắng là hiện tượng của bản in, không phải của ánh sáng).
+   * Grain seed theo t, KHÔNG theo đồng hồ — cùng t phải cho cùng frame.
+   */
+  HFA.LensShader = {
+    uniforms: {
+      tDiffuse: { value: null }, uT: { value: 0 }, uVig: { value: 0.34 },
+      uCA: { value: 0.0015 }, uGrain: { value: 0.045 },
+      uFade: { value: 1.0 }, uFlash: { value: 0.0 },
+      uExposure: { value: 1.02 }, uToneMap: { value: 1.0 }
+    },
+    vertexShader:
+      'varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',
+    fragmentShader: [
+      'varying vec2 vUv;uniform sampler2D tDiffuse;',
+      'uniform float uT,uVig,uCA,uGrain,uFade,uFlash,uExposure,uToneMap;',
+      'float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}',
+      // ACES — SAO CHÉP ĐÚNG bản three.js r128 dùng cho ACESFilmicToneMapping
+      // (ma trận vào/ra + RRTAndODTFit + tiền tỉ lệ /0.6). KHÔNG dùng xấp xỉ
+      // Narkowicz: nó sáng hơn ~4% ở vùng trung, đo được (206 vs 197 trên xám
+      // giữa) và sẽ lệch với mọi tài liệu/preset tính theo three.js.
+      'vec3 rrt(vec3 v){vec3 a=v*(v+0.0245786)-0.000090537;',
+      '  vec3 b=v*(0.983729*v+0.4329510)+0.238081;return a/b;}',
+      'vec3 aces(vec3 color){',
+      '  const mat3 mIn=mat3(0.59719,0.07600,0.02840, 0.35458,0.90834,0.13383, 0.04823,0.01566,0.83777);',
+      '  const mat3 mOut=mat3(1.60475,-0.10208,-0.00327, -0.53108,1.10813,-0.07276, -0.07367,-0.00605,1.07602);',
+      '  color/=0.6;',
+      '  color=mIn*color; color=rrt(color); color=mOut*color;',
+      '  return clamp(color,0.0,1.0);}',
+      // tuyến tính → sRGB, đúng công thức chuẩn (không phải pow(1/2.2) cho nhanh)
+      'vec3 toSRGB(vec3 c){c=max(c,vec3(0.0));',
+      '  return mix(c*12.92,1.055*pow(c,vec3(1.0/2.4))-0.055,step(vec3(0.0031308),c));}',
+      'void main(){',
+      '  vec2 d=vUv-0.5;float r=dot(d,d);',
+      '  vec2 off=d*uCA*(1.0+r*2.2);',
+      '  vec3 col;',
+      '  col.r=texture2D(tDiffuse,vUv+off).r;',
+      '  col.g=texture2D(tDiffuse,vUv).g;',
+      '  col.b=texture2D(tDiffuse,vUv-off).b;',
+      // --- còn ở TUYẾN TÍNH: vignette + fade là phơi sáng ---
+      '  float vig=smoothstep(1.02,uVig,r*2.0);',
+      '  col*=mix(1.0,vig,0.85);',
+      '  col*=uFade;',
+      // --- tone map + mã hoá hiển thị ---
+      '  col=mix(col*uExposure,aces(col*uExposure),uToneMap);',
+      '  col=toSRGB(col);',
+      // --- không gian hiển thị: grain + chớp trắng ---
+      '  float g=h(vUv*vec2(1920.0,1080.0)+fract(uT)*97.3)-0.5;',
+      '  col+=g*uGrain;',
+      '  col=mix(col,vec3(1.0,0.98,0.94),uFlash);',
+      '  gl_FragColor=vec4(clamp(col,0.0,1.0),1.0);',
+      '}'
+    ].join('\n')
+  };
+
+  /* ---- dựng sân khấu ------------------------------------------------------
+   * Trả về {renderer, scene, camera, composer, bloom, lens, W, H, loadTex}.
+   * Ánh sáng mặc định (amb/key/rim) tắt được bằng opt.lights=false.
+   */
+  HFA.createStage = function (opt) {
+    opt = opt || {};
+    var W = opt.width || 1920, H = opt.height || 1080;
+    var canvas = typeof opt.canvas === 'string'
+      ? document.getElementById(opt.canvas)
+      : (opt.canvas || document.getElementById('c'));
+
+    var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: false });
+    renderer.setPixelRatio(1);
+    renderer.setSize(W, H);
+    renderer.setClearColor(opt.clearColor != null ? opt.clearColor : 0x08080a, 1);
+
+    // Tone mapping + sRGB CỐ Ý tắt ở đây: cả hai được làm ở pass lens cuối cùng.
+    // Bật ở đây thì cảnh bị nén dải TRƯỚC khi bloom nhìn thấy (quầng sáng bẹt),
+    // rồi lại không được mã hoá sRGB lúc ghi ra màn hình (xem chú thích LensShader).
+    renderer.toneMapping = THREE.NoToneMapping;
+    renderer.outputEncoding = THREE.LinearEncoding;
+
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(
+      opt.fov || 46, W / H, opt.near || 0.05, opt.far || 60000);
+    camera.position.set(0, 0, 60);
+
+    if (opt.lights !== false) {
+      var amb = new THREE.AmbientLight(0x232838, 0.85); scene.add(amb);
+      var key = new THREE.DirectionalLight(0xffe8d2, 1.05); key.position.set(6, 4, 8); scene.add(key);
+      var rim = new THREE.DirectionalLight(0x6f9cff, 0.4); rim.position.set(-8, -3, -6); scene.add(rim);
+      scene.userData.lights = { amb: amb, key: key, rim: rim };
+    }
+
+    /* --- render target: MSAA + HDR -------------------------------------------
+     * `antialias:true` ở trên CHỈ tác dụng lên framebuffer mặc định. Đi qua
+     * EffectComposer là vẽ vào target offscreen, và target đó KHÔNG multisample
+     * theo mặc định — nên cờ antialias thành vô nghĩa và mọi rìa bị răng cưa.
+     * WebGLMultisampleRenderTarget (có từ r111) khôi phục MSAA thật.
+     * HalfFloat giữ giá trị >1.0 để bloom ăn được highlight HDR thật.
+     */
+    var samples = opt.msaa != null ? opt.msaa : 4;
+    var rtOpts = {
+      minFilter: THREE.LinearFilter,
+      magFilter: THREE.LinearFilter,
+      format: THREE.RGBAFormat,
+      type: opt.hdr === false ? THREE.UnsignedByteType : THREE.HalfFloatType
+    };
+    var rt;
+    if (samples > 0 && typeof THREE.WebGLMultisampleRenderTarget === 'function') {
+      rt = new THREE.WebGLMultisampleRenderTarget(W, H, rtOpts);
+      rt.samples = samples;
+    } else {
+      rt = new THREE.WebGLRenderTarget(W, H, rtOpts);
+      if (samples > 0) console.warn('[hf-astro] không có WebGLMultisampleRenderTarget — chạy không MSAA.');
+    }
+
+    var composer = new THREE.EffectComposer(renderer, rt);
+    composer.addPass(new THREE.RenderPass(scene, camera));
+
+    /* Ngưỡng bloom: cảnh giờ là HDR TUYẾN TÍNH, không còn bị nén về [0,1] như
+     * trước. Highlight thật nằm TRÊN 1.0, nên ngưỡng cũ 0.62 (chỉnh cho ảnh đã
+     * tone map) sẽ làm cả những vùng sáng vừa cũng loé. Mặc định nâng lên 1.0. */
+    var bloom = new THREE.UnrealBloomPass(
+      new THREE.Vector2(W, H),
+      opt.bloomStrength != null ? opt.bloomStrength : 0.78,
+      opt.bloomRadius != null ? opt.bloomRadius : 0.7,
+      opt.bloomThreshold != null ? opt.bloomThreshold : (opt.hdr === false ? 0.62 : 1.0));
+    composer.addPass(bloom);
+
+    // Bản sao uniforms để hai stage không dùng chung state.
+    var lensDef = {
+      uniforms: THREE.UniformsUtils.clone(HFA.LensShader.uniforms),
+      vertexShader: HFA.LensShader.vertexShader,
+      fragmentShader: HFA.LensShader.fragmentShader
+    };
+    var lens = new THREE.ShaderPass(lensDef);
+    lens.renderToScreen = true;
+    lens.uniforms.uExposure.value = opt.exposure != null ? opt.exposure : 1.02;
+    composer.addPass(lens);
+
+    var texLoader = new THREE.TextureLoader();
+    texLoader.setCrossOrigin('anonymous');
+    function loadTex(path, enc) {
+      var tx = texLoader.load(path);
+      if (enc) tx.encoding = enc;
+      tx.anisotropy = renderer.capabilities.getMaxAnisotropy();
+      return tx;
+    }
+
+    var stage = {
+      renderer: renderer, scene: scene, camera: camera,
+      composer: composer, bloom: bloom, lens: lens, rt: rt,
+      W: W, H: H, loadTex: loadTex,
+      clearColor: opt.clearColor != null ? opt.clearColor : 0x08080a
+    };
+
+    /* --- environment map (IBL) ----------------------------------------------
+     * MeshStandardMaterial là vật liệu PBR: nó phản xạ MÔI TRƯỜNG. Không có
+     * envMap thì kim loại và bề mặt bóng mất gần hết thông tin phản xạ, chỉ còn
+     * highlight từ đèn → ra chất nhựa sơn. (Tập "Vàng" là ví dụ rõ nhất.)
+     * Dựng một bầu trời tối có vài đốm sáng, nướng qua PMREM MỘT LẦN lúc khởi
+     * tạo → tất định, không phụ thuộc t, mọi MeshStandardMaterial hưởng ngay
+     * qua scene.environment mà không phải sửa từng vật liệu.
+     */
+    if (opt.environment !== false) {
+      stage.environment = HFA.buildEnvironment(renderer, scene, opt.environmentSeed || 4242);
+    }
+
+    return stage;
+  };
+
+  /** Bầu trời sao mờ nướng thành envMap PMREM. Trả về texture (đã gán scene.environment). */
+  HFA.buildEnvironment = function (renderer, scene, seed) {
+    var pr = HFA.mulberry32(seed);
+    var cv = document.createElement('canvas');
+    cv.width = 512; cv.height = 256;
+    var cx = cv.getContext('2d');
+
+    // nền: gradient rất tối, hơi lạnh ở dưới, ấm nhạt ở trên (ánh sáng thiên hà)
+    var gr = cx.createLinearGradient(0, 0, 0, 256);
+    gr.addColorStop(0, '#0a0d16'); gr.addColorStop(0.5, '#070910'); gr.addColorStop(1, '#05060b');
+    cx.fillStyle = gr; cx.fillRect(0, 0, 512, 256);
+
+    // dải Ngân Hà mờ vắt ngang → cho phản xạ có hướng, tránh env phẳng lì
+    var bandGr = cx.createLinearGradient(0, 96, 0, 160);
+    bandGr.addColorStop(0, 'rgba(70,80,110,0)');
+    bandGr.addColorStop(0.5, 'rgba(120,130,165,0.30)');
+    bandGr.addColorStop(1, 'rgba(70,80,110,0)');
+    cx.fillStyle = bandGr; cx.fillRect(0, 96, 512, 64);
+
+    // vài nguồn sáng nhỏ để kim loại có điểm loé
+    for (var i = 0; i < 220; i++) {
+      var x = pr() * 512, y = pr() * 256, s = pr() < 0.06 ? 2.2 : 1.0;
+      var b = 0.35 + pr() * 0.65;
+      cx.fillStyle = 'rgba(255,252,245,' + b.toFixed(3) + ')';
+      cx.fillRect(x, y, s, s);
+    }
+
+    var tex = new THREE.CanvasTexture(cv);
+    tex.mapping = THREE.EquirectangularReflectionMapping;
+    tex.encoding = THREE.sRGBEncoding;
+
+    var pmrem = new THREE.PMREMGenerator(renderer);
+    pmrem.compileEquirectangularShader();
+    var env = pmrem.fromEquirectangular(tex).texture;
+    pmrem.dispose();
+    tex.dispose();
+
+    scene.environment = env;   // KHÔNG gán scene.background — nền do starfield lo
+    return env;
+  };
+
+  /* ---- CHỌN MÀU SAO CHO SỐNG SÓT QUA ACES ---------------------------------
+   * Bài học đo được ở tập 08, tốn 3 vòng sửa mới ra. Đọc trước khi chọn bảng màu.
+   *
+   * ACES nén mạnh vùng sáng. Càng đẩy độ sáng lên, sắc càng bị kéo về trắng/xám.
+   * Nên SẮC PHẢI ĐẾN TỪ TỈ LỆ GIỮA CÁC KÊNH, không đến từ độ sáng.
+   *
+   * Đo thật (bão hoà còn lại sau khi qua chuỗi ACES của three.js r128):
+   *   (0.42, 0.60, 1.05)  → còn 11–25%  → ra XÁM BÊ TÔNG. Đừng dùng.
+   *   (0.10, 0.32, 1.00)  → còn 37–67%  → ra LAM THẬT.
+   *
+   * Quy tắc rút ra:
+   *   - Kênh yếu nên ≤ 0.2× kênh mạnh. Nâng kênh yếu lên là giết sắc.
+   *   - Kênh mạnh giữ quanh 1.0, đừng hơn.
+   *   - Muốn SÁNG hơn thì tăng emissive (vượt ngưỡng bloom), ĐỪNG nâng kênh yếu.
+   *
+   * Hệ quả cho chữ và sơ đồ: bloom làm NHOÈ MẤT NÉT CHỮ. Nét biểu đồ và typo phải
+   * để DƯỚI ngưỡng bloom (<1.0). Muốn chữ rõ hơn thì tăng độ dày nét, không tăng
+   * emissive.
+   *
+   * Chống cháy trắng: giữ diện tích có luminance >0.85 (sau tonemap) dưới ~12%
+   * khung. Cần một vùng sáng rộng thì đẩy bằng SỐ LƯỢNG hạt nhỏ, đừng đẩy bằng
+   * độ sáng của hạt lớn.
+   */
+  HFA.saturationAfterACES = function (r, g, b) {
+    // Ước lượng nhanh xem một màu tuyến tính có giữ được sắc sau ACES không.
+    // Trả về {before, after} ∈ [0,1]. after < 0.3 nghĩa là sẽ ra xám.
+    function aces(v) {
+      // xấp xỉ đủ dùng để SO SÁNH các màu với nhau (không phải bản đầy đủ)
+      return Math.max(0, Math.min(1, (v * (2.51 * v + 0.03)) / (v * (2.43 * v + 0.59) + 0.14)));
+    }
+    function sat(x, y, z) {
+      var mx = Math.max(x, y, z), mn = Math.min(x, y, z);
+      return mx <= 0 ? 0 : (mx - mn) / mx;
+    }
+    return { before: sat(r, g, b), after: sat(aces(r), aces(g), aces(b)) };
+  };
+
+  /* ---- sprite hạt tròn mềm (tránh hạt vuông) ------------------------------ */
+  HFA.dotTex = function (rr, gg, bb) {
+    var cv = document.createElement('canvas');
+    cv.width = cv.height = 64;
+    var cx = cv.getContext('2d');
+    var gr = cx.createRadialGradient(32, 32, 0, 32, 32, 32);
+    gr.addColorStop(0, 'rgba(' + rr + ',' + gg + ',' + bb + ',1)');
+    gr.addColorStop(0.4, 'rgba(' + rr + ',' + gg + ',' + bb + ',0.55)');
+    gr.addColorStop(1, 'rgba(0,0,0,0)');
+    cx.fillStyle = gr; cx.fillRect(0, 0, 64, 64);
+    var tx = new THREE.CanvasTexture(cv);
+    tx.encoding = THREE.sRGBEncoding;
+    return tx;
+  };
+
+  /* ---- BỐN LỖI ĐÃ LÀM CHẾT HÀNG CHỤC CẢNH — đọc trước khi dựng tập mới -----
+   *
+   * Cả bốn đều KHÔNG bị `hyperframes validate` bắt, vì validate chỉ lấy vài mẫu
+   * thời gian. Chúng chỉ lộ ra khi render ảnh và NHÌN. Rút từ tập 09–12.
+   *
+   * 1. BIẾN BỊ CHE (shadowing).
+   *    Tập "nước": một mesh tên `grain` bị che bởi `var grain = 0.040` (lượng
+   *    grain của lens) khai báo ngay trong renderAtTime → mọi cảnh từ S19 trở đi
+   *    chết. Đặt tên mesh khác hẳn tên biến cục bộ; đối chiếu danh sách biến
+   *    top-level với biến trong renderAtTime trước khi giao.
+   *
+   * 2. GỌI UNIFORM KHÔNG TỒN TẠI.
+   *    Tập "photon": gọi `.uniforms.uEm` trên kết quả của HFA.buildStars — hàm
+   *    đó CHỈ có `uOp`. Ném TypeError, 17 cảnh liên tiếp đứng hình. Kiểm API
+   *    thư viện trước khi gọi, đừng đoán tên uniform.
+   *
+   * 3. SAI TỈ LỆ SÂN KHẤU.
+   *    Tập "nước": nguyên tử r=1.30 đặt trên mặt cầu r=140 với camera cách 2.7
+   *    → hai quả cầu phủ kín khung, ống liên kết thành tấm phẳng. Tính trước
+   *    tỉ lệ vật thể so với khoảng cách camera, đừng chỉnh mò sau.
+   *
+   * 4. CHỮ QUÁ NHỎ KHÔNG ĐỌC NỔI.
+   *    Tập "nước": chữ cao 0.42 world ở khoảng cách camera 28 → ra dưới 18px
+   *    trên 1080p. Cần ≥26px. Với mỗi shot có chữ, tính trước
+   *    `px ≈ (h_world / (2 * d * tan(fov/2))) * 1080` rồi mới chốt camera.
+   *    Muốn chữ rõ hơn thì TĂNG ĐỘ DÀY NÉT, đừng tăng emissive — bloom làm
+   *    nhoè mất nét chữ. Giữ chữ và sơ đồ DƯỚI ngưỡng bloom 1.0.
+   */
+
+  /* ---- CHỮ TIẾNG VIỆT TRÊN CANVAS: CANVAS PHẢI ĐỦ CAO CHO DẤU ------------
+   *
+   * Lỗi hệ thống, đo được ở tập quasar: 72/121 nhãn bị CẮT MẤT DẤU.
+   *
+   * Cơ chế: canvas 2D đặt `textBaseline='middle'` canh em-box vào giữa chiều
+   * cao canvas. Nhưng dấu tiếng Việt nhô RA NGOÀI em-box — mũ/sắc/huyền/ngã/hỏi
+   * nhô lên trên cap-height (chồng hai tầng như `ế`, `ộ`), dấu nặng thụt xuống
+   * dưới baseline. Canvas chật thì chữ cái vẫn vẽ, dấu rơi ra ngoài vùng vẽ.
+   * Triệu chứng: "vài chục nghìn ly" render ra "vai chuc nghin ly" dù mã nguồn
+   * viết đúng dấu.
+   *
+   * Ngưỡng an toàn đo được: `hpx >= fpx * 2.4 * số_dòng`.
+   * ⚠ Ngưỡng 2.0 KHÔNG đủ — một nhãn ở tỉ lệ 2.09 vẫn bị cắt.
+   *
+   * Nới canvas kéo theo HAI hệ quả phải xử cùng lúc, nếu không sẽ hỏng kiểu khác:
+   *   1. Tỉ lệ khung của plane phải tính theo chiều cao THẬT sau khi nở, không
+   *      theo `hpx` gốc — nếu không mọi chữ bị KÉO GIÃN NGANG.
+   *   2. Trần bù `glyphFrac` phải chia cho hệ số nở — canvas cao hơn làm
+   *      glyphFrac tụt, trần giữ nguyên thì chữ NHỎ ĐI THẬT (đo được 32px → 21px).
+   *
+   * Dùng `HFA.canvasHeightForText` khi tự dựng nhãn canvas.
+   *
+   * ---- CHỮ NHẬT (kanji/kana) THÌ KHÁC ------------------------------------
+   * Kanji KHÔNG có dấu nhô ra ngoài em-box: chữ nằm gọn trong hộp vuông.
+   * Đo thật ngày 2026-09-21 (BIZ UDPGothic 700, headless Chrome, "位牌と仏壇"):
+   *   ascent 27.7px + descent 27.3px = 55.0px ở font 56px → tỉ lệ ~0.98.
+   * Tức hệ số 2.4 của tiếng Việt CẤP DƯ hơn gấp đôi. Không gây cắt chữ, nhưng
+   * canvas cao gấp đôi làm `glyphFrac` tụt một nửa → chữ NHỎ ĐI THẬT trên màn
+   * hình (đúng cơ chế đã ghi ở hệ quả 2 bên trên). Vì thế tách hệ số theo chữ.
+   * Vẫn để dư 1.45 cho phần nhô của 〜 ー ゛ ゜ và chữ Latin lẫn trong câu Nhật.
+   */
+  var CJK_RE = /[぀-ヿ㐀-䶿一-鿿＀-￯]/;
+
+  /** true nếu chuỗi có chữ Nhật (kana/kanji/toàn角). */
+  HFA.isCJK = function (s) { return CJK_RE.test(String(s || '')); };
+
+  /**
+   * Chiều cao canvas tối thiểu cho nhãn chữ.
+   * @param fontPx cỡ chữ px
+   * @param lines  số dòng
+   * @param requestedHpx chiều cao mong muốn (lấy max)
+   * @param text   (tuỳ chọn) chữ sẽ vẽ — có chữ Nhật thì dùng hệ số 1.45 thay vì 2.4.
+   *               Bỏ trống = giữ nguyên hành vi cũ (2.4) cho các tập tiếng Việt.
+   */
+  HFA.canvasHeightForText = function (fontPx, lines, requestedHpx, text) {
+    var k = (text != null && HFA.isCJK(text)) ? 1.45 : 2.4;
+    var need = Math.ceil(fontPx * k * (lines || 1));
+    return Math.max(requestedHpx || 0, need);
+  };
+
+  /** px ước tính của một vật cao `hWorld` ở khoảng cách `dist`, camera fov độ.
+   *
+   * ⚠ HÀM NÀY ĐO PLANE, KHÔNG ĐO CHỮ. Với nhãn vẽ bằng canvas texture, chữ dài
+   * làm font bị thu nhỏ cho vừa canvas trong khi plane vẫn giữ nguyên kích
+   * thước → glyph thật chỉ chiếm 55–62% chiều cao plane. Đo được ở tập quasar:
+   * hàm báo 49px trong khi chữ trên frame render chỉ **4px**.
+   *
+   * Với nhãn canvas, truyền `glyphFrac` (tỉ lệ chiều cao glyph / chiều cao
+   * plane, thường 0.55–0.68) làm tham số thứ 5, hoặc tốt hơn: cho `textTex`
+   * trả về glyphFrac thật rồi chia hWorld cho nó khi dựng plane.
+   *
+   * Cách đáng tin duy nhất vẫn là ĐO TRÊN FRAME ĐÃ RENDER. Ngưỡng đọc được:
+   * ≥26px @1080p.
+   */
+  HFA.estimatePx = function (hWorld, dist, fovDeg, screenH, glyphFrac) {
+    var f = (fovDeg || 46) * Math.PI / 180;
+    var px = (hWorld / (2 * dist * Math.tan(f / 2))) * (screenH || 1080);
+    return px * (glyphFrac == null ? 1 : glyphFrac);
+  };
+
+  /* ---- starfield màu theo nhiệt độ ----------------------------------------
+   * ⚠ BÁN KÍNH: radius PHẢI lớn hơn khoảng cách camera XA NHẤT trong cả timeline.
+   * Camera bay ra ngoài quả cầu sao → nhìn thấy "quả bóng vũ trụ" bo tròn. Đây là
+   * lỗi đã xảy ra thật. Truyền opt.maxCamDist để bật cảnh báo tự động.
+   * Hằng số trong gl_PointSize phải BẰNG ĐÚNG radius, nếu không sao đổi độ to khi
+   * đổi bán kính — nên nó được nội suy vào shader ngay dưới đây.
+   */
+  HFA.buildStars = function (opt) {
+    opt = opt || {};
+    var R = opt.radius || 9000;
+    var N = opt.count || 3600;
+    var pr = HFA.mulberry32(opt.seed || 20260808);
+
+    if (opt.maxCamDist && R <= opt.maxCamDist * 1.5) {
+      console.warn('[hf-astro] starfield radius ' + R + ' quá nhỏ so với camera xa nhất ' +
+        opt.maxCamDist + ' — sẽ lộ "quả bóng vũ trụ". Tăng radius lên >' +
+        Math.ceil(opt.maxCamDist * 2) + ' (và giữ < camera.far).');
+    }
+
+    var pos = new Float32Array(N * 3), col = new Float32Array(N * 3), siz = new Float32Array(N);
+    var tmp = new THREE.Vector3();
+    for (var i = 0; i < N; i++) {
+      var u = pr(), v = pr();
+      var theta = Math.acos(2 * u - 1), phi = 2 * Math.PI * v;
+      tmp.set(Math.sin(theta) * Math.cos(phi), Math.cos(theta) * 0.8, Math.sin(theta) * Math.sin(phi))
+        .normalize().multiplyScalar(R);
+      pos[i * 3] = tmp.x; pos[i * 3 + 1] = tmp.y; pos[i * 3 + 2] = tmp.z;
+
+      // màu theo nhiệt độ: xanh nóng → trắng → vàng nhạt
+      var tt = pr(), c = new THREE.Color();
+      if (tt < 0.14) c.setRGB(0.6, 0.72, 1.0);
+      else if (tt < 0.5) c.setRGB(0.85, 0.9, 1.0);
+      else if (tt < 0.8) c.setRGB(0.9, 0.92, 1.0);
+      else c.setRGB(0.8, 0.82, 0.95);
+      c.multiplyScalar(0.3 + pr() * 0.5);
+      col[i * 3] = c.r; col[i * 3 + 1] = c.g; col[i * 3 + 2] = c.b;
+
+      siz[i] = (pr() < 0.05 ? 2.6 : 1.0) * (0.8 + pr() * 1.4);
+    }
+
+    var g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    g.setAttribute('color', new THREE.BufferAttribute(col, 3));
+    g.setAttribute('aS', new THREE.BufferAttribute(siz, 1));
+
+    var m = new THREE.ShaderMaterial({
+      uniforms: { uOp: { value: 1 } },
+      transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+      vertexShader:
+        'attribute float aS;attribute vec3 color;varying vec3 vC;' +
+        'void main(){vC=color;vec4 mv=modelViewMatrix*vec4(position,1.0);' +
+        'gl_PointSize=aS*(' + R.toFixed(1) + '/-mv.z);gl_Position=projectionMatrix*mv;}',
+      fragmentShader:
+        'varying vec3 vC;uniform float uOp;' +
+        'void main(){vec2 d=gl_PointCoord-0.5;float r=length(d);' +
+        'float a=smoothstep(0.5,0.0,r);gl_FragColor=vec4(vC,a*uOp);}'
+    });
+
+    var pts = new THREE.Points(g, m);
+    pts.userData.radius = R;
+    return pts;
+  };
+
+  /* ---- TÍCH LUỸ ĐA MẪU: khử răng cưa + motion blur thật -------------------
+   *
+   * Chỉ làm được vì renderAtTime(t) là HÀM THUẦN, không trạng thái: gọi lại với
+   * t nào cũng cho đúng kết quả của t đó. Render offline nên được phép trả giá
+   * bằng thời gian để đổi lấy chất lượng — đây là thứ engine realtime không có.
+   *
+   * Mỗi frame xuất ra lấy N mẫu:
+   *   - t rải đều trong khoảng 1/fps      → MOTION BLUR thật theo quỹ đạo
+   *   - camera lệch dưới-một-pixel        → SUPERSAMPLING, khử cả răng cưa
+   *     shader/specular mà MSAA không xử lý được
+   * rồi cộng trung bình.
+   *
+   * Giá: thời gian capture ×N. Nháp để samples=1, bản giao hàng đặt 4.
+   *
+   * CÁCH DÙNG — trong file tập:
+   *   HFA.enableAccumulation(stage, {samples:4, fps:30});
+   *   ... window.__time""lines[id] = HFA.makeTimeline(id, TOTAL, renderAtTime);
+   * makeTimeline tự phát hiện stage đã bật tích luỹ nếu bạn truyền stage:
+   *   HFA.makeTimeline(id, TOTAL, renderAtTime, stage)
+   */
+  HFA.enableAccumulation = function (stage, o) {
+    o = o || {};
+    var N = Math.max(1, o.samples || 1);
+    if (N === 1) {
+      // tắt tích luỹ → PHẢI trả composer về chế độ vẽ thẳng ra màn hình,
+      // nếu không màn hình đen (không pass nào ghi ra nữa).
+      stage.accum = null;
+      stage.composer.renderToScreen = true;
+      return stage;
+    }
+
+    /* Chuyển hướng đầu ra composer vào texture thay vì màn hình.
+     * ⚠ PHẢI đặt trên COMPOSER, không phải trên pass: EffectComposer.render()
+     * gán lại pass.renderToScreen mỗi frame theo công thức
+     *   pass.renderToScreen = composer.renderToScreen && làPassCuốiCùng
+     * nên mọi thiết lập trực tiếp lên lens.renderToScreen đều bị xoá. (Đo được:
+     * đặt trên pass thì cả read/write buffer đều chứa dữ liệu TRƯỚC lens.) */
+    stage.composer.renderToScreen = false;
+
+    var rtOpts = {
+      minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter,
+      format: THREE.RGBAFormat, type: THREE.HalfFloatType
+    };
+    var accumRT = new THREE.WebGLRenderTarget(stage.W, stage.H, rtOpts);
+
+    // quad toàn màn hình dùng để cộng dồn rồi để xuất ra
+    var quadScene = new THREE.Scene();
+    var quadCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+    var quadMat = new THREE.ShaderMaterial({
+      uniforms: { tSrc: { value: null }, uWeight: { value: 1 / N } },
+      transparent: true, depthTest: false, depthWrite: false,
+      blending: THREE.CustomBlending,
+      blendEquation: THREE.AddEquation,
+      blendSrc: THREE.OneFactor, blendDst: THREE.OneFactor,   // cộng thuần
+      vertexShader: 'varying vec2 vUv;void main(){vUv=uv;gl_Position=vec4(position.xy,0.0,1.0);}',
+      fragmentShader: 'varying vec2 vUv;uniform sampler2D tSrc;uniform float uWeight;' +
+        'void main(){gl_FragColor=vec4(texture2D(tSrc,vUv).rgb*uWeight,1.0);}'
+    });
+    quadScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), quadMat));
+
+    var outMat = new THREE.ShaderMaterial({
+      uniforms: { tSrc: { value: accumRT.texture } },
+      depthTest: false, depthWrite: false,
+      vertexShader: 'varying vec2 vUv;void main(){vUv=uv;gl_Position=vec4(position.xy,0.0,1.0);}',
+      fragmentShader: 'varying vec2 vUv;uniform sampler2D tSrc;' +
+        'void main(){gl_FragColor=vec4(texture2D(tSrc,vUv).rgb,1.0);}'
+    });
+    var outScene = new THREE.Scene();
+    outScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), outMat));
+
+    stage.accum = {
+      samples: N, fps: o.fps || 30,
+      rt: accumRT, quadScene: quadScene, quadCam: quadCam,
+      quadMat: quadMat, outScene: outScene
+    };
+    return stage;
+  };
+
+  /* Vị trí lệch subpixel — chuỗi Halton (2,3): phân bố đều hơn ngẫu nhiên,
+   * và tất định tuyệt đối (không đụng tới PRNG chung). */
+  function halton(i, b) {
+    var f = 1, r = 0;
+    while (i > 0) { f /= b; r += f * (i % b); i = Math.floor(i / b); }
+    return r;
+  }
+
+  /** Vẽ MỘT frame tại t. Tự dùng tích luỹ nếu stage đã bật, không thì vẽ thẳng. */
+  HFA.renderFrame = function (stage, renderAtTime, t) {
+    var acc = stage && stage.accum;
+    if (!acc) { renderAtTime(t); return; }   // renderAtTime tự gọi composer.render()
+
+    var r = stage.renderer, cam = stage.camera, N = acc.samples;
+    var dt = 1 / acc.fps;
+    var prevAutoClear = r.autoClear;
+
+    // xoá bộ tích luỹ ĐÚNG MỘT LẦN, trước vòng lặp
+    r.setRenderTarget(acc.rt);
+    r.setClearColor(0x000000, 1);
+    r.clear(true, true, true);
+    r.setRenderTarget(null);
+
+    for (var i = 0; i < N; i++) {
+      // lệch dưới-một-pixel (Halton, tất định)
+      var jx = halton(i + 1, 2) - 0.5, jy = halton(i + 1, 3) - 0.5;
+      cam.setViewOffset(stage.W, stage.H, jx, jy, stage.W, stage.H);
+
+      // trải t trong đúng một frame → motion blur
+      var tt = t + ((i + 0.5) / N - 0.5) * dt;
+      r.setClearColor(stage.clearColor, 1);   // trả màu nền cho RenderPass
+      renderAtTime(tt < 0 ? 0 : tt);
+
+      /* ⚠ autoClear PHẢI tắt ở đây.
+       * renderer.autoClear mặc định TRUE → mỗi r.render() xoá sạch target trước
+       * khi vẽ. Cộng dồn mà không tắt thì 3 mẫu đầu bị xoá, chỉ mẫu cuối sống
+       * sót và nó mang trọng số 1/N → ảnh tối đúng N lần. (Đã dính lỗi này:
+       * ảnh ra tối bằng 1/4 với N=4.) */
+      // pass cuối có needsSwap=true nên sau render(), kết quả nằm ở readBuffer
+      acc.quadMat.uniforms.tSrc.value = stage.composer.readBuffer.texture;
+      r.autoClear = false;
+      r.setRenderTarget(acc.rt);
+      r.render(acc.quadScene, acc.quadCam);
+      r.setRenderTarget(null);
+      r.autoClear = prevAutoClear;
+    }
+
+    cam.clearViewOffset();
+    r.setClearColor(stage.clearColor, 1);
+    r.render(acc.outScene, acc.quadCam);   // xuất ra màn hình
+  };
+
+  /* ---- phụ đề -------------------------------------------------------------
+   * CUES = [{t, s}] do scripts/gen-captions.mjs sinh, đã cắt sẵn MỘT DÒNG:
+   * ≤42 ký tự với tiếng Việt, ≤22 ký tự toàn角 với tiếng Nhật (chữ Nhật rộng gấp đôi).
+   * Đừng cắt tay và đừng đổi mảng này bằng tay.
+   */
+  HFA.subtitleAt = function (CUES, t) {
+    var s = '';
+    for (var i = 0; i < CUES.length; i++) {
+      if (CUES[i].t <= t + 0.001) s = CUES[i].s; else break;
+    }
+    return s;
+  };
+
+  HFA.applySubtitle = function (el, CUES, t) {
+    if (!el) return;
+    var s = HFA.subtitleAt(CUES, t);
+    if (el.textContent !== s) el.textContent = s;   // chỉ ghi khi đổi
+  };
+
+  /* ---- nhãn chương --------------------------------------------------------
+   * marks = [{t, x:'CHƯƠNG 1'}, ...]; hiện `hold` giây rồi tắt mượt.
+   */
+  HFA.applyChapter = function (el, marks, t, hold) {
+    if (!el) return 0;
+    hold = hold || 5.5;
+    var show = 0, txt = '';
+    for (var i = 0; i < marks.length; i++) {
+      var m = marks[i];
+      if (t >= m.t && t < m.t + hold) {
+        show = HFA.band(t, m.t + 0.3, m.t + hold - 0.7, 0.6);
+        txt = m.x;
+      }
+    }
+    if (el.textContent !== txt) el.textContent = txt;
+    el.style.opacity = show.toFixed(3);
+    return show;
+  };
+
+  /* ---- fade vào/ra toàn cục ----------------------------------------------- */
+  HFA.globalFade = function (t, TOTAL, inSec, outSec) {
+    return HFA.smooth(t / (inSec || 1.5)) * HFA.smooth((TOTAL - t) / (outSec || 3.0));
+  };
+
+  /* ---- dựng timeline ------------------------------------------------------
+   * ⚠ HÀM NÀY KHÔNG TỰ ĐĂNG KÝ — và đó là chủ ý.
+   * StaticGuard của HyperFrames QUÉT VĂN BẢN file composition để tìm chuỗi
+   * `window.__timelines`. Giấu phần đăng ký vào thư viện này làm guard báo
+   * "Missing window.__timelines registration" và render ra frame tĩnh.
+   * (Đã kiểm chứng bằng hyperframes validate.)
+   *
+   * Vì vậy file tập PHẢI tự viết hai dòng đăng ký. Mẫu (thay SLUG bằng slug thật,
+   * và viết bằng cú pháp ngoặc vuông bình thường — ở đây tách chữ để chính bản
+   * hướng dẫn này không bị StaticGuard đếm nhầm thành một đăng ký có thật):
+   *
+   *     window.__time""lines = window.__time""lines || {};
+   *     window.__time""lines[ "SLUG" ] = HFA.makeTimeline("SLUG", TOTAL, renderAtTime);
+   *
+   * SLUG phải trùng data-composition-id của div gốc.
+   * (StaticGuard quét VĂN BẢN, kể cả trong comment — đừng viết ví dụ đăng ký
+   *  nguyên dạng ở bất kỳ đâu trong file dùng chung này.)
+   *
+   * Đổi lại, hàm này lo phần dễ sai: driver clk tuyến tính, bọc try/catch để
+   * lỗi hiện lên #err (thay vì ra frame đen không rõ lý do), và vẽ frame đầu.
+   */
+  HFA.makeTimeline = function (id, TOTAL, renderAtTime, stage) {
+    if (!document.querySelector('[data-composition-id="' + id + '"]')) {
+      console.warn('[hf-astro] không thấy [data-composition-id="' + id + '"] — ' +
+        'khoá timeline phải trùng id của div gốc.');
+    }
+    function safeRender(t) {
+      try {
+        // truyền stage (đã enableAccumulation) → mỗi frame lấy N mẫu
+        if (stage && stage.accum) HFA.renderFrame(stage, renderAtTime, t);
+        else renderAtTime(t);
+      } catch (err) {
+        var eb = document.getElementById('err');
+        if (eb) {
+          eb.style.display = 'block';
+          eb.textContent = 'renderAtTime@' + t.toFixed(2) + ': ' + err.message;
+        }
+        throw err;
+      }
+    }
+    var tl = gsap.timeline({ paused: true });
+    var clk = { t: 0 };
+    tl.to(clk, { t: TOTAL, duration: TOTAL, ease: 'none', onUpdate: function () { safeRender(clk.t); } }, 0);
+    safeRender(0);          // vẽ frame đầu
+    return tl;
+  };
+
+  global.HFA = HFA;
+})(window);
+/* ===== HFA:END ===== */
+
+/* ============================================================================
+ * omoide-yasashii — 悲しみが薄れるのは薄情なのか｜記憶研究が答えた問い
+ * composition HyperFrames — 死と「その後」(kênh Nhật)
+ *
+ * Nguồn thời gian: projects/omoide-yasashii/timing.json (giọng THẬT, dryRun:false).
+ * KHÔNG remap — mốc cảnh dưới đây LÀ mốc thật, lấy từ cue.start của cue đầu shot.
+ *
+ * Luật tất định: mọi chuyển động là hàm thuần của t. Không rAF/Date.now/
+ * Math.random/setTimeout/+= dt. Ngẫu nhiên = mulberry32 có seed.
+ *
+ * Thể loại: MỘT scene graph duy nhất trong toàn tập (GHI CHÚ storyboard mục 1).
+ * Phòng 和室 + luồng nắng + hệ hạt luôn tồn tại cùng lúc; "cắt cảnh" = camera di
+ * chuyển + ba tham số hạt (blendMode/colorMix/haloScale) là hàm smoothstep của
+ * khoảng cách camera->trục luồng `d`, KHÔNG theo cue/timeline.
+ * ========================================================================== */
+var SLUG = "omoide-yasashii";
+var TOTAL = 828.13;
+var W = 1920, H = 1080;
+
+/* ---- cửa sổ 37 cảnh, GIÂY THẬT (cue.start của cue đầu shot, timing.json) --- */
+var SC = {
+  S01:[0,6.61],       S02:[6.61,17.62],    S03:[17.62,28.56],   S04:[28.56,37.85],
+  S05:[37.85,54.14],  S06:[54.14,73.57],   S07:[73.57,117.84],  S08:[117.84,134.18],
+  S09:[134.18,164.52],S10:[164.52,183.55], S11:[183.55,222.72], S12:[222.72,244.29],
+  S13:[244.29,258.47],S14:[258.47,282.52], S15:[282.52,294.98], S16:[294.98,312.02],
+  S17:[312.02,323.72],S18:[323.72,333.2],  S19:[333.2,345.47],  S20:[345.47,373.84],
+  S21:[373.84,399.86],S22:[399.86,419.26], S23:[419.26,448.64], S24:[448.64,470.53],
+  S25:[470.53,502.67],S26:[502.67,554.14], S27:[554.14,590.01], S28:[590.01,617.49],
+  S29:[617.49,648.79],S30:[648.79,676.53], S31:[676.53,687.4],  S32:[687.4,700.18],
+  S33:[700.18,725.95],S34:[725.95,751.77], S35:[751.77,773.34], S36:[773.34,805.07],
+  S37:[805.07,821.08]
+};
+
+/* ⚠⚠ ĐƠN VỊ CỦA loc(): GIÂY, KHÔNG PHẢI TỈ LỆ 0–1. CHỐT MỘT LẦN, ĐỌC TRƯỚC KHI SỬA.
+ * `HFA.scenes().loc` của thư viện trả TỈ LỆ 0–1. Toàn bộ hàm cảnh trong file này
+ * viết theo NGHĨA GIÂY ("0s...6s...12s..." như storyboard ghi). Dùng bản 0–1 của
+ * thư viện thì mọi cảnh đóng băng ở ~1% đầu — lỗi "pass mà sai" số 1 đã xảy ra
+ * thật ở tập tamashii-no-tabi (47 cảnh đóng băng, 3 cổng vẫn PASS SẠCH).
+ * Sửa TẠI ĐÂY, ⛔ KHÔNG sửa hf-astro.js. */
+function loc(t, k){
+  var w = SC[k];
+  return Math.min(w[1] - w[0], Math.max(0, t - w[0]));
+}
+function dur(k){ return SC[k][1] - SC[k][0]; }
+function inSc(t, k){ var w = SC[k]; return t >= w[0] && t < w[1]; }
+
+/* nhãn chương — mốc lấy từ timing.json (C01 / C17 / C42 / C87) */
+var CHAPTERS = [
+  {t:0,      x:'第1章　入口'},
+  {t:117.84, x:'第2章　測った人たち'},
+  {t:323.72, x:'第3章　深いところ'},
+  {t:687.4,  x:'第4章　帰り道'}
+];
+
+/* ---- helper toán ------------------------------------------------------------ */
+function clamp(x,a,b){ return Math.min(b, Math.max(a, x)); }
+function smooth(x){ x = clamp(x,0,1); return x*x*(3-2*x); }
+function band(t,a,b,f){
+  f = f || 0.8; var h = f*0.5;
+  if (t < a-h || t > b+h) return 0;
+  var up = smooth((t-(a-h))/f), dn = smooth(((b+h)-t)/f);
+  return Math.min(1, Math.min(up, dn));
+}
+function lerp(a,b,p){ return a + (b-a)*clamp(p,0,1); }
+function ease(x){ x = clamp(x,0,1); return x*x*x*(x*(x*6-15)+10); }
+function lerpE(a,b,p){ return a + (b-a)*ease(p); }
+function ramp(u,a,b){ return ease(clamp((u-a)/(Math.max(1e-6,b-a)),0,1)); }
+function lin(u,a,b){ return clamp((u-a)/(Math.max(1e-6,b-a)),0,1); }
+
+/* ==== bảng màu — nắng chiều, không thêm tông nào (GHI CHÚ storyboard mục 2) === */
+var SUN_EARLY = new THREE.Color(1.00,0.94,0.86);
+var SUN_LATE  = new THREE.Color(1.00,0.72,0.38);
+var TATAMI_C  = new THREE.Color(0.72,0.70,0.52);
+var PAPER_AGED= new THREE.Color(0.86,0.78,0.62);
+var WARM_MEM  = new THREE.Color(1.00,0.80,0.52);
+var COOL_MEM  = new THREE.Color(0.52,0.60,0.68);
+var PARTICLE_FLOOR = 0.22;
+
+/* ⭐ sunAngle(t) — đồng hồ của cả tập (GHI CHÚ mục 3). Nội suy tuyến tính qua
+ * các mốc bảng storyboard. 0° ở S01, 22-23° ở S37. Cường độ LUÔN GIỮ NGUYÊN. */
+var SUN_KEYS = [
+  [0,0], [37.85,0], [54.14,2], [73.57,2],
+  [117.84,4], [312.02,9],
+  [323.72,9], [676.53,18],
+  [687.4,20], [725.95,20],
+  [751.77,22], [805.07,22], [821.08,23]
+];
+function sunAngle(t){
+  t = clamp(t,0,TOTAL);
+  for (var i=0;i<SUN_KEYS.length-1;i++){
+    var a = SUN_KEYS[i], b = SUN_KEYS[i+1];
+    if (t>=a[0] && t<=b[0]) return lerp(a[1], b[1], (t-a[0])/((b[0]-a[0])||1));
+  }
+  return SUN_KEYS[SUN_KEYS.length-1][1];
+}
+function sunProgress(t){ return clamp(sunAngle(t)/23, 0, 1); }
+function sunColor(t){
+  var c = new THREE.Color();
+  c.copy(SUN_EARLY).lerp(SUN_LATE, ease(sunProgress(t)));
+  return c;
+}
+
+/* ==== sân khấu ================================================================
+ * MỘT renderer, MỘT scene: căn phòng 和室 duy nhất. Đèn KHÔNG dùng rig mặc định
+ * (lights:false) — nguồn sáng DUY NHẤT của cả tập là mặt trời chiều qua 障子
+ * (ràng buộc storyboard "một nguồn sáng duy nhất").
+ */
+var stage = HFA.createStage({
+  canvas:'c', width:W, height:H, fov:45, near:0.02, far:200,
+  clearColor:0x0c0906, lights:false,
+  bloomStrength:0.42, bloomRadius:0.68, bloomThreshold:1.0, exposure:1.03
+});
+var renderer = stage.renderer, scene = stage.scene, camera = stage.camera, composer = stage.composer;
+stage.lens.uniforms.uCA.value = 0.0007;
+stage.lens.uniforms.uGrain.value = 0.030;
+stage.lens.uniforms.uVig.value = 0.38;
+renderer.shadowMap.enabled = false;
+var MAXANI = renderer.capabilities.getMaxAnisotropy();
+var rootEl = document.getElementById('root');
+var subEl  = document.getElementById('sub');
+var chapEl = document.getElementById('chap');
+
+/* ---- CHỮ: canvas texture, font BIZ UDPGothic (không dùng ở tập này ngoài
+ * phụ đề/chương — GHI CHÚ storyboard mục 8 cấm mọi nhãn 3D) --------------- */
+var JP_FONT = '"BIZ UDPGothic",sans-serif';
+if (document.fonts){
+  if (document.fonts.load) document.fonts.load('700 96px "BIZ UDPGothic"');
+  if (document.fonts.load) document.fonts.load('400 96px "BIZ UDPGothic"');
+}
+
+/* PRNG seeds riêng cho từng cụm — GHI CHÚ mục 5 + luật composition 3 */
+var rndDustA   = HFA.mulberry32(51001);   /* bụi/hạt ký ức — trường chính */
+var rndDustB   = HFA.mulberry32(51002);   /* mật độ phụ ở vùng quy mô S11 */
+var rndWood    = HFA.mulberry32(51101);   /* vân gỗ/tatami procedural */
+var rndPaper   = HFA.mulberry32(51201);   /* xấp ảnh trên chiếu */
+var rndCurl    = HFA.mulberry32(51301);   /* curl noise chuyển động hạt */
+var rndChild   = HFA.mulberry32(51401);   /* hạt con trôi giữa hai hạt (S30) */
+
+/* ==== NHÓM PHÒNG (ROOM) =======================================================
+ * Gốc toạ độ (0,0,0) = giữa chiếu ở mặt sàn. +X sâu vào trong phòng (về phía
+ * 仏壇/thùng giấy), +Y lên, +Z về phía 障子/hiên (nguồn sáng đến từ -Z tới +Z,
+ * "trên-trái" khi nhìn từ trong phòng ra theo storyboard "nắng đến từ cùng một
+ * phía"). Camera ngồi ở khoảng x=0.9..1.6 nhìn về phía cửa (-Z tăng tới +Z).
+ */
+var ROOM = new THREE.Group(); scene.add(ROOM);
+
+/* ⚠⚠ ĐÈN CỦA PHÒNG — lỗi "pass mà sai" số 4: nhóm không đèn → đen tuyệt đối.
+ * `createStage({lights:false})` tắt rig mặc định vì nguồn sáng DUY NHẤT của
+ * tập này phải là mặt trời chiều qua 障子 (ràng buộc storyboard) — nhưng do đó
+ * PHẢI tự dựng đèn thật ở đây, nếu không mọi vật PBR (tatami/tường/hộp/ảnh/tay)
+ * không nhận ánh sáng nào và render ra đen tuyệt đối (đã xảy ra ở bản đầu).
+ * `sunLight` là DirectionalLight đúng màu/cường độ sunColor(t), cập nhật mỗi
+ * frame trong renderAtTime. `roomFill` là AmbientLight yếu để đáy bóng không
+ * xuống 0 (GHI CHÚ màu mục 2: "độ sáng sàn ~0.08, không phải 0"). */
+var sunLight = new THREE.DirectionalLight(0xfff2df, 0.62);
+sunLight.position.set(-1.0, 1.6, 2.2);      /* từ phía 障子/hiên, trên-trái nhìn từ trong phòng ra */
+sunLight.target.position.set(0.6, 0.0, -0.3);
+ROOM.add(sunLight); ROOM.add(sunLight.target);
+var roomFill = new THREE.AmbientLight(0x554636, 0.30);
+ROOM.add(roomFill);
+var roomBounce = new THREE.HemisphereLight(0xfff0da, 0x2a2016, 0.22);
+ROOM.add(roomBounce);
+
+/* --- tatami: vân dệt chạy ngang, viền 縁 vải sẫm (GHI CHÚ mục 4) ------------ */
+function tatamiTex(seed){
+  var pr = HFA.mulberry32(seed);
+  var cv = document.createElement('canvas'); cv.width=256; cv.height=256;
+  var cx = cv.getContext('2d');
+  cx.fillStyle = '#B7A56C'; cx.fillRect(0,0,256,256);
+  var y;
+  for (y=0;y<256;y+=3){
+    cx.fillStyle = 'rgba(150,132,80,'+(0.16+pr()*0.10).toFixed(3)+')';
+    cx.fillRect(0,y,256,1.5);
+  }
+  cx.fillStyle = 'rgba(20,16,10,0.55)';
+  cx.fillRect(0,0,256,7); cx.fillRect(0,249,256,7);
+  var tx = new THREE.CanvasTexture(cv);
+  tx.wrapS = tx.wrapT = THREE.RepeatWrapping; tx.repeat.set(3,5);
+  tx.encoding = THREE.sRGBEncoding; tx.anisotropy = MAXANI;
+  return tx;
+}
+var tatamiMap = tatamiTex(51102);
+var floorMat = new THREE.MeshStandardMaterial({map:tatamiMap, roughness:0.88, metalness:0.0, color:0xffffff});
+var floor = new THREE.Mesh(new THREE.PlaneGeometry(4.4,3.6), floorMat);
+floor.rotation.x = -Math.PI/2; floor.rotation.z = Math.PI/2; /* sợi chạy ngang trong khung */
+ROOM.add(floor);
+
+/* --- tường + trần: khối phòng tối giản, đủ để mọi góc máy có bề mặt ăn sáng - */
+var wallMat = new THREE.MeshStandardMaterial({color:0x1a150e, roughness:0.94});
+var ceilMat = new THREE.MeshStandardMaterial({color:0x201a12, roughness:0.94});
+var wallBack = new THREE.Mesh(new THREE.PlaneGeometry(4.4,2.6), wallMat);
+wallBack.position.set(-2.15,1.3,0); wallBack.rotation.y = Math.PI/2; ROOM.add(wallBack);
+var ceiling = new THREE.Mesh(new THREE.PlaneGeometry(4.4,3.6), ceilMat);
+ceiling.rotation.x = Math.PI/2; ceiling.position.set(0,2.35,0); ROOM.add(ceiling);
+var wallSideNear = new THREE.Mesh(new THREE.PlaneGeometry(4.4,2.6), wallMat);
+wallSideNear.position.set(0,1.3,-1.75); ROOM.add(wallSideNear);
+
+/* --- 障子 mở hết + rãnh 敷居 — nguồn sáng duy nhất xuyên qua cửa mở --------- */
+var shojiFrameMat = new THREE.MeshStandardMaterial({color:0x2a2016, roughness:0.7});
+function bar(w,h,d,x,y,z){
+  var m = new THREE.Mesh(new THREE.BoxGeometry(w,h,d), shojiFrameMat);
+  m.position.set(x,y,z); ROOM.add(m); return m;
+}
+/* rãnh 敷居 ở mép +Z (thấy khi camera trôi ngang S01) */
+bar(4.4,0.05,0.10, 0,0.02,1.72);
+/* một cánh còn đóng (bên trái theo trục X), phủ ánh sáng tán xạ qua giấy washi */
+var shojiUni = { uSun:{value:SUN_EARLY.clone()}, uSunAmt:{value:1.0}, uT:{value:0} };
+var shojiMat = new THREE.ShaderMaterial({
+  uniforms: shojiUni, side:THREE.DoubleSide, transparent:false,
+  vertexShader:'varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',
+  fragmentShader:[
+    'varying vec2 vUv; uniform vec3 uSun; uniform float uSunAmt,uT;',
+    'float hash(vec2 p){return fract(sin(dot(p,vec2(41.3,289.1)))*43758.5453);}',
+    'void main(){',
+    '  float fiber = hash(floor(vUv*vec2(160.0,120.0)))*0.06;',
+    '  vec2 grid = fract(vUv*vec2(4.0,6.0));',
+    '  float lw=0.05;',
+    '  float gx = smoothstep(0.0,lw,grid.x)*smoothstep(1.0,1.0-lw,grid.x);',
+    '  float gy = smoothstep(0.0,lw,grid.y)*smoothstep(1.0,1.0-lw,grid.y);',
+    '  float lattice = 1.0 - 0.38*(1.0-gx*gy);',
+    '  vec3 col = uSun*uSunAmt*(0.92+fiber)*lattice;',
+    '  gl_FragColor = vec4(col,1.0);',
+    '}'
+  ].join('\n')
+});
+var SHOJI_W=1.65, SHOJI_H=2.05;
+var shojiClosed = new THREE.Mesh(new THREE.PlaneGeometry(SHOJI_W,SHOJI_H), shojiMat);
+shojiClosed.position.set(1.55,1.02,1.75); ROOM.add(shojiClosed);
+bar(0.02,2.05,0.05, 0.73,1.02,1.75); bar(0.02,2.05,0.05, 2.37,1.02,1.75);
+bar(0.02,0.05,1.65, 1.55,0.0,1.75);  bar(0.02,0.05,1.65, 1.55,2.04,1.75);
+/* hiên sáng trắng ngoài cửa (S01: "ngoài hiên là sân sáng trắng") */
+var enHallMat = new THREE.MeshBasicMaterial({color:0xffffff, side:THREE.DoubleSide});
+var enHall = new THREE.Mesh(new THREE.PlaneGeometry(2.0,2.4), enHallMat);
+enHall.position.set(-0.55,1.2,1.95); ROOM.add(enHall);
+
+/* --- vệt nắng trên chiếu — quad theo hướng chéo ~38°, viền mềm volumetric --- */
+var beamUni = {
+  uColor:{value:SUN_EARLY.clone()}, uLen:{value:1.6}, uT:{value:0}, uIntensity:{value:1.0}
+};
+var beamMat = new THREE.ShaderMaterial({
+  uniforms:beamUni, transparent:true, depthWrite:false, blending:THREE.NormalBlending,
+  vertexShader:'varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',
+  fragmentShader:[
+    'varying vec2 vUv; uniform vec3 uColor; uniform float uLen,uT,uIntensity;',
+    'void main(){',
+    '  float along = vUv.x;',                 /* 0 ở mép cửa, 1 ở đầu vệt xa nhất */
+    '  float edge = smoothstep(1.0, uLen, along);', /* mép xa mềm, dài theo uLen */
+    '  float cross = 1.0 - smoothstep(0.28,0.5, abs(vUv.y-0.5)*2.0);',
+    '  vec2 grid = fract(vUv*vec2(9.0,3.2));',
+    '  float gx = smoothstep(0.0,0.05,grid.x)*smoothstep(1.0,0.95,grid.x);',
+    '  float gy = smoothstep(0.0,0.08,grid.y)*smoothstep(1.0,0.92,grid.y);',
+    '  float latt = mix(0.62,1.0, gx*gy);',
+    '  float a = clamp((1.0-edge)*cross*latt*uIntensity*0.60, 0.0, 0.60);',
+    '  gl_FragColor = vec4(uColor, a);',
+    '}'
+  ].join('\n')
+});
+var beamGeo = new THREE.PlaneGeometry(3.0,1.55,1,1);
+var lightBeam = new THREE.Mesh(beamGeo, beamMat);
+lightBeam.rotation.x = -Math.PI/2;
+lightBeam.rotation.z = -0.66; /* ~38 độ chéo */
+lightBeam.position.set(0.1,0.006,0.55);
+ROOM.add(lightBeam);
+
+/* --- bóng lưới 障子 trên chiếu — dài/nghiêng hơn khi sunAngle tăng --------- */
+var shadowUni = { uOp:{value:0.30}, uSkew:{value:0.0} };
+var shadowMat = new THREE.ShaderMaterial({
+  uniforms:shadowUni, transparent:true, depthWrite:false,
+  vertexShader:'varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',
+  fragmentShader:[
+    'varying vec2 vUv; uniform float uOp,uSkew;',
+    'void main(){',
+    '  vec2 uv = vUv; uv.x += uv.y*uSkew;',
+    '  vec2 grid = fract(uv*vec2(6.0,3.0));',
+    '  float gx = smoothstep(0.0,0.06,grid.x)*smoothstep(1.0,0.94,grid.x);',
+    '  float gy = smoothstep(0.0,0.10,grid.y)*smoothstep(1.0,0.90,grid.y);',
+    '  float a = (1.0-gx*gy)*uOp;',
+    '  gl_FragColor = vec4(0.0,0.0,0.0,a);',
+    '}'
+  ].join('\n')
+});
+var shadowGrid = new THREE.Mesh(new THREE.PlaneGeometry(2.4,1.9), shadowMat);
+shadowGrid.rotation.x = -Math.PI/2;
+shadowGrid.position.set(0.5,0.008,0.9);
+ROOM.add(shadowGrid);
+
+/* --- ba thùng carton (S01/S02) ---------------------------------------------- */
+function cardboardTex(seed){
+  var pr = HFA.mulberry32(seed);
+  var cv = document.createElement('canvas'); cv.width=cv.height=256;
+  var cx = cv.getContext('2d');
+  cx.fillStyle = '#9c7c4e'; cx.fillRect(0,0,256,256);
+  var y;
+  for (y=0;y<256;y+=6){ cx.fillStyle='rgba(70,50,25,'+(0.08+pr()*0.06).toFixed(3)+')'; cx.fillRect(0,y,256,2); }
+  for (var i=0;i<10;i++){
+    var x=pr()*256, yy=pr()*256;
+    cx.fillStyle = 'rgba(50,34,16,0.14)'; cx.fillRect(x,yy,10+pr()*20,2);
+  }
+  var tx = new THREE.CanvasTexture(cv); tx.encoding = THREE.sRGBEncoding; tx.anisotropy = MAXANI;
+  return tx;
+}
+var boxTex = cardboardTex(51103);
+var boxMat = new THREE.MeshStandardMaterial({map:boxTex, roughness:0.92, metalness:0.0});
+var tapeMat = new THREE.MeshStandardMaterial({color:0xcfc39a, roughness:0.5, transparent:true, opacity:0.75});
+var BOXES = new THREE.Group(); ROOM.add(BOXES);
+function makeBox(w,h,d,openLid){
+  var g = new THREE.Group();
+  var body = new THREE.Mesh(new THREE.BoxGeometry(w,h,d), boxMat); body.position.y = h/2; g.add(body);
+  if (!openLid){
+    var tape = new THREE.Mesh(new THREE.BoxGeometry(w*0.14,h*1.02,d*1.02), tapeMat);
+    tape.position.y = h/2; g.add(tape);
+  }
+  return g;
+}
+var boxA = makeBox(0.62,0.42,0.46,true); boxA.position.set(1.55,0,-0.55); BOXES.add(boxA);
+var boxB = makeBox(0.55,0.40,0.42,false); boxB.rotation.y=0.3; boxB.position.set(1.35,0,-1.15); BOXES.add(boxB);
+var boxC = makeBox(0.50,0.38,0.40,false); boxC.rotation.y=-0.2; boxC.position.set(1.85,0,-1.05); BOXES.add(boxC);
+/* nắp thùng A dựng nghiêng, phủi bụi ở S02 */
+var lidA = new THREE.Mesh(new THREE.BoxGeometry(0.60,0.03,0.44), boxMat);
+lidA.position.set(1.28,0.30,-0.30); lidA.rotation.z = 0.9; lidA.rotation.x = 0.1;
+BOXES.add(lidA);
+
+/* --- hộp ảnh cũ + nắp dựng nghiêng (S03, khung nguồn thumbnail) ------------- */
+function albumTex(){
+  var cv = document.createElement('canvas'); cv.width=cv.height=128;
+  var cx = cv.getContext('2d');
+  cx.fillStyle = '#7c5a3a'; cx.fillRect(0,0,128,128);
+  var pr = HFA.mulberry32(51203);
+  for (var i=0;i<60;i++){
+    cx.strokeStyle = 'rgba(200,170,110,0.10)';
+    cx.beginPath(); cx.moveTo(pr()*128,0); cx.lineTo(pr()*128,128); cx.stroke();
+  }
+  var tx = new THREE.CanvasTexture(cv); tx.encoding = THREE.sRGBEncoding; return tx;
+}
+var albumMat = new THREE.MeshStandardMaterial({map:albumTex(), roughness:0.75, metalness:0.05});
+var metalCornerMat = new THREE.MeshStandardMaterial({color:0x8c8474, roughness:0.5, metalness:0.7});
+var ALBUM = new THREE.Group();
+var albumBody = new THREE.Mesh(new THREE.BoxGeometry(0.42,0.09,0.32), albumMat);
+albumBody.position.y = 0.045; ALBUM.add(albumBody);
+var albumInner = new THREE.Mesh(new THREE.BoxGeometry(0.37,0.02,0.27),
+  new THREE.MeshStandardMaterial({color:0x2a2014, roughness:0.9}));
+albumInner.position.y = 0.085; ALBUM.add(albumInner);
+[[-0.19,-0.14],[0.19,-0.14],[-0.19,0.14],[0.19,0.14]].forEach(function(p){
+  var c = new THREE.Mesh(new THREE.BoxGeometry(0.05,0.10,0.05), metalCornerMat);
+  c.position.set(p[0],0.045,p[1]); ALBUM.add(c);
+});
+var albumLid = new THREE.Mesh(new THREE.BoxGeometry(0.42,0.015,0.32), albumMat);
+albumLid.position.set(0.28,0.16,-0.02); albumLid.rotation.z = -1.15;
+ALBUM.add(albumLid);
+/* ⚠ đã sửa: vị trí cũ (1.35,0,-0.35) CHỒNG lên chân đế thùng boxA (x1.24-1.86,
+ * z -0.78..-0.32) — lỗi "pass mà sai" số 3, thùng che khuất hoàn toàn hộp ảnh
+ * trong mọi khung nhìn từ hướng đó. Dời hộp ảnh ra khoảng trống giữa chiếu,
+ * xa厩 thùng, đúng vùng xấp ảnh/tay đang thao tác. */
+ALBUM.position.set(0.85,0.0,0.15);
+ROOM.add(ALBUM);
+
+/* --- xấp ảnh trên chiếu — mesh cong, KHÔNG plane phẳng (GHI CHÚ mục 4) ------ */
+function paperTex(seed){
+  var pr = HFA.mulberry32(seed);
+  var cv = document.createElement('canvas'); cv.width=cv.height=64;
+  var cx = cv.getContext('2d');
+  var warm = 0.80+pr()*0.10;
+  cx.fillStyle = 'rgb('+Math.round(230*warm)+','+Math.round(205*warm)+','+Math.round(160*warm)+')';
+  cx.fillRect(0,0,64,64);
+  var g = cx.createRadialGradient(32,32,10,32,32,34);
+  g.addColorStop(0,'rgba(0,0,0,0)'); g.addColorStop(1,'rgba(110,80,40,0.35)');
+  cx.fillStyle = g; cx.fillRect(0,0,64,64);
+  var tx = new THREE.CanvasTexture(cv); tx.encoding = THREE.sRGBEncoding; return tx;
+}
+var PHOTOS = new THREE.Group(); ROOM.add(PHOTOS);
+var PHOTO_N = 24;
+/* ⚠ đã tăng cỡ ảnh (8,5x6,2cm → 13x9cm, gần cỡ ảnh giấy thật) và đổi tâm cụm
+ * sang quanh ALBUM mới (0.85,0.15) — bản đầu ảnh quá nhỏ (đo dưới 10px ở
+ * khoảng cách camera thường dùng), đọc thành "hạt bụi lấp lánh" thay vì ảnh. */
+for (var pi=0; pi<PHOTO_N; pi++){
+  var pw = 0.13, ph = 0.09;
+  var pg = new THREE.PlaneGeometry(pw,ph,4,3);
+  var posAttr = pg.attributes.position;
+  var curveAmt = 0.004 + rndPaper()*0.005;
+  for (var vi=0; vi<posAttr.count; vi++){
+    var vx = posAttr.getX(vi);
+    posAttr.setZ(vi, Math.sin((vx/pw+0.5)*Math.PI) * curveAmt);
+  }
+  pg.computeVertexNormals();
+  var pmat = new THREE.MeshStandardMaterial({map:paperTex(51204+pi), roughness:0.82, side:THREE.DoubleSide});
+  var pm = new THREE.Mesh(pg, pmat);
+  pm.rotation.x = -Math.PI/2;
+  pm.rotation.z = (rndPaper()-0.5)*1.4;
+  var spreadR = 0.20 + rndPaper()*0.45;
+  var spreadA = rndPaper()*Math.PI*2;
+  pm.position.set(0.85+Math.cos(spreadA)*spreadR, 0.006+pi*0.0002, 0.15+Math.sin(spreadA)*spreadR*0.7);
+  pm.userData.faceMasked = true; /* mặt úp nghiêng hoặc mờ — không tấm nào đọc được mặt */
+  PHOTOS.add(pm);
+}
+/* một tấm dựng nghiêng riêng — nắng xuyên rìa (S04, 13s) */
+var uprightPhoto = PHOTOS.children[3];
+uprightPhoto.rotation.x = -1.15; uprightPhoto.position.set(0.72,0.05,0.35);
+
+/* --- quyển sổ tay (S09/S22) — cùng object, cùng trang -------------------------- */
+function notebookPageTex(){
+  var cv = document.createElement('canvas'); cv.width=256; cv.height=192;
+  var cx = cv.getContext('2d');
+  cx.fillStyle = '#ece2c8'; cx.fillRect(0,0,256,192);
+  cx.strokeStyle = 'rgba(120,150,170,0.35)';
+  for (var y=20;y<192;y+=14){ cx.beginPath(); cx.moveTo(10,y); cx.lineTo(246,y); cx.stroke(); }
+  var pr = HFA.mulberry32(51205);
+  cx.strokeStyle = 'rgba(30,30,40,0.30)';
+  for (var l=0;l<9;l++){
+    var yy = 24+l*14, xw = 30+pr()*160;
+    cx.beginPath(); cx.moveTo(16,yy-3); cx.lineTo(16+xw,yy-3); cx.stroke();
+  }
+  /* chấm mực đậm ở lề phải một dòng (C21, "chấm điểm ngay lúc xảy ra") */
+  cx.fillStyle = 'rgba(20,20,30,0.85)';
+  cx.beginPath(); cx.arc(238,66,3.2,0,7); cx.fill();
+  var tx = new THREE.CanvasTexture(cv); tx.encoding = THREE.sRGBEncoding; return tx;
+}
+var notebookMat = new THREE.MeshStandardMaterial({map:notebookPageTex(), roughness:0.85, side:THREE.DoubleSide});
+var NOTEBOOK = new THREE.Group();
+var nbGeo = new THREE.PlaneGeometry(0.30,0.22,6,4);
+(function(){
+  var na = nbGeo.attributes.position;
+  for (var i=0;i<na.count;i++){
+    var x = na.getX(i);
+    na.setZ(i, Math.sin((x/0.30+0.5)*Math.PI)*0.012);
+  }
+  nbGeo.computeVertexNormals();
+})();
+var nbPage = new THREE.Mesh(nbGeo, notebookMat);
+NOTEBOOK.add(nbPage);
+var pencilMat = new THREE.MeshStandardMaterial({color:0xd8a955, roughness:0.5});
+var pencil = new THREE.Mesh(new THREE.CylinderGeometry(0.004,0.004,0.16,8), pencilMat);
+pencil.rotation.z = Math.PI/2 - 0.2; pencil.position.set(0.05,-0.08,0.01);
+NOTEBOOK.add(pencil);
+NOTEBOOK.visible = false;
+ROOM.add(NOTEBOOK);
+
+/* --- bàn tay (yaw fan-out per finger, KHÔNG roll khác nhau) — GHI CHÚ mục 4 -- */
+var skinMat = new THREE.MeshPhysicalMaterial({color:0xb98a5e, roughness:0.62, metalness:0.0, clearcoat:0.18, clearcoatRoughness:0.6});
+var skinYoungMat = new THREE.MeshPhysicalMaterial({color:0xc39a72, roughness:0.55, metalness:0.0, clearcoat:0.22, clearcoatRoughness:0.55});
+function makeCapsule(r, len, mat){
+  var g = new THREE.Group();
+  var cyl = new THREE.Mesh(new THREE.CylinderGeometry(r,r,len,8,1,true), mat); g.add(cyl);
+  var capTop = new THREE.Mesh(new THREE.SphereGeometry(r,8,6,0,6.29,0,Math.PI/2), mat);
+  capTop.position.y = len/2; g.add(capTop);
+  var capBot = new THREE.Mesh(new THREE.SphereGeometry(r,8,6,0,6.29,Math.PI/2,Math.PI/2), mat);
+  capBot.position.y = -len/2; g.add(capBot);
+  return g;
+}
+function makeHand(mat, scale){
+  scale = scale || 1;
+  var g = new THREE.Group();
+  var palm = new THREE.Mesh(new THREE.SphereGeometry(0.036*scale,12,10), mat);
+  palm.scale.set(1.05,0.50,0.66);
+  palm.position.set(0,0,-0.016*scale);
+  g.add(palm);
+  var fi, count=4;
+  var spreadTotal = 0.34;
+  for (fi=0; fi<count; fi++){
+    var yaw = (fi-(count-1)/2) * (spreadTotal/(count-1));
+    var lenScale = (1 - Math.abs(fi-1.5)*0.10) * scale;
+    var fingerPivot = new THREE.Group();
+    fingerPivot.position.set(0, 0.006*scale, 0.030*scale);
+    fingerPivot.rotation.y = yaw; /* xoè ngón quanh GỐC bàn tay — KHÔNG roll riêng từng ngón */
+    g.add(fingerPivot);
+    var lenP = 0.040*lenScale, lenD = 0.030*lenScale, r = 0.0080*scale;
+    var proximal = makeCapsule(r, lenP, mat);
+    proximal.rotation.x = Math.PI/2; proximal.position.set(0,0,lenP/2);
+    fingerPivot.add(proximal);
+    var knuckle = new THREE.Group();
+    knuckle.position.set(0,0,lenP); knuckle.rotation.x = 0.18;
+    fingerPivot.add(knuckle);
+    var distal = makeCapsule(r*0.85, lenD, mat);
+    distal.rotation.x = Math.PI/2; distal.position.set(0,0,lenD/2);
+    knuckle.add(distal);
+  }
+  var thumb = new THREE.Group();
+  thumb.position.set(-0.040*scale,0.0,0.010*scale);
+  thumb.rotation.y = -Math.PI/3.4; thumb.rotation.x = Math.PI/2.5;
+  g.add(thumb);
+  var thumbSeg = makeCapsule(0.0095*scale, 0.034*scale, mat);
+  thumbSeg.position.set(0,0,0.017*scale); thumb.add(thumbSeg);
+  var wrist = new THREE.Mesh(new THREE.CylinderGeometry(0.028*scale,0.030*scale,0.05*scale,10), mat);
+  wrist.rotation.x = Math.PI/2; wrist.position.set(0,0,-0.05*scale);
+  g.add(wrist);
+  return g;
+}
+var handMe = makeHand(skinMat, 1.0);        /* 私 — trái khung */
+var handGrandchild = makeHand(skinYoungMat, 0.62); /* cháu — phải khung, nhỏ hơn */
+handMe.position.set(0.55,0.02,0.35);
+handGrandchild.position.set(0.95,0.02,0.05); handGrandchild.scale.x = -1;
+var kneeMat = skinYoungMat;
+var knee = new THREE.Mesh(new THREE.SphereGeometry(0.055,10,8), kneeMat);
+knee.scale.set(1,0.65,1); knee.position.set(1.10,0.035,0.55);
+ROOM.add(handMe); ROOM.add(handGrandchild); ROOM.add(knee);
+
+/* ==== HỆ HẠT — MỘT hệ duy nhất cho cả tập ======================================
+ * Nhân (核): độ sáng KHÔNG BAO GIỜ đổi. Quầng (暈): phai theo đường cong FAB,
+ * dừng ở PARTICLE_FLOOR. Ba tham số blend/colorMix/haloScale là hàm smoothstep
+ * của khoảng cách camera->trục luồng (d), tính trong renderAtTime và đẩy vào
+ * uniform uFieldMix mỗi frame — KHÔNG rẽ nhánh theo cue.
+ *
+ * τ (tuổi hạt, giây) là hàm THUẦN của seed + t: mỗi hạt "sinh ra" ở một mốc thời
+ * gian riêng (aBirth, phân bố dọc theo trục luồng — xa = sinh sớm/cũ, gần = mới,
+ * đúng GHI CHÚ mục 1 "độ sâu chính là thời gian"). τ = max(0, t - aBirth).
+ * halo(τ) = FLOOR + (1-FLOOR)*exp(-τ/TAU), TAU_COOL = 0.42*TAU_WARM.
+ */
+var PARTICLE_N = 20000;
+var pGeo = new THREE.BufferGeometry();
+/* ⚠ TRỤC LUỒNG — chốt scale THẬT theo mét, khớp phòng x∈[-2,2.4] z∈[-1.75,1.75].
+ * Gốc ở GIỮA PHÒNG gần xấp ảnh (nơi camera 第1章 đứng), hướng CHÉO về phía 障子
+ * (+Z) rồi "xuyên qua" vào không gian ánh sáng trừu tượng — camera 第2-3章 đi
+ * theo hướng này nên không còn bị ràng buộc bởi bốn bức tường vật lý (đúng ý
+ * "hạt là không gian ánh sáng riêng", root cause bug bản đầu: origin đặt ngay
+ * tại 障子 làm mọi along ÂM bắn camera xuyên tường ra hiên). `along` tối đa 4.4m. */
+var BEAM_ALONG_MAX = 4.4;
+(function(){
+  var pos = new Float32Array(PARTICLE_N*3);
+  var seed = new Float32Array(PARTICLE_N*4);   /* x=curl seed, y=warm(1)/cool(0), z=aBirth, w=size */
+  var pr = rndDustA;
+  var i;
+  var ex = 0.35, ey = 0.25, ez = 0.90;    /* hướng trục luồng — chủ yếu +Z (từ giữa phòng hướng ra 障子 rồi xuyên qua) */
+  var elen = Math.sqrt(ex*ex+ey*ey+ez*ez);
+  ex/=elen; ey/=elen; ez/=elen;
+  var ux = -ez, uy=0, uz=ex; var ulen=Math.sqrt(ux*ux+uy*uy+uz*uz)||1; ux/=ulen; uz/=ulen;
+  var vx = ey*uz-ez*uy, vy = ez*ux-ex*uz, vz = ex*uy-ey*ux;
+  var ox = 0.40, oy=0.60, oz=0.0; /* gốc luồng giữa phòng, ngang tầm xấp ảnh */
+  for (i=0;i<PARTICLE_N;i++){
+    /* mật độ tăng theo chiều sâu (gần cửa thưa, sâu trong luồng dày — GHI CHÚ mục 1 "S11") */
+    var along = (1 - pr()*pr()) * BEAM_ALONG_MAX;
+    /* mật độ RADIAL tập trung gần TRỤC: pow(pr(),0.72) thay vì sqrt(pr()) (phân bố
+     * đều theo diện tích) — kéo hạt về gần lõi luồng sáng để đọc ra CHÙM chứ không
+     * còn rải đều thành "bầu trời sao phẳng" (lỗi contact-sheet 150-690s). */
+    var rad = (0.10 + along*0.16) * Math.pow(pr(), 0.72);
+    var ang = pr()*Math.PI*2;
+    var px = ox + ex*along + (ux*Math.cos(ang)+vx*Math.sin(ang))*rad;
+    var py = oy + ey*along + (uy*Math.cos(ang)+vy*Math.sin(ang))*rad;
+    var pz = oz + ez*along + (uz*Math.cos(ang)+vz*Math.sin(ang))*rad;
+    pos[i*3]=px; pos[i*3+1]=Math.max(0.02,py); pos[i*3+2]=pz;
+    seed[i*4]   = pr()*1000.0;
+    seed[i*4+1] = pr() < 0.5 ? 1.0 : 0.0;    /* ~nửa ấm nửa lạnh, trộn đều */
+    seed[i*4+2] = -40.0 - pr()*760.0;        /* aBirth: âm sâu → τ lớn ngay từ đầu (hạt "cũ") mặc định */
+    seed[i*4+3] = 0.7 + pr()*1.6;
+  }
+  pGeo.setAttribute('position', new THREE.BufferAttribute(pos,3));
+  pGeo.setAttribute('aSeed', new THREE.BufferAttribute(seed,4));
+})();
+
+var fieldUni = {
+  uT:{value:0}, uWarm:{value:WARM_MEM.clone()}, uCool:{value:COOL_MEM.clone()},
+  uFloor:{value:PARTICLE_FLOOR}, uTauWarm:{value:130.0}, uTauCool:{value:54.6},
+  uFieldMix:{value:0.0},          /* 0 = ngoài luồng (bụi xám), 1 = trong lõi (màu đầy đủ) */
+  uHaloOverride:{value:-1.0},     /* -1 = tắt; ≥0 = ép halo cố định (S12/S23 khởi điểm ngang nhau) */
+  uSpeedMul:{value:1.0},          /* tốc độ tách theo shot (S13/S19/S28...) */
+  uRiseAmt:{value:0.0},           /* hạt nhẹ dâng lên (S24/S25/S37) */
+  uScale:{value:H}, uMaxPx:{value:14.0}
+};
+var pMat = new THREE.ShaderMaterial({
+  uniforms:fieldUni, transparent:true, depthWrite:false,
+  blending:THREE.NormalBlending, /* trộn theo alpha; additive giả lập bằng bù màu ở fragment khi uFieldMix cao */
+  vertexShader:[
+    'attribute vec4 aSeed;',
+    'uniform float uT,uFloor,uTauWarm,uTauCool,uFieldMix,uHaloOverride,uSpeedMul,uRiseAmt,uScale,uMaxPx;',
+    'varying float vWarm; varying float vHalo; varying float vCore;',
+    'void main(){',
+    '  float s = aSeed.x; float warm = aSeed.y; float aBirth = aSeed.z; float sz = aSeed.w;',
+    '  float tau = max(0.0, (uT - aBirth) * uSpeedMul);',
+    '  float TAU = mix(uTauCool, uTauWarm, warm);',
+    '  float halo = uFloor + (1.0-uFloor) * exp(-tau/TAU);',
+    '  if(uHaloOverride >= 0.0) halo = uHaloOverride;',
+    '  vHalo = halo; vWarm = warm; vCore = 1.0;',
+    '  vec3 p = position;',
+    /* curl-noise nhẹ, hàm thuần của t + seed, không tích luỹ */
+    '  p.x += 0.05*sin(uT*0.06 + s*0.021);',
+    '  p.y += 0.04*cos(uT*0.05 + s*0.033);',
+    '  p.z += 0.05*sin(uT*0.045 + s*0.017);',
+    /* vector nổi: quầng thấp -> nhẹ hơn -> dâng nhanh hơn (GHI CHÚ mục 5) */
+    '  float rise = uRiseAmt * (1.0 - halo) * 0.9;',
+    '  p.y += rise;',
+    '  vec4 mv = modelViewMatrix*vec4(p,1.0);',
+    '  float px = sz*(uScale*0.020/max(0.05,-mv.z));',
+    '  gl_PointSize = min(uMaxPx, px);',
+    '  gl_Position = projectionMatrix*mv;',
+    '}'
+  ].join('\n'),
+  fragmentShader:[
+    'uniform vec3 uWarm,uCool; uniform float uFieldMix;',
+    'varying float vWarm; varying float vHalo; varying float vCore;',
+    'void main(){',
+    '  vec2 d = gl_PointCoord-0.5; float r = length(d);',
+    '  float core = smoothstep(0.16,0.0,r);',                 /* nhân nhỏ, sắc, sáng cố định */
+    '  float halo = smoothstep(0.5,0.06,r) * vHalo;',          /* quầng mềm, phai theo vHalo */
+    '  vec3 memCol = mix(uCool, uWarm, vWarm);',
+    '  vec3 dustCol = vec3(0.86,0.83,0.74);',                  /* xám bụi trung tính ngoài luồng */
+    '  vec3 col = mix(dustCol, memCol, uFieldMix);',
+    '  float coreB = 1.0;',                                     /* độ sáng nhân KHÔNG đổi */
+    '  float a = clamp(core*coreB*0.95 + halo*0.62, 0.0, 1.0);',
+    /* ngoài luồng: tối hơn nền (alpha thường yếu); trong luồng: additive-like (nhân sáng) */
+    '  vec3 outCol = col * mix(0.55, 2.3, uFieldMix);',
+    '  gl_FragColor = vec4(outCol, a * mix(0.55,1.0,uFieldMix));',
+    '}'
+  ].join('\n')
+});
+var particleField = new THREE.Points(pGeo, pMat);
+ROOM.add(particleField);
+
+/* ---- hai hạt con curl-noise trôi giữa cặp hạt (S30) ------------------------ */
+var CHILD_N = 12;
+var childGeo = new THREE.BufferGeometry();
+var childPos = new Float32Array(CHILD_N*3);
+var childSeed = new Float32Array(CHILD_N);
+for (var ci=0; ci<CHILD_N; ci++){ childSeed[ci] = rndChild()*1000.0; }
+childGeo.setAttribute('position', new THREE.BufferAttribute(childPos,3));
+childGeo.setAttribute('aSeed', new THREE.BufferAttribute(childSeed,1));
+var childUni = { uT:{value:0}, uOp:{value:0}, uA:{value:new THREE.Vector3()}, uB:{value:new THREE.Vector3()}, uCol:{value:WARM_MEM.clone()} };
+var childMat = new THREE.ShaderMaterial({
+  uniforms:childUni, transparent:true, depthWrite:false, blending:THREE.AdditiveBlending,
+  vertexShader:[
+    'attribute float aSeed; uniform float uT; uniform vec3 uA,uB;',
+    'void main(){',
+    '  float p = fract(uT*0.05 + aSeed*0.001);',
+    '  vec3 pos = mix(uA,uB,p);',
+    '  pos.x += 0.02*sin(uT*0.3+aSeed);',
+    '  pos.y += 0.02*cos(uT*0.26+aSeed*1.3);',
+    '  vec4 mv = modelViewMatrix*vec4(pos,1.0);',
+    '  gl_PointSize = min(6.0, 40.0/max(0.05,-mv.z));',
+    '  gl_Position = projectionMatrix*mv;',
+    '}'
+  ].join('\n'),
+  fragmentShader:[
+    'uniform float uOp; uniform vec3 uCol;',
+    'void main(){ vec2 d=gl_PointCoord-0.5; float r=length(d);',
+    '  float a=smoothstep(0.5,0.0,r)*uOp; gl_FragColor=vec4(uCol*1.4,a); }'
+  ].join('\n')
+});
+var childField = new THREE.Points(childGeo, childMat);
+ROOM.add(childField);
+
+/* ==== camera helpers ========================================================== */
+var CAM_LOOK = new THREE.Vector3();
+function setCam(px,py,pz, lx,ly,lz, fov){
+  camera.position.set(px,py,pz);
+  CAM_LOOK.set(lx,ly,lz);
+  camera.lookAt(CAM_LOOK);
+  camera.fov = fov || camera.fov;
+  camera.updateProjectionMatrix();
+}
+/* ANCHOR_CAM — ma trận camera cuối S05, dùng lại NGUYÊN VẸN ở đầu S33 (GHI CHÚ mục 6) */
+var ANCHOR_CAM = { pos:[0.15,0.85,1.05], look:[0.95,0.12,-0.05], fov:46 };
+
+/* khoảng cách camera->trục luồng, dùng để suy field mix (GHI CHÚ mục 1)
+ * ⚠ PHẢI khớp đúng gốc/hướng dùng khi sinh PARTICLE_N ở khối dựng hệ hạt. */
+var BEAM_ORIGIN = new THREE.Vector3(0.40,0.60,0.0);
+var BEAM_DIR = new THREE.Vector3(0.35,0.25,0.90).normalize();
+var BEAM_UX, BEAM_UY_, BEAM_UZ, BEAM_VX, BEAM_VY, BEAM_VZ;
+(function(){
+  var ex=BEAM_DIR.x, ey=BEAM_DIR.y, ez=BEAM_DIR.z;
+  var ux=-ez, uy=0, uz=ex; var ulen=Math.sqrt(ux*ux+uy*uy+uz*uz)||1; ux/=ulen; uz/=ulen;
+  var vx=ey*uz-ez*uy, vy=ez*ux-ex*uz, vz=ex*uy-ey*ux;
+  BEAM_UX=ux; BEAM_UY_=uy; BEAM_UZ=uz; BEAM_VX=vx; BEAM_VY=vy; BEAM_VZ=vz;
+})();
+/** Điểm world nằm CÁCH trục luồng `radial` mét, tại độ sâu `along` mét dọc trục
+ * (0 = gần 障子, BEAM_ALONG_MAX = sâu nhất trong trường), lệch góc `ang` quanh
+ * trục. Dùng để đặt camera/look-at LUÔN nằm khớp trường hạt dù có chỉnh trục. */
+function beamPoint(along, radial, ang){
+  ang = ang || 0;
+  return new THREE.Vector3(
+    BEAM_ORIGIN.x + BEAM_DIR.x*along + (BEAM_UX*Math.cos(ang)+BEAM_VX*Math.sin(ang))*radial,
+    BEAM_ORIGIN.y + BEAM_DIR.y*along + (BEAM_UY_*Math.cos(ang)+BEAM_VY*Math.sin(ang))*radial,
+    BEAM_ORIGIN.z + BEAM_DIR.z*along + (BEAM_UZ*Math.cos(ang)+BEAM_VZ*Math.sin(ang))*radial
+  );
+}
+/** Toạ độ "along" (mét dọc trục luồng, từ BEAM_ORIGIN) của một điểm world.
+ * ⚠ DÙNG CÁI NÀY để suy field mix, KHÔNG dùng khoảng cách 3D camera->trục:
+ * mỗi shot orbit ở một `radial` cố định (offset vuông góc trục), nên khoảng
+ * cách 3D gần như hằng số suốt cả hành trình và không phản ánh "đã vượt màn
+ * sáng chưa" — đúng bug khiến field mix luôn ở gần 0 hoặc gần 1 bất kể `along`.
+ * "Vượt màn" xảy ra quanh along≈1.9 (chỗ trục cắt 障子 tại z=1.75). */
+function beamAlong(p){
+  var v = new THREE.Vector3().subVectors(p, BEAM_ORIGIN);
+  return v.dot(BEAM_DIR);
+}
+
+/* ==== LUỒNG SÁNG THỂ TÍCH BAO TRỤC TRƯỜNG HẠT ================================
+ * Sửa lỗi contact-sheet: 150-690s đọc như "bầu trời sao phẳng" — 20000 hạt trôi
+ * trong không gian đen tuyệt đối, không có khối ánh sáng nào làm khung chứa nên
+ * không đọc ra CHIỀU SÂU. Dựng thêm một BOX dài suốt BEAM_ALONG_MAX bao quanh
+ * đúng trục BEAM_ORIGIN/BEAM_DIR, fragment shader RAY-MARCH bên trong (cùng
+ * nguyên lý với light shaft phòng ngủ ở toshi-to-fuan, thích ứng: trục dài hơn
+ * nhiều — 4,4m thay vì 4m — và bán kính nở theo along KHỚP ĐÚNG công thức sinh
+ * hạt `rad = 0.10 + along*0.16` phía trên, để khối sáng và trường hạt là MỘT
+ * thể tích chứ không phải hai hệ rời nhau). Additive tự phát sáng (không cần
+ * SpotLight thật vì particle field cũng dùng ShaderMaterial phát xạ riêng,
+ * không phải PBR nhận sáng ngoài).
+ */
+var VSHAFT_LEN = BEAM_ALONG_MAX + 0.6;   /* hơi dài hơn vùng hạt để mép xa không lộ */
+var VSHAFT_R0 = 0.10, VSHAFT_K = 0.16;   /* PHẢI khớp rad = 0.10 + along*0.16 ở trên */
+var vshaftUni = {
+  uOrigin:{value:BEAM_ORIGIN.clone()}, uDir:{value:BEAM_DIR.clone()},
+  uWarm:{value:WARM_MEM.clone()}, uCool:{value:COOL_MEM.clone()},
+  uFieldMix:{value:0.0}, uCamPos:{value:new THREE.Vector3()}, uT:{value:0},
+  uR0:{value:VSHAFT_R0}, uK:{value:VSHAFT_K}, uLen:{value:VSHAFT_LEN},
+  uInt:{value:1.0}
+};
+var VSHAFT_VS = [
+  'varying vec3 vW;',
+  'void main(){',
+  '  vec4 w = modelMatrix * vec4(position,1.0);',
+  '  vW = w.xyz;',
+  '  gl_Position = projectionMatrix * viewMatrix * w;',
+  '}'].join('\n');
+var VSHAFT_FS = [
+  'precision highp float;',
+  'varying vec3 vW;',
+  'uniform vec3 uOrigin; uniform vec3 uDir; uniform vec3 uWarm; uniform vec3 uCool; uniform vec3 uCamPos;',
+  'uniform float uFieldMix; uniform float uT; uniform float uR0; uniform float uK; uniform float uLen; uniform float uInt;',
+  'float h31(vec3 p){ return fract(sin(dot(p, vec3(12.9898,78.233,37.719)))*43758.5453); }',
+  'float vnoise(vec3 p){',
+  '  vec3 i = floor(p), f = fract(p); f = f*f*(3.0-2.0*f);',
+  '  return mix(mix(mix(h31(i), h31(i+vec3(1.,0.,0.)), f.x), mix(h31(i+vec3(0.,1.,0.)), h31(i+vec3(1.,1.,0.)), f.x), f.y),',
+  '             mix(mix(h31(i+vec3(0.,0.,1.)), h31(i+vec3(1.,0.,1.)), f.x), mix(h31(i+vec3(0.,1.,1.)), h31(i+vec3(1.,1.,1.)), f.x), f.y), f.z);',
+  '}',
+  'void main(){',
+  '  vec3 ro = uCamPos;',
+  '  vec3 rd = normalize(vW - uCamPos);',
+  '  float tFar = min(length(vW - uCamPos), 6.0);',
+  '  float acc = 0.0; vec3 accCol = vec3(0.0);',
+  '  const int N = 32;',
+  '  float dt = tFar / float(N);',
+  '  float jit = h31(floor(vW*997.0));',
+  '  for(int i=0;i<N;i++){',
+  '    float s = (float(i) + jit) * dt;',
+  '    vec3 p = ro + rd*s;',
+  '    float along = dot(p - uOrigin, uDir);',
+  '    if(along < 0.0 || along > uLen) continue;',
+  '    vec3 perp = (p - uOrigin) - uDir*along;',
+  '    float r = length(perp);',
+  '    float R = uR0 + uK*along;',
+  /* mép mềm hẹp quanh R thật + quầng ngoài rất mờ (bán kính ×2,4) để rìa box
+   * không cắt cứng khi camera FOV rộng nhìn lệch xa trục */
+  '    float prof = exp(-(r*r)/(R*R*0.32)) + 0.10*exp(-(r*r)/(R*R*5.76));',
+  '    float dens = 0.35 + 0.65*clamp(along/uLen, 0.0, 1.0);',
+  '    float n = 0.78 + 0.22*vnoise(p*2.2 + vec3(0.0, uT*0.015, 0.0));',
+  /* ⚠ CHUẨN HOÁ theo R cục bộ (dt/R), KHÔNG theo dt tuyệt đối: một tia đi DỌC
+   * gần // trục cắt qua nhiều bước có R khác nhau (0,1m gần khe -> 0,9m sâu
+   * trong luồng) — chia cho R giữ mật độ quang học tương đương "đi qua N lõi"
+   * bất kể lõi dày hay mảnh, nên tia dọc trục không cộng dồn vô hạn theo mét
+   * tuyệt đối (đó là root cause cháy trắng bản đầu: dt tính bằng MÉT trong khi
+   * lõi chỉ rộng vài chục cm, nên qua 5-6m tia tích luỹ như xuyên hàng chục lõi). */
+  '    float local = prof*dens*n*(dt/max(R,0.05));',
+  '    acc += local;',
+  /* màu chuyển ấm->lạnh dọc theo field mix hiện tại (đồng bộ với hạt) */
+  '    vec3 memCol = mix(uCool, uWarm, 0.5);',
+  '    vec3 col = mix(vec3(0.72,0.74,0.78)*0.55, memCol, uFieldMix);',
+  '    accCol += col*local;',
+  '  }',
+  /* additive: output CỘNG THẲNG vào framebuffer, không đi qua alpha-composite
+   * thường — glow phải tự mang đủ độ sáng trong RGB, không dựa alpha để "hiện
+   * hình" (khác quy ước NormalBlending của particleField). Glow tổng chuẩn hoá
+   * theo acc nhưng bão hoà mềm (không tuyến tính vô hạn) để không cháy trắng
+   * khi camera đứng lâu trong lõi dày. */
+  '  float glow = 1.0 - exp(-acc*uInt*0.55);',
+  '  vec3 outCol = acc>0.0001 ? accCol/acc : vec3(0.0);',
+  '  gl_FragColor = vec4(outCol*glow*1.6, glow*0.9);',
+  '}'].join('\n');
+var vshaftMat = new THREE.ShaderMaterial({
+  uniforms:vshaftUni, transparent:true, depthWrite:false, side:THREE.BackSide,
+  blending:THREE.AdditiveBlending, vertexShader:VSHAFT_VS, fragmentShader:VSHAFT_FS
+});
+/* box đủ rộng để bao trọn bán kính lớn nhất (tại along=uLen: R = 0.10+0.16*5.0 ≈ 0.90,
+ * nhân 2 cho biên safety) và đủ dài để phủ hết BEAM_ALONG_MAX dọc trục. Đặt tâm ở
+ * along = uLen/2 dọc BEAM_DIR từ BEAM_ORIGIN. */
+var vshaftBoxR = (VSHAFT_R0 + VSHAFT_K*VSHAFT_LEN) * 2.4;
+var vshaftBox = new THREE.Mesh(
+  new THREE.BoxGeometry(vshaftBoxR*2, vshaftBoxR*2, VSHAFT_LEN + vshaftBoxR),
+  vshaftMat);
+(function(){
+  /* orient: cạnh Z local của box khớp BEAM_DIR world; đặt tâm giữa trục */
+  var mid = BEAM_ORIGIN.clone().add(BEAM_DIR.clone().multiplyScalar(VSHAFT_LEN*0.5));
+  vshaftBox.position.copy(mid);
+  var zAxis = new THREE.Vector3(0,0,1);
+  var q = new THREE.Quaternion().setFromUnitVectors(zAxis, BEAM_DIR.clone().normalize());
+  vshaftBox.quaternion.copy(q);
+})();
+vshaftBox.renderOrder = 7;   /* trước particleField (mặc định 0) để hạt vẫn nổi lên trên khối sáng */
+ROOM.add(vshaftBox);
+
+/* ==========================================================================
+ * 37 hàm cảnh — mỗi hàm nhận u = loc(t, 'SxX') tính bằng GIÂY trong shot đó.
+ * Storyboard timestamps (0s/6s/12s...) map trực tiếp vào u.
+ * ========================================================================== */
+
+function sc_S01(u){ /* 0-6.61s: nắng đầy khung, camera trôi ngang chậm */
+  var p = ramp(u,0,6.61);
+  setCam(lerp(0.05,0.45,p), 0.85, 1.25, 0.5,0.7,-0.3, 38);
+  beamUni.uIntensity.value = 1.0;
+  shadowUni.uOp.value = lerp(0.22,0.28,p);
+  lidA.visible = false; ALBUM.visible = false; PHOTOS.visible = false;
+  handMe.visible = false; handGrandchild.visible = false; knee.visible = false;
+  NOTEBOOK.visible = false;
+}
+function sc_S02(u){ /* 6.61-17.62s: dọn 遺品, tay 私 mở nắp, bụi bật lên */
+  var p = ramp(u,0,10.6);
+  setCam(lerp(0.45,0.9,p), lerp(0.85,0.65,p), lerp(1.25,0.85,p), 1.3,0.4,-0.5, lerp(38,46,p));
+  var handIn = ramp(u,5.5,9);
+  handMe.visible = handIn>0.01; handMe.position.set(lerp(1.5,1.25,handIn),0.05,lerp(-0.6,-0.35,handIn));
+  handGrandchild.visible = false; knee.visible = false;
+  lidA.visible = ramp(u,10,17.62)>0.01;
+  ALBUM.visible = false; PHOTOS.visible = false; NOTEBOOK.visible = false;
+  beamUni.uIntensity.value = 1.0;
+}
+function sc_S03(u){ /* 17.62-28.56s: hộp ảnh mở nắp, DOF ẩn dụ, bụi ×3 mật độ ⭐ KHUNG NGUỒN THUMBNAIL
+ * ⚠ camera đã cập nhật theo vị trí ALBUM mới (0.85,0,0.15) sau khi sửa lỗi
+ * chồng chỗ với boxA. */
+  var p = ramp(u,0,10.9);
+  setCam(0.5, 0.35, 0.55, 0.85,0.12,0.15, 34);
+  ALBUM.visible = true; lidA.visible = false; handMe.visible = false; handGrandchild.visible = false; knee.visible = false;
+  PHOTOS.visible = false; NOTEBOOK.visible = false;
+  beamUni.uIntensity.value = 1.0;
+}
+function sc_S04(u){ /* 28.56-37.85s: toàn cảnh, ảnh trải, đầu gối+tay cháu vào khung */
+  var p = ramp(u,0,9.3);
+  setCam(lerp(0.75,0.5,p), 0.45, lerp(0.9,0.55,p), 1.1,0.2,-0.3, 46);
+  camera.rotation.z = 0;
+  ALBUM.visible = true; PHOTOS.visible = true;
+  handMe.visible = false;
+  var kneeIn = ramp(u,6,9.3);
+  handGrandchild.visible = kneeIn>0.01; knee.visible = kneeIn>0.01;
+  NOTEBOOK.visible = false;
+  beamUni.uIntensity.value = 1.0;
+}
+function sc_S05(u){ /* 37.85-54.14s: CÂU HỎI CỦA ĐỨA CHÁU — camera tuyệt đối tĩnh */
+  setCam(ANCHOR_CAM.pos[0],ANCHOR_CAM.pos[1],ANCHOR_CAM.pos[2],
+         ANCHOR_CAM.look[0],ANCHOR_CAM.look[1],ANCHOR_CAM.look[2], ANCHOR_CAM.fov);
+  ALBUM.visible = true; PHOTOS.visible = true;
+  handMe.visible = true; handGrandchild.visible = true; knee.visible = true;
+  handMe.position.set(0.55,0.02,0.35); handGrandchild.position.set(0.95,0.02,0.05);
+  NOTEBOOK.visible = false;
+  beamUni.uIntensity.value = 1.0;
+}
+function sc_S06(u){ /* 54.14-73.57s: dịch ra sau vai 私, nhịp tay kể chuyện rồi dừng
+ * ⚠ đã sửa: bản đầu look-target (1.3,0.55,-0.2) đặt handMe ở 67° ngoài FOV —
+ * đổi camera lùi ra sau vai + look-target giữa hai tay+hộp để cả ba chủ thể
+ * cùng vào khung suốt shot. */
+  var p = ramp(u,0,19.4);
+  setCam(lerp(0.15,0.0,p), 0.85, lerp(0.9,1.05,p), 0.95,0.15,-0.05, lerp(44,36,p));
+  ALBUM.visible = true; PHOTOS.visible = true;
+  handMe.visible = true; handGrandchild.visible = true; knee.visible = true;
+  var tap = Math.sin(u*3.2)*0.02*(1-ramp(u,13,14.5));
+  handMe.position.set(0.55,0.02+Math.max(0,tap),0.35);
+  NOTEBOOK.visible = false;
+  beamUni.uIntensity.value = 1.0;
+}
+/* ---- Chuỗi S07-S32: camera đặt bằng beamPoint(along, radial, ang) — LUÔN nằm
+ * đúng trong/ngoài trường hạt bất kể trục luồng đổi. `along` tăng dần suốt
+ * 第2章/第3章 rồi giảm dần khi 帰り道 (đúng "cùng một quỹ đạo chạy ngược" GHI CHÚ
+ * mục 7). Camera nhìn CHẾCH lệch trục (target = beamPoint gần hơn/xa hơn +
+ * lệch radial khác), KHÔNG soi thẳng vào 障子 — panel chỉ là nguồn sáng ở along=0,
+ * không phải chủ thể để camera chĩa thẳng vào từ cự ly gần. */
+function sc_S07(u){ /* 73.57-117.84s: cận xấp ảnh, camera nhích về phía luồng nắng — KHỞI ĐẦU CÚ ĐẨY
+ * ⚠ giữ liên tục với khung cuối S06 (0,0.85,1.05 nhìn 0.95,0.15,-0.05) — KHÔNG
+ * nhảy thẳng vào beamPoint (đã gây bước nhảy máy ảnh 1,5m phá luật "không cắt"
+ * giữa S06/S07). Nội suy RAW từ khung đó sang một điểm gần trục luồng
+ * (beamPoint(0.3,...)) ở cuối shot — chỗ camera bắt đầu cúi nhìn xuống xấp ảnh
+ * rồi nghiêng dần về phía luồng nắng, đúng ELEMENT storyboard. */
+  var p = ramp(u,0,44.3);
+  var endPos = beamPoint(0.3, 0.25, 0.4);
+  var endLook = beamPoint(0.9, 0.05, 0.4);
+  setCam(lerp(0.0,endPos.x,p), lerp(0.85,endPos.y,p), lerp(1.05,endPos.z,p),
+         lerp(0.95,endLook.x,p), lerp(0.15,endLook.y,p), lerp(-0.05,endLook.z,p), 42);
+  ALBUM.visible = true; PHOTOS.visible = true;
+  handMe.visible = p<0.9; handGrandchild.visible = p<0.9; knee.visible = p<0.9;
+  NOTEBOOK.visible = false;
+  beamUni.uIntensity.value = 1.0;
+}
+function sc_S08(u){ /* 117.84-134.18s: VƯỢT MÀN — hạt đổi additive, hai hạt đầu ánh màu
+ * `along` đi từ -0.05 (còn trong phòng) qua ngưỡng vượt màn 1.6-2.2 tới 2.2. */
+  var p = ramp(u,0,16.3);
+  var camPos = beamPoint(lerp(0.3,2.2,p), lerp(0.25,0.3,p), 0.4);
+  var look = beamPoint(lerp(0.9,2.6,p), 0.05, 0.4);
+  setCam(camPos.x,camPos.y,camPos.z, look.x,look.y,look.z, lerp(42,48,p));
+  ALBUM.visible = false; PHOTOS.visible = false; handMe.visible = false; handGrandchild.visible = false; knee.visible = false;
+  NOTEBOOK.visible = false;
+}
+function sc_S09(u){ /* 134.18-164.52s: QUYỂN NHẬT KÝ trong luồng, lệch trái */
+  var p = ramp(u,0,30.3);
+  var camPos = beamPoint(2.2, 0.45, lerp(0.5,1.1,p));
+  var look = beamPoint(2.45, 0.1, 0.6);
+  setCam(camPos.x,camPos.y,camPos.z, look.x,look.y,look.z, 36);
+  NOTEBOOK.visible = true;
+  var nb = beamPoint(2.45, 0.12, 0.9);
+  NOTEBOOK.position.copy(nb); NOTEBOOK.rotation.y = lerp(0.1,0.55,p);
+  NOTEBOOK.rotation.x = 0.15+0.03*Math.sin(u*1.1);
+}
+function sc_S10(u){ /* 164.52-183.55s: hai trang giấy cùng dòng chữ, mới vs ngả vàng */
+  var camPos = beamPoint(2.2, 0.5, 1.0);
+  var look = beamPoint(2.45, 0.08, 0.9);
+  setCam(camPos.x,camPos.y,camPos.z, look.x,look.y,look.z, 34);
+  NOTEBOOK.visible = true;
+  var nb = beamPoint(2.45, 0.1, 0.9);
+  NOTEBOOK.position.copy(nb); NOTEBOOK.rotation.y = 0.3;
+}
+function sc_S11(u){ /* 183.55-222.72s: QUY MÔ — lùi ra, thấy độ sâu trường hạt, ~20000 hạt */
+  var p = ramp(u,0,39.2);
+  var camPos = beamPoint(lerp(1.9,2.6,p), lerp(0.4,1.0,p), lerp(1.0,2.4,p));
+  var look = beamPoint(lerp(2.9,3.6,p), 0.1, 2.0);
+  setCam(camPos.x,camPos.y,camPos.z, look.x,look.y,look.z, lerp(34,50,p));
+  NOTEBOOK.visible = p<0.15;
+}
+function sc_S12(u){ /* 222.72-244.29s: CẢ HAI ĐỀU PHAI — cùng tốc độ, chuẩn bị cú lật */
+  var p = ramp(u,0,21.6);
+  var camPos = beamPoint(3.0, lerp(0.9,1.0,p), 2.4);
+  var look = beamPoint(3.5, 0.1, 2.4);
+  setCam(camPos.x,camPos.y,camPos.z, look.x,look.y,look.z, 42);
+  NOTEBOOK.visible = false;
+  fieldUni.uSpeedMul.value = 0.55; /* cả hai chậm và bằng nhau ở đoạn này */
+}
+function sc_S13(u){ /* 244.29-258.47s: ⭐⭐ CHỖ TÁCH TỐC ĐỘ — cảnh trọng tâm */
+  var p = ramp(u,10,14.29);
+  var camPos = beamPoint(lerp(3.1,3.5,p), 0.85, 2.4);
+  var look = beamPoint(lerp(3.6,4.0,p), 0.1, 2.4);
+  setCam(camPos.x,camPos.y,camPos.z, look.x,look.y,look.z, lerp(42,52,p));
+  fieldUni.uSpeedMul.value = 1.55;
+}
+function sc_S14(u){ /* 258.47-282.52s: lượn ngang, tên hiện tượng chỉ ở lời đọc */
+  var p = ramp(u,0,24.05);
+  var camPos = beamPoint(3.6, 0.9, lerp(2.0,3.4,p));
+  var look = beamPoint(4.0, 0.15, lerp(2.0,3.4,p));
+  setCam(camPos.x,camPos.y,camPos.z, look.x,look.y,look.z, 48);
+  fieldUni.uSpeedMul.value = 1.2;
+}
+function sc_S15(u){ /* 282.52-294.98s: đẩy sát MỘT hạt — nhân/quầng phân biệt */
+  var p = ramp(u,0,12.46);
+  var camPos = beamPoint(lerp(3.7,4.15,p), 0.7, 3.4);
+  var look = beamPoint(lerp(3.95,4.3,p), 0.05, 3.4);
+  setCam(camPos.x,camPos.y,camPos.z, look.x,look.y,look.z, lerp(48,72,p));
+  fieldUni.uSpeedMul.value = 1.0;
+}
+function sc_S16(u){ /* 294.98-312.02s: lùi ra, hai hạt cạnh nhau rồi cả trường */
+  var p = ramp(u,0,17.04);
+  var camPos = beamPoint(lerp(4.15,3.7,p), 0.7, 3.4);
+  var look = beamPoint(lerp(4.3,3.95,p), 0.1, 3.4);
+  setCam(camPos.x,camPos.y,camPos.z, look.x,look.y,look.z, lerp(72,52,p));
+}
+function sc_S17(u){ /* 312.02-323.72s: hé lại căn phòng ở rìa khung */
+  var p = ramp(u,0,11.7);
+  var camPos = beamPoint(lerp(3.7,3.2,p), 0.75, 3.2);
+  var look = beamPoint(lerp(3.0,2.5,p), 0.1, 3.0);
+  setCam(camPos.x,camPos.y,camPos.z, look.x,look.y,look.z, lerp(52,44,p));
+}
+function sc_S18(u){ /* 323.72-333.2s: nhìn dọc trục luồng về nguồn sáng xa */
+  var p = ramp(u,0,9.48);
+  var camPos = beamPoint(lerp(3.2,3.6,p), 0.6, 3.0);
+  var look = beamPoint(1.6, 0.02, 3.0); /* nhìn ngược dọc trục về phía nguồn xa (vẫn TRONG trường, along>1.9) */
+  setCam(camPos.x,camPos.y,camPos.z, look.x,look.y,look.z, 42);
+}
+function sc_S19(u){ /* 333.2-345.47s: NỬA NGÀY — cụm mới sinh tách tốc độ nhanh */
+  var p = ramp(u,8,12.27);
+  var camPos = beamPoint(3.6, 0.5, 3.0);
+  var look = beamPoint(3.85, 0.1, 3.0);
+  setCam(camPos.x,camPos.y,camPos.z, look.x,look.y,look.z, lerp(38,44,p));
+  fieldUni.uSpeedMul.value = 2.2;
+}
+function sc_S20(u){ /* 345.47-373.84s: truck ngang, độ sâu = thời gian */
+  var p = ramp(u,0,28.37);
+  var camPos = beamPoint(lerp(2.0,4.2,p), 0.55, 3.0);
+  var look = beamPoint(lerp(2.3,4.4,p), 0.1, 3.0);
+  setCam(camPos.x,camPos.y,camPos.z, look.x,look.y,look.z, 50);
+  fieldUni.uSpeedMul.value = 1.2;
+}
+function sc_S21(u){ /* 373.84-399.86s: TỰ PHẢN BIỆN — khung cứng lại, lạnh đi 250K */
+  var p = ramp(u,0,26.02);
+  var camPos = beamPoint(lerp(4.2,3.0,p), lerp(0.55,0.7,p), 2.8);
+  var look = beamPoint(lerp(4.4,3.4,p), 0.1, 2.8);
+  setCam(camPos.x,camPos.y,camPos.z, look.x,look.y,look.z, lerp(50,35,p));
+  var coolAmt = ramp(u,6,11);
+  fieldUni.uWarm.value.copy(WARM_MEM).lerp(new THREE.Color(0.92,0.78,0.55), coolAmt*0.35);
+}
+function sc_S22(u){ /* 399.86-419.26s: QUYỂN NHẬT KÝ TRỞ LẠI, đối xứng ngược S09 */
+  var p = ramp(u,0,19.4);
+  var camPos = beamPoint(2.9, 0.5, 2.6);
+  var look = beamPoint(3.2, 0.1, 2.6);
+  setCam(camPos.x,camPos.y,camPos.z, look.x,look.y,look.z, lerp(35,58,p));
+  NOTEBOOK.visible = true;
+  var nb = beamPoint(3.2, 0.12, 2.9); /* đối xứng ngược S09: lệch phải thay vì trái */
+  NOTEBOOK.position.copy(nb); NOTEBOOK.rotation.y = -0.4;
+  fieldUni.uWarm.value.copy(WARM_MEM);
+}
+function sc_S23(u){ /* 419.26-448.64s: ⭐ KHỞI ĐIỂM NGANG NHAU rồi mới tách */
+  var p = ramp(u,12,29.38);
+  var camPos = beamPoint(lerp(3.0,3.3,p*0.3), 0.55, 2.6);
+  var look = beamPoint(lerp(3.4,3.6,p*0.3), 0.1, 2.6);
+  setCam(camPos.x,camPos.y,camPos.z, look.x,look.y,look.z, lerp(42,38,p));
+  NOTEBOOK.visible = false;
+  var holdEqual = 1 - ramp(u,17,30);
+  fieldUni.uHaloOverride.value = holdEqual>0.02 ? 0.85 : -1.0;
+  fieldUni.uSpeedMul.value = 1.6;
+}
+function sc_S24(u){ /* 448.64-470.53s: lùi + nghiêng lên, khung mở, nắng nền +20% */
+  var p = ramp(u,0,21.89);
+  var camPos = beamPoint(lerp(3.3,3.0,p), lerp(0.55,0.35,p), 2.6);
+  var look = beamPoint(lerp(3.6,3.5,p), 0.02, 2.6);
+  look.y += lerp(0.0,0.6,p);
+  setCam(camPos.x,camPos.y,camPos.z, look.x,look.y,look.z, lerp(38,50,p));
+  fieldUni.uRiseAmt.value = lerp(0.0,0.4,p);
+  fieldUni.uHaloOverride.value = -1.0;
+}
+function sc_S25(u){ /* 470.53-502.67s: ⭐⭐ CÚ LẬT — dâng lên rất chậm, không hạt nào tắt */
+  var p = ramp(u,0,32.14);
+  var camPos = beamPoint(3.0, 0.3, 2.6);
+  var look = beamPoint(3.3, 0.05, 2.6);
+  look.y += lerp(0.5,0.9,p);
+  setCam(camPos.x,camPos.y,camPos.z, look.x,look.y,look.z, lerp(50,56,p));
+  fieldUni.uRiseAmt.value = lerp(0.4,0.75,p);
+  beamUni.uIntensity.value = lerp(1.0,1.25,ramp(u,8,24));
+}
+function sc_S26(u){ /* 502.67-554.14s: lượn qua ba vùng mật độ vàng khác nhau */
+  var p = ramp(u,0,51.47);
+  var camPos = beamPoint(lerp(2.8,2.1,p), lerp(0.3,0.5,p), lerp(2.6,3.0,p));
+  var look = beamPoint(lerp(2.5,1.8,p), 0.05, lerp(2.6,3.0,p));
+  look.y += 0.7;
+  setCam(camPos.x,camPos.y,camPos.z, look.x,look.y,look.z, 40);
+  fieldUni.uRiseAmt.value = 0.6;
+  beamUni.uIntensity.value = 1.15;
+}
+function sc_S27(u){ /* 554.14-590.01s: ⚠ RÀNG BUỘC 3 — vùng thưa, KHÔNG bản đồ */
+  var p = ramp(u,0,35.87);
+  var camPos = beamPoint(lerp(2.0,2.0,p), lerp(0.5,0.7,p), 3.4);
+  var look = beamPoint(lerp(2.4,2.35,p), 0.1, 3.4);
+  look.y += 0.4;
+  setCam(camPos.x,camPos.y,camPos.z, look.x,look.y,look.z, lerp(40,50,p));
+  fieldUni.uRiseAmt.value = 0.4;
+}
+function sc_S28(u){ /* 590.01-617.49s: GIỚI HẠN — hai màu phai cùng tốc độ tới sàn */
+  var p = ramp(u,10,27.48);
+  var camPos = beamPoint(2.1, 0.75, 3.6);
+  var look = beamPoint(2.1, 0.02, 3.6);
+  setCam(camPos.x,camPos.y,camPos.z, look.x,look.y,look.z, lerp(38,42,p*0.5));
+  fieldUni.uHaloOverride.value = -1.0;
+  fieldUni.uSpeedMul.value = 1.3;
+}
+function sc_S29(u){ /* 617.49-648.79s: cụm không cô lập — cùng trong một trường */
+  var p = ramp(u,0,31.3);
+  var camPos = beamPoint(2.1, lerp(0.9,0.55,p), lerp(3.6,3.2,p));
+  var look = beamPoint(2.3, 0.1, lerp(3.6,3.2,p));
+  setCam(camPos.x,camPos.y,camPos.z, look.x,look.y,look.z, lerp(42,55,p));
+  fieldUni.uSpeedMul.value = 1.0;
+}
+function sc_S30(u){ /* 648.79-676.53s: NÓI RA VỚI NGƯỜI KHÁC — hạt con trôi giữa cặp */
+  var p = ramp(u,0,27.74);
+  var camPos = beamPoint(lerp(2.4,2.8,p), 0.55, 3.0);
+  var look = beamPoint(lerp(2.6,3.0,p), 0.05, 3.0);
+  setCam(camPos.x,camPos.y,camPos.z, look.x,look.y,look.z, 44);
+  childUni.uOp.value = ramp(u,6,10);
+  var childA = beamPoint(2.65, 0.10, 2.8), childB = beamPoint(2.65, 0.10, 3.6);
+  childUni.uA.value.copy(childA); childUni.uB.value.copy(childB);
+  var toVarm = ramp(u,18,24);
+  childUni.uCol.value.copy(COOL_MEM).lerp(WARM_MEM, toVarm);
+}
+function sc_S31(u){ /* 676.53-687.4s: bắt đầu lùi khỏi trục luồng — KHỞI ĐẦU CÚ LÙI
+ * ⚠ Vượt qua ngưỡng along≈1.9 (mốc S08 ngược) NGAY TRONG shot này — đúng
+ * "cú lùi không-cắt" của GHI CHÚ mục 1. */
+  var p = ramp(u,0,10.87);
+  var camPos = beamPoint(lerp(2.8,1.3,p), 0.5, 2.8);
+  var look = beamPoint(lerp(3.0,1.0,p), 0.05, 2.8);
+  setCam(camPos.x,camPos.y,camPos.z, look.x,look.y,look.z, lerp(44,50,p));
+  childUni.uOp.value = 0;
+  fieldUni.uRiseAmt.value = lerp(0.4,0.1,p);
+}
+function sc_S32(u){ /* 687.4-700.18s: VỀ PHÒNG — vượt màn ngược, phòng vào tiêu điểm */
+  var p = ramp(u,0,12.78);
+  var camPos = beamPoint(lerp(1.3,-0.45,p), lerp(0.5,0.4,p), 2.8);
+  var look = beamPoint(lerp(1.0,-0.7,p), 0.05, 2.8);
+  setCam(camPos.x,camPos.y,camPos.z, look.x,look.y,look.z, lerp(50,38,p));
+  ALBUM.visible = p>0.6; PHOTOS.visible = p>0.6;
+  handMe.visible = false; handGrandchild.visible = false; knee.visible = false;
+  NOTEBOOK.visible = false;
+  fieldUni.uRiseAmt.value = 0;
+}
+function sc_S33(u){ /* 700.18-725.95s: GÓC MÁY NEO — khớp S05 (ANCHOR_CAM) */
+  setCam(ANCHOR_CAM.pos[0],ANCHOR_CAM.pos[1],ANCHOR_CAM.pos[2],
+         ANCHOR_CAM.look[0],ANCHOR_CAM.look[1],ANCHOR_CAM.look[2], ANCHOR_CAM.fov);
+  var p = ramp(u,12,25.77);
+  camera.position.x += lerp(0,0.2,p);
+  ALBUM.visible = true; PHOTOS.visible = true;
+  handMe.visible = true; handGrandchild.visible = true; knee.visible = true;
+  handMe.position.set(0.55,0.02,0.35); handGrandchild.position.set(0.95,0.02,0.05);
+  NOTEBOOK.visible = false;
+}
+function sc_S34(u){ /* 725.95-751.77s: tay lật ảnh từ bóng ra nắng */
+  var p = ramp(u,0,25.82);
+  setCam(lerp(0.65,0.9,p), 0.75, lerp(0.4,0.15,p), 1.15,0.5,-0.15, lerp(40,65,p));
+  ALBUM.visible = true; PHOTOS.visible = true;
+  handMe.visible = true; handGrandchild.visible = true; knee.visible = true;
+}
+function sc_S35(u){ /* 751.77-773.34s: hai lớp cùng khung — ảnh tiền cảnh, hạt hậu cảnh
+ * ⚠ đã sửa: look-target cũ (0.9,0.7,1.0) trỏ ngược hẳn về phía 障子, đặt cả
+ * album (98°) và tay (87°) ra ngoài FOV — khung trước trống hoàn toàn.
+ * Camera giờ nhìn đúng về phía xấp ảnh/tay (tiền cảnh), luồng hạt vẫn lọt vào
+ * rìa khung phía sau vì particleField trải khắp phòng, không cần chĩa thẳng. */
+  var p = ramp(u,0,21.57);
+  setCam(0.1, 0.6, 0.85, 0.95,0.15,-0.05, 44);
+  ALBUM.visible = true; PHOTOS.visible = true;
+  handMe.visible = true; handGrandchild.visible = true; knee.visible = true;
+  fieldUni.uHaloOverride.value = -1.0;
+}
+function sc_S36(u){ /* 773.34-805.07s: ⚠ RÀNG BUỘC 2 — KHÔNG BÓNG NGƯỜI, camera lùi ra hiên
+ * ⚠ đã nới FOV cuối shot (28→34) và kéo look-target về gần hộp ảnh hơn — bản
+ * đầu để tay 私 rơi hẳn ra ngoài khung (23° > 14° nửa-FOV) thay vì "ở rìa khung". */
+  var p = ramp(u,0,31.73);
+  setCam(lerp(0.35,-0.5,p), lerp(0.55,0.75,p), lerp(0.55,1.15,p), 0.95,0.35,-0.1, lerp(40,34,p));
+  ALBUM.visible = true; PHOTOS.visible = true;
+  handMe.visible = true; handGrandchild.visible = true; knee.visible = true;
+}
+function sc_S37(u){ /* 805.07-821.08s: KHUNG CUỐI — tuyệt đối tĩnh, nắng không tắt
+ * ⚠ đã sửa: look-target cũ đặt cả hai tay ngoài FOV 35° (29,6°/21,6° > 17,5°).
+ * Khung cuối PHẢI có cả hộp ảnh + hai đôi bàn tay — hạ độ cao camera, kéo
+ * look-target gần trung tâm nhóm vật thể hơn, nới FOV lên 44°. */
+  setCam(-0.15,0.65,0.85, 0.95,0.2,-0.1, 44);
+  ALBUM.visible = true; PHOTOS.visible = true;
+  handMe.visible = true; handGrandchild.visible = true; knee.visible = true;
+  var brighten = ramp(u,6,12);
+  beamUni.uIntensity.value = lerp(1.2,1.3,brighten);
+  fieldUni.uRiseAmt.value = 0.55;
+}
+
+var SCENE_FN = {
+  S01:sc_S01, S02:sc_S02, S03:sc_S03, S04:sc_S04, S05:sc_S05, S06:sc_S06,
+  S07:sc_S07, S08:sc_S08, S09:sc_S09, S10:sc_S10, S11:sc_S11, S12:sc_S12,
+  S13:sc_S13, S14:sc_S14, S15:sc_S15, S16:sc_S16, S17:sc_S17, S18:sc_S18,
+  S19:sc_S19, S20:sc_S20, S21:sc_S21, S22:sc_S22, S23:sc_S23, S24:sc_S24,
+  S25:sc_S25, S26:sc_S26, S27:sc_S27, S28:sc_S28, S29:sc_S29, S30:sc_S30,
+  S31:sc_S31, S32:sc_S32, S33:sc_S33, S34:sc_S34, S35:sc_S35, S36:sc_S36, S37:sc_S37
+};
+var SCENE_KEYS = Object.keys(SC);
+function sceneAt(t){
+  for (var i=0;i<SCENE_KEYS.length;i++){
+    var k = SCENE_KEYS[i];
+    if (t >= SC[k][0] && t < SC[k][1]) return k;
+  }
+  return t < SC.S01[0] ? 'S01' : 'S37';
+}
+
+/* ---- phụ đề: 303 cue, sinh sẵn từ scripts/gen-captions.mjs (timing.json THẬT) */
+const CUES=[{t:2.00,s:"よく晴れた午後でした。"},{t:4.27,s:"戸を開け放してあって、風が通っていました。"},{t:8.61,s:"その日、"},{t:9.43,s:"私はずっと後回しにして"},{t:11.67,s:"いたことをしていました。"},{t:14.11,s:"遺品の整理です。"},{t:15.75,s:"何か月も、手がつけられずにいたんです。"},{t:19.62,s:"押し入れの奥から、"},{t:21.67,s:"古い写真の箱が出てきました。"},{t:24.86,s:"蓋に埃がたまっています。"},{t:27.60,s:"それを払って、開けました。"},{t:30.56,s:"日が斜めに入ってきていて、"},{t:32.98,s:"光の筋がはっきり見えました。その中を、"},{t:36.51,s:"細かい埃がゆっくり流れていくんです。"},{t:39.85,s:"写真を畳の上に広げていると、"},{t:42.80,s:"隣に座っていた孫が、"},{t:44.91,s:"こう聞きました。"},{t:46.59,s:"おじいちゃんって、どんな人だったの。"},{t:51.18,s:"私は、答えはじめました。あの人はね、と。"},{t:56.14,s:"ところが、"},{t:57.13,s:"話しているうちに、"},{t:58.90,s:"自分の声が妙に聞こえてきたんです。"},{t:62.25,s:"私は、いい話ばかりしていました。声も軽い。"},{t:66.98,s:"それどころか、笑っていたんです。"},{t:70.58,s:"そこで、口が止まりました。"},{t:75.57,s:"なぜなら、私はちゃんと覚えているからです。"},{t:79.40,s:"あの頃が、"},{t:80.31,s:"いつも穏やかだったわけではないことを。"},{t:83.77,s:"やりくりに苦しかった年もありました。"},{t:86.76,s:"もうだめかもしれない、"},{t:88.59,s:"とそのときは思った言い争いもありました。"},{t:91.91,s:"忘れてはいないんです。"},{t:94.53,s:"ただ、それが先に出てこなかった。"},{t:98.34,s:"出てきたのは、いい話の方でした。"},{t:102.16,s:"私は、都合のいいところだけを"},{t:104.60,s:"話しているのだろうか。"},{t:107.31,s:"薄情になったから、"},{t:108.86,s:"あの頃が優しく見えるのだろうか。"},{t:112.01,s:"正直に言うと、その午後、"},{t:114.57,s:"私は孫に嘘を渡してしまった"},{t:117.40,s:"気がしていました。"},{t:119.84,s:"それで、私は調べてみることに"},{t:122.29,s:"しました。そうしたら、"},{t:124.63,s:"思いがけないことがわかったんです。"},{t:128.04,s:"この、昔が優しく見えるという感じ。"},{t:131.44,s:"これを、実際に測ってみた"},{t:133.24,s:"人たちがいました。"},{t:136.18,s:"やり方は、とても素朴なものです。"},{t:139.31,s:"日記を使うんです。"},{t:141.59,s:"参加した人は毎日、"},{t:143.51,s:"その日にあった出来事を書きとめます。"},{t:146.83,s:"うれしかったこと、いやだったこと、"},{t:149.28,s:"どちらもです。"},{t:150.37,s:"そして大事なのがここなんです。"},{t:153.34,s:"書いたその場で、"},{t:154.70,s:"その出来事の感情の強さに"},{t:156.62,s:"点をつけておく。"},{t:158.45,s:"つまり、あとから思い出して"},{t:160.50,s:"つけた点ではありません。"},{t:162.65,s:"出来事が起きた、"},{t:163.84,s:"その日のうちの点なんです。"},{t:166.52,s:"それから何か月かたって、"},{t:168.57,s:"もう一度、同じ出来事を"},{t:170.40,s:"読み返してもらいます。"},{t:172.32,s:"そして今どう感じるか、"},{t:174.28,s:"また点をつける。"},{t:177.02,s:"これで、当時の点と今の点を"},{t:179.60,s:"並べて比べられるわけです。"},{t:182.11,s:"感想ではなく、数字として。"},{t:185.55,s:"この方法で集まった記録が、"},{t:188.03,s:"どれくらいあったか。"},{t:190.06,s:"八つの日記研究。"},{t:191.85,s:"参加した人が、二百二十九人。"},{t:195.92,s:"書きとめられた出来事は、"},{t:198.15,s:"二万三千二百二件。"},{t:200.30,s:"追いかけた期間は、"},{t:201.83,s:"短いもので一年半、"},{t:203.51,s:"長いもので二年半ほどです。"},{t:207.17,s:"これをまとめたのが、"},{t:209.05,s:"ウォーカーとスコウロンスキーと"},{t:211.40,s:"トンプソンという三人で、"},{t:213.53,s:"二〇〇三年の論文です。"},{t:215.88,s:"題は、こうついていました。"},{t:218.53,s:"人生は心地よい。"},{t:220.35,s:"そして記憶が、それを保つのを"},{t:222.66,s:"手伝っている。"},{t:224.72,s:"では、二万件を超える記録は、"},{t:227.44,s:"何を示したのか。"},{t:230.00,s:"まず、どちらの感情も薄れていました。"},{t:233.05,s:"うれしかったことも、"},{t:234.73,s:"いやだったことも、"},{t:236.21,s:"当時ほどの強さではなくなる。"},{t:239.42,s:"ここまでは、たぶん誰でも"},{t:241.68,s:"思うところです。"},{t:243.40,s:"違いは、その先にありました。"},{t:246.29,s:"いやだったことの方が、"},{t:248.24,s:"先に薄れていたんです。"},{t:250.49,s:"両方薄れる。でも、速さが違う。"},{t:253.75,s:"つらい方が早く軽くなって、"},{t:256.13,s:"うれしい方がゆっくり残る。"},{t:260.47,s:"この差には、名前がついています。"},{t:263.42,s:"フェージング・アフェクト・"},{t:265.05,s:"バイアス。"},{t:266.03,s:"感情が薄れていく、"},{t:267.71,s:"その傾きのことです。"},{t:271.41,s:"名づけたのは、ウォーカーと"},{t:273.69,s:"フォーグルとトンプソンで、"},{t:276.24,s:"一九九七年のことでした。"},{t:278.73,s:"ただ、ここに一つ、"},{t:280.55,s:"私がいちばん誤解していた"},{t:282.44,s:"ところがあります。"},{t:284.52,s:"薄れているのは、"},{t:286.15,s:"記憶そのものではありません。"},{t:288.45,s:"出来事は覚えています。"},{t:290.65,s:"いつのことか、どこでのことか、"},{t:292.79,s:"何を言われたか。"},{t:294.24,s:"細かいところまで残っている。"},{t:296.98,s:"薄れていくのは、"},{t:298.61,s:"その記憶にくっついていた"},{t:300.63,s:"感情の強さの方なんです。"},{t:302.32,s:"記憶と、記憶についた感情。"},{t:305.05,s:"この二つは、別々のものとして"},{t:307.31,s:"測れる。研究はそれを、"},{t:309.85,s:"別々に測っていました。"},{t:314.02,s:"あの言い争いを、"},{t:315.63,s:"私は忘れてなどいない。"},{t:317.68,s:"ただ、思い出したときの"},{t:319.42,s:"胸の締めつけが、"},{t:320.76,s:"当時ほどではない。"},{t:322.34,s:"それだけなんです。"},{t:325.72,s:"さて、ここからが、"},{t:327.51,s:"私にとっていちばん"},{t:329.05,s:"意外だったところです。"},{t:331.70,s:"この働きは、いつから始まるのか。"},{t:335.20,s:"私は、何年もかかるものだと"},{t:337.68,s:"思っていました。"},{t:339.05,s:"歳月が薬になる、と言いますから。"},{t:343.28,s:"ところが、半日ほどで、"},{t:345.29,s:"もう始まっていました。"},{t:347.47,s:"出来事が起きて、"},{t:349.06,s:"十二時間ほど。そのあたりで、"},{t:351.51,s:"もう差がつきはじめている。"},{t:354.16,s:"そして三か月たっても、"},{t:356.28,s:"ちゃんと測れる。"},{t:358.99,s:"これを調べたのが、"},{t:360.75,s:"ギボンズとリーとウォーカーで、"},{t:363.31,s:"二〇一一年の研究です。"},{t:365.61,s:"論文の題が、"},{t:366.75,s:"そのまま結論になっていました。"},{t:368.27,s:"フェージング・アフェクト・"},{t:370.31,s:"バイアスは十二時間以内に始まり、"},{t:372.90,s:"三か月続く。"},{t:374.03,s:"そういう題なんです。"},{t:375.84,s:"つまり、頑張って忘れようとしたから"},{t:378.63,s:"始まるのではありません。"},{t:380.66,s:"そんな指示を出した"},{t:382.05,s:"覚えがなくても、"},{t:383.34,s:"もう動いているんです。"},{t:385.32,s:"ここで、私はこう思いました。"},{t:388.09,s:"それは本当に薄れているのだろうか、と。"},{t:392.06,s:"人は、昔の自分の気持ちを"},{t:394.32,s:"大げさに覚えていることがあります。"},{t:397.06,s:"この差も、"},{t:398.06,s:"ただの思い違いではないのか。"},{t:401.86,s:"実は、この反論は"},{t:403.65,s:"研究者自身がしていました。"},{t:405.94,s:"答えられるように、"},{t:407.35,s:"方法が組んであったんです。"},{t:410.19,s:"最初の点は、出来事が起きた"},{t:412.50,s:"その日につけてあります。"},{t:414.53,s:"あとから記憶をたどった"},{t:416.11,s:"数字ではないので、"},{t:417.51,s:"思い違いでは説明がつかないんです。"},{t:421.26,s:"そして、もう一つ。"},{t:423.28,s:"私はこれを知って、"},{t:424.85,s:"少し驚きました。"},{t:426.78,s:"うれしい出来事といやな出来事は、"},{t:429.31,s:"起きた時点での感情の強さが、"},{t:431.75,s:"ほぼ同じだったんです。"},{t:434.48,s:"つまり、最初から楽しい方が"},{t:436.87,s:"強かったわけではない。"},{t:438.72,s:"同じ高さから始まって、"},{t:440.53,s:"下りていく速さだけが"},{t:442.09,s:"違っていた。"},{t:444.35,s:"この整理をしたのが、"},{t:446.28,s:"ウォーカーとスコウロンスキーの"},{t:448.61,s:"二〇〇九年の論文です。"},{t:450.64,s:"その論文には、"},{t:452.19,s:"変わった題がついていました。"},{t:454.70,s:"フェージング・アフェクト・"},{t:456.60,s:"バイアス。"},{t:457.61,s:"それは一体、"},{t:458.79,s:"何のためにあるのか。"},{t:461.14,s:"つまり、こういう問いです。"},{t:463.44,s:"これは記憶の故障なのか、"},{t:465.50,s:"それとも、そうなるように"},{t:467.32,s:"できているのか。"},{t:469.29,s:"著者たちの答えは、後者でした。"},{t:472.53,s:"これは、記憶が"},{t:473.90,s:"壊れているのではない。"},{t:475.66,s:"人が立ち直っていくための、"},{t:477.86,s:"健康な働きが記憶の中で"},{t:480.06,s:"動いている。"},{t:481.25,s:"その現れだ、と。"},{t:484.55,s:"私は、この一行を読んで、"},{t:487.03,s:"しばらく画面から"},{t:488.32,s:"目を離しました。"},{t:490.65,s:"都合よく話を作っていると"},{t:493.03,s:"思っていました。"},{t:494.34,s:"そうではなかったんです。"},{t:496.63,s:"あなたが薄情になったのでは"},{t:499.10,s:"ありません。"},{t:500.10,s:"心が、そう働くように"},{t:501.85,s:"できているんです。"},{t:504.67,s:"そして、ここからは"},{t:506.27,s:"私たちの年代に関わる話です。"},{t:509.82,s:"二〇二四年に、サイコロジー・"},{t:512.13,s:"アンド・エイジングという"},{t:514.24,s:"学術誌に載った研究があります。"},{t:517.09,s:"年齢とこの働きの関係を"},{t:519.13,s:"調べたものです。"},{t:520.82,s:"どの年代にも、"},{t:522.28,s:"この働きはありました。"},{t:524.17,s:"若い人にも、ちゃんとある。"},{t:526.42,s:"ただ、年齢が高いほど、"},{t:528.71,s:"その働きは強くなっていました。"},{t:532.02,s:"そして、その差を"},{t:533.66,s:"説明していたのは、"},{t:535.24,s:"体の衰えでも、"},{t:536.47,s:"気分の良し悪しでも"},{t:537.86,s:"ありませんでした。"},{t:539.98,s:"楽しかった出来事を、"},{t:541.70,s:"どれだけ大事なことだと"},{t:543.55,s:"思っているか。"},{t:544.72,s:"差を生んでいたのは、"},{t:546.44,s:"そこだったんです。"},{t:548.18,s:"年を重ねた人ほど、"},{t:549.99,s:"いい日をいい日として、"},{t:552.06,s:"重く受け取っている。"},{t:554.36,s:"そういうことでした。"},{t:556.14,s:"ここで、言っておかなければ"},{t:558.40,s:"ならないことが二つあります。"},{t:560.94,s:"わかっていないことの方です。"},{t:563.32,s:"一つめ。これらの研究は、"},{t:566.00,s:"その多くがアメリカで"},{t:567.68,s:"行われました。"},{t:568.90,s:"参加したのも、"},{t:570.28,s:"大学生が中心です。"},{t:573.25,s:"世界の十の文化で"},{t:575.14,s:"同じ傾向が見つかった、"},{t:577.13,s:"という研究もあります。"},{t:579.34,s:"二〇一五年のものです。"},{t:581.58,s:"ですが、日本人を対象にした"},{t:584.06,s:"大規模な研究は、"},{t:585.60,s:"まだ十分ではありません。"},{t:587.72,s:"ここは、はっきりそう"},{t:589.28,s:"申し上げておきます。"},{t:592.01,s:"二つめ。この働きは、"},{t:594.53,s:"いつでも同じように"},{t:596.16,s:"回るわけではないんです。"},{t:597.99,s:"不安や気分の落ち込みが"},{t:600.13,s:"重いとき、この差が"},{t:601.97,s:"小さくなることが"},{t:603.29,s:"知られています。"},{t:604.09,s:"落ち込みの度合いが高い"},{t:606.55,s:"グループでは、"},{t:607.83,s:"この働きが出ていませんでした。"},{t:610.62,s:"つらい記憶も楽しい記憶も、"},{t:613.03,s:"同じ速さで薄れていた。"},{t:615.53,s:"二〇〇三年の、別の研究です。"},{t:619.49,s:"ですから、もし何年たっても"},{t:622.25,s:"少しも軽くならない、"},{t:624.28,s:"という方がいらしたら。"},{t:626.74,s:"それは、あなたの心が"},{t:628.75,s:"弱いからではありません。"},{t:631.06,s:"この働き自体が、"},{t:632.61,s:"うまく回らなくなることがある。"},{t:635.14,s:"そういうことが、"},{t:636.60,s:"研究でわかっているんです。"},{t:639.34,s:"そういうときは、一人で"},{t:641.51,s:"抱えずに、お医者さんに"},{t:643.68,s:"相談していい話なんです。"},{t:646.05,s:"それは弱さではなく、"},{t:647.97,s:"体の調子の話と同じことなんです。"},{t:650.79,s:"それから、この研究には"},{t:653.05,s:"もう一つ、私が好きな"},{t:654.99,s:"発見がありました。"},{t:656.52,s:"つらかった出来事は、"},{t:658.36,s:"人に話したときの方が、"},{t:660.29,s:"早く軽くなっていたんです。"},{t:662.37,s:"そして、楽しかった出来事は、"},{t:664.93,s:"人に話しても薄れない。"},{t:667.31,s:"むしろ、保たれる。"},{t:669.62,s:"一人で何度も思い返すのとは、"},{t:672.28,s:"違う結果になる。"},{t:673.57,s:"これも、あの二〇〇九年の"},{t:675.83,s:"論文に書かれていました。"},{t:678.53,s:"ということは、です。"},{t:680.55,s:"亡くなった人のことを誰かに"},{t:682.95,s:"話して聞かせるのは、"},{t:684.79,s:"気休めではないということなんです。"},{t:687.62,s:"測れる働きがある。"},{t:689.40,s:"さて、あの午後の話に戻ります。"},{t:693.15,s:"日はだいぶ低くなっていました。"},{t:696.09,s:"畳の上の光の筋が、"},{t:697.99,s:"部屋の奥まで伸びて、"},{t:699.69,s:"色が濃くなっています。"},{t:702.18,s:"写真の箱は、開けたままです。"},{t:705.13,s:"孫は、まだそこに"},{t:706.51,s:"座っていました。"},{t:707.66,s:"私の答えを待っている顔で。"},{t:711.28,s:"私は、話の続きをしました。"},{t:714.35,s:"今度は、自分が何を"},{t:716.16,s:"しているのかわかったうえで。"},{t:719.11,s:"いい話をするのは、"},{t:720.96,s:"嘘をつくことではありません。"},{t:723.32,s:"先に出てくるものが、"},{t:724.93,s:"そちらだというだけの"},{t:726.50,s:"ことなんです。"},{t:727.95,s:"それから私は、もう少しだけ"},{t:730.68,s:"本当のことを足しました。"},{t:733.06,s:"あの頃は大変な年も"},{t:734.75,s:"あってね、と。"},{t:736.47,s:"不思議なもので、"},{t:738.12,s:"その話をしても、"},{t:739.60,s:"声は重くなりませんでした。"},{t:742.11,s:"覚えてはいる。"},{t:743.44,s:"でも、もう痛くないんです。"},{t:748.17,s:"今日お話ししたことで、"},{t:750.24,s:"覚えて帰っていただきたいのは、"},{t:752.63,s:"一つだけです。"},{t:753.77,s:"いやな記憶そのものは、"},{t:755.66,s:"消えません。"},{t:756.70,s:"消えるのは、それにくっついていた"},{t:759.14,s:"感情の強さだけです。"},{t:761.43,s:"しかも、つらい方が"},{t:763.09,s:"先に薄れる。"},{t:765.42,s:"これは、誰かが慰めのために"},{t:768.03,s:"言い出した話ではありません。"},{t:770.43,s:"二万三千二百二件の"},{t:772.31,s:"日記の記録から、"},{t:773.72,s:"測られたことなんです。"},{t:775.34,s:"ですから、あの人の記憶が"},{t:777.72,s:"薄れたのではないんです。"},{t:780.02,s:"覚えていることは、"},{t:781.65,s:"ちゃんとそこに残っている。"},{t:784.29,s:"下りていったのは、"},{t:785.94,s:"重さの方だけです。"},{t:787.23,s:"そして、これは私たちだけの"},{t:789.55,s:"話でもありません。"},{t:791.30,s:"古い写真を前にして、"},{t:793.31,s:"あの頃はよかったと"},{t:795.03,s:"言っている人が、"},{t:796.36,s:"今この時間にも、"},{t:798.40,s:"どこかの家に座っています。"},{t:801.04,s:"その人にも、同じことが起きているんです。"},{t:807.07,s:"昔が優しく見えるのは、"},{t:808.86,s:"あなたが自分をだまして"},{t:810.65,s:"いるからではありません。"},{t:812.60,s:"重たかったものが下に落ちるまで、"},{t:815.45,s:"あなたが十分に遠くまで歩いてきた。"},{t:818.47,s:"それだけのことなんです。"}];
+
+/* ==========================================================================
+ * DRIVER — renderAtTime(t): hàm THUẦN, đặt TRỌN VẸN mọi thứ theo t rồi render.
+ * ========================================================================== */
+function renderAtTime(t){
+  /* LEADTAIL:APPLIED — dịch timeline sang phải 2s cho intro lặng.
+     Cảnh vẫn dùng mốc gốc của timing.json; chỉ tới muộn hơn 2s. */
+  var _tReal = t;                    /* thời gian THẬT của video, cho phụ đề */
+  t = Math.max(0, t - 2);   /* thời gian CẢNH, đã trừ intro */
+
+  t = clamp(t,0,TOTAL);
+
+  /* --- reset per-frame state cần thiết (tránh rò trạng thái giữa scrub) ---- */
+  fieldUni.uHaloOverride.value = -1.0;
+  fieldUni.uSpeedMul.value = 1.0;
+  fieldUni.uRiseAmt.value = 0.0;
+  beamUni.uIntensity.value = 1.0;
+  childUni.uOp.value = 0.0;
+
+  var key = sceneAt(t);
+  var u = loc(t, key);
+  SCENE_FN[key](u);
+
+  /* --- đồng hồ nắng: màu + cường độ bóng lưới theo sunAngle(t) ------------ */
+  var sc = sunColor(t);
+  beamUni.uColor.value.copy(sc);
+  shojiUni.uSun.value.copy(sc);
+  sunLight.color.copy(sc);
+  roomBounce.color.copy(sc);
+  shadowUni.uSkew.value = lerp(0.0, 0.6, sunProgress(t));
+  var beamLen = lerp(1.6, 2.9, sunProgress(t));
+  beamUni.uLen.value = beamLen;
+  lightBeam.position.x = lerp(0.1, -0.6, sunProgress(t));
+
+  /* --- field mix: hàm smoothstep theo "along" (độ sâu dọc trục), KHÔNG theo
+   * khoảng cách 3D camera->trục (xem ghi chú tại beamAlong). Vượt màn quanh
+   * along≈1.6-2.2 (chỗ trục cắt 障子 z=1.75), khớp S08. ------------------- */
+  var along = beamAlong(camera.position);
+  var mix = smooth(clamp((along-1.6)/0.6, 0, 1));
+  /* S35: hạt trong luồng "có màu nhạt trở lại ~20% độ bão hoà" dù camera đã ở
+   * ngoài trục (GHI CHÚ S35 storyboard) — ép một sàn mix nhỏ riêng cho shot này. */
+  if (key === 'S35') mix = Math.max(mix, 0.20);
+  fieldUni.uFieldMix.value = mix;
+  vshaftUni.uFieldMix.value = mix;
+  vshaftUni.uT.value = t;
+  vshaftUni.uCamPos.value.copy(camera.position);
+  /* ⚠ 障子 mờ dần khi camera đã "vượt màn" sâu vào luồng sáng — nếu không, cận
+   * cảnh trong 第2-3章 luôn thấy tấm 障子 phẳng chiếm hết khung (lỗi đo được ở
+   * contact-sheet 127s/320s/572s/607s trước khi sửa). shojiMat không alpha
+   * (opaque), nên "mờ đi" dựng bằng tắt dần uSunAmt — panel chìm vào bóng tối,
+   * đọc như đã rời xa khỏi trường nhìn thay vì còn là mặt phẳng cứng sát mắt. */
+  shojiUni.uSunAmt.value = 1 - mix;
+  fieldUni.uT.value = t;
+  childUni.uT.value = t;
+  shojiUni.uT.value = t;
+
+  /* --- phụ đề + nhãn chương ------------------------------------------------ */
+  HFA.applySubtitle(subEl, CUES, _tReal);
+  /* LEADTAIL:APPLIED — màn hình đen 5s cuối: nhạc chạy tiếp, hình tắt dần. */
+  (function(){
+    var ob = document.getElementById('outro-black');
+    if(!ob) return;
+    var f = (_tReal - 823.13) / 1.2;         /* 1.2s chuyển sang đen */
+    ob.style.opacity = String(Math.max(0, Math.min(1, f)));
+  })();
+  HFA.applyChapter(chapEl, CHAPTERS, _tReal, 6.0);
+
+  /* --- fade vào/ra toàn cục -------------------------------------------------
+   * ⚠ LEADTAIL: t ở đây là THỜI GIAN CẢNH (đã trừ lead 2s), nhưng TOTAL đã bị
+   * apply-lead-tail.mjs đổi thành 828.13 (=lead+scene+tail). Dùng TOTAL thẳng
+   * ở đây sẽ đẩy fade-out ra sau ~7s so với cảnh thật (đúng bẫy đã ghi ở
+   * toshi-to-fuan). Ràng buộc storyboard S37 còn mạnh hơn: KHÔNG được tự tối
+   * đi ở cuối cảnh — outro đen là overlay RIÊNG (#outro-black) do
+   * apply-lead-tail.mjs điều khiển theo _tReal. Vì vậy fade-out ở đây tắt hẳn
+   * (outSec rất lớn) — chỉ còn fade-IN 1.4s đầu cảnh dùng độ dài cảnh THẬT. */
+  var _SCENE_DUR = TOTAL - 2 - 5;
+  var fade = HFA.globalFade(t, _SCENE_DUR, 1.4, 0.001);
+  rootEl.style.opacity = fade.toFixed(4);
+
+  composer.render();
+}
+
+/* ⚠ Dòng đăng ký phải nằm NGUYÊN DẠNG trong file này — StaticGuard quét VĂN BẢN.
+ * Khoá trùng ĐÚNG data-composition-id của div gốc. */
+window.__timelines = window.__timelines || {};
+window.__timelines["omoide-yasashii"] = HFA.makeTimeline("omoide-yasashii", TOTAL, renderAtTime);
+
+</script>
+</body>
+</html>

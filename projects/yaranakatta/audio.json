@@ -1,0 +1,18 @@
+{
+  "lead": 2,
+  "tail": 5,
+  "narrationDuration": 735.24,
+  "totalDuration": 742.24,
+  "voiceStartsAt": 2,
+  "voiceEndsAt": 737.24,
+  "blackOutroFrom": 737.24,
+  "gain": 0.13,
+  "tailGain": 0.34,
+  "playlist": [
+    "intro.mp3",
+    "Path.mp3",
+    "Weight.mp3",
+    "Clarity.mp3",
+    "Settle.mp3"
+  ]
+}

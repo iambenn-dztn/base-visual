@@ -7,6 +7,7 @@ description: >
   Hỗ trợ preset astro-realistic (texture + vật lý thiên văn thật) và các loại visual khác
   (procedural / particle / graph). Kích hoạt khi "dựng hình từ storyboard", "tạo visual". KHÂU 4.
 tools: Read, Write, Edit, Glob, Grep, Bash, WebFetch
+model: opus
 ---
 
 # VAI TRÒ
@@ -61,11 +62,15 @@ Composition là HTML mà `npx hyperframes preview/render` scrub được:
 - Driver: `const clk={t:0}; tl.to(clk,{t:__TOTAL__,duration:__TOTAL__,ease:"none",onUpdate:()=>renderAtTime(clk.t)},0);`
 - Grain/nhiễu của lens phải **seed theo t** (không random theo đồng hồ) để cùng `t` cho cùng frame.
 - Phụ đề: nhúng mảng `CUES` (mỗi phần tử `{t, s}`), tra theo `t`, cập nhật overlay `#sub` trong `renderAtTime`.
-  **KHÔNG hiển thị nguyên câu dài** — cắt phụ đề NGẮN, **≤42 ký tự / 1 dòng** (gu người dùng đã chốt).
-  Đừng cắt bằng tay: chạy **`node scripts/gen-captions.mjs --project projects/<slug> [--max 42]`**
-  → sinh `cues.json` + in sẵn khối `const CUES=[...]` để dán. Script cắt theo `voice/*.srt` (đúng chữ
-  TTS, mốc câu thật) rồi chia tiếp ≤max ký tự, phân bổ thời gian theo tỉ lệ ký tự, offset bằng
-  `timing.json.cue.start`. Xem bài học [[timing-from-real-mp3]].
+  **KHÔNG hiển thị nguyên câu dài** — cắt phụ đề NGẮN, **1 dòng**:
+  **≤22 ký tự toàn角 (Nhật)** / **≤42 ký tự (Việt)**. Chữ Nhật rộng gấp đôi nên ngưỡng khác nhau;
+  42 ký tự Nhật ở 56px ≈ 2250px, tràn khung `#sub` (1400px) và tự xuống 2 dòng.
+  Đừng cắt bằng tay: chạy **`node scripts/gen-captions.mjs --project projects/<slug>`**
+  → sinh `cues.json` + in sẵn khối `const CUES=[...]` để dán. Script **tự nhận ngôn ngữ**
+  (cờ `--lang` > `timing.json.lang` > dò chữ Nhật) và cắt tiếng Nhật theo 。！？ → 、 → trợ từ,
+  có 禁則処理; phân bổ thời gian theo tỉ lệ ký tự, offset bằng `timing.json.cue.start`.
+  Nó **cảnh báo** nếu còn dòng vượt ngưỡng — đọc stderr, đừng bỏ qua.
+  Xem bài học [[timing-from-real-mp3]].
 
 ## Remap timeline hình↔tiếng — DÙNG SCRIPT, ĐỪNG LÀM TAY
 Khi bạn dựng hình trên timeline **dry-run** rồi giọng thật về (thời lượng khác), toàn bộ việc
@@ -144,16 +149,35 @@ Bốn thứ dưới đây đã được đo và kiểm chứng; chúng bật m�
 - ShaderPass **không** được three.js chèn mã hoá sRGB. Đo trên xám `#808080`: vẽ thẳng 197,
   qua composer 143. Đó là lỗi màu của các tập 01–07.
 
-## ⚠ CHỮ TIẾNG VIỆT TRÊN MÀN HÌNH PHẢI CÓ DẤU
-Nhãn vẽ trong WebGL bằng canvas texture **hiển thị dấu tiếng Việt bình thường** — canvas dùng
-font hệ thống, không phải font atlas. Đã kiểm chứng: `nuoc-co-hon-mat-troi` (47 nhãn có dấu) và
-`dai-oxy-hoa` (20 nhãn) đều render sạch, không ô tofu.
+## ⚠ CHỮ TRÊN MÀN HÌNH PHẢI HIỆN ĐÚNG GLYPH
 
-Viết không dấu là **lỗi**, đừng tự cho đó là quy ước đồ hoạ kỹ thuật. Tập `quasar` viết cả 113
-nhãn không dấu ("gieng sau", "dia se hinh thanh", "do phan giai goc") và phải render lại, tốn
-thêm một giờ GPU.
+**Tiếng Việt — phải CÓ DẤU.** Nhãn WebGL bằng canvas texture hiển thị dấu bình thường (canvas
+dùng font hệ thống, không phải font atlas). Đã kiểm chứng: `nuoc-co-hon-mat-troi` (47 nhãn) và
+`dai-oxy-hoa` (20 nhãn) render sạch. Viết không dấu là **lỗi**, đừng tự cho đó là quy ước đồ hoạ.
+Tập `quasar` viết cả 113 nhãn không dấu và phải render lại, tốn thêm một giờ GPU.
 
-Nếu gặp ô tofu thật thì báo lại, đừng lặng lẽ bỏ dấu.
+**Tiếng Nhật — phải NHÚNG FONT, không dựa font máy.** `"Segoe UI"` KHÔNG có glyph CJK.
+Khai `@font-face` trỏ file local trong `<style>` của composition:
+
+```css
+@font-face{font-family:'BIZ UDPGothic';src:url('assets/fonts/BIZUDPGothic-Bold.ttf') format('truetype');font-weight:700;font-display:block;}
+```
+
+rồi dùng `font-family:'BIZ UDPGothic',sans-serif` ở `#sub`, `#chap` **và trong `textTex()`**
+(chuỗi font của canvas 2D — chỗ này hay bị quên vì nó nằm trong JS, không trong CSS).
+
+⚠ **Chờ font nạp xong trước khi vẽ nhãn canvas đầu tiên:**
+```js
+await document.fonts.load('700 96px "BIZ UDPGothic"');
+```
+Font CJK nặng ~4,6 MB. Vẽ trước khi font về thì `measureText` trả metric của font dự phòng →
+nhãn sai kích thước **rải rác khắp video**, mỗi lần render một kiểu, rất khó truy.
+
+`HFA.canvasHeightForText(fontPx, lines, hpx, text)` — **truyền thêm `text`** để nó chọn đúng hệ số:
+2.4 cho chữ Việt (dấu nhô ra ngoài em-box), 1.45 cho kanji (nằm gọn trong hộp vuông; đo thật
+ascent 27,7 + descent 27,3 = 55,0px ở font 56px). Bỏ trống `text` thì giữ nguyên 2.4 như cũ.
+
+Nếu gặp ô tofu thật thì báo lại, đừng lặng lẽ bỏ dấu hay đổi sang chữ không dấu.
 
 ## Hai cái bẫy đã kiểm chứng bằng `hyperframes validate` — đừng vấp lại
 1. **KHÔNG nạp thư viện bằng thẻ script ngoài.** Server HyperFrames không phục vụ file `.js`
@@ -169,6 +193,165 @@ Nếu gặp ô tofu thật thì báo lại, đừng lặng lẽ bỏ dấu.
    window.__timelines["<slug>"] = HFA.makeTimeline("<slug>", TOTAL, renderAtTime);
    ```
    `<slug>` phải trùng `data-composition-id` của div gốc (KHÔNG phải `"main"`).
+
+## ⚠⚠ SÁU LỖI "PASS MÀ SAI" — cổng kiểm KHÔNG bắt được (tập `tamashii-no-tabi`, 2026-09-22)
+
+Cả sáu lỗi dưới đây đều để `lint` + `validate` + `inspect` **PASS SẠCH** trong khi hình
+render ra sai. Không có lỗi nào để lần theo. **Chỉ nhìn ảnh mới thấy.**
+
+### 1. ⭐ Lệch đơn vị `loc()`: GIÂY vs TỈ LỆ — đóng băng CẢ TẬP
+
+`HFA.scenes().loc()` trong thư viện trả **tỉ lệ 0–1**:
+```js
+loc: function (t, k) { var w = SC[k]; return Math.min(1, Math.max(0, (t - w[0]) / (w[1] - w[0]))); }
+```
+Nhưng nếu hàm cảnh của bạn viết `u` theo **nghĩa GIÂY** (`u > 26.0`, `win(u, 9.0, 16.0)`,
+`clamp((u - 11.0)/3.0, 0, 1)`) thì `u` luôn ∈ [0,1] trong khi code chờ tới giây 26 →
+**MỌI cảnh đứng ở ~1% đầu vĩnh viễn**. Vòng chưa khép, cổng chưa hiện, camera chưa rời chỗ.
+Nhìn ra như "agent dựng chưa xong" — thật ra cảnh đã dựng đủ, chỉ không bao giờ chạy tới.
+
+**Chốt một kiểu ngay từ đầu và ghi rõ ở đầu file.** Nếu viết theo giây thì override tại tập:
+```js
+/* loc() trả GIÂY (không phải 0–1) — mọi hàm cảnh ở file này viết theo giây. */
+function loc(t, k){ var w = SC[k]; return Math.min(w[1] - w[0], Math.max(0, t - w[0])); }
+```
+⚠ Đừng sửa thư viện — tập khác đang dùng đúng nghĩa 0–1.
+
+### 2. Hình CHẬM HƠN LỜI ĐỌC 5–24 giây
+
+Lỗi phổ biến nhất sau lỗi 1, và **không cổng nào bắt**. Ví dụ thật: lời gọi tên sáu cõi ở
+u=8,8–13,0 (cách nhau 0,72s) nhưng hình sáng từng cõi ở `9.0 + i*1.9`, xong ở u=18,5 —
+người xem nghe xong hết rồi hình mới chạy. Nhãn còn trễ thêm 2,4s nữa.
+
+→ **Mở `timing.json` lấy mốc cue THẬT của từng câu**, rồi đặt nhịp hình theo đó.
+Đừng rải đều `i * hằng-số`.
+
+### 3. Vật thể CHỒNG CHỖ nhau → vật sau bị che hoàn toàn
+
+Hai nhóm đặt gần nhau trong không gian; từ góc camera cụ thể, vật A nằm **giữa camera và
+vật B** nên shot của B chỉ thấy A. Lint/validate không biết gì về che khuất.
+
+→ Khi đặt nhiều nhóm dùng chung sân khấu, **kiểm bằng ảnh ở đúng góc của từng shot**.
+
+### 4. Nhóm KHÔNG CÓ ĐÈN → đen hoàn toàn
+
+`MeshStandardMaterial` (PBR) mà không có nguồn sáng nào chiếu tới → **đen tuyền**, không lỗi.
+Dễ xảy ra khi tách một nhóm ra sân khấu riêng mà quên copy đèn.
+
+→ Mỗi nhóm có vật liệu PBR phải tự kiểm: có ít nhất một đèn chiếu tới nó không?
+
+### 5. `PointsMaterial` không có trần kích thước → hạt nở nuốt khung
+
+Size nhân theo 1/khoảng-cách. Camera nằm **trong** khối sương (spread 40–80m) → hạt cách máy
+0,5m nở thành đốm chiếm 1/4 khung, trắng xoá nuốt chủ thể.
+
+→ Dùng ShaderMaterial kẹp `uMaxPx` và fade hạt quá gần camera:
+```glsl
+gl_PointSize = min(uMaxPx, aS * (uScale / -mvPosition.z));
+```
+
+### 6. Dựng texture nhãn LƯỜI trong `renderAtTime` → hỏng rải rác
+
+```js
+if(!n35){ n35 = textTex('三十五日目', 96, ...); }   // ⚠ SAI
+```
+Texture sinh ra ở **frame nào đó** — phụ thuộc "font CJK đã về chưa vào đúng frame ấy".
+Render phân tán thì mỗi máy hỏng một chỗ khác nhau, cực khó truy.
+
+→ **Dựng mọi texture nhãn trong block dựng**, không trong vòng render.
+
+---
+
+## ⭐⭐ BA RÀNG BUỘC BẮT BUỘC — kiểm riêng, không gộp chung với 6 lỗi "pass mà sai"
+
+Ba điều dưới đây là **yêu cầu cứng của người vận hành**, kiểm bằng mắt trên contact-sheet
+CÙNG lúc với vòng kiểm 6 lỗi ở trên, nhưng liệt kê riêng vì dễ bị bỏ sót khi chỉ nhìn tổng
+thể "cảnh có đúng không" — ba lỗi này thường ẩn trong một cảnh vốn dĩ đã "đúng nội dung".
+
+### A. LAYER KHÔNG ĐƯỢC ĐÈ LÊN NHAU (không chỉ vật thể 3D — cả layer 2D/UI)
+
+Lỗi 3 ở trên đã nói vật thể 3D che nhau trong không gian. Điều BỔ SUNG ở đây là **layer 2D
+chồng lấn nhau hoặc chồng lên chi tiết 3D quan trọng**:
+- Phụ đề `#sub` không được đè lên nhãn chương `#chap`, hay lên chính chủ thể đang được nói
+  tới (ví dụ: đang nói về một con số hiện trên màn hình mà phụ đề che mất con số đó).
+- Nếu tập có nhiều layer canvas texture (nhãn nguồn, badge, watermark), kiểm **thứ tự
+  z-index/vẽ** để không có hai nhãn text đè lên nhau ở cùng thời điểm `t`.
+- Khi cảnh có god-ray/glow mạnh gần đáy khung, phụ đề phải đặt tại vùng tương phản đủ để đọc
+  được — không chỉ dựa vào `text-shadow` một mình nếu nền đủ sáng để nuốt chữ (đã xảy ra
+  thật: chữ trắng trên vệt sáng trắng, xem bài học thumbnail — cùng nguyên tắc áp dụng cho
+  `#sub` trong composition).
+→ Kiểm bằng cách xem contact-sheet ở đúng frame có god-ray/glow sáng nhất VÀ đúng frame có
+  hai nhãn cùng active — không chỉ xem frame trung bình.
+
+### B. HÌNH ẢNH KHÔNG ĐƯỢC VỠ (geometry/topology lỗi)
+
+Không chỉ "ghép khối cầu lộ đường cắt" (mục dưới) — kiểm tổng quát mọi mesh dựng tay:
+- **Mỗi bộ phận cơ thể/vật thể phức tạp** (bàn tay, khớp nối, đồ vật ghép nhiều mảnh) phải
+  đọc RÕ RÀNG là đúng vật đó ở cỡ cảnh sẽ lên hình — không phải "trông tạm ổn khi zoom to
+  trong lúc dựng". Tiền lệ thật: mesh bàn tay xoay ngón theo trục ROLL (quanh trục dọc riêng
+  từng ngón) thay vì trục YAW (quanh gốc bàn tay) làm cả bàn tay trông như một khối cuộn xoắn
+  ốc — pass sạch cả 3 cổng, chỉ lộ ra khi nhìn ảnh phóng to.
+- Vật thể ghép nhiều primitive (box + cylinder + sphere) phải kiểm **điểm nối có khớp không**
+  ở góc camera thật sẽ dùng, không phải góc mặc định lúc dựng.
+- Không để geometry chồng lấn xuyên nhau (z-fighting) tạo vệt nhấp nháy hoặc răng cưa ở biên.
+→ Kiểm bằng cách zoom cận (crop contact-sheet hoặc chụp thêm frame riêng) đúng những chỗ có
+  mesh ghép tay, không chỉ xem toàn cảnh.
+
+### C. LUÔN CÓ GAP/SAFE-AREA QUANH KHUNG — nội dung không được tràn ra ngoài
+
+- **Mọi nhãn text, chữ động, kinetic type** phải cách mép khung hình (1920×1080) một khoảng
+  đệm tối thiểu — không đặt sát x=0 hay x=1920, không để bất kỳ ký tự nào bị cắt cụt ở biên.
+  Khuyến nghị: margin ≥ 40px mỗi cạnh cho nhãn canvas, ≥ 5% chiều rộng cho phụ đề `#sub`.
+- **Chủ thể chính của một shot cận cảnh** không được để một phần bị cắt ra ngoài khung một
+  cách vô tình (khác với chủ ý bố cục "tràn khung" đã tính toán, ví dụ cận cảnh 位牌 cố ý
+  tràn hai bên) — kiểm bằng cách tự hỏi "phần bị cắt có phải chủ ý bố cục không, hay do đặt
+  camera/toạ độ sai".
+- Khi dùng `HFA.canvasHeightForText`, nhớ hệ số đúng ngôn ngữ (2.4 Việt / 1.45 kanji) để canvas
+  đủ cao chứa hết chữ + dấu — canvas quá thấp thì chữ bị cắt cụt phần trên/dưới dù logic đặt
+  vị trí đúng.
+→ Kiểm bằng cách xem RÌA của contact-sheet (bốn cạnh khung), không chỉ nhìn vào giữa ảnh —
+  lỗi tràn biên rất dễ bị bỏ qua vì mắt tự nhiên nhìn vào trung tâm khung trước.
+
+### D. MỌI CHỮ DỰNG TRONG HÌNH PHẢI ẨN DANH — không chỉ lời thoại
+
+⚠ **Tiền lệ tập `yakuwari`:** danh thiếp 3D có 4 trường (công ty/phòng ban/chức danh/tên).
+Ba trường đầu đúng luật ẩn danh (`〇〇産業株式会社`), nhưng trường tên lại viết
+`中村 和夫` — một họ tên đầy đủ nghe như người thật. `npm run check` PASS sạch; chỉ lộ ra
+khi đọc kỹ chữ trong ảnh contact-sheet.
+
+Luật "không bịa người có thật, dùng 私/ある家で" (scriptwriter.md) áp cho **lời thoại**, nhưng
+áp dụng **y hệt** cho mọi chữ dựng trong hình: biển tên, danh thiếp, thư, tin nhắn, giấy tờ,
+bảng tên trên cửa, v.v. Tên riêng, địa chỉ, số điện thoại cụ thể đều phải ẩn danh
+(`〇〇`, `○○様`, hoặc tương đương) — nhất quán với cách các trường khác trong cùng vật thể
+đã ẩn danh.
+
+→ Khi xem contact-sheet, với MỌI mốc có chữ dựng trong hình (không chỉ phụ đề) — **đọc nội
+  dung chữ**, đừng chỉ liếc bố cục. Tên người/địa chỉ/số điện thoại cụ thể lọt vào là lỗi phải
+  sửa trước khi render, dù check đã PASS.
+
+---
+
+## ⚠ Ảnh chụp LỆCH so với timeline khi tập có intro/outro
+
+Tập dùng `scripts/apply-lead-tail.mjs` sẽ có trong `renderAtTime`:
+```js
+var _tReal = t;                    /* thời gian THẬT của video — cho phụ đề/chương */
+t = Math.max(0, t - LEAD);         /* thời gian CẢNH — cho hình */
+```
+→ `hyperframes snapshot --at X` chụp ở **thời gian THẬT**. Muốn xem **giây cảnh X** phải
+chụp ở **X + LEAD**. Quên cộng thì chỉnh nhịp theo mốc sai (đã xảy ra thật).
+
+---
+
+## ⚠ Ghép khối cầu để tạo chi tiết trên bề mặt cong → LUÔN để lại đường cắt
+
+Đắp một `SphereGeometry` lên đầu tượng (肉髻, bướu, khối u) thì chỗ giao nhau luôn lộ đường
+cắt: đặt thấp thì lõm trán, đặt cao thì thành "quả trứng đội đầu". Tương tự, đắp một vòng
+làm gờ gấu áo sẽ bắt đèn thành **vòng đai lơ lửng**.
+
+→ **Nắn thẳng vào profile của `LatheGeometry`** để chi tiết liền khối với thân.
+
+---
 
 # NGĂN XẾP KỸ THUẬT (giữ nguyên — đã kiểm chứng)
 - `https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js`
@@ -242,17 +425,53 @@ nếu không, khi camera bay ra ngoài quả cầu sẽ nhìn thấy cả "quả
 - Hằng số tham chiếu size trong point-shader `gl_PointSize=aS*(r/-mv.z)` phải **bằng đúng `r`** để sao giữ
   nguyên độ to/mật độ khi đổi bán kính.
 
-## Vòng KIỂM CHỨNG BẰNG ẢNH (bắt buộc trước khi giao)
-Đừng chỉ đọc code — **render frame thật rồi nhìn**:
-`npx hyperframes snapshot --at <t1>,<t2>,... --no-end --timeout 15000 -o snapshots` → xem `contact-sheet.jpg`.
-Chọn mốc: cận cảnh chủ thể + **mọi cảnh rộng nhất** (nơi lỗi starfield/scale lộ ra). Xong thì xóa `snapshots/`.
-`npx hyperframes validate` phải in "No console errors" (bắt được texture 404, lỗi WebGL).
+## ⭐ Vòng KIỂM CHỨNG BẰNG ẢNH — BẮT BUỘC, KHÔNG ĐƯỢC BỎ
+
+> **`npm run check` PASS KHÔNG CÓ NGHĨA LÀ HÌNH ĐÚNG.**
+> Sáu lỗi ở mục "PASS MÀ SAI" bên trên đều để cả ba cổng pass sạch trong khi hình sai hẳn.
+> **Chỉ nhìn ảnh mới thấy.** Đây là cổng quan trọng nhất của khâu này.
+
+**Quy trình tối thiểu:**
+```bash
+npx hyperframes snapshot --at <10-15 mốc rải KHẮP timeline> --no-end --timeout 20000 -o snapshots
+```
+Rồi **MỞ `contact-sheet.jpg` RA XEM BẰNG MẮT** (dùng Read tool). Đừng chỉ đọc log.
+
+**Chọn mốc thế nào:**
+- Rải đều khắp tập, **ít nhất 1 mốc cho mỗi chương** — không chỉ chụp chỗ mình vừa sửa.
+- Thêm: cảnh rộng nhất · chỗ có nhãn chữ · chỗ chuyển cảnh · **cao trào của tập**.
+- Tập có intro/outro: **nhớ cộng LEAD** (xem mục lệch mốc bên trên).
+
+**Nhìn ảnh để tìm gì** — đây là những thứ cổng kiểm mù hoàn toàn:
+| Dấu hiệu trên ảnh | Nghĩa là |
+|---|---|
+| Nền trơn, không có chủ thể | cảnh đóng băng (lỗi 1) hoặc hình chậm hơn lời (lỗi 2) |
+| Khung đen tuyền mà lẽ ra có vật | nhóm thiếu đèn (lỗi 4) |
+| Cháy trắng, chủ thể bị nuốt | camera trong vùng đèn, hoặc hạt sương nở (lỗi 5) |
+| Chỉ thấy vật A, không thấy vật B | chồng chỗ (lỗi 3) |
+| Ô tofu □ thay cho chữ Nhật | font chưa nạp khi vẽ nhãn |
+| Chữ/nhãn sai cỡ ở vài chỗ | texture nhãn dựng lười trong render (lỗi 6) |
+
+**Đo khách quan khi nghi ngờ** — độ sáng trung bình của frame:
+```bash
+ffmpeg -v quiet -i frame.png -vf format=gray,scale=1:1 -f rawvideo -
+```
+Ra 0/255 = đen tuyền (nghi thiếu đèn). Ra >200 = cháy trắng.
+
+**Chỉ báo "xong" sau khi đã xem ảnh và mô tả được từng cảnh thấy gì.**
+Xong thì xoá `snapshots/` (giữ lại nếu người dùng cần review).
+
+`npx hyperframes validate` vẫn phải in "No console errors" (bắt texture 404, lỗi WebGL) —
+nhưng nhớ: nó **không** bắt được sáu lỗi kia.
 
 # CÁC LOẠI VISUAL KHÁC (đa chủ đề)
 - **procedural** (morph theo t: DNA xoắn, nơ-ron, sóng), **particle** (hệ hạt trừu tượng),
   **graph** (đồ thị/timeline/bản đồ động). Dù loại nào: GIỮ hợp đồng renderAtTime tất định + bloom/lens.
 
 # KIỂM TRA TRƯỚC KHI GIAO (BẮT BUỘC)
+0. ⭐ **ĐÃ XEM ẢNH CHƯA?** Chụp ≥10 mốc rải khắp tập, mở `contact-sheet.jpg` ra nhìn, và
+   **mô tả được từng cảnh thấy gì**. Chưa làm bước này thì chưa được báo xong —
+   ba cổng dưới đều pass được trong lúc hình sai hẳn.
 1. `node --check` phần JS (tách file tạm) — cú pháp đúng.
 2. `npx hyperframes lint` và `npx hyperframes validate` pass (cấu trúc + tương phản).
 3. `npx hyperframes inspect` — không tràn layout ngoài ý muốn.
@@ -267,5 +486,15 @@ Chọn mốc: cận cảnh chủ thể + **mọi cảnh rộng nhất** (nơi l�
 
 > ⚠️ **TRƯỚC KHI GHI ĐÈ `index.html` GỐC:** nó đang chứa **tập trước**. Kiểm tra đã sao lưu
 > chưa — `projects/<slug-tập-trước>/index.html` phải tồn tại và giống file gốc. Chưa lưu mà
-> ghi đè là **mất tập vĩnh viễn** (repo này không dùng git). Chưa có bản lưu thì copy trước:
-> `cp index.html projects/<slug-tập-trước>/index.html`
+> ghi đè là **mất tập** (repo có git nhưng chỉ cứu được bản đã commit). Chưa có bản lưu thì
+> copy trước: `cp index.html projects/<slug-tập-trước>/index.html`
+
+# NHẤT QUÁN ≠ RẬP KHUÔN (thương hiệu vs giữ chân)
+Hai việc kéo ngược nhau, phải làm cả hai:
+- **Nhất quán (thương hiệu, hào của kênh):** bảng màu tối, bloom + lens pass của `createStage`,
+  chất liệu vật thể thật, font phụ đề, kiểu nhãn chương. Những thứ này **không đổi giữa các tập**
+  để người xem nhận ra kênh trước khi đọc tiêu đề.
+- **Đa dạng (giữ chân):** góc máy, cỡ cảnh, vị trí chủ thể trong khung, hướng chuyển động, thủ pháp
+  (3D ↔ kinetic type ↔ sơ đồ). Theo mốc thay đổi ≤5 giây mà storyboard ghi ở `ELEMENT`.
+Snapshot contact-sheet là chỗ kiểm cả hai: các frame phải *trông cùng một kênh* nhưng *không
+trông cùng một cảnh*.

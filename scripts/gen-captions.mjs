@@ -14,11 +14,19 @@
 
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { join, resolve } from 'node:path';
+import { splitJa, isJapanese } from './lib/split-ja.mjs';
 
 function arg(name, def) { const i = process.argv.indexOf(name); return i >= 0 ? process.argv[i + 1] : def; }
+function has(name) { return process.argv.includes(name); }
 const projectDir = resolve(arg('--project', 'projects/hoan-hao-trai-dat'));
-const MAX = parseInt(arg('--max', '42'), 10);
 const voiceDir = join(projectDir, 'voice');
+
+// ── Chọn cách cắt theo NGÔN NGỮ ─────────────────────────────────────────────
+// Tiếng Nhật không có khoảng trắng: chunk() theo /\s+/ trả nguyên câu thành 1 mảnh và
+// luật ≤MAX hỏng trong im lặng (đo thật: câu 67 ký tự → 1 mảnh). Nên tách hẳn hai đường.
+// Ngưỡng cũng khác: 42 cho chữ Latin, 22 cho chữ toàn角 (rộng gấp đôi).
+const LANG = arg('--lang', null);          // 'ja' | 'vi' | null = tự nhận
+const DEFAULT_MAX = { ja: 22, vi: 42 };
 
 function parseSrt(p) {
   if (!existsSync(p)) return [];
@@ -36,7 +44,7 @@ function parseSrt(p) {
   return out;
 }
 
-// tách text thành các mẩu <= MAX ký tự theo ranh giới TỪ (không cắt giữa từ)
+// tách text thành các mẩu <= MAX ký tự theo ranh giới TỪ (không cắt giữa từ) — chữ Latin/Việt
 function chunk(text) {
   const words = text.split(/\s+/);
   const out = []; let cur = '';
@@ -54,24 +62,41 @@ function chunk(text) {
 }
 
 const timing = JSON.parse(readFileSync(join(projectDir, 'timing.json'), 'utf8'));
+
+// Ngôn ngữ: cờ --lang > timing.json.lang > tự nhận từ chữ trong cue.
+const lang = LANG || timing.lang ||
+  (timing.cues.some((c) => isJapanese(c.text)) ? 'ja' : 'vi');
+const MAX = parseInt(arg('--max', String(DEFAULT_MAX[lang] ?? 42)), 10);
+// Một cửa duy nhất để cắt dòng, chọn theo ngôn ngữ.
+const cut = lang === 'ja' ? (t) => splitJa(t, MAX) : chunk;
+const clen = (s) => [...s].length;   // đếm code point, không đếm UTF-16 unit
+
 const cues = [];
 for (const cue of timing.cues) {
-  const s0 = cue.start;              // mốc bắt đầu segment THẬT (từ voice-aimax đã hiệu chỉnh)
+  const s0 = cue.start;              // mốc bắt đầu segment THẬT (đã hiệu chỉnh ở khâu voice)
   const base = (cue.file || '').replace('voice/', '');
-  const srt = base ? parseSrt(join(voiceDir, base.replace('.mp3', '.srt'))) : [];
+  // GPT-SoVITS local không sinh .srt (AIMAX thì có). Tiếng Nhật không cần: cắt theo 。、
+  // là tất định. Mốc bắt đầu vẫn lấy từ timing.json — đó mới là số đo thật.
+  const srt = base ? parseSrt(join(voiceDir, base.replace(/\.(mp3|wav)$/, '.srt'))) : [];
   if (!srt.length) {
-    // fallback: cắt text cue, rải đều trên cue.duration
-    const parts = chunk(cue.text);
-    const per = (cue.duration || 0) / Math.max(1, parts.length);
-    parts.forEach((p, i) => cues.push({ t: +(s0 + i * per).toFixed(2), s: p }));
+    // fallback: cắt text cue, chia thời gian THEO TỈ LỆ KÝ TỰ (không rải đều —
+    // dòng 5 chữ và dòng 22 chữ không thể chiếm thời lượng bằng nhau).
+    const parts = cut(cue.text);
+    const dur = cue.duration || 0;
+    const tot = parts.reduce((a, p) => a + clen(p), 0) || 1;
+    let acc = 0;
+    for (const p of parts) {
+      cues.push({ t: +(s0 + acc).toFixed(2), s: p });
+      acc += dur * (clen(p) / tot);
+    }
     continue;
   }
   for (const line of srt) {
-    const parts = chunk(line.text);
+    const parts = cut(line.text);
     const span = Math.max(0.2, line.end - line.start);
-    const totCh = parts.reduce((a, p) => a + p.length, 0) || 1;
+    const totCh = parts.reduce((a, p) => a + clen(p), 0) || 1;
     let t = line.start;
-    for (const p of parts) { cues.push({ t: +(s0 + t).toFixed(2), s: p }); t += span * (p.length / totCh); }
+    for (const p of parts) { cues.push({ t: +(s0 + t).toFixed(2), s: p }); t += span * (clen(p) / totCh); }
   }
 }
 cues.sort((a, b) => a.t - b.t);
@@ -83,7 +108,13 @@ writeFileSync(join(projectDir, 'cues.json'), JSON.stringify({ total, count: cues
 const esc = (s) => s.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
 process.stdout.write('const CUES=[\n' + cues.map((c) => ` {t:${c.t},s:"${esc(c.s)}"}`).join(',\n') + '\n];\n');
 
-const lens = cues.map((c) => c.s.length);
-process.stderr.write(`\n✓ ${cues.length} cue · maxLen ${Math.max(...lens)} · avg ${(lens.reduce((a, b) => a + b, 0) / lens.length).toFixed(1)} · total ${total}s\n`);
+const lens = cues.map((c) => clen(c.s));
+const over = cues.filter((c) => clen(c.s) > MAX);
+process.stderr.write(`\n✓ ${cues.length} cue · lang ${lang} · max ${MAX} · maxLen ${Math.max(...lens)} · avg ${(lens.reduce((a, b) => a + b, 0) / lens.length).toFixed(1)} · total ${total}s\n`);
+// Cổng ồn ào: trước đây dòng quá dài trôi lọt không ai biết.
+if (over.length) {
+  process.stderr.write(`  ⚠ ${over.length} dòng VƯỢT ${MAX} ký tự:\n`);
+  for (const c of over.slice(0, 5)) process.stderr.write(`     [${clen(c.s)}] ${c.s}\n`);
+}
 process.stderr.write(`  cues.json → ${join(projectDir, 'cues.json')}\n`);
 process.stderr.write(`  _NEWT (remap timeline) = [${timing.cues.map((c) => c.start).join(',')},${total}]\n`);
